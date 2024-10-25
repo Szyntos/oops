@@ -167,6 +167,15 @@ export const routes = createBrowserRouter([
               />
             ),
           },
+          {
+            path: coordinatorPaths.Edition.children.Levels.path,
+            element: (
+              <ProtectedRoute
+                element={<LevelsSection />}
+                allowedRoles={coordinatorPaths.Edition.allowedRoles}
+              />
+            ),
+          },
         ],
       },
     ],

@@ -7,14 +7,7 @@ type SectionBarProps = {
 };
 
 export type Section = {
-  title:
-    | "awards"
-    | "categories"
-    | "chests"
-    // TODO
-    // | "group"
-    | "levels"
-    | "files";
+  title: "awards" | "categories" | "chests" | "groups" | "levels" | "files";
   path: (editionId: string) => string;
 };
 
@@ -38,6 +31,10 @@ const sections: Section[] = [
   {
     title: "levels",
     path: pathsGenerator.coordinator.EditionChildren.Levels,
+  },
+  {
+    title: "groups",
+    path: pathsGenerator.coordinator.EditionChildren.Groups,
   },
 ];
 

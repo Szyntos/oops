@@ -14,7 +14,8 @@ class CorsConfig {
         val source = UrlBasedCorsConfigurationSource()
         val config = CorsConfiguration().apply {
             allowCredentials = true  // Allow credentials like cookies, authorization headers, etc.
-            allowedOrigins = listOf("*")  // Allow requests from any origin. Change this to specific origins in production.
+            // TODO: Change this to the frontend URL
+            allowedOriginPatterns = listOf("http://localhost:[*]")
             allowedHeaders = listOf("*")  // Allow all headers, including Authorization and Content-Type
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Allow these HTTP methods
             exposedHeaders = listOf("Authorization")  // Expose headers that the client needs to access

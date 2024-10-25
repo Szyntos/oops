@@ -77,7 +77,8 @@ class ChestsDataFetcher {
 
     @DgsMutation
     @Transactional
-    fun addChest(@InputArgument chestType: String, @InputArgument editionId: Long, @InputArgument label: String = ""): Chests {
+    fun addChest(@InputArgument chestType: String, @InputArgument editionId: Long,
+                 @InputArgument fileId: Long?, @InputArgument label: String = ""): Chests {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can add chests")
@@ -95,7 +96,12 @@ class ChestsDataFetcher {
             label = label,
             edition = edition
         )
-        return chestsRepository.save(chest)
+        val savedChest = chestsRepository.save(chest)
+        fileId?.let {
+            photoAssigner.assignPhotoToAssignee(chestsRepository, "image/chest", savedChest.chestId, fileId)
+        }
+
+        return savedChest
     }
 
     @DgsMutation
@@ -104,6 +110,7 @@ class ChestsDataFetcher {
         @InputArgument chestId: Long,
         @InputArgument chestType: String?,
         @InputArgument editionId: Long?,
+        @InputArgument fileId: Long?,
         @InputArgument label: String?
     ): Chests {
         val currentUser = userMapper.getCurrentUser()
@@ -132,6 +139,10 @@ class ChestsDataFetcher {
             }
             val edition = editionRepository.findById(it).orElseThrow { IllegalArgumentException("Invalid edition ID") }
             chest.edition = edition
+        }
+
+        fileId?.let {
+            photoAssigner.assignPhotoToAssignee(chestsRepository, "image/chest", chestId, fileId)
         }
 
         label?.let {

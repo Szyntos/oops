@@ -33,6 +33,8 @@ export type NeighboringLevelsQuery = {
       };
       imageFile?: {
         __typename?: "FileType";
+        createdAt: string;
+        updatedAt: string;
         fileId: string;
         fileName: string;
         fileType: string;
@@ -61,6 +63,8 @@ export type NeighboringLevelsQuery = {
       };
       imageFile?: {
         __typename?: "FileType";
+        createdAt: string;
+        updatedAt: string;
         fileId: string;
         fileName: string;
         fileType: string;
@@ -89,6 +93,8 @@ export type NeighboringLevelsQuery = {
       };
       imageFile?: {
         __typename?: "FileType";
+        createdAt: string;
+        updatedAt: string;
         fileId: string;
         fileName: string;
         fileType: string;
@@ -120,6 +126,8 @@ export const NeighboringLevelsDocument = gql`
           startDate
         }
         imageFile {
+          createdAt
+          updatedAt
           fileId
           fileName
           fileType
@@ -145,6 +153,8 @@ export const NeighboringLevelsDocument = gql`
           startDate
         }
         imageFile {
+          createdAt
+          updatedAt
           fileId
           fileName
           fileType
@@ -170,6 +180,8 @@ export const NeighboringLevelsDocument = gql`
           startDate
         }
         imageFile {
+          createdAt
+          updatedAt
           fileId
           fileName
           fileType

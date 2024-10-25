@@ -1,5 +1,6 @@
 package backend.files
 
+import backend.utils.TimestampModel
 import jakarta.persistence.*
 
 @Entity
@@ -19,7 +20,7 @@ data class FileEntity(
 
     @Column(name = "label", nullable = false, length = 256)
     var label: String = "",
-) {
+) : TimestampModel() {
     constructor() : this(
         pathToFile = "",
         fileName = "",

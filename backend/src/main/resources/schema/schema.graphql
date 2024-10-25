@@ -377,6 +377,8 @@ type FileType {
   pathToFile: String!
   fileName: String!
   fileType: String!
+  createdAt: String!
+  updatedAt: String!
   label: String!
 }
 

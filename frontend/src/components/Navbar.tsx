@@ -18,20 +18,22 @@ export const Navbar = () => {
 
   return (
     <div style={styles.container}>
-      {navigationItems
-        .filter((item) => hasRole(user, item.allowedRoles))
-        .map((item, index) => (
-          <div
-            key={index}
-            onClick={() => navigate(item.path)}
-            style={{
-              ...styles.navbarItem,
-              backgroundColor: item.path === location.pathname ? "#ddd" : "",
-            }}
-          >
-            {item.title}
-          </div>
-        ))}
+      <div style={styles.itemsContainer}>
+        {navigationItems
+          .filter((item) => hasRole(user, item.allowedRoles))
+          .map((item, index) => (
+            <div
+              key={index}
+              onClick={() => navigate(item.path)}
+              style={{
+                ...styles.navbarItem,
+                backgroundColor: item.path === location.pathname ? "#ddd" : "",
+              }}
+            >
+              {item.title}
+            </div>
+          ))}
+      </div>
 
       {selectedEdition ? (
         <div style={styles.editionName}>
@@ -58,7 +60,7 @@ const styles: Styles = {
     alignItems: "center",
     borderBottom: "1px solid black",
     height: NAV_BAR_HEIGHT,
-    justifyContent: "center",
+    justifyContent: "space-between",
   },
   navbarItem: {
     border: "1px solid black",
@@ -68,5 +70,9 @@ const styles: Styles = {
   editionName: {
     marginLeft: "auto",
     padding: 12,
+  },
+  itemsContainer: {
+    display: "flex",
+    flexDirection: "row",
   },
 };

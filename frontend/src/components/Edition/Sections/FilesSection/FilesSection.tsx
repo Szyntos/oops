@@ -10,7 +10,7 @@ const folders: Folder[] = [
   { title: "chest", pathPrefix: `image/chest` },
   { title: "group", pathPrefix: `image/group` },
   { title: "level", pathPrefix: `image/level` },
-  { title: "users", pathPrefix: `image/users` },
+  { title: "users", pathPrefix: `image/user` },
 ];
 
 export const FilesSection = () => {

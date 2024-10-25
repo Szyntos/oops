@@ -66,7 +66,7 @@ export const AddAwardForm = ({
     <div style={styles.container}>
       <div style={styles.title}>Add Award</div>
       <form onSubmit={formik.handleSubmit}>
-        <div>
+        <div style={styles.fieldsContainer}>
           <TextField
             fullWidth
             name="awardName"
@@ -193,8 +193,13 @@ const styles: Styles = {
     flexDirection: "column",
     gap: 12,
     padding: 12,
-    border: "1px solid black",
+    width: 500,
   },
   title: { fontWeight: "bold" },
   error: { color: "red" },
+  fieldsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  },
 };

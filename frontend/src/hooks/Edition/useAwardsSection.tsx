@@ -32,7 +32,7 @@ export const useAwardsSection = (editionId: number) => {
     const found = a.awardEditions.find(
       (edition) => edition.editionId === editionId.toString(),
     );
-    return !!found;
+    return found !== undefined;
   });
 
   const [isOpen, setIsOpen] = useState(false);
@@ -77,10 +77,7 @@ export const useAwardsSection = (editionId: number) => {
 
   const handleSelectClick = async (award: Award) => {
     const isAwardSelected = !!selectedAwards.find((a) => {
-      const found = a.awardEditions.find(
-        (edition) => edition.editionId === editionId.toString(),
-      );
-      return !!found;
+      return a.awardId === award.awardId;
     });
 
     const variables = {

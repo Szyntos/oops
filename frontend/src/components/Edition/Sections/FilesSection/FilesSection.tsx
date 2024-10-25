@@ -18,9 +18,9 @@ export const FilesSection = () => {
   const editionId = params.id ? parseInt(params.id) : -1;
 
   const [activeFolder, setActiveFolder] = useState<Folder>(folders[0]);
-  const [fetchFiles, { loading, error, data }] = useFilesLazyQuery();
+  const [fetchFiles, { loading, error, data, refetch }] = useFilesLazyQuery();
 
-  const fileIds: string[] =
+  const imagesIds: string[] =
     data?.getFilesGroupedByTypeBySelectedTypes.flatMap((a) =>
       a.files.map((f) => f.fileId),
     ) ?? [];
@@ -40,34 +40,26 @@ export const FilesSection = () => {
   ) => {
     const files = event.target.files;
     if (files && files.length > 0) {
-      const file = files[0];
-      console.log("Uploaded file:", file);
-
       const formData = new FormData();
       formData.append("file", files[0]);
       formData.append("fileType", activeFolder.pathPrefix);
 
-      await handleFileUpload(formData);
-    }
-  };
-
-  const handleFileUpload = async (form: FormData) => {
-    try {
-      const response = await fetch("http://localhost:9090/files/upload", {
+      fetch("http://localhost:9090/files/upload", {
         method: "POST",
-        body: form,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      fetchFiles({ variables: { paths: [activeFolder.pathPrefix] } });
-    } catch (error) {
-      // TODO
-      console.error("Failed to upload file", error);
+        body: formData,
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            throw new Error(`Error: ${res.statusText}`);
+          }
+          await refetch();
+        })
+        .catch((error) => {
+          console.error("Failed to upload file", error);
+        });
     }
   };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
@@ -88,7 +80,7 @@ export const FilesSection = () => {
       />
 
       <ImagesList
-        imageIds={fileIds}
+        imageIds={imagesIds}
         title={`All ${activeFolder.title} files`}
       />
     </div>

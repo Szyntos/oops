@@ -38,6 +38,8 @@ export type NeighboringLevelsQuery = {
         fileType: string;
         label: string;
         pathToFile: string;
+        createdAt: string;
+        updatedAt: string;
       } | null;
     };
     nextLevel?: {
@@ -66,6 +68,8 @@ export type NeighboringLevelsQuery = {
         fileType: string;
         label: string;
         pathToFile: string;
+        createdAt: string;
+        updatedAt: string;
       } | null;
     } | null;
     prevLevel?: {
@@ -94,6 +98,8 @@ export type NeighboringLevelsQuery = {
         fileType: string;
         label: string;
         pathToFile: string;
+        createdAt: string;
+        updatedAt: string;
       } | null;
     } | null;
   };
@@ -125,6 +131,8 @@ export const NeighboringLevelsDocument = gql`
           fileType
           label
           pathToFile
+          createdAt
+          updatedAt
         }
       }
       nextLevel {
@@ -150,6 +158,8 @@ export const NeighboringLevelsDocument = gql`
           fileType
           label
           pathToFile
+          createdAt
+          updatedAt
         }
       }
       prevLevel {
@@ -175,6 +185,8 @@ export const NeighboringLevelsDocument = gql`
           fileType
           label
           pathToFile
+          createdAt
+          updatedAt
         }
       }
     }

@@ -3959,11 +3959,13 @@ export type FileGroupType = {
 
 export type FileType = {
   __typename?: "FileType";
+  createdAt: Scalars["String"]["output"];
   fileId: Scalars["ID"]["output"];
   fileName: Scalars["String"]["output"];
   fileType: Scalars["String"]["output"];
   label: Scalars["String"]["output"];
   pathToFile: Scalars["String"]["output"];
+  updatedAt: Scalars["String"]["output"];
 };
 
 /** columns and relationships of "files" */
@@ -3977,6 +3979,7 @@ export type Files = {
   chests: Array<Chests>;
   /** An aggregate relationship */
   chestsAggregate: ChestsAggregate;
+  createdAt: Scalars["timestamp"]["output"];
   fileId: Scalars["bigint"]["output"];
   fileName: Scalars["String"]["output"];
   fileType: Scalars["String"]["output"];
@@ -3990,6 +3993,7 @@ export type Files = {
   /** An aggregate relationship */
   levelsAggregate: LevelsAggregate;
   pathToFile: Scalars["String"]["output"];
+  updatedAt: Scalars["timestamp"]["output"];
   /** An array relationship */
   users: Array<Users>;
   /** An aggregate relationship */
@@ -4130,6 +4134,7 @@ export type FilesBoolExp = {
   awardsAggregate?: InputMaybe<AwardAggregateBoolExp>;
   chests?: InputMaybe<ChestsBoolExp>;
   chestsAggregate?: InputMaybe<ChestsAggregateBoolExp>;
+  createdAt?: InputMaybe<TimestampComparisonExp>;
   fileId?: InputMaybe<BigintComparisonExp>;
   fileName?: InputMaybe<StringComparisonExp>;
   fileType?: InputMaybe<StringComparisonExp>;
@@ -4139,6 +4144,7 @@ export type FilesBoolExp = {
   levels?: InputMaybe<LevelsBoolExp>;
   levelsAggregate?: InputMaybe<LevelsAggregateBoolExp>;
   pathToFile?: InputMaybe<StringComparisonExp>;
+  updatedAt?: InputMaybe<TimestampComparisonExp>;
   users?: InputMaybe<UsersBoolExp>;
   usersAggregate?: InputMaybe<UsersAggregateBoolExp>;
 };
@@ -4158,6 +4164,7 @@ export type FilesIncInput = {
 export type FilesInsertInput = {
   awards?: InputMaybe<AwardArrRelInsertInput>;
   chests?: InputMaybe<ChestsArrRelInsertInput>;
+  createdAt?: InputMaybe<Scalars["timestamp"]["input"]>;
   fileId?: InputMaybe<Scalars["bigint"]["input"]>;
   fileName?: InputMaybe<Scalars["String"]["input"]>;
   fileType?: InputMaybe<Scalars["String"]["input"]>;
@@ -4165,27 +4172,32 @@ export type FilesInsertInput = {
   label?: InputMaybe<Scalars["String"]["input"]>;
   levels?: InputMaybe<LevelsArrRelInsertInput>;
   pathToFile?: InputMaybe<Scalars["String"]["input"]>;
+  updatedAt?: InputMaybe<Scalars["timestamp"]["input"]>;
   users?: InputMaybe<UsersArrRelInsertInput>;
 };
 
 /** aggregate max on columns */
 export type FilesMaxFields = {
   __typename?: "FilesMaxFields";
+  createdAt?: Maybe<Scalars["timestamp"]["output"]>;
   fileId?: Maybe<Scalars["bigint"]["output"]>;
   fileName?: Maybe<Scalars["String"]["output"]>;
   fileType?: Maybe<Scalars["String"]["output"]>;
   label?: Maybe<Scalars["String"]["output"]>;
   pathToFile?: Maybe<Scalars["String"]["output"]>;
+  updatedAt?: Maybe<Scalars["timestamp"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type FilesMinFields = {
   __typename?: "FilesMinFields";
+  createdAt?: Maybe<Scalars["timestamp"]["output"]>;
   fileId?: Maybe<Scalars["bigint"]["output"]>;
   fileName?: Maybe<Scalars["String"]["output"]>;
   fileType?: Maybe<Scalars["String"]["output"]>;
   label?: Maybe<Scalars["String"]["output"]>;
   pathToFile?: Maybe<Scalars["String"]["output"]>;
+  updatedAt?: Maybe<Scalars["timestamp"]["output"]>;
 };
 
 /** response of any mutation on the table "files" */
@@ -4215,6 +4227,7 @@ export type FilesOnConflict = {
 export type FilesOrderBy = {
   awardsAggregate?: InputMaybe<AwardAggregateOrderBy>;
   chestsAggregate?: InputMaybe<ChestsAggregateOrderBy>;
+  createdAt?: InputMaybe<OrderBy>;
   fileId?: InputMaybe<OrderBy>;
   fileName?: InputMaybe<OrderBy>;
   fileType?: InputMaybe<OrderBy>;
@@ -4222,6 +4235,7 @@ export type FilesOrderBy = {
   label?: InputMaybe<OrderBy>;
   levelsAggregate?: InputMaybe<LevelsAggregateOrderBy>;
   pathToFile?: InputMaybe<OrderBy>;
+  updatedAt?: InputMaybe<OrderBy>;
   usersAggregate?: InputMaybe<UsersAggregateOrderBy>;
 };
 
@@ -4233,6 +4247,8 @@ export type FilesPkColumnsInput = {
 /** select columns of table "files" */
 export enum FilesSelectColumn {
   /** column name */
+  CreatedAt = "createdAt",
+  /** column name */
   FileId = "fileId",
   /** column name */
   FileName = "fileName",
@@ -4242,15 +4258,19 @@ export enum FilesSelectColumn {
   Label = "label",
   /** column name */
   PathToFile = "pathToFile",
+  /** column name */
+  UpdatedAt = "updatedAt",
 }
 
 /** input type for updating data in table "files" */
 export type FilesSetInput = {
+  createdAt?: InputMaybe<Scalars["timestamp"]["input"]>;
   fileId?: InputMaybe<Scalars["bigint"]["input"]>;
   fileName?: InputMaybe<Scalars["String"]["input"]>;
   fileType?: InputMaybe<Scalars["String"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
   pathToFile?: InputMaybe<Scalars["String"]["input"]>;
+  updatedAt?: InputMaybe<Scalars["timestamp"]["input"]>;
 };
 
 /** aggregate stddev on columns */
@@ -4281,11 +4301,13 @@ export type FilesStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type FilesStreamCursorValueInput = {
+  createdAt?: InputMaybe<Scalars["timestamp"]["input"]>;
   fileId?: InputMaybe<Scalars["bigint"]["input"]>;
   fileName?: InputMaybe<Scalars["String"]["input"]>;
   fileType?: InputMaybe<Scalars["String"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
   pathToFile?: InputMaybe<Scalars["String"]["input"]>;
+  updatedAt?: InputMaybe<Scalars["timestamp"]["input"]>;
 };
 
 /** aggregate sum on columns */
@@ -4297,6 +4319,8 @@ export type FilesSumFields = {
 /** update columns of table "files" */
 export enum FilesUpdateColumn {
   /** column name */
+  CreatedAt = "createdAt",
+  /** column name */
   FileId = "fileId",
   /** column name */
   FileName = "fileName",
@@ -4306,6 +4330,8 @@ export enum FilesUpdateColumn {
   Label = "label",
   /** column name */
   PathToFile = "pathToFile",
+  /** column name */
+  UpdatedAt = "updatedAt",
 }
 
 export type FilesUpdates = {
@@ -10654,6 +10680,7 @@ export type Mutation_RootAddAwardArgs = {
   awardValue: Scalars["Float"]["input"];
   categoryId: Scalars["Int"]["input"];
   description: Scalars["String"]["input"];
+  fileId?: InputMaybe<Scalars["Int"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
   maxUsages?: InputMaybe<Scalars["Int"]["input"]>;
 };
@@ -10697,6 +10724,7 @@ export type Mutation_RootAddCategoryToEditionArgs = {
 export type Mutation_RootAddChestArgs = {
   chestType: Scalars["String"]["input"];
   editionId: Scalars["Int"]["input"];
+  fileId?: InputMaybe<Scalars["Int"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
 };
 
@@ -11042,6 +11070,7 @@ export type Mutation_RootEditAwardArgs = {
   awardValue?: InputMaybe<Scalars["Float"]["input"]>;
   categoryId?: InputMaybe<Scalars["Int"]["input"]>;
   description?: InputMaybe<Scalars["String"]["input"]>;
+  fileId?: InputMaybe<Scalars["Int"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
   maxUsages?: InputMaybe<Scalars["Int"]["input"]>;
 };
@@ -11062,6 +11091,7 @@ export type Mutation_RootEditChestArgs = {
   chestId: Scalars["Int"]["input"];
   chestType?: InputMaybe<Scalars["String"]["input"]>;
   editionId?: InputMaybe<Scalars["Int"]["input"]>;
+  fileId?: InputMaybe<Scalars["Int"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
 };
 

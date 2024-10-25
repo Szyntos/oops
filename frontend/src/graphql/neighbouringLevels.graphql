@@ -18,6 +18,8 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
         startDate
       }
       imageFile {
+        createdAt
+        updatedAt
         fileId
         fileName
         fileType
@@ -43,6 +45,8 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
         startDate
       }
       imageFile {
+        createdAt
+        updatedAt
         fileId
         fileName
         fileType
@@ -68,6 +72,8 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
         startDate
       }
       imageFile {
+        createdAt
+        updatedAt
         fileId
         fileName
         fileType

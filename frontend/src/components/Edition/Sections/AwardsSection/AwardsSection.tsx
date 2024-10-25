@@ -27,6 +27,8 @@ export const AwardsSection = ({ editionId }: AwardsSectionProps) => {
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
+  console.log("SELECTED AWRADS: ", selectedAwards);
+
   return (
     <div style={styles.container}>
       <button onClick={openDialog}>add award</button>

@@ -61,6 +61,7 @@ export const useAwardsSection = (editionId: number) => {
           description: values.description,
           maxUsages: values.maxUsages,
           label: "",
+          fileId: values.imageId,
         },
       });
 

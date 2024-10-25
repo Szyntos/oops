@@ -6,6 +6,7 @@ mutation SetupAwardCreate(
   $description: String!
   $maxUsages: Int!
   $label: String!
+  $fileId: Int!
 ) {
   addAward(
     awardName: $awardName
@@ -15,6 +16,7 @@ mutation SetupAwardCreate(
     description: $description
     maxUsages: $maxUsages
     label: $label
+    fileId: $fileId
   ) {
     awardId
     awardName
@@ -23,5 +25,8 @@ mutation SetupAwardCreate(
     description
     label
     maxUsages
+    imageFile {
+      fileId
+    }
   }
 }

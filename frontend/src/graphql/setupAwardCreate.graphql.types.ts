@@ -11,6 +11,7 @@ export type SetupAwardCreateMutationVariables = Types.Exact<{
   description: Types.Scalars["String"]["input"];
   maxUsages: Types.Scalars["Int"]["input"];
   label: Types.Scalars["String"]["input"];
+  fileId: Types.Scalars["Int"]["input"];
 }>;
 
 export type SetupAwardCreateMutation = {
@@ -24,6 +25,7 @@ export type SetupAwardCreateMutation = {
     description: string;
     label: string;
     maxUsages: number;
+    imageFile?: { __typename?: "FileType"; fileId: string } | null;
   } | null;
 };
 
@@ -36,6 +38,7 @@ export const SetupAwardCreateDocument = gql`
     $description: String!
     $maxUsages: Int!
     $label: String!
+    $fileId: Int!
   ) {
     addAward(
       awardName: $awardName
@@ -45,6 +48,7 @@ export const SetupAwardCreateDocument = gql`
       description: $description
       maxUsages: $maxUsages
       label: $label
+      fileId: $fileId
     ) {
       awardId
       awardName
@@ -53,6 +57,9 @@ export const SetupAwardCreateDocument = gql`
       description
       label
       maxUsages
+      imageFile {
+        fileId
+      }
     }
   }
 `;
@@ -81,6 +88,7 @@ export type SetupAwardCreateMutationFn = Apollo.MutationFunction<
  *      description: // value for 'description'
  *      maxUsages: // value for 'maxUsages'
  *      label: // value for 'label'
+ *      fileId: // value for 'fileId'
  *   },
  * });
  */

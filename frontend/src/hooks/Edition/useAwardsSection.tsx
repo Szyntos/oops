@@ -57,7 +57,7 @@ export const useAwardsSection = (editionId: number) => {
           awardName: values.awardName,
           awardType: values.awardType,
           awardValue: values.awardValue,
-          categoryId: 1,
+          categoryId: parseInt(values.categoryId),
           description: values.description,
           maxUsages: values.maxUsages,
           label: "",

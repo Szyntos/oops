@@ -1,0 +1,37 @@
+query SetupGroups($editionId: bigint!) {
+  editionByPk(editionId: $editionId) {
+    groups {
+      groupName
+      generatedName
+      groupsId
+      startTime
+      weekday {
+        weekdayId
+        weekdayName
+      }
+      endTime
+      teacher {
+        fullName
+        userId
+        secondName
+        firstName
+      }
+      file {
+        fileId
+      }
+      userGroups(where: { user: { role: { _eq: "student" } } }) {
+        user {
+          firstName
+          fullName
+          imageFileId
+          indexNumber
+          label
+          nick
+          role
+          secondName
+          userId
+        }
+      }
+    }
+  }
+}

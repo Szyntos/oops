@@ -71,7 +71,7 @@ class AwardsDataFetcher {
     @Transactional
     fun addAward(@InputArgument awardName: String, @InputArgument awardType: String, @InputArgument awardValue: Float,
                  @InputArgument categoryId: Long, @InputArgument maxUsages: Int = -1,
-                 @InputArgument description: String,
+                 @InputArgument description: String, @InputArgument fileId: Long?,
                  @InputArgument label: String = ""): Award {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
@@ -112,8 +112,12 @@ class AwardsDataFetcher {
             description = description,
             label = ""
         )
-        awardRepository.save(award)
-        return award
+        val savedAward = awardRepository.save(award)
+
+        fileId?.let {
+            photoAssigner.assignPhotoToAssignee(awardRepository, "image/award", savedAward.awardId, fileId)
+        }
+        return savedAward
     }
 
     @DgsMutation
@@ -126,6 +130,7 @@ class AwardsDataFetcher {
         @InputArgument categoryId: Long?,
         @InputArgument maxUsages: Int?,
         @InputArgument description: String?,
+        @InputArgument fileId: Long?,
         @InputArgument label: String?
     ): Award {
         val currentUser = userMapper.getCurrentUser()
@@ -184,6 +189,10 @@ class AwardsDataFetcher {
 
         description?.let {
             award.description = it
+        }
+
+        fileId?.let {
+            photoAssigner.assignPhotoToAssignee(awardRepository, "image/award", awardId, fileId)
         }
 
         label?.let {

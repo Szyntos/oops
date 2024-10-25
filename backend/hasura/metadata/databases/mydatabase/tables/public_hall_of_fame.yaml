@@ -23,7 +23,6 @@ select_permissions:
     permission:
       columns:
         - edition_id
-
         - groups_id
         - level_id
         - level_image_id

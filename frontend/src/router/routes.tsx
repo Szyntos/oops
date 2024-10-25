@@ -16,6 +16,7 @@ import { FilesSection } from "../components/Edition/Sections/FilesSection/FilesS
 import { AwardsSection } from "../components/Edition/Sections/AwardsSection/AwardsSection";
 import { ChestsSection } from "../components/Edition/Sections/ChestsSection/ChestsSection";
 import { LevelsSection } from "../components/Edition/Sections/LevelsSection/LevelsSection";
+import { GroupsSection } from "../components/Edition/Sections/GroupSection/GroupsSection";
 
 const commonPaths = pathsWithParameters.common;
 const studentPaths = pathsWithParameters.student;
@@ -168,10 +169,10 @@ export const routes = createBrowserRouter([
             ),
           },
           {
-            path: coordinatorPaths.Edition.children.Levels.path,
+            path: coordinatorPaths.Edition.children.Groups.path,
             element: (
               <ProtectedRoute
-                element={<LevelsSection />}
+                element={<GroupsSection />}
                 allowedRoles={coordinatorPaths.Edition.allowedRoles}
               />
             ),

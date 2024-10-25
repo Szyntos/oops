@@ -25,12 +25,6 @@ export const FilesSection = () => {
       a.files.map((f) => f.fileId),
     ) ?? [];
 
-  const selectedFileIds: string[] = [];
-
-  const handleSelectClick = (fileId: string) => {
-    console.log("selected file: ", fileId);
-  };
-
   useEffect(() => {
     fetchFiles({ variables: { paths: [activeFolder.pathPrefix] } });
   }, [activeFolder, fetchFiles, editionId]);
@@ -94,15 +88,7 @@ export const FilesSection = () => {
       />
 
       <ImagesList
-        imageIds={selectedFileIds}
-        selectedImageIds={selectedFileIds}
-        handleSelectImageClick={handleSelectClick}
-        title={`Selected ${activeFolder.title} files`}
-      />
-      <ImagesList
         imageIds={fileIds}
-        selectedImageIds={selectedFileIds}
-        handleSelectImageClick={handleSelectClick}
         title={`All ${activeFolder.title} files`}
       />
     </div>

@@ -5656,11 +5656,13 @@ type FileGroupType {
 }
 
 type FileType {
+  createdAt: String!
   fileId: ID!
   fileName: String!
   fileType: String!
   label: String!
   pathToFile: String!
+  updatedAt: String!
 }
 
 """
@@ -5786,6 +5788,7 @@ type Files {
     """
     where: ChestsBoolExp
   ): ChestsAggregate!
+  createdAt: timestamp!
   fileId: bigint!
   fileName: String!
   fileType: String!
@@ -5911,6 +5914,7 @@ type Files {
     where: LevelsBoolExp
   ): LevelsAggregate!
   pathToFile: String!
+  updatedAt: timestamp!
 
   """
   An array relationship
@@ -6016,6 +6020,7 @@ input FilesBoolExp {
   awardsAggregate: AwardAggregateBoolExp
   chests: ChestsBoolExp
   chestsAggregate: ChestsAggregateBoolExp
+  createdAt: TimestampComparisonExp
   fileId: BigintComparisonExp
   fileName: StringComparisonExp
   fileType: StringComparisonExp
@@ -6025,6 +6030,7 @@ input FilesBoolExp {
   levels: LevelsBoolExp
   levelsAggregate: LevelsAggregateBoolExp
   pathToFile: StringComparisonExp
+  updatedAt: TimestampComparisonExp
   users: UsersBoolExp
   usersAggregate: UsersAggregateBoolExp
 }
@@ -6052,6 +6058,7 @@ input type for inserting data into table "files"
 input FilesInsertInput {
   awards: AwardArrRelInsertInput
   chests: ChestsArrRelInsertInput
+  createdAt: timestamp
   fileId: bigint
   fileName: String
   fileType: String
@@ -6059,6 +6066,7 @@ input FilesInsertInput {
   label: String
   levels: LevelsArrRelInsertInput
   pathToFile: String
+  updatedAt: timestamp
   users: UsersArrRelInsertInput
 }
 
@@ -6066,22 +6074,26 @@ input FilesInsertInput {
 aggregate max on columns
 """
 type FilesMaxFields {
+  createdAt: timestamp
   fileId: bigint
   fileName: String
   fileType: String
   label: String
   pathToFile: String
+  updatedAt: timestamp
 }
 
 """
 aggregate min on columns
 """
 type FilesMinFields {
+  createdAt: timestamp
   fileId: bigint
   fileName: String
   fileType: String
   label: String
   pathToFile: String
+  updatedAt: timestamp
 }
 
 """
@@ -6126,6 +6138,7 @@ Ordering options when selecting data from "files".
 input FilesOrderBy {
   awardsAggregate: AwardAggregateOrderBy
   chestsAggregate: ChestsAggregateOrderBy
+  createdAt: OrderBy
   fileId: OrderBy
   fileName: OrderBy
   fileType: OrderBy
@@ -6133,6 +6146,7 @@ input FilesOrderBy {
   label: OrderBy
   levelsAggregate: LevelsAggregateOrderBy
   pathToFile: OrderBy
+  updatedAt: OrderBy
   usersAggregate: UsersAggregateOrderBy
 }
 
@@ -6147,6 +6161,11 @@ input FilesPkColumnsInput {
 select columns of table "files"
 """
 enum FilesSelectColumn {
+  """
+  column name
+  """
+  createdAt
+
   """
   column name
   """
@@ -6171,17 +6190,24 @@ enum FilesSelectColumn {
   column name
   """
   pathToFile
+
+  """
+  column name
+  """
+  updatedAt
 }
 
 """
 input type for updating data in table "files"
 """
 input FilesSetInput {
+  createdAt: timestamp
   fileId: bigint
   fileName: String
   fileType: String
   label: String
   pathToFile: String
+  updatedAt: timestamp
 }
 
 """
@@ -6224,11 +6250,13 @@ input FilesStreamCursorInput {
 Initial value of the column from where the streaming should start
 """
 input FilesStreamCursorValueInput {
+  createdAt: timestamp
   fileId: bigint
   fileName: String
   fileType: String
   label: String
   pathToFile: String
+  updatedAt: timestamp
 }
 
 """
@@ -6242,6 +6270,11 @@ type FilesSumFields {
 update columns of table "files"
 """
 enum FilesUpdateColumn {
+  """
+  column name
+  """
+  createdAt
+
   """
   column name
   """
@@ -6266,6 +6299,11 @@ enum FilesUpdateColumn {
   column name
   """
   pathToFile
+
+  """
+  column name
+  """
+  updatedAt
 }
 
 input FilesUpdates {
@@ -14591,6 +14629,7 @@ type mutation_root {
     awardValue: Float!
     categoryId: Int!
     description: String!
+    fileId: Int
     label: String = ""
     maxUsages: Int = -1
   ): AwardType
@@ -14610,7 +14649,12 @@ type mutation_root {
     subcategories: [SubcategoryInputType!]!
   ): CategoryType
   addCategoryToEdition(categoryId: Int!, editionId: Int!): CategoryEditionType
-  addChest(chestType: String!, editionId: Int!, label: String = ""): ChestType
+  addChest(
+    chestType: String!
+    editionId: Int!
+    fileId: Int
+    label: String = ""
+  ): ChestType
   addChestToUser(
     chestId: Int!
     subcategoryId: Int!
@@ -14999,6 +15043,7 @@ type mutation_root {
     awardValue: Float
     categoryId: Int
     description: String
+    fileId: Int
     label: String
     maxUsages: Int
   ): AwardType
@@ -15015,6 +15060,7 @@ type mutation_root {
     chestId: Int!
     chestType: String
     editionId: Int
+    fileId: Int
     label: String
   ): ChestType
   editChestHistory(

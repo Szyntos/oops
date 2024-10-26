@@ -115,12 +115,11 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
     @DgsMutation
     @Transactional
-    fun addTeacher(@InputArgument nick: String,
-                @InputArgument firstName: String, @InputArgument secondName: String,
+    fun addTeacher(@InputArgument firstName: String, @InputArgument secondName: String,
                 @InputArgument email: String = "",
                 @InputArgument label: String = "", @InputArgument createFirebaseUser: Boolean = false,
                 @InputArgument sendEmail: Boolean = false): Users {
-        return addUserHelper(-1, nick, firstName, secondName, "teacher", email, label, createFirebaseUser, sendEmail)
+        return addUserHelper(-1, "", firstName, secondName, "teacher", email, label, createFirebaseUser, sendEmail)
     }
 
     @DgsMutation
@@ -471,6 +470,18 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
             indexNumber
         }
 
+        val nickToBeSet = if (indexNumber == -1) {
+            if (nick.isNotBlank()){
+                throw IllegalArgumentException("Nick is not required for a teacher")
+            }
+            "$firstName.$secondName.$indexNumberToSet"
+        } else {
+            if (nick.isEmpty()) {
+                throw IllegalArgumentException("Nick is required")
+            }
+            nick
+        }
+
         // TODO: Find a better way to handle adding a first coordinator
         if (currentUser.userId == 0L ) {
             if (UsersRoles.valueOf(role.uppercase()) != UsersRoles.COORDINATOR) {
@@ -494,8 +505,8 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         if (usersRepository.existsByIndexNumber(indexNumberToSet)) {
             throw IllegalArgumentException("User with index number $indexNumberToSet already exists")
         }
-        if (usersRepository.findByNick(nick) != null) {
-            throw IllegalArgumentException("User with nick $nick already exists")
+        if (usersRepository.findByNick(nickToBeSet) != null) {
+            throw IllegalArgumentException("User with nick $nickToBeSet already exists")
         }
         val userRole1 = try {
             UsersRoles.valueOf(role.uppercase())
@@ -514,7 +525,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         }
         val user = Users(
             indexNumber = indexNumberToSet,
-            nick = nick,
+            nick = nickToBeSet,
             firstName = firstName,
             secondName = secondName,
             role = userRole1,

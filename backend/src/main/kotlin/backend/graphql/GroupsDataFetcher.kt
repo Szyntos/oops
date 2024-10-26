@@ -68,6 +68,9 @@ class GroupsDataFetcher {
     @Autowired
     lateinit var weekdaysRepository: WeekdaysRepository
 
+    @Autowired
+    lateinit var usersDataFetcher: UsersDataFetcher
+
     @DgsMutation
     @Transactional
     fun assignPhotosToGroups(@InputArgument editionId: Long): Boolean {
@@ -154,6 +157,87 @@ class GroupsDataFetcher {
         userGroupsRepository.save(userGroups)
         return group
     }
+
+    @DgsMutation
+    @Transactional
+    fun addGroupWithUsers(@InputArgument editionId: Long, @InputArgument usosId: Int,
+                          @InputArgument weekdayId: Long, @InputArgument startTime: Time,
+                          @InputArgument endTime: Time, @InputArgument teacherId: Long, @InputArgument label: String = "",
+                          @InputArgument groupName: String = "", @InputArgument users: List<UsersInputType>): Groups {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can add groups")
+        }
+
+        val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Invalid edition ID") }
+        if (edition.endDate.isBefore(java.time.LocalDate.now())){
+            throw IllegalArgumentException("Edition has already ended")
+        }
+        if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {
+            throw IllegalArgumentException("Group with USOS ID $usosId already exists for edition ${edition.editionId}")
+        }
+        if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName.isNotBlank() }) {
+            throw IllegalArgumentException("Group with name $groupName already exists for edition ${edition.editionId}")
+        }
+        if (startTime.after(endTime)) {
+            throw IllegalArgumentException("Start time must be before end time")
+        }
+        if (startTime == endTime) {
+            throw IllegalArgumentException("Start time must be different from end time")
+        }
+        val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Invalid weekday ID") }
+        val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+        if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("User with ID $teacherId is not a teacher nor a coordinator")
+        }
+        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTime, endTime, edition)) {
+            throw IllegalArgumentException("Teacher is already teaching a group at this time")
+        }
+        val generatedName = generateGroupName(usosId, weekday, startTime, teacher)
+        val group = Groups(
+            generatedName = generatedName,
+            groupName = groupName,
+            usosId = usosId,
+            label = label,
+            teacher = teacher,
+            weekday = weekday,
+            startTime = startTime,
+            endTime = endTime,
+            edition = edition
+        )
+        groupsRepository.save(group)
+        val userGroups = UserGroups(
+            user = teacher,
+            group = group
+        )
+        userGroupsRepository.save(userGroups)
+
+        users.forEach {
+            val user = if (!usersRepository.existsByIndexNumber(it.indexNumber)) {
+                usersDataFetcher.addUserHelper(
+                    it.indexNumber,
+                    it.nick,
+                    it.firstName,
+                    it.secondName,
+                    it.role,
+                    it.email,
+                    it.label,
+                    it.createFirebaseUser,
+                    it.sendEmail
+                )
+            } else {
+                usersRepository.findByIndexNumber(it.indexNumber)
+                    ?: throw IllegalArgumentException("User with index number ${it.indexNumber} not found")
+            }
+            val userGroup = UserGroups(
+                user = user,
+                group = group
+            )
+            userGroupsRepository.save(userGroup)
+        }
+        return group
+    }
+
 
     @DgsMutation
     @Transactional
@@ -554,4 +638,16 @@ data class GroupTeacherType(
     val group: Groups,
     val owns: Boolean,
     val canEdit: Boolean
+)
+
+data class UsersInputType (
+    val indexNumber: Int,
+    val nick: String,
+    val firstName: String,
+    val secondName: String,
+    val role: String,
+    val email: String,
+    val label: String,
+    val createFirebaseUser: Boolean,
+    val sendEmail: Boolean
 )

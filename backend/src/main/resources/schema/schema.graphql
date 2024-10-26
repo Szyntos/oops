@@ -84,6 +84,17 @@ type Mutation {
     label: String = ""
     groupName: String = ""
   ): GroupType
+  addGroupWithUsers(
+    editionId: Int!
+    usosId: Int!
+    weekdayId: Int!
+    startTime: String!
+    endTime: String!
+    teacherId: Int!
+    label: String = ""
+    groupName: String = ""
+    users: [UsersInputTypeType!]!
+  ): GroupType
   addSubcategory(
     subcategory: SubcategoryInputType!
   ): SubcategoryType
@@ -98,10 +109,10 @@ type Mutation {
     createFirebaseUser: Boolean = false
     sendEmail: Boolean = false
   ): UserType
-  addUsersFromCsv(
+  parseUsersFromCsv(
     fileId: Int!,
     editionId: Int!
-  ): [UserType]
+  ): ParsedUsersTypeType!
   resetPassword(userId: Int!): Boolean
   generateSubcategories(
     editionId: Int!
@@ -287,6 +298,8 @@ type Query {
   getCurrentUser: UserType!
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
+  validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
+
 }
 
 type AwardType {
@@ -597,6 +610,16 @@ type FileGroupType {
   files: [FileType!]!
 }
 
+type ParsedUsersTypeType {
+  users: [UserType!]!,
+  usosId: Int!,
+}
+
+type NotValidUserType {
+  user: UserType!
+  group: GroupType!
+}
+
 input SubcategoryInputType {
   subcategoryId: ID
   subcategoryName: String!
@@ -605,5 +628,17 @@ input SubcategoryInputType {
   categoryId: Int
   editionId: Int
   label: String!
+}
+
+input UsersInputTypeType {
+  indexNumber: Int!
+  nick: String!
+  firstName: String!
+  secondName: String!
+  role: String!,
+  email: String!
+  label: String!
+  createFirebaseUser: Boolean!
+  sendEmail: Boolean!
 }
 

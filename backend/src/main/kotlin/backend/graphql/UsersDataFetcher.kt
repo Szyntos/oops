@@ -8,6 +8,7 @@ import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.files.FileRetrievalService
 import backend.files.FileUploadService
+import backend.groups.Groups
 import backend.groups.GroupsRepository
 import backend.levels.Levels
 import backend.points.PointsRepository
@@ -114,40 +115,42 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
     @DgsMutation
     @Transactional
-    fun addUsersFromCsv(@InputArgument fileId: Long, @InputArgument editionId: Long): List<Users> {
+    fun parseUsersFromCsv(@InputArgument fileId: Long, @InputArgument editionId: Long): ParsedUsersType {
         val currentUser = userMapper.getCurrentUser()
 
         if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only a coordinator can add users from a CSV file")
+            throw IllegalArgumentException("Only a coordinator can parse users from a CSV file")
         }
 
         val file = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("File not found") }
         if (file.fileType != "text/csv") {
             throw IllegalArgumentException("Invalid file type")
         }
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Edition not found") }
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
         val usosId = csvReader.extractGroupNumber(file.fileName).toLong()
-        val group = groupsRepository.findByUsosIdAndEdition(usosId, edition) ?: throw IllegalArgumentException("Group not found")
         val users = csvReader.getUsersFromCsv(file)
-        // TODO: change to sendEmail = true
-        val addedUsers = users.map { user ->
-            addUserHelper(user.indexNumber, user.nick, user.firstName, user.secondName, user.role.name, user.email, user.label, true, false)
-        }
-        addedUsers.forEach { user ->
-            if (!userGroupsRepository.existsByUserAndGroup(user, group)){
-                val userGroup = UserGroups(
-                    user = user,
-                    group = group
-                )
-                userGroupsRepository.save(userGroup)
-            }
-        }
-        fileRetrievalService.deleteFile(fileId)
-        return addedUsers
+        val parsedUsers = ParsedUsersType(users, usosId)
+
+        fileRetrievalService.deleteFile(file.fileId)
+        return parsedUsers
     }
+
+    @DgsQuery
+    @Transactional
+    fun validateUsersToBeAdded(@InputArgument userIndexes: List<Int>, @InputArgument editionId: Long): List<NotValidUser> {
+        val currentUser = userMapper.getCurrentUser()
+
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only a coordinator can validate users to be added")
+        }
+
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val notValidUsers = userIndexes.mapNotNull { index -> usersRepository.findByIndexNumber(index) }
+            .filter { user -> user.userGroups.any { it.group.edition == edition } }
+            .map { user ->
+                NotValidUser(user, user.userGroups.first { it.group.edition == edition }.group) }
+        return notValidUsers
+    }
+
 
     @DgsMutation
     @Transactional
@@ -432,7 +435,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         return email.matches(Regex(emailPattern))
     }
     
-    private fun addUserHelper(indexNumber: Int,  nick: String,
+    fun addUserHelper(indexNumber: Int,  nick: String,
                                firstName: String,  secondName: String,
                                role: String,  email: String,
                                label: String = "",  createFirebaseUser: Boolean = false,
@@ -526,4 +529,14 @@ data class CategoryPointsSumType(
     val sumOfBonuses: Float,
     val sumOfAll: Float,
     val maxPoints: Float
+)
+
+data class ParsedUsersType (
+    val users: List<Users>,
+    val usosId: Long
+)
+
+data class NotValidUser(
+    val user: Users,
+    val group: Groups
 )

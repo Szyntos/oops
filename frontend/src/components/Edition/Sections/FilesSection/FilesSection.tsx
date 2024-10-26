@@ -44,19 +44,22 @@ export const FilesSection = () => {
       formData.append("file", files[0]);
       formData.append("fileType", activeFolder.pathPrefix);
 
-      fetch("http://localhost:9090/files/upload", {
-        method: "POST",
-        body: formData,
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            throw new Error(`Error: ${res.statusText}`);
-          }
-          await refetch();
-        })
-        .catch((error) => {
-          console.error("Failed to upload file", error);
+      try {
+        const res = await fetch("http://localhost:9090/files/upload", {
+          method: "POST",
+          body: formData,
         });
+
+        if (!res.ok) {
+          throw new Error(`Error: ${res.statusText}`);
+        }
+
+        await refetch();
+
+        event.target.value = "";
+      } catch (error) {
+        console.error("Failed to upload file", error);
+      }
     }
   };
 

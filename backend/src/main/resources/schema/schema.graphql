@@ -109,6 +109,15 @@ type Mutation {
     createFirebaseUser: Boolean = false
     sendEmail: Boolean = false
   ): UserType
+  addTeacher(
+    nick: String!
+    firstName: String!
+    secondName: String!
+    email: String = ""
+    label: String = ""
+    createFirebaseUser: Boolean = false
+    sendEmail: Boolean = false
+  ): UserType
   parseUsersFromCsv(
     fileId: Int!,
     editionId: Int!

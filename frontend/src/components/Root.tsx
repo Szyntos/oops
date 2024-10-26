@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import { Styles } from "../utils/Styles";
 import { Button } from "./Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog } from "@mui/material";
 import { CloseHeader } from "./dialogs/CloseHeader";
 import {
@@ -12,6 +12,7 @@ import {
 import { useUser } from "../hooks/common/useUser";
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
 import { useSelectAwardFromChestMutation } from "../graphql/selectAwardFromChest.graphql.types";
+import { useSubscribeChestToOpenSubscription } from "../graphql/subscribeChestToOpen.graphql.types";
 
 export type Chest =
   ChestsToOpenQuery["users"][number]["chestHistories"][number];
@@ -23,6 +24,15 @@ export const Root = () => {
   const { data, refetch } = useChestsToOpenQuery({
     variables: { userId: user.userId },
   });
+
+  const { data: subscribeData } = useSubscribeChestToOpenSubscription({
+    variables: { userId: user.userId },
+  });
+
+  useEffect(() => {
+    console.log("SUBSCRIPTION");
+    refetch();
+  }, [refetch, subscribeData]);
 
   const chestsToOpen: Chest[] = data?.users[0].chestHistories ?? [];
 
@@ -42,7 +52,6 @@ export const Root = () => {
           chestHistoryId: parseInt(chestHistoryId),
         },
       });
-      refetch();
     } catch (error) {
       console.log("ERROR: ", error);
     }

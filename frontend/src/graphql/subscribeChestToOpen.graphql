@@ -1,0 +1,10 @@
+subscription SubscribeChestToOpen($userId: bigint!) {
+  users(where: { userId: { _eq: $userId } }) {
+    chestHistories(
+      where: { opened: { _eq: false }, userId: { _eq: $userId } }
+    ) {
+      chestHistoryId
+      opened
+    }
+  }
+}

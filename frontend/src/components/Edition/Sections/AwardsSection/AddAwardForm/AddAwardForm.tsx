@@ -13,11 +13,11 @@ import { Category } from "../../../../../hooks/Edition/categories/useCategoriesS
 
 const ValidationSchema = z.object({
   awardName: z.string().min(1),
-  awardType: z.string(),
+  awardType: z.string().min(1),
   awardValue: z.number().min(0),
   categoryId: z.string().min(1),
   description: z.string(),
-  maxUsages: z.number().min(0),
+  maxUsages: z.number(),
   imageId: z.number(),
 });
 
@@ -29,7 +29,6 @@ type AddAwardFormProps = {
   categories: Category[];
 };
 
-// Get all possible values from AwardTypeType
 const awardTypes = Object.values(AwardTypeType);
 
 export const AddAwardForm = ({

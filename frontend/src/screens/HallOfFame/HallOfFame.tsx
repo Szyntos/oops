@@ -13,7 +13,7 @@ export default function HallOfFame() {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
     useHallOfFameData();
   const [showStudentsFromAllGroups, setShowStudentsFromAllGroups] =
-    useState(true);
+    useState(!isUserRoleStudent);
   const [searchInput, setSearchInput] = useState("");
 
   const scrollToStudent = useCallback(() => {

@@ -6591,6 +6591,12 @@ export type NeighboringLevelsType = {
   prevLevel?: Maybe<LevelType>;
 };
 
+export type NotValidUserType = {
+  __typename?: "NotValidUserType";
+  group: GroupType;
+  user: UserType;
+};
+
 /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
 export type NumericComparisonExp = {
   _eq?: InputMaybe<Scalars["numeric"]["input"]>;
@@ -6619,6 +6625,12 @@ export enum OrderBy {
   /** in descending order, nulls last */
   DescNullsLast = "DESC_NULLS_LAST",
 }
+
+export type ParsedUsersTypeType = {
+  __typename?: "ParsedUsersTypeType";
+  users: Array<UserType>;
+  usosId: Scalars["Int"]["output"];
+};
 
 export type PartialBonusType = {
   __typename?: "PartialBonusType";
@@ -9508,6 +9520,18 @@ export type UsersIncInput = {
   userId?: InputMaybe<Scalars["bigint"]["input"]>;
 };
 
+export type UsersInputTypeType = {
+  createFirebaseUser: Scalars["Boolean"]["input"];
+  email: Scalars["String"]["input"];
+  firstName: Scalars["String"]["input"];
+  indexNumber: Scalars["Int"]["input"];
+  label: Scalars["String"]["input"];
+  nick: Scalars["String"]["input"];
+  role: Scalars["String"]["input"];
+  secondName: Scalars["String"]["input"];
+  sendEmail: Scalars["Boolean"]["input"];
+};
+
 /** input type for inserting data into table "users" */
 export type UsersInsertInput = {
   chestHistories?: InputMaybe<ChestHistoryArrRelInsertInput>;
@@ -10334,12 +10358,12 @@ export type Mutation_Root = {
   addEdition?: Maybe<EditionType>;
   addGradingCheck?: Maybe<GradingChecksType>;
   addGroup?: Maybe<GroupType>;
+  addGroupWithUsers?: Maybe<GroupType>;
   addLevel?: Maybe<LevelType>;
   addPointsMutation?: Maybe<PointType>;
   addSubcategory?: Maybe<SubcategoryType>;
   addUser?: Maybe<UserType>;
   addUserToGroup?: Maybe<UserGroupType>;
-  addUsersFromCsv?: Maybe<Array<Maybe<UserType>>>;
   assignPhotoToAward?: Maybe<Scalars["Boolean"]["output"]>;
   assignPhotoToChest?: Maybe<Scalars["Boolean"]["output"]>;
   assignPhotoToLevel?: Maybe<Scalars["Boolean"]["output"]>;
@@ -10526,6 +10550,7 @@ export type Mutation_Root = {
   insertWeekdays?: Maybe<WeekdaysMutationResponse>;
   /** insert a single row into the table: "weekdays" */
   insertWeekdaysOne?: Maybe<Weekdays>;
+  parseUsersFromCsv: ParsedUsersTypeType;
   removeAwardFromChest?: Maybe<Scalars["Boolean"]["output"]>;
   removeAwardFromEdition?: Maybe<Scalars["Boolean"]["output"]>;
   removeCategory?: Maybe<Scalars["Boolean"]["output"]>;
@@ -10766,6 +10791,19 @@ export type Mutation_RootAddGroupArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootAddGroupWithUsersArgs = {
+  editionId: Scalars["Int"]["input"];
+  endTime: Scalars["String"]["input"];
+  groupName?: InputMaybe<Scalars["String"]["input"]>;
+  label?: InputMaybe<Scalars["String"]["input"]>;
+  startTime: Scalars["String"]["input"];
+  teacherId: Scalars["Int"]["input"];
+  users: Array<UsersInputTypeType>;
+  usosId: Scalars["Int"]["input"];
+  weekdayId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
 export type Mutation_RootAddLevelArgs = {
   editionId: Scalars["Int"]["input"];
   grade: Scalars["Float"]["input"];
@@ -10805,12 +10843,6 @@ export type Mutation_RootAddUserArgs = {
 export type Mutation_RootAddUserToGroupArgs = {
   groupId: Scalars["Int"]["input"];
   userId: Scalars["Int"]["input"];
-};
-
-/** mutation root */
-export type Mutation_RootAddUsersFromCsvArgs = {
-  editionId: Scalars["Int"]["input"];
-  fileId: Scalars["Int"]["input"];
 };
 
 /** mutation root */
@@ -11430,6 +11462,12 @@ export type Mutation_RootInsertWeekdaysArgs = {
 export type Mutation_RootInsertWeekdaysOneArgs = {
   object: WeekdaysInsertInput;
   onConflict?: InputMaybe<WeekdaysOnConflict>;
+};
+
+/** mutation root */
+export type Mutation_RootParseUsersFromCsvArgs = {
+  editionId: Scalars["Int"]["input"];
+  fileId: Scalars["Int"]["input"];
 };
 
 /** mutation root */
@@ -12062,6 +12100,7 @@ export type Query_Root = {
   usersAggregate: UsersAggregate;
   /** fetch data from the table: "users" using primary key columns */
   usersByPk?: Maybe<Users>;
+  validateUsersToBeAdded: Array<NotValidUserType>;
   /** fetch data from the table: "weekdays" */
   weekdays: Array<Weekdays>;
   /** fetch aggregated fields from the table: "weekdays" */
@@ -12528,6 +12567,11 @@ export type Query_RootUsersAggregateArgs = {
 
 export type Query_RootUsersByPkArgs = {
   userId: Scalars["bigint"]["input"];
+};
+
+export type Query_RootValidateUsersToBeAddedArgs = {
+  editionId: Scalars["Int"]["input"];
+  userIndexes: Array<Scalars["Int"]["input"]>;
 };
 
 export type Query_RootWeekdaysArgs = {

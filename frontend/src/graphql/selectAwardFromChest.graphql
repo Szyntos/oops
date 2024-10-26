@@ -1,0 +1,7 @@
+mutation SelectAwardFromChest($awardId: Int!, $chestHistoryId: Int!) {
+  addBonusMutation(awardId: $awardId, chestHistoryId: $chestHistoryId) {
+    bonus {
+      bonusId
+    }
+  }
+}

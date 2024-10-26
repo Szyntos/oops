@@ -9,10 +9,12 @@ export function StudentCard({
   group,
   totalPoints,
   avatarId,
+  id,
 }: StudentCardData) {
   return (
     <div style={styles.container}>
       <Avatar id={avatarId} size="l" />
+      <div>ID: {id}</div>
       <div style={styles.studentName}>{displayName}</div>
       <div>indeks: {index}</div>
       <div>

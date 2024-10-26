@@ -110,10 +110,9 @@ type Mutation {
     sendEmail: Boolean = false
   ): UserType
   addTeacher(
-    nick: String!
     firstName: String!
     secondName: String!
-    email: String = ""
+    email: String!
     label: String = ""
     createFirebaseUser: Boolean = false
     sendEmail: Boolean = false

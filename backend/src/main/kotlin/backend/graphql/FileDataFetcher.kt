@@ -39,7 +39,7 @@ class FileDataFetcher {
         val files = fileEntityRepository.findAll()
         return files.groupBy { it.fileType }
             .map { (fileType, files) ->
-                FileGroup(fileType, files)
+                FileGroup(fileType, files.sortedByDescending { it.updatedAt })
             }
     }
 
@@ -49,7 +49,7 @@ class FileDataFetcher {
         val selectedFiles = fileEntityRepository.findAllByFileTypeIn(fileTypes)
         return selectedFiles.groupBy { it.fileType }
             .map { (fileType, files) ->
-                FileGroup(fileType, files)
+                FileGroup(fileType, files.sortedByDescending { it.updatedAt })
             }
     }
 }

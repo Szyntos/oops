@@ -31,6 +31,7 @@ type Mutation {
     categoryId: Int!
     maxUsages: Int = -1
     description: String!
+    fileId: Int
     label: String = ""
   ): AwardType
   addAwardToEdition(awardId: Int!, editionId: Int!): AwardEditionType
@@ -40,7 +41,7 @@ type Mutation {
     teacherId: Int!
     subcategoryId: Int!
   ): ChestHistoryType
-  addChest(chestType: String!, editionId: Int!, label: String = ""): ChestType
+  addChest(chestType: String!, editionId: Int!, fileId: Int, label: String = ""): ChestType
   addCategory(
     categoryName: String!
     canAddPoints: Boolean!
@@ -123,6 +124,7 @@ type Mutation {
     categoryId: Int,
     maxUsages: Int,
     description: String,
+    fileId: Int,
     label: String
   ): AwardType
 
@@ -172,6 +174,7 @@ type Mutation {
     chestId: Int!,
     chestType: String,
     editionId: Int,
+    fileId: Int,
     label: String
   ): ChestType
 
@@ -374,6 +377,8 @@ type FileType {
   pathToFile: String!
   fileName: String!
   fileType: String!
+  createdAt: String!
+  updatedAt: String!
   label: String!
 }
 

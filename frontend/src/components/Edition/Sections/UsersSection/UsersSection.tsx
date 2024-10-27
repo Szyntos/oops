@@ -24,6 +24,7 @@ export const UsersSection = ({ editionId }: UsersSectionProps) => {
     closeAddTeacher,
     openAddTeacher,
     handleAddTeacher,
+    formError,
   } = useUsersSection();
 
   // TODO to delete
@@ -44,8 +45,7 @@ export const UsersSection = ({ editionId }: UsersSectionProps) => {
       <Dialog open={isAddStudentOpen}>
         <CloseHeader onCloseClick={closeAddStudent} />
         <AddStudentForm
-          // TODO
-          createError={undefined}
+          createError={formError}
           handleAddStudent={handleAddStudent}
         />
       </Dialog>
@@ -53,8 +53,7 @@ export const UsersSection = ({ editionId }: UsersSectionProps) => {
       <Dialog open={isAddTeacherOpen}>
         <CloseHeader onCloseClick={closeAddTeacher} />
         <AddTeacherForm
-          // TODO
-          createError={undefined}
+          createError={formError}
           handleAddTeacher={handleAddTeacher}
         />
       </Dialog>

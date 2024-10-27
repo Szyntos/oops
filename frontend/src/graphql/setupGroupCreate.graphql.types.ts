@@ -10,11 +10,21 @@ export type SetupGroupCreateMutationVariables = Types.Exact<{
   teacherId: Types.Scalars["Int"]["input"];
   usosId: Types.Scalars["Int"]["input"];
   weekdayId: Types.Scalars["Int"]["input"];
+  users: Array<Types.UsersInputTypeType> | Types.UsersInputTypeType;
 }>;
 
 export type SetupGroupCreateMutation = {
   __typename?: "mutation_root";
-  addGroup?: { __typename?: "GroupType"; usosId: number } | null;
+  addGroupWithUsers?: {
+    __typename?: "GroupType";
+    endTime: string;
+    generatedName: string;
+    groupName?: string | null;
+    groupsId: string;
+    label?: string | null;
+    startTime: string;
+    usosId: number;
+  } | null;
 };
 
 export const SetupGroupCreateDocument = gql`
@@ -25,15 +35,23 @@ export const SetupGroupCreateDocument = gql`
     $teacherId: Int!
     $usosId: Int!
     $weekdayId: Int!
+    $users: [UsersInputTypeType!]!
   ) {
-    addGroup(
+    addGroupWithUsers(
       editionId: $editionId
       endTime: $endTime
       startTime: $startTime
       teacherId: $teacherId
       usosId: $usosId
       weekdayId: $weekdayId
+      users: $users
     ) {
+      endTime
+      generatedName
+      groupName
+      groupsId
+      label
+      startTime
       usosId
     }
   }
@@ -62,6 +80,7 @@ export type SetupGroupCreateMutationFn = Apollo.MutationFunction<
  *      teacherId: // value for 'teacherId'
  *      usosId: // value for 'usosId'
  *      weekdayId: // value for 'weekdayId'
+ *      users: // value for 'users'
  *   },
  * });
  */

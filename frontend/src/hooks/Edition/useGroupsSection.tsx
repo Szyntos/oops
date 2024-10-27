@@ -5,17 +5,19 @@ import {
 } from "../../graphql/setupGroups.graphql.types";
 import { useWeekdayData } from "../Groups/FilterBar/useWeekdaysData";
 import { GroupFormValues } from "../../components/Edition/Sections/GroupSection/GroupAddForm";
-import {
-  SetupTeachersQuery,
-  useSetupTeachersQuery,
-} from "../../graphql/setupTeachers.graphql.types";
 import { useSetupGroupCreateMutation } from "../../graphql/setupGroupCreate.graphql.types";
+import {
+  SetupUsersQuery,
+  useSetupUsersQuery,
+} from "../../graphql/setupUsers.graphql.types";
+import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 
 export type Group = NonNullable<
   SetupGroupsQuery["editionByPk"]
 >["groups"][number];
 
-export type Teacher = SetupTeachersQuery["users"][number];
+export type Teacher = SetupUsersQuery["users"][number];
+export type Student = SetupUsersQuery["users"][number];
 
 export const useGroupsSection = (editionId: number) => {
   const [formError, setFormError] = useState<string | undefined>(undefined);
@@ -42,16 +44,30 @@ export const useGroupsSection = (editionId: number) => {
   } = useWeekdayData();
 
   const {
-    data: teachersData,
-    loading: teachersLoading,
-    error: teacherError,
-  } = useSetupTeachersQuery();
+    data: usersData,
+    loading: usersLoading,
+    error: UsersError,
+  } = useSetupUsersQuery();
 
-  const teachers: Teacher[] = teachersData?.users ?? [];
+  // TODO can be reused form users section hook
+  const teachers: Teacher[] =
+    usersData?.users.filter(
+      (u) =>
+        u.role.toLocaleUpperCase() === UsersRolesType.Coordinator ||
+        u.role.toLocaleUpperCase() === UsersRolesType.Teacher,
+    ) ?? [];
+
+  const students: Student[] =
+    usersData?.users.filter(
+      (u) => u.role.toLocaleUpperCase() === UsersRolesType.Student,
+    ) ?? [];
 
   const [createGroup] = useSetupGroupCreateMutation();
 
-  const handleAddGroup = async (values: GroupFormValues) => {
+  const handleAddGroup = async (
+    values: GroupFormValues,
+    selectedStudents: Student[],
+  ) => {
     try {
       await createGroup({
         variables: {
@@ -61,6 +77,19 @@ export const useGroupsSection = (editionId: number) => {
           teacherId: parseInt(values.teacherId),
           usosId: values.usosId,
           weekdayId: parseInt(values.weekdayId),
+          users: selectedStudents.map((s) => {
+            return {
+              createFirebaseUser: false,
+              email: `${s.indexNumber}@student.agh.edu.pl`,
+              firstName: s.firstName,
+              indexNumber: s.indexNumber,
+              label: "",
+              nick: s.nick,
+              role: s.role,
+              secondName: s.secondName,
+              sendEmail: false,
+            };
+          }),
         },
       });
       refetch();
@@ -77,8 +106,9 @@ export const useGroupsSection = (editionId: number) => {
     groups,
     weekdays,
     teachers,
-    loading: loading || weekdaysLoading || teachersLoading,
-    error: error || weekdaysError || teacherError,
+    students,
+    loading: loading || weekdaysLoading || usersLoading,
+    error: error || weekdaysError || UsersError,
     handleAddGroup,
     openAddDialog,
     isAddDialogOpen,

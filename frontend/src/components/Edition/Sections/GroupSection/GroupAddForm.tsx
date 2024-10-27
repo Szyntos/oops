@@ -9,38 +9,45 @@ import {
 } from "@mui/material";
 import { Styles } from "../../../../utils/Styles";
 import { Weekday } from "../../../../hooks/common/useGroupsData";
-import { Teacher } from "../../../../hooks/Edition/useGroupsSection";
+import { Student, Teacher } from "../../../../hooks/Edition/useGroupsSection"; // Remove Teacher import
+import { StudentSelection } from "./StudentSelection/StudentSelection";
+import { useState } from "react";
 
 export type GroupFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
   startTime: z.string().min(1, "required"),
   endTime: z.string().min(1, "required"),
-  teacherId: z.string().min(1, "required"),
   weekdayId: z.string().min(1, "required"),
+  teacherId: z.string().min(1, "required"),
   usosId: z.number().min(0),
 });
 
 type AddGroupFormProps = {
-  handleAddGroup: (values: GroupFormValues) => void;
+  handleAddGroup: (
+    values: GroupFormValues,
+    selectedStudents: Student[],
+  ) => void;
   createError?: string;
   weekdays: Weekday[];
   teachers: Teacher[];
+  students: Student[];
 };
 
 export const AddGroupForm = ({
-  handleAddGroup: handleAddGroup,
+  handleAddGroup,
   createError,
   weekdays,
   teachers,
+  students,
 }: AddGroupFormProps) => {
   const formik = useFormik({
     initialValues: {
       startTime: "",
       endTime: "",
-      teacherId: "",
       weekdayId: "",
-      usosId: 1,
+      teacherId: "",
+      usosId: 0,
     },
     validate: (values: GroupFormValues) => {
       try {
@@ -50,13 +57,29 @@ export const AddGroupForm = ({
           return error.formErrors.fieldErrors;
         }
       }
-
-      // TODO create subgroup validation
     },
     onSubmit: (values: GroupFormValues) => {
-      handleAddGroup(values);
+      handleAddGroup(values, selectedStudents);
     },
   });
+
+  const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
+
+  const studentsToSelect = students.filter((s) => {
+    const isSelected =
+      selectedStudents.find((ss) => ss.userId === s.userId) !== undefined;
+    return !isSelected;
+  });
+
+  const handleAdd = (student: Student) => {
+    setSelectedStudents((prev) => [...prev, student]);
+  };
+
+  const handleDelete = (student: Student) => {
+    setSelectedStudents((prev) =>
+      prev.filter((s) => s.userId !== student.userId),
+    );
+  };
 
   return (
     <div style={styles.container}>
@@ -66,7 +89,7 @@ export const AddGroupForm = ({
           <TextField
             fullWidth
             name="startTime"
-            label="startTime"
+            label="Start Time"
             variant="outlined"
             placeholder="xx:xx:xx"
             value={formik.values.startTime}
@@ -79,7 +102,7 @@ export const AddGroupForm = ({
           <TextField
             fullWidth
             name="endTime"
-            label="endTime"
+            label="End Time"
             variant="outlined"
             placeholder="xx:xx:xx"
             value={formik.values.endTime}
@@ -132,9 +155,29 @@ export const AddGroupForm = ({
               <div style={{ color: "red" }}>{formik.errors.teacherId}</div>
             )}
           </FormControl>
+
+          <TextField
+            fullWidth
+            name="usosId"
+            label="usosId"
+            variant="outlined"
+            type="number"
+            value={formik.values.usosId}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={Boolean(formik.touched.usosId && formik.errors.usosId)}
+            helperText={formik.touched.usosId && formik.errors.usosId}
+          />
+
+          <StudentSelection
+            students={studentsToSelect}
+            selectedStudents={selectedStudents}
+            handleAdd={handleAdd}
+            handleDelete={handleDelete}
+          />
         </div>
 
-        <button type="submit">add group</button>
+        <button type="submit">Add Group</button>
       </form>
 
       {createError && <p style={styles.error}>Error: {createError}</p>}

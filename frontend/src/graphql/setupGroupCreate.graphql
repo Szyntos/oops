@@ -5,15 +5,23 @@ mutation SetupGroupCreate(
   $teacherId: Int!
   $usosId: Int!
   $weekdayId: Int!
+  $users: [UsersInputTypeType!]!
 ) {
-  addGroup(
+  addGroupWithUsers(
     editionId: $editionId
     endTime: $endTime
     startTime: $startTime
     teacherId: $teacherId
     usosId: $usosId
     weekdayId: $weekdayId
+    users: $users
   ) {
+    endTime
+    generatedName
+    groupName
+    groupsId
+    label
+    startTime
     usosId
   }
 }

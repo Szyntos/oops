@@ -9319,6 +9319,11 @@ type NeighboringLevelsType {
   prevLevel: LevelType
 }
 
+type NotValidUserType {
+  group: GroupType!
+  user: UserType!
+}
+
 """
 Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
 """
@@ -9367,6 +9372,11 @@ enum OrderBy {
   in descending order, nulls last
   """
   DESC_NULLS_LAST
+}
+
+type ParsedUsersTypeType {
+  users: [UserType!]!
+  usosId: Int!
 }
 
 type PartialBonusType {
@@ -13548,6 +13558,18 @@ input UsersIncInput {
   userId: bigint
 }
 
+input UsersInputTypeType {
+  createFirebaseUser: Boolean!
+  email: String!
+  firstName: String!
+  indexNumber: Int!
+  label: String!
+  nick: String!
+  role: String!
+  secondName: String!
+  sendEmail: Boolean!
+}
+
 """
 input type for inserting data into table "users"
 """
@@ -14684,6 +14706,17 @@ type mutation_root {
     usosId: Int!
     weekdayId: Int!
   ): GroupType
+  addGroupWithUsers(
+    editionId: Int!
+    endTime: String!
+    groupName: String = ""
+    label: String = ""
+    startTime: String!
+    teacherId: Int!
+    users: [UsersInputTypeType!]!
+    usosId: Int!
+    weekdayId: Int!
+  ): GroupType
   addLevel(
     editionId: Int!
     grade: Float!
@@ -14699,6 +14732,14 @@ type mutation_root {
     value: Float!
   ): PointType
   addSubcategory(subcategory: SubcategoryInputType!): SubcategoryType
+  addTeacher(
+    createFirebaseUser: Boolean = false
+    email: String!
+    firstName: String!
+    label: String = ""
+    secondName: String!
+    sendEmail: Boolean = false
+  ): UserType
   addUser(
     createFirebaseUser: Boolean = false
     email: String = ""
@@ -14711,7 +14752,6 @@ type mutation_root {
     sendEmail: Boolean = false
   ): UserType
   addUserToGroup(groupId: Int!, userId: Int!): UserGroupType
-  addUsersFromCsv(editionId: Int!, fileId: Int!): [UserType]
   assignPhotoToAward(awardId: Int!, fileId: Int): Boolean
   assignPhotoToChest(chestId: Int!, fileId: Int): Boolean
   assignPhotoToLevel(fileId: Int, levelId: Int!): Boolean
@@ -15756,6 +15796,7 @@ type mutation_root {
     """
     onConflict: WeekdaysOnConflict
   ): Weekdays
+  parseUsersFromCsv(editionId: Int!, fileId: Int!): ParsedUsersTypeType!
   removeAwardFromChest(awardId: Int!, chestId: Int!): Boolean
   removeAwardFromEdition(awardId: Int!, editionId: Int!): Boolean
   removeCategory(categoryId: Int!): Boolean
@@ -18131,6 +18172,10 @@ type query_root {
   fetch data from the table: "users" using primary key columns
   """
   usersByPk(userId: bigint!): Users
+  validateUsersToBeAdded(
+    editionId: Int!
+    userIndexes: [Int!]!
+  ): [NotValidUserType!]!
 
   """
   fetch data from the table: "weekdays"

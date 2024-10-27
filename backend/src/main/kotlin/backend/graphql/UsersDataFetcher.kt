@@ -115,6 +115,15 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
     @DgsMutation
     @Transactional
+    fun addTeacher(@InputArgument firstName: String, @InputArgument secondName: String,
+                @InputArgument email: String = "",
+                @InputArgument label: String = "", @InputArgument createFirebaseUser: Boolean = false,
+                @InputArgument sendEmail: Boolean = false): Users {
+        return addUserHelper(-1, "", firstName, secondName, "teacher", email, label, createFirebaseUser, sendEmail)
+    }
+
+    @DgsMutation
+    @Transactional
     fun parseUsersFromCsv(@InputArgument fileId: Long, @InputArgument editionId: Long): ParsedUsersType {
         val currentUser = userMapper.getCurrentUser()
 
@@ -446,6 +455,33 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
             throw IllegalArgumentException("Only a coordinator or a teacher can add a user")
         }
 
+        val indexNumberToSet = if (indexNumber == -1) {
+            if (currentUser.role != UsersRoles.COORDINATOR) {
+                throw IllegalArgumentException("Only a coordinator can add a teacher")
+            }
+            if (UsersRoles.valueOf(role.uppercase()) != UsersRoles.TEACHER) {
+                throw IllegalArgumentException("Only a teacher can be added with this mutation")
+            }
+            if (email.isEmpty()) {
+                throw IllegalArgumentException("Email is required for a teacher")
+            }
+            getNegativeUniqueIndexNumber()
+        } else {
+            indexNumber
+        }
+
+        val nickToBeSet = if (indexNumber == -1) {
+            if (nick.isNotBlank()){
+                throw IllegalArgumentException("Nick is not required for a teacher")
+            }
+            "$firstName.$secondName.$indexNumberToSet"
+        } else {
+            if (nick.isEmpty()) {
+                throw IllegalArgumentException("Nick is required")
+            }
+            nick
+        }
+
         // TODO: Find a better way to handle adding a first coordinator
         if (currentUser.userId == 0L ) {
             if (UsersRoles.valueOf(role.uppercase()) != UsersRoles.COORDINATOR) {
@@ -466,11 +502,11 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         }
 
 
-        if (usersRepository.existsByIndexNumber(indexNumber)) {
-            throw IllegalArgumentException("User with index number $indexNumber already exists")
+        if (usersRepository.existsByIndexNumber(indexNumberToSet)) {
+            throw IllegalArgumentException("User with index number $indexNumberToSet already exists")
         }
-        if (usersRepository.findByNick(nick) != null) {
-            throw IllegalArgumentException("User with nick $nick already exists")
+        if (usersRepository.findByNick(nickToBeSet) != null) {
+            throw IllegalArgumentException("User with nick $nickToBeSet already exists")
         }
         val userRole1 = try {
             UsersRoles.valueOf(role.uppercase())
@@ -479,7 +515,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         }
         var userEmail = email
         if (email.isEmpty()) {
-            userEmail = "$indexNumber@$emailDomain"
+            userEmail = "$indexNumberToSet@$emailDomain"
         } else if (!isValidEmail(userEmail)) {
             throw IllegalArgumentException("Invalid email")
         }
@@ -488,8 +524,8 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
             throw IllegalArgumentException("User with email $userEmail already exists")
         }
         val user = Users(
-            indexNumber = indexNumber,
-            nick = nick,
+            indexNumber = indexNumberToSet,
+            nick = nickToBeSet,
             firstName = firstName,
             secondName = secondName,
             role = userRole1,
@@ -510,6 +546,14 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
             user.firebaseUid = firebaseUid
         }
         return user
+    }
+
+    private fun getNegativeUniqueIndexNumber(): Int {
+        var indexNumber = (0..Int.MAX_VALUE).random()
+        while (usersRepository.existsByIndexNumber(indexNumber)) {
+            indexNumber = (0..Int.MAX_VALUE).random()
+        }
+        return indexNumber
     }
 }
 

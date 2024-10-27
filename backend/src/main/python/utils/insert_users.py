@@ -84,7 +84,7 @@ def insert_coordinator(hasura_url, headers, fake):
     nick = fake.user_name()
     first_name = fake.first_name()
     second_name = fake.last_name()
-    index_number = 100000
+    index_number = 0
     user_object = {
         "nick": nick,
         "role": "coordinator",

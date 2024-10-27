@@ -33,13 +33,13 @@ export type NeighboringLevelsQuery = {
       };
       imageFile?: {
         __typename?: "FileType";
-        createdAt: string;
-        updatedAt: string;
         fileId: string;
         fileName: string;
         fileType: string;
         label: string;
         pathToFile: string;
+        createdAt: string;
+        updatedAt: string;
       } | null;
     };
     nextLevel?: {
@@ -63,13 +63,13 @@ export type NeighboringLevelsQuery = {
       };
       imageFile?: {
         __typename?: "FileType";
-        createdAt: string;
-        updatedAt: string;
         fileId: string;
         fileName: string;
         fileType: string;
         label: string;
         pathToFile: string;
+        createdAt: string;
+        updatedAt: string;
       } | null;
     } | null;
     prevLevel?: {
@@ -93,13 +93,13 @@ export type NeighboringLevelsQuery = {
       };
       imageFile?: {
         __typename?: "FileType";
-        createdAt: string;
-        updatedAt: string;
         fileId: string;
         fileName: string;
         fileType: string;
         label: string;
         pathToFile: string;
+        createdAt: string;
+        updatedAt: string;
       } | null;
     } | null;
   };
@@ -126,13 +126,13 @@ export const NeighboringLevelsDocument = gql`
           startDate
         }
         imageFile {
-          createdAt
-          updatedAt
           fileId
           fileName
           fileType
           label
           pathToFile
+          createdAt
+          updatedAt
         }
       }
       nextLevel {
@@ -153,13 +153,13 @@ export const NeighboringLevelsDocument = gql`
           startDate
         }
         imageFile {
-          createdAt
-          updatedAt
           fileId
           fileName
           fileType
           label
           pathToFile
+          createdAt
+          updatedAt
         }
       }
       prevLevel {
@@ -180,13 +180,13 @@ export const NeighboringLevelsDocument = gql`
           startDate
         }
         imageFile {
-          createdAt
-          updatedAt
           fileId
           fileName
           fileType
           label
           pathToFile
+          createdAt
+          updatedAt
         }
       }
     }

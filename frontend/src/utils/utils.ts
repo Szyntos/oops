@@ -1,5 +1,5 @@
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
-import { Edition } from "../contexts/userEditionsContext";
+import { Edition } from "../hooks/common/useGroupsData";
 
 type User = {
   role: string;

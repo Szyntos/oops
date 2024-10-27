@@ -1,0 +1,12 @@
+query SetupUsers {
+  users {
+    firstName
+    imageFileId
+    fullName
+    indexNumber
+    nick
+    role
+    secondName
+    userId
+  }
+}

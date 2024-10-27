@@ -9,6 +9,7 @@ import { GroupsSection } from "../../components/Edition/Sections/GroupSection/Gr
 import { LevelsSection } from "../../components/Edition/Sections/LevelsSection/LevelsSection";
 import { FilesSection } from "../../components/Edition/Sections/FilesSection/FilesSection";
 import { ChestsSection } from "../../components/Edition/Sections/ChestsSection/ChestsSection";
+import { UsersSection } from "../../components/Edition/Sections/UsersSection/UsersSection";
 
 export type SectionTitle =
   | "awards"
@@ -16,13 +17,15 @@ export type SectionTitle =
   | "chests"
   | "group"
   | "levels"
-  | "files";
+  | "files"
+  | "users";
 
 const sectionTitles: SectionTitle[] = [
   "awards",
   "categories",
   "chests",
   "group",
+  "users",
   "levels",
   "files",
 ];
@@ -49,6 +52,8 @@ export const EditionScreen = () => {
         return <ChestsSection editionId={editionId} />;
       case "group":
         return <GroupsSection editionId={editionId} />;
+      case "users":
+        return <UsersSection editionId={editionId} />;
       case "levels":
         return <LevelsSection editionId={editionId} />;
       case "files":

@@ -1,0 +1,15 @@
+query SetupAwards {
+  award {
+    awardEditions {
+      editionId
+    }
+    awardId
+    awardName
+    awardType
+    awardValue
+    description
+    imageFileId
+    label
+    maxUsages
+  }
+}

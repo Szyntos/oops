@@ -1,0 +1,32 @@
+mutation SetupAwardCreate(
+  $awardName: String!
+  $awardType: String!
+  $awardValue: Float!
+  $categoryId: Int!
+  $description: String!
+  $maxUsages: Int!
+  $label: String!
+  $fileId: Int!
+) {
+  addAward(
+    awardName: $awardName
+    awardType: $awardType
+    awardValue: $awardValue
+    categoryId: $categoryId
+    description: $description
+    maxUsages: $maxUsages
+    label: $label
+    fileId: $fileId
+  ) {
+    awardId
+    awardName
+    awardType
+    awardValue
+    description
+    label
+    maxUsages
+    imageFile {
+      fileId
+    }
+  }
+}

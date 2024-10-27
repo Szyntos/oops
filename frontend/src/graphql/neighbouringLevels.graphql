@@ -23,6 +23,8 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
         fileType
         label
         pathToFile
+        createdAt
+        updatedAt
       }
     }
     nextLevel {
@@ -48,6 +50,8 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
         fileType
         label
         pathToFile
+        createdAt
+        updatedAt
       }
     }
     prevLevel {
@@ -73,6 +77,8 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
         fileType
         label
         pathToFile
+        createdAt
+        updatedAt
       }
     }
   }

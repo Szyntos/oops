@@ -10,6 +10,7 @@ import { defaultUnauthenticatedUser } from "../utils/types";
 import Cookies from "js-cookie";
 import { Edition } from "../hooks/common/useGroupsData";
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
+import { isEditionActive } from "../utils/utils";
 
 export type User = {
   nick: string;
@@ -49,8 +50,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setEditions(user.editions);
       if (user.editions.length > 0) {
-        // TODO change to active edition
-        setSelectedEdition(user.editions[0]);
+        const activeEdtion = user.editions.filter((e) => isEditionActive(e))[0];
+        setSelectedEdition(activeEdtion ? activeEdtion : user.editions[0]);
+      } else {
+        setSelectedEdition(undefined);
       }
     }
   }, [user, selectedEdition]);

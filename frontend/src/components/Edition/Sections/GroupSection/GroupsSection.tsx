@@ -4,16 +4,16 @@ import { GroupsList } from "./GroupsList/GroupsList";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddGroupForm } from "./GroupAddForm";
 import { useGroupsSection } from "../../../../hooks/Edition/useGroupsSection";
-
-type GroupsSectionProps = {
-  editionId: number;
-};
+import { useParams } from "react-router-dom";
 
 export type Group = NonNullable<
   SetupGroupsQuery["editionByPk"]
 >["groups"][number];
 
-export const GroupsSection = ({ editionId }: GroupsSectionProps) => {
+export const GroupsSection = () => {
+  const params = useParams();
+  const editionId = params.id ? parseInt(params.id) : -1;
+
   const {
     groups,
     weekdays,

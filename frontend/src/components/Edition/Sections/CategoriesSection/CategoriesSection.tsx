@@ -4,12 +4,12 @@ import { AddCategoryForm } from "./AddCategoryForm/AddCategoryForm";
 import { CategoriesList } from "./CategoriesList/CategoriesList";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useCategoriesSection } from "../../../../hooks/Edition/categories/useCategoriesSection";
+import { useParams } from "react-router-dom";
 
-type CategoriesSectionProps = {
-  editionId: number;
-};
+export const CategoriesSection = () => {
+  const params = useParams();
+  const editionId = params.id ? parseInt(params.id) : -1;
 
-export const CategoriesSection = ({ editionId }: CategoriesSectionProps) => {
   const {
     categories,
     selectedCategories,

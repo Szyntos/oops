@@ -3,6 +3,7 @@ package backend.graphql
 import backend.award.AwardRepository
 import backend.awardEdition.AwardEdition
 import backend.awardEdition.AwardEditionRepository
+import backend.bonuses.BonusesRepository
 import backend.edition.EditionRepository
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
@@ -34,6 +35,9 @@ class AwardEditionDataFetcher {
 
     @Autowired
     lateinit var awardRepository: AwardRepository
+
+    @Autowired
+    lateinit var bonusesRepository: BonusesRepository
 
     @DgsMutation
     @Transactional
@@ -85,8 +89,8 @@ class AwardEditionDataFetcher {
             throw IllegalArgumentException("Edition has already ended")
         }
 
-        if (edition.startDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already started")
+        if (bonusesRepository.existsByAwardAndPoints_Subcategory_Edition(award, edition)){
+            throw IllegalArgumentException("Award has already been assigned to students in this edition")
         }
 
         awardEditionRepository.deleteByAwardAndEdition(award, edition)

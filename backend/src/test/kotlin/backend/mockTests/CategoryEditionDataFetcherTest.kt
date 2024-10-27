@@ -7,7 +7,12 @@ import backend.categoryEdition.CategoryEditionRepository
 import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.graphql.CategoryEditionDataFetcher
+import backend.subcategories.SubcategoriesRepository
+import backend.users.Users
+import backend.users.UsersRoles
+import backend.utils.UserMapper
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
@@ -25,12 +30,25 @@ class CategoryEditionDataFetcherTest {
     private val categoryEditionRepository: CategoryEditionRepository = mockk()
     private val editionRepository: EditionRepository = mockk()
     private val categoriesRepository: CategoriesRepository = mockk()
+    private val subcategoriesRepository: SubcategoriesRepository = mockk()
 
     private val categoryId = 1L
     private val editionId = 1L
 
     private lateinit var category: Categories
     private lateinit var edition: Edition
+    @MockK
+    private val userMapper: UserMapper = mockk()
+    private val coordinator = Users(
+        userId = 2L,
+        indexNumber = 2,
+        nick = "coordinator",
+        firstName = "Test",
+        secondName = "Coordinator",
+        role = UsersRoles.COORDINATOR,
+        email = "coordinator@test.com",
+        label = "Coordinator Label"
+    )
 
     @BeforeEach
     fun setUp() {
@@ -38,7 +56,11 @@ class CategoryEditionDataFetcherTest {
             this.categoryEditionRepository = this@CategoryEditionDataFetcherTest.categoryEditionRepository
             this.editionRepository = this@CategoryEditionDataFetcherTest.editionRepository
             this.categoriesRepository = this@CategoryEditionDataFetcherTest.categoriesRepository
+            this.subcategoriesRepository = this@CategoryEditionDataFetcherTest.subcategoriesRepository
+            this.userMapper = this@CategoryEditionDataFetcherTest.userMapper
         }
+
+        every {userMapper.getCurrentUser()} returns coordinator
 
         category = Categories(
             categoryName = "Test Category",
@@ -70,6 +92,7 @@ class CategoryEditionDataFetcherTest {
         every { editionRepository.findById(editionId) } returns Optional.of(edition)
         every { categoryEditionRepository.existsByCategory_CategoryNameAndEdition(category.categoryName, edition) } returns false
         every { categoryEditionRepository.save(any()) } returns categoryEdition
+        every {subcategoriesRepository.findByCategory(any())} returns emptyList()
 
         val result = categoryEditionDataFetcher.addCategoryToEdition(categoryId, editionId)
 

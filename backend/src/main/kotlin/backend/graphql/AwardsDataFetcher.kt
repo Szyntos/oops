@@ -24,10 +24,10 @@ import java.math.RoundingMode
 class AwardsDataFetcher {
 
     @Autowired
-    private lateinit var userMapper: UserMapper
+    lateinit var userMapper: UserMapper
 
     @Autowired
-    private lateinit var bonusesRepository: BonusesRepository
+    lateinit var bonusesRepository: BonusesRepository
 
     @Autowired
     lateinit var usersRepository: UsersRepository

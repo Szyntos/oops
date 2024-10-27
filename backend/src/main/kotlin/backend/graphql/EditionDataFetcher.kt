@@ -22,7 +22,7 @@ import java.time.LocalDate
 @DgsComponent
 class EditionDataFetcher {
     @Autowired
-    private lateinit var userMapper: UserMapper
+    lateinit var userMapper: UserMapper
 
     @Autowired
     lateinit var bonusesRepository: BonusesRepository

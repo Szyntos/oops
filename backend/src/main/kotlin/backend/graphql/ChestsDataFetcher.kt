@@ -25,7 +25,7 @@ import java.time.LocalDate
 @DgsComponent
 class ChestsDataFetcher {
     @Autowired
-    private lateinit var userMapper: UserMapper
+    lateinit var userMapper: UserMapper
 
     @Autowired
     private lateinit var chestAwardRepository: ChestAwardRepository

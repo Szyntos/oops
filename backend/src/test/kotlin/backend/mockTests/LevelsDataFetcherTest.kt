@@ -10,13 +10,17 @@ import backend.userGroups.UserGroups
 import backend.userLevel.UserLevel
 import backend.users.Users
 import backend.users.UsersRepository
+import backend.users.UsersRoles
+import backend.utils.UserMapper
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
 
@@ -37,6 +41,19 @@ class LevelsDataFetcherTest {
     private val maximumPoints = 100.0
     private val grade = 5.0
 
+    @MockK
+    private val userMapper: UserMapper = mockk()
+    private val coordinator = Users(
+        userId = 2L,
+        indexNumber = 2,
+        nick = "coordinator",
+        firstName = "Test",
+        secondName = "Coordinator",
+        role = UsersRoles.COORDINATOR,
+        email = "coordinator@test.com",
+        label = "Coordinator Label"
+    )
+
     @BeforeEach
     fun setUp() {
         levelsDataFetcher = LevelsDataFetcher().apply {
@@ -45,7 +62,9 @@ class LevelsDataFetcherTest {
             this.fileEntityRepository = this@LevelsDataFetcherTest.fileEntityRepository
             this.usersRepository = this@LevelsDataFetcherTest.usersRepository
             this.photoAssigner = this@LevelsDataFetcherTest.photoAssigner
+            this.userMapper = this@LevelsDataFetcherTest.userMapper
         }
+        every {userMapper.getCurrentUser()} returns coordinator
     }
 
     @Test
@@ -62,8 +81,8 @@ class LevelsDataFetcherTest {
 
         assertNotNull(result)
         assertEquals(name, result.levelName)
-        assertEquals(maximumPoints, result.maximumPoints)
-        assertEquals(grade, result.grade)
+        assertEquals(BigDecimal(maximumPoints).setScale(2), result.maximumPoints)
+        assertEquals(BigDecimal(grade).setScale(2), result.grade)
 
         verify { levelsRepository.save(any()) }
     }

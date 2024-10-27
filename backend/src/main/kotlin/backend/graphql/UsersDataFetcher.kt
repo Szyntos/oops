@@ -41,19 +41,19 @@ import kotlin.math.min
 class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
     @Autowired
-    private lateinit var userLevelRepository: UserLevelRepository
+    lateinit var userLevelRepository: UserLevelRepository
 
     @Autowired
-    private lateinit var groupsRepository: GroupsRepository
+    lateinit var groupsRepository: GroupsRepository
 
     @Autowired
     private lateinit var subcategoriesRepository: SubcategoriesRepository
 
     @Autowired
-    private lateinit var editionRepository: EditionRepository
+    lateinit var editionRepository: EditionRepository
 
     @Autowired
-    private lateinit var bonusesRepository: BonusesRepository
+    lateinit var bonusesRepository: BonusesRepository
 
     @Autowired
     lateinit var usersRepository: UsersRepository

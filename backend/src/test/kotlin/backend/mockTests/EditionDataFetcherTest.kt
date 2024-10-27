@@ -11,8 +11,12 @@ import backend.graphql.PhotoAssigner
 import backend.groups.GroupsRepository
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
+import backend.users.Users
 import backend.users.UsersRepository
+import backend.users.UsersRoles
+import backend.utils.UserMapper
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
@@ -40,6 +44,19 @@ class EditionDataFetcherTest {
     private val editionYear = LocalDate.now().year + 1
     private val label = "Test Label"
 
+    @MockK
+    private val userMapper: UserMapper = mockk()
+    private val coordinator = Users(
+        userId = 2L,
+        indexNumber = 2,
+        nick = "coordinator",
+        firstName = "Test",
+        secondName = "Coordinator",
+        role = UsersRoles.COORDINATOR,
+        email = "coordinator@test.com",
+        label = "Coordinator Label"
+    )
+
     @BeforeEach
     fun setUp() {
         editionDataFetcher = EditionDataFetcher().apply {
@@ -53,7 +70,9 @@ class EditionDataFetcherTest {
             this.fileEntityRepository = this@EditionDataFetcherTest.fileEntityRepository
             this.awardRepository = this@EditionDataFetcherTest.awardRepository
             this.photoAssigner = this@EditionDataFetcherTest.photoAssigner
+            this.userMapper = this@EditionDataFetcherTest.userMapper
         }
+        every {userMapper.getCurrentUser()} returns coordinator
     }
 
     @Test

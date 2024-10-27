@@ -32,7 +32,7 @@ class Edition(
     val userLevels: Set<UserLevel> = HashSet(),
 
     @OneToMany(mappedBy = "edition", fetch = FetchType.LAZY)
-    val categoryEdition: Set<CategoryEdition> = HashSet(),
+    var categoryEdition: Set<CategoryEdition> = HashSet(),
 ) {
     constructor() : this(
         editionName = "",

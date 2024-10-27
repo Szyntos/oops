@@ -28,7 +28,7 @@ import kotlin.math.min
 class BonusDataFetcher {
 
     @Autowired
-    private lateinit var userMapper: UserMapper
+    lateinit var userMapper: UserMapper
 
     @Autowired
     lateinit var bonusRepository: BonusesRepository

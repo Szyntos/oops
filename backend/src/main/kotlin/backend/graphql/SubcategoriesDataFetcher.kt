@@ -20,7 +20,7 @@ import java.math.RoundingMode
 @DgsComponent
 class SubcategoriesDataFetcher {
     @Autowired
-    private lateinit var userMapper: UserMapper
+    lateinit var userMapper: UserMapper
 
     @Autowired
     lateinit var subcategoriesRepository: SubcategoriesRepository

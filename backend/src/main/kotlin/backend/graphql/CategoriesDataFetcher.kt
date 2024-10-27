@@ -16,7 +16,7 @@ import java.time.LocalDate
 @DgsComponent
 class CategoriesDataFetcher {
     @Autowired
-    private lateinit var userMapper: UserMapper
+    lateinit var userMapper: UserMapper
 
     @Autowired
     lateinit var categoriesRepository: CategoriesRepository

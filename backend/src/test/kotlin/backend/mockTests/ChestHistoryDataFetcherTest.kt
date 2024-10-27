@@ -19,8 +19,10 @@ import backend.users.UsersRepository
 import backend.users.UsersRoles
 import backend.userGroups.UserGroups
 import backend.userGroups.UserGroupId
+import backend.utils.UserMapper
 import backend.weekdays.Weekdays
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
@@ -57,6 +59,19 @@ class ChestHistoryDataFetcherTest {
     private lateinit var group: Groups
     private lateinit var weekday: Weekdays
 
+    @MockK
+    private val userMapper: UserMapper = mockk()
+    private val coordinator = Users(
+        userId = 2L,
+        indexNumber = 2,
+        nick = "coordinator",
+        firstName = "Test",
+        secondName = "Coordinator",
+        role = UsersRoles.COORDINATOR,
+        email = "coordinator@test.com",
+        label = "Coordinator Label"
+    )
+
     @BeforeEach
     fun setUp() {
         chestHistoryDataFetcher = ChestHistoryDataFetcher().apply {
@@ -69,7 +84,9 @@ class ChestHistoryDataFetcherTest {
             this.editionRepository = this@ChestHistoryDataFetcherTest.editionRepository
             this.chestsRepository = this@ChestHistoryDataFetcherTest.chestsRepository
             this.chestHistoryRepository = this@ChestHistoryDataFetcherTest.chestHistoryRepository
+            this.userMapper = this@ChestHistoryDataFetcherTest.userMapper
         }
+        every {userMapper.getCurrentUser()} returns coordinator
 
         // Initialize objects
         edition = Edition(

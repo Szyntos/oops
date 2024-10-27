@@ -9,7 +9,11 @@ import backend.edition.EditionRepository
 import backend.graphql.AwardEditionDataFetcher
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
+import backend.users.Users
+import backend.users.UsersRoles
+import backend.utils.UserMapper
 import io.mockk.*
+import io.mockk.impl.annotations.MockK
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,6 +26,8 @@ import java.util.*
 @SpringJUnitConfig
 class AwardEditionDataFetcherTest {
 
+    @MockK
+    private val userMapper: UserMapper = mockk()
     private lateinit var awardEditionDataFetcher: AwardEditionDataFetcher
     private val awardEditionRepository: AwardEditionRepository = mockk()
     private val pointsRepository: PointsRepository = mockk()
@@ -45,6 +51,10 @@ class AwardEditionDataFetcherTest {
             this.subcategoriesRepository = this@AwardEditionDataFetcherTest.subcategoriesRepository
             this.editionRepository = this@AwardEditionDataFetcherTest.editionRepository
             this.awardRepository = this@AwardEditionDataFetcherTest.awardRepository
+            this.userMapper = this@AwardEditionDataFetcherTest.userMapper
+        }
+        every { userMapper.getCurrentUser() } returns mockk<Users>().apply {
+            every { role } returns UsersRoles.COORDINATOR
         }
 
         // Initialize commonly used objects

@@ -28,7 +28,7 @@ class Categories(
     var darkColor: String,
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    val categoryEdition: Set<CategoryEdition> = HashSet(),
+    var categoryEdition: Set<CategoryEdition> = HashSet(),
 ) {
     constructor() : this(
         categoryName = "LABORATORY",

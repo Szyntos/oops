@@ -15,12 +15,17 @@ import backend.graphql.PhotoAssigner
 import backend.groups.GroupsRepository
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
+import backend.users.Users
 import backend.users.UsersRepository
+import backend.users.UsersRoles
+import backend.utils.UserMapper
 import io.mockk.*
+import io.mockk.impl.annotations.MockK
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -31,6 +36,9 @@ class AwardsDataFetcherTest {
 
     private lateinit var awardsDataFetcher: AwardsDataFetcher
 
+    @MockK
+    private val userMapper: UserMapper = mockk()
+
     private val bonusesRepository: BonusesRepository = mockk()
     private val usersRepository: UsersRepository = mockk()
     private val pointsRepository: PointsRepository = mockk()
@@ -39,7 +47,6 @@ class AwardsDataFetcherTest {
     private val groupsRepository: GroupsRepository = mockk()
     private val editionRepository: EditionRepository = mockk()
     private val awardRepository: AwardRepository = mockk()
-    private val awardEditionRepository: AwardEditionRepository = mockk()
     private val photoAssigner: PhotoAssigner = mockk()
 
     private val awardId = 1L
@@ -69,6 +76,11 @@ class AwardsDataFetcherTest {
             this.editionRepository = this@AwardsDataFetcherTest.editionRepository
             this.awardRepository = this@AwardsDataFetcherTest.awardRepository
             this.photoAssigner = this@AwardsDataFetcherTest.photoAssigner
+            this.userMapper = this@AwardsDataFetcherTest.userMapper // inject mock UserMapper
+        }
+
+        every { userMapper.getCurrentUser() } returns mockk<Users>().apply {
+            every { role } returns UsersRoles.COORDINATOR
         }
     }
 

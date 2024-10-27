@@ -36,7 +36,7 @@ import kotlin.math.min
 @DgsComponent
 class GroupsDataFetcher {
     @Autowired
-    private lateinit var userMapper: UserMapper
+    lateinit var userMapper: UserMapper
 
     @Autowired
     private lateinit var bonusesRepository: BonusesRepository

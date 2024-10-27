@@ -8,7 +8,7 @@ type GroupCardProps = {
 export const GroupCard = ({ group }: GroupCardProps) => {
   return (
     <div style={styles.card}>
-      <div>{group.groupName}</div>
+      <div>{group.generatedName}</div>
       <div>
         {group.userGroups.map((student, index) => (
           <div>

@@ -6,11 +6,7 @@ import { AddStudentForm } from "./StudentAddForm";
 import { UsersList } from "./UsersList/UsersList";
 import { AddTeacherForm } from "./TeacherAddForm";
 
-type UsersSectionProps = {
-  editionId: number;
-};
-
-export const UsersSection = ({ editionId }: UsersSectionProps) => {
+export const UsersSection = () => {
   const {
     teachers,
     students,
@@ -26,9 +22,6 @@ export const UsersSection = ({ editionId }: UsersSectionProps) => {
     handleAddTeacher,
     formError,
   } = useUsersSection();
-
-  // TODO to delete
-  console.log("editionId: ", editionId);
 
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;

@@ -27,6 +27,7 @@ export const GroupsSection = () => {
     formError,
     students,
     handleUploadStudents,
+    variant,
   } = useGroupsSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -35,7 +36,8 @@ export const GroupsSection = () => {
   return (
     <div>
       <div>
-        <button onClick={openAddDialog}>add group</button>
+        <button onClick={() => openAddDialog("select")}>add group</button>
+        <button onClick={() => openAddDialog("import")}>import group</button>
       </div>
       <GroupsList groups={groups} title="groups" />
 
@@ -49,6 +51,7 @@ export const GroupsSection = () => {
           students={students}
           handleUploadStudents={handleUploadStudents}
           editionId={editionId}
+          variant={variant}
         />
       </Dialog>
     </div>

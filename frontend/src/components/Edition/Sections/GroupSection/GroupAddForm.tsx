@@ -32,10 +32,12 @@ type AddGroupFormProps = {
   weekdays: Weekday[];
   teachers: Teacher[];
   students: Student[];
-  varinat?: "select" | "import";
+  variant?: AddGroupVariant;
   handleUploadStudents: (editionId: number, formData: FormData) => void;
   editionId: number;
 };
+
+export type AddGroupVariant = "select" | "import";
 
 export const AddGroupForm = ({
   handleAddGroup,
@@ -43,7 +45,7 @@ export const AddGroupForm = ({
   weekdays,
   teachers,
   students,
-  varinat: variant = "import",
+  variant: variant = "import",
   handleUploadStudents,
   editionId,
 }: AddGroupFormProps) => {
@@ -101,7 +103,7 @@ export const AddGroupForm = ({
       formData.append("file", files[0]);
       setImportedFile(files[0].name);
       formData.append("fileType", "text/csv");
-      // I can't fix it other way
+      // I don't know how to fix it other way
       const uploadedStudents: Student[] = (await handleUploadStudents(
         editionId,
         formData,

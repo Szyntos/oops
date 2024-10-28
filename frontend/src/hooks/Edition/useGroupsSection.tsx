@@ -4,7 +4,10 @@ import {
   useSetupGroupsQuery,
 } from "../../graphql/setupGroups.graphql.types";
 import { useWeekdayData } from "../Groups/FilterBar/useWeekdaysData";
-import { GroupFormValues } from "../../components/Edition/Sections/GroupSection/GroupAddForm";
+import {
+  AddGroupVariant,
+  GroupFormValues,
+} from "../../components/Edition/Sections/GroupSection/GroupAddForm";
 import { useSetupGroupCreateMutation } from "../../graphql/setupGroupCreate.graphql.types";
 import {
   SetupUsersQuery,
@@ -24,8 +27,9 @@ export const useGroupsSection = (editionId: number) => {
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const openAddDialog = () => {
+  const openAddDialog = (v: AddGroupVariant) => {
     setIsAddDialogOpen(true);
+    setVariant(v);
   };
   const closeAddDialog = () => {
     setFormError(undefined);
@@ -148,6 +152,8 @@ export const useGroupsSection = (editionId: number) => {
     }
   };
 
+  const [variant, setVariant] = useState<"import" | "select">("import");
+
   return {
     groups,
     weekdays,
@@ -161,5 +167,6 @@ export const useGroupsSection = (editionId: number) => {
     closeAddDialog,
     formError,
     handleUploadStudents,
+    variant,
   };
 };

@@ -18,6 +18,7 @@ export type SetupGroupsQuery = {
       groupsId: string;
       startTime: string;
       endTime: string;
+      usosId: number;
       weekday: {
         __typename?: "Weekdays";
         weekdayId: string;
@@ -72,6 +73,7 @@ export const SetupGroupsDocument = gql`
         file {
           fileId
         }
+        usosId
         userGroups(where: { user: { role: { _eq: "student" } } }) {
           user {
             firstName

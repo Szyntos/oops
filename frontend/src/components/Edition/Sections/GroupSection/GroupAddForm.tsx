@@ -33,8 +33,10 @@ type AddGroupFormProps = {
   teachers: Teacher[];
   students: Student[];
   variant?: AddGroupVariant;
-  handleUploadStudents: (editionId: number, formData: FormData) => void;
+  handleUploadStudents?: (editionId: number, formData: FormData) => void;
   editionId: number;
+  initSelected?: Student[];
+  initValues?: GroupFormValues;
 };
 
 export type AddGroupVariant = "select" | "import";
@@ -48,14 +50,22 @@ export const AddGroupForm = ({
   variant: variant = "import",
   handleUploadStudents,
   editionId,
+  initSelected = [],
+  initValues = {
+    startTime: "",
+    endTime: "",
+    weekdayId: "",
+    teacherId: "",
+    usosId: 0,
+  },
 }: AddGroupFormProps) => {
   const formik = useFormik({
     initialValues: {
-      startTime: "",
-      endTime: "",
-      weekdayId: "",
-      teacherId: "",
-      usosId: 0,
+      startTime: initValues.startTime,
+      endTime: initValues.endTime,
+      weekdayId: initValues.weekdayId,
+      teacherId: initValues.teacherId,
+      usosId: initValues.usosId,
     },
     validate: (values: GroupFormValues) => {
       try {
@@ -72,7 +82,8 @@ export const AddGroupForm = ({
   });
 
   // SELECT VARIANT ----------------------------------------------------
-  const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
+  const [selectedStudents, setSelectedStudents] =
+    useState<Student[]>(initSelected);
 
   const studentsToSelect = students.filter((s) => {
     const isSelected =
@@ -104,7 +115,7 @@ export const AddGroupForm = ({
       setImportedFile(files[0].name);
       formData.append("fileType", "text/csv");
       // I don't know how to fix it other way
-      const uploadedStudents: Student[] = (await handleUploadStudents(
+      const uploadedStudents: Student[] = (await handleUploadStudents?.(
         editionId,
         formData,
       )) as unknown as Student[];

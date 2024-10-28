@@ -154,6 +154,38 @@ export const useGroupsSection = (editionId: number) => {
 
   const [variant, setVariant] = useState<"import" | "select">("import");
 
+  const [selectedGroup, setSelectedGroup] = useState<Group | undefined>(
+    undefined,
+  );
+
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const openEditDialog = (group: Group) => {
+    setSelectedGroup(group);
+    setIsEditOpen(true);
+  };
+  const closeEditDialog = () => {
+    setSelectedGroup(undefined);
+    setIsEditOpen(false);
+  };
+
+  const handleUpdateConfirmation = (
+    values: GroupFormValues,
+    selectedStudents: Student[],
+  ) => {
+    console.log(values);
+    console.log(selectedStudents);
+    // TODO add update group
+  };
+
+  const handleStudentGroupChange = (
+    userId: string,
+    groupId: string | undefined,
+  ) => {
+    console.log(userId);
+    console.log(groupId);
+    // TODO change user group
+  };
+
   return {
     groups,
     weekdays,
@@ -168,5 +200,11 @@ export const useGroupsSection = (editionId: number) => {
     formError,
     handleUploadStudents,
     variant,
+    isEditOpen,
+    openEditDialog,
+    closeEditDialog,
+    handleUpdateConfirmation,
+    handleStudentGroupChange,
+    selectedGroup,
   };
 };

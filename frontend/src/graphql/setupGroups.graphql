@@ -19,6 +19,7 @@ query SetupGroups($editionId: bigint!) {
       file {
         fileId
       }
+      usosId
       userGroups(where: { user: { role: { _eq: "student" } } }) {
         user {
           firstName

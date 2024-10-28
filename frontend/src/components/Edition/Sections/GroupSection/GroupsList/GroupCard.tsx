@@ -3,9 +3,10 @@ import { Group } from "../GroupsSection";
 
 type GroupCardProps = {
   group: Group;
+  editClick: () => void;
 };
 
-export const GroupCard = ({ group }: GroupCardProps) => {
+export const GroupCard = ({ group, editClick }: GroupCardProps) => {
   return (
     <div style={styles.card}>
       <div>{group.generatedName}</div>
@@ -16,6 +17,7 @@ export const GroupCard = ({ group }: GroupCardProps) => {
           </div>
         ))}
       </div>
+      <button onClick={editClick}>edit</button>
     </div>
   );
 };

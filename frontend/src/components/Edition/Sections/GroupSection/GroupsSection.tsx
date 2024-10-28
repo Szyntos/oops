@@ -26,6 +26,7 @@ export const GroupsSection = () => {
     closeAddDialog,
     formError,
     students,
+    handleUploadStudents,
   } = useGroupsSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -46,6 +47,8 @@ export const GroupsSection = () => {
           weekdays={weekdays}
           teachers={teachers}
           students={students}
+          handleUploadStudents={handleUploadStudents}
+          editionId={editionId}
         />
       </Dialog>
     </div>

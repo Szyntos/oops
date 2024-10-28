@@ -1,0 +1,15 @@
+mutation SetupGroupCSVParse($editionId: Int!, $fileId: Int!) {
+  parseUsersFromCsv(editionId: $editionId, fileId: $fileId) {
+    users {
+      email
+      firebaseUid
+      firstName
+      indexNumber
+      label
+      nick
+      role
+      secondName
+      userId
+    }
+  }
+}

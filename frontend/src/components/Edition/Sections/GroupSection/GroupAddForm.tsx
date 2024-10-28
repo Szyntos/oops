@@ -9,9 +9,9 @@ import {
 } from "@mui/material";
 import { Styles } from "../../../../utils/Styles";
 import { Weekday } from "../../../../hooks/common/useGroupsData";
-import { Student, Teacher } from "../../../../hooks/Edition/useGroupsSection"; // Remove Teacher import
+import { Student, Teacher } from "../../../../hooks/Edition/useGroupsSection";
 import { StudentSelection } from "./StudentSelection/StudentSelection";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export type GroupFormValues = z.infer<typeof ValidationSchema>;
 
@@ -32,6 +32,9 @@ type AddGroupFormProps = {
   weekdays: Weekday[];
   teachers: Teacher[];
   students: Student[];
+  varinat?: "select" | "import";
+  handleUploadStudents: (editionId: number, formData: FormData) => void;
+  editionId: number;
 };
 
 export const AddGroupForm = ({
@@ -40,6 +43,9 @@ export const AddGroupForm = ({
   weekdays,
   teachers,
   students,
+  varinat: variant = "import",
+  handleUploadStudents,
+  editionId,
 }: AddGroupFormProps) => {
   const formik = useFormik({
     initialValues: {
@@ -63,6 +69,7 @@ export const AddGroupForm = ({
     },
   });
 
+  // SELECT VARIANT ----------------------------------------------------
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
 
   const studentsToSelect = students.filter((s) => {
@@ -79,6 +86,35 @@ export const AddGroupForm = ({
     setSelectedStudents((prev) =>
       prev.filter((s) => s.userId !== student.userId),
     );
+  };
+
+  // IMPORT VARIANT ------------------------------------------------------
+
+  const [importedFile, setImportedFile] = useState("");
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const formData = new FormData();
+      formData.append("file", files[0]);
+      setImportedFile(files[0].name);
+      formData.append("fileType", "text/csv");
+      // I can't fix it other way
+      const uploadedStudents: Student[] = (await handleUploadStudents(
+        editionId,
+        formData,
+      )) as unknown as Student[];
+      setSelectedStudents(uploadedStudents);
+      event.target.value = "";
+    }
+  };
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -169,12 +205,33 @@ export const AddGroupForm = ({
             helperText={formik.touched.usosId && formik.errors.usosId}
           />
 
-          <StudentSelection
-            students={studentsToSelect}
-            selectedStudents={selectedStudents}
-            handleAdd={handleAdd}
-            handleDelete={handleDelete}
-          />
+          {variant === "select" ? (
+            <StudentSelection
+              students={studentsToSelect}
+              selectedStudents={selectedStudents}
+              handleAdd={handleAdd}
+              handleDelete={handleDelete}
+            />
+          ) : (
+            <div>
+              <button type="button" onClick={handleUploadClick}>
+                import students
+              </button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept=".csv,text/csv"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+              {importedFile && <div>imported file: {importedFile}</div>}
+              {selectedStudents.map((s, index) => (
+                <div>
+                  {index + 1}. {s.fullName}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <button type="submit">Add Group</button>

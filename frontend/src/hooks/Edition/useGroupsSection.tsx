@@ -11,6 +11,7 @@ import {
   useSetupUsersQuery,
 } from "../../graphql/setupUsers.graphql.types";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { useSetupGroupCsvParseMutation } from "../../graphql/setupGroupCSVParse.graphql.types";
 
 export type Group = NonNullable<
   SetupGroupsQuery["editionByPk"]
@@ -102,6 +103,51 @@ export const useGroupsSection = (editionId: number) => {
     }
   };
 
+  const [parseCSV] = useSetupGroupCsvParseMutation();
+
+  const handleUploadStudents = async (
+    editionId: number,
+    formData: FormData,
+  ): Promise<Student[]> => {
+    try {
+      // upload file
+      const res = await fetch("http://localhost:9090/files/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error(`Error: ${res.statusText}`);
+
+      const r = await res.json();
+      const fileId = r.fileId;
+
+      const parseRes = await parseCSV({
+        variables: { editionId, fileId },
+      });
+
+      const uploadedStudents: Student[] =
+        parseRes.data?.parseUsersFromCsv.users.map((u) => ({
+          __typename: "Users",
+          firstName: u.firstName,
+          imageFileId: "",
+          fullName: `${u.firstName} ${u.secondName}`,
+          indexNumber: u.indexNumber,
+          nick: u.nick,
+          role: u.role,
+          secondName: u.secondName,
+          userId: u.userId,
+        })) ?? [];
+
+      return uploadedStudents;
+    } catch (error) {
+      console.error("Failed to upload file", error);
+      setFormError(
+        error instanceof Error ? error.message : "Failed to upload file.",
+      );
+      return [];
+    }
+  };
+
   return {
     groups,
     weekdays,
@@ -114,5 +160,6 @@ export const useGroupsSection = (editionId: number) => {
     isAddDialogOpen,
     closeAddDialog,
     formError,
+    handleUploadStudents,
   };
 };

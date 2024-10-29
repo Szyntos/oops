@@ -60,7 +60,7 @@ export const UsersSection = () => {
       <Dialog open={isAddStudentOpen}>
         <CloseHeader onCloseClick={closeAddStudent} />
         <AddStudentForm
-          createError={formError}
+          formError={formError}
           handleConfirm={handleAddStudentConfirm}
           title={"Add student"}
         />
@@ -69,9 +69,9 @@ export const UsersSection = () => {
       <Dialog open={isEditStudentOpen}>
         <CloseHeader onCloseClick={closeEditStudent} />
         <AddStudentForm
-          createError={formError}
+          formError={formError}
           handleConfirm={handleEditStudentConfirm}
-          initialValues={selectedUser ? selectedUser : undefined}
+          initialValues={selectedUser}
           title={"Edit student"}
         />
       </Dialog>
@@ -79,9 +79,9 @@ export const UsersSection = () => {
       <Dialog open={isEditTeacherOpen}>
         <CloseHeader onCloseClick={closeEditTeacher} />
         <AddTeacherForm
-          createError={formError}
+          formError={formError}
           handleConfirm={handleEditTeacherConfirm}
-          initialValues={selectedUser ? selectedUser : undefined}
+          initialValues={selectedUser}
           title={"Add teacher"}
         />
       </Dialog>
@@ -89,7 +89,7 @@ export const UsersSection = () => {
       <Dialog open={isAddTeacherOpen}>
         <CloseHeader onCloseClick={closeAddTeacher} />
         <AddTeacherForm
-          createError={formError}
+          formError={formError}
           handleConfirm={handleAddTeacherConfirm}
           title={"Edit teacher"}
         />

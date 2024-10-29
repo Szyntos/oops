@@ -14,14 +14,14 @@ const ValidationSchema = z.object({
 
 type AddStudentFormProps = {
   handleConfirm: (values: StudentFormValues) => void;
-  createError?: string;
+  formError?: string;
   initialValues?: StudentFormValues;
   title: string;
 };
 
 export const AddStudentForm = ({
   handleConfirm,
-  createError,
+  formError,
   initialValues = {
     firstName: "",
     secondName: "",
@@ -119,7 +119,7 @@ export const AddStudentForm = ({
         <button type="submit">confirm</button>
       </form>
 
-      {createError && <p style={styles.error}>Error: {createError}</p>}
+      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
 };

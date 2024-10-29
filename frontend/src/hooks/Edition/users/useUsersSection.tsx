@@ -40,7 +40,7 @@ export const useUsersSection = () => {
 
   const [createStudent] = useSetupStudentCreateMutation();
   const handleAddStudentConfirm = async (values: StudentFormValues) => {
-    try {
+    errorWrapper(async () => {
       await createStudent({
         variables: {
           firstName: values.firstName,
@@ -51,12 +51,7 @@ export const useUsersSection = () => {
       });
       refetch();
       closeAddStudent();
-    } catch (error) {
-      console.error(error);
-      setFormError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+    });
   };
 
   const [isEditStudentOpen, setIsEditStudentOpen] = useState(false);
@@ -82,7 +77,7 @@ export const useUsersSection = () => {
 
   const [createTeacher] = useSetupTeacherCreateMutation();
   const handleAddTeacherConfirm = async (values: TeacherFormValues) => {
-    try {
+    errorWrapper(async () => {
       await createTeacher({
         variables: {
           firstName: values.firstName,
@@ -92,12 +87,7 @@ export const useUsersSection = () => {
       });
       refetch();
       closeAddTeacher();
-    } catch (error) {
-      console.error(error);
-      setFormError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+    });
   };
 
   const [isEditTeacherOpen, setIsEditTeacherOpen] = useState(false);
@@ -118,13 +108,13 @@ export const useUsersSection = () => {
       | { type: "student"; formValues: StudentFormValues }
       | { type: "teacher"; formValues: TeacherFormValues },
   ) => {
-    const variables = {
-      userId: parseInt(selectedUser?.userId as string),
-      firstName: props.formValues.firstName,
-      secondName: props.formValues.secondName,
-    };
+    errorWrapper(async () => {
+      const variables = {
+        userId: parseInt(selectedUser?.userId as string),
+        firstName: props.formValues.firstName,
+        secondName: props.formValues.secondName,
+      };
 
-    try {
       await editUser({
         variables:
           props.type == "teacher"
@@ -135,19 +125,10 @@ export const useUsersSection = () => {
                 indexNumber: props.formValues.indexNumber,
               },
       });
-      refetch();
 
-      if (props.type === "student") {
-        closeEditStudent();
-      } else {
-        closeEditTeacher();
-      }
-    } catch (error) {
-      console.error(error);
-      setFormError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+      refetch();
+      props.type === "student" ? closeEditStudent() : closeEditTeacher();
+    });
   };
 
   const [deleteUser] = useDeleteUserMutation();
@@ -160,6 +141,17 @@ export const useUsersSection = () => {
     } catch (error) {
       console.error(error);
       // TODO global error
+    }
+  };
+
+  const errorWrapper = (foo: () => void) => {
+    try {
+      foo();
+    } catch (error) {
+      console.error(error);
+      setFormError(
+        error instanceof Error ? error.message : "Unexpected error received.",
+      );
     }
   };
 

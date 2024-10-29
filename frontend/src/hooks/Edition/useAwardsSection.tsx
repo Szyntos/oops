@@ -11,6 +11,7 @@ import { AwardFormValues } from "../../components/Edition/Sections/AwardsSection
 import { useCategoriesSection } from "./categories/useCategoriesSection";
 import { useSetupAwardEditMutation } from "../../graphql/setupAwardEdit.graphql.types";
 import { useError } from "../common/useGlobalError";
+import { useFilesQuery } from "../../graphql/files.graphql.types";
 
 export type Award = SetupAwardsQuery["award"][number];
 
@@ -29,6 +30,17 @@ export const useAwardsSection = (editionId: number) => {
     error: awardsError,
     refetch,
   } = useSetupAwardsQuery();
+
+  const {
+    data: imageData,
+    loading: imageLoading,
+    error: imageError,
+  } = useFilesQuery({ variables: { paths: ["image/award"] } });
+
+  const imageIds: string[] =
+    imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>
+      i.files.map((f) => f.fileId),
+    ) ?? [];
 
   const awards: Award[] = data?.award ?? [];
 
@@ -61,7 +73,7 @@ export const useAwardsSection = (editionId: number) => {
         variables: {
           ...values,
           categoryId: parseInt(values.categoryId),
-          fileId: values.imageId,
+          fileId: parseInt(values.imageId ?? "-1"),
           label: "",
         },
       });
@@ -109,7 +121,7 @@ export const useAwardsSection = (editionId: number) => {
           ...values,
           awardId: parseInt(selectedAward?.awardId ?? "-1"),
           categoryId: parseInt(values.categoryId),
-          fileId: values.imageId,
+          fileId: parseInt(values.imageId ?? "-1"),
         },
       });
       refetch();
@@ -121,8 +133,9 @@ export const useAwardsSection = (editionId: number) => {
     awards,
     selectedAwards,
     formCategories: selectedCategories,
-    loading: awardsLoading || categoriesLoading,
-    error: awardsError || categoriesError,
+    imageIds,
+    loading: awardsLoading || categoriesLoading || imageLoading,
+    error: awardsError || categoriesError || imageError,
 
     handleSelectAward,
     formError,

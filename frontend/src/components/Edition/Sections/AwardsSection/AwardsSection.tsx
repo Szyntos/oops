@@ -15,6 +15,7 @@ export const AwardsSection = () => {
     awards,
     selectedAwards,
     formCategories,
+    imageIds,
     loading,
     error,
 
@@ -63,6 +64,7 @@ export const AwardsSection = () => {
           handleConfirm={handleAddAward}
           categories={formCategories}
           title="Add Award"
+          imageIds={imageIds}
         />
       </Dialog>
 
@@ -72,12 +74,13 @@ export const AwardsSection = () => {
           formError={formError}
           handleConfirm={handleEditAward}
           categories={formCategories}
+          imageIds={imageIds}
           initialValues={
             selectedAward
               ? {
                   ...selectedAward,
                   awardValue: parseInt(selectedAward.awardValue),
-                  imageId: parseInt(selectedAward.imageFileId ?? "-1"),
+                  imageId: selectedAward.imageFileId ?? "-1",
                 }
               : undefined
           }

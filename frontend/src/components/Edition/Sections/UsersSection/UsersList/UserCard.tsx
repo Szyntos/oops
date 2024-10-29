@@ -3,14 +3,22 @@ import { Styles } from "../../../../../utils/Styles";
 
 type GroupCardProps = {
   user: User;
+  handleEditClick: () => void;
+  handleDeleteClick: () => void;
 };
 
-export const UserCard = ({ user }: GroupCardProps) => {
+export const UserCard = ({
+  user,
+  handleDeleteClick,
+  handleEditClick,
+}: GroupCardProps) => {
   return (
     <div style={styles.card}>
       <div>
         [{user.userId}] {user?.fullName}
       </div>
+      <button onClick={handleEditClick}>edit</button>
+      <button onClick={handleDeleteClick}>delete</button>
     </div>
   );
 };

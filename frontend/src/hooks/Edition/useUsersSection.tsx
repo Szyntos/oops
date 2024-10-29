@@ -8,6 +8,7 @@ import { useSetupStudentCreateMutation } from "../../graphql/setupStudentCreate.
 import { StudentFormValues } from "../../components/Edition/Sections/UsersSection/StudentAddForm";
 import { useSetupTeacherCreateMutation } from "../../graphql/setupTeacherCreate.graphql.types";
 import { TeacherFormValues } from "../../components/Edition/Sections/UsersSection/TeacherAddForm";
+import { useSEtupUserEditMutation } from "../../graphql/setupUserEdit.graphql.types";
 
 export type User = SetupUsersQuery["users"][number];
 
@@ -85,6 +86,69 @@ export const useUsersSection = () => {
     }
   };
 
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
+  const [isEditTeacherOpen, setIsEditTeacherOpen] = useState(false);
+  const openEditTeacher = (user: User) => {
+    setSelectedUser(user);
+    setIsEditTeacherOpen(true);
+  };
+  const closeEditTeacher = () => {
+    setSelectedUser(undefined);
+    setIsEditTeacherOpen(false);
+    setFormError(undefined);
+  };
+
+  const [isEditStudentOpen, setIsEditStudentOpen] = useState(false);
+  const openEditStudent = (user: User) => {
+    setSelectedUser(user);
+    setIsEditStudentOpen(true);
+  };
+  const closeEditStudent = () => {
+    setSelectedUser(undefined);
+    setIsEditStudentOpen(false);
+    setFormError(undefined);
+  };
+
+  const [editUser] = useSEtupUserEditMutation();
+
+  const handleEditClick = async (
+    user: User,
+    data:
+      | { type: "student"; data: StudentFormValues }
+      | { type: "teacher"; data: TeacherFormValues },
+  ) => {
+    const variables = {
+      userId: parseInt(user.userId),
+      firstName: data.data.firstName,
+      secondName: data.data.secondName,
+    };
+
+    try {
+      await editUser({
+        variables:
+          data.type == "teacher"
+            ? variables
+            : {
+                ...variables,
+                nick: data.data.nick,
+                indexNumber: data.data.indexNumber,
+              },
+      });
+      refetch();
+
+      if (data.type === "student") {
+        closeEditStudent();
+      } else {
+        closeEditTeacher();
+      }
+    } catch (error) {
+      console.error(error);
+      setFormError(
+        error instanceof Error ? error.message : "Unexpected error received.",
+      );
+    }
+  };
+
   return {
     teachers,
     students,
@@ -99,5 +163,18 @@ export const useUsersSection = () => {
     openAddTeacher,
     closeAddTeacher,
     formError,
+    isEditStudentOpen,
+    closeEditStudent,
+    openEditStudent,
+    isEditTeacherOpen,
+    closeEditTeacher,
+    openEditTeacher,
+    handleEditStudentConfirm: (values: StudentFormValues) => {
+      handleEditClick(selectedUser as User, { type: "student", data: values });
+    },
+    handleEditTeacherConfirm: (values: TeacherFormValues) => {
+      handleEditClick(selectedUser as User, { type: "teacher", data: values });
+    },
+    selectedUser,
   };
 };

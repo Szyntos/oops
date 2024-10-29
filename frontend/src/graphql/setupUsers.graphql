@@ -1,5 +1,5 @@
 query SetupUsers {
-  users {
+  users(orderBy: { fullName: ASC }) {
     firstName
     imageFileId
     fullName
@@ -8,5 +8,6 @@ query SetupUsers {
     role
     secondName
     userId
+    email
   }
 }

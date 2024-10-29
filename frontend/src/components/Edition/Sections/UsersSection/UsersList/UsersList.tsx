@@ -5,15 +5,26 @@ import { UserCard } from "./UserCard";
 type UsersListProps = {
   users: User[];
   title: string;
+  handleDeleteClick: (user: User) => void;
+  handleEditClick: (user: User) => void;
 };
 
-export const UsersList = ({ users, title }: UsersListProps) => {
+export const UsersList = ({
+  users,
+  title,
+  handleDeleteClick,
+  handleEditClick,
+}: UsersListProps) => {
   return (
     <div style={styles.wrap}>
       <div style={styles.title}>{title}</div>
       <div style={styles.container}>
-        {users.map((u) => (
-          <UserCard user={u} />
+        {users.map((user) => (
+          <UserCard
+            user={user}
+            handleDeleteClick={() => handleDeleteClick(user)}
+            handleEditClick={() => handleEditClick(user)}
+          />
         ))}
       </div>
     </div>

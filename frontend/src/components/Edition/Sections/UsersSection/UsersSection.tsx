@@ -1,5 +1,8 @@
 import { Dialog } from "@mui/material";
-import { useUsersSection } from "../../../../hooks/Edition/useUsersSection";
+import {
+  User,
+  useUsersSection,
+} from "../../../../hooks/Edition/useUsersSection";
 import { Styles } from "../../../../utils/Styles";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddStudentForm } from "./StudentAddForm";
@@ -21,25 +24,47 @@ export const UsersSection = () => {
     openAddTeacher,
     handleAddTeacher,
     formError,
+    isEditStudentOpen,
+    openEditStudent,
+    closeEditStudent,
+    isEditTeacherOpen,
+    openEditTeacher,
+    closeEditTeacher,
+    handleEditStudentConfirm,
+    handleEditTeacherConfirm,
+    selectedUser,
   } = useUsersSection();
 
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
+  const handleDeleteClick = (u: User) => {
+    console.log("hejka ", u);
+  };
   return (
     <div>
       <div style={styles.buttonsContainer}>
         <button onClick={openAddStudent}>add student</button>
         <button onClick={openAddTeacher}>add teacher</button>
       </div>
-      <UsersList users={teachers} title="TEACHERS" />
-      <UsersList users={students} title="STUDENTS" />
+      <UsersList
+        users={teachers}
+        title="TEACHERS"
+        handleDeleteClick={handleDeleteClick}
+        handleEditClick={openEditTeacher}
+      />
+      <UsersList
+        users={students}
+        title="STUDENTS"
+        handleDeleteClick={handleDeleteClick}
+        handleEditClick={openEditStudent}
+      />
 
       <Dialog open={isAddStudentOpen}>
         <CloseHeader onCloseClick={closeAddStudent} />
         <AddStudentForm
           createError={formError}
-          handleAddStudent={handleAddStudent}
+          handleConfirm={handleAddStudent}
         />
       </Dialog>
 
@@ -47,7 +72,25 @@ export const UsersSection = () => {
         <CloseHeader onCloseClick={closeAddTeacher} />
         <AddTeacherForm
           createError={formError}
-          handleAddTeacher={handleAddTeacher}
+          handleConfirm={handleAddTeacher}
+        />
+      </Dialog>
+
+      <Dialog open={isEditStudentOpen}>
+        <CloseHeader onCloseClick={closeEditStudent} />
+        <AddStudentForm
+          createError={formError}
+          handleConfirm={handleEditStudentConfirm}
+          initialValues={selectedUser ? selectedUser : undefined}
+        />
+      </Dialog>
+
+      <Dialog open={isEditTeacherOpen}>
+        <CloseHeader onCloseClick={closeEditTeacher} />
+        <AddTeacherForm
+          createError={formError}
+          handleConfirm={handleEditTeacherConfirm}
+          initialValues={selectedUser ? selectedUser : undefined}
         />
       </Dialog>
     </div>

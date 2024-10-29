@@ -17,12 +17,13 @@ export type SetupUsersQuery = {
     role: string;
     secondName: string;
     userId: string;
+    email: string;
   }>;
 };
 
 export const SetupUsersDocument = gql`
   query SetupUsers {
-    users {
+    users(orderBy: { fullName: ASC }) {
       firstName
       imageFileId
       fullName
@@ -31,6 +32,7 @@ export const SetupUsersDocument = gql`
       role
       secondName
       userId
+      email
     }
   }
 `;

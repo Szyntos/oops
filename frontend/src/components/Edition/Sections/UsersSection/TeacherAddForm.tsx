@@ -12,20 +12,22 @@ const ValidationSchema = z.object({
 });
 
 type AddTeacherFormProps = {
-  handleAddTeacher: (values: TeacherFormValues) => void;
+  handleConfirm: (values: TeacherFormValues) => void;
   createError?: string;
+  initialValues?: TeacherFormValues;
 };
 
 export const AddTeacherForm = ({
-  handleAddTeacher,
+  handleConfirm,
   createError,
+  initialValues = {
+    firstName: "",
+    secondName: "",
+    email: "",
+  },
 }: AddTeacherFormProps) => {
   const formik = useFormik({
-    initialValues: {
-      firstName: "",
-      secondName: "",
-      email: "",
-    },
+    initialValues,
     validate: (values: TeacherFormValues) => {
       try {
         ValidationSchema.parse(values);
@@ -38,7 +40,7 @@ export const AddTeacherForm = ({
       // TODO create subuser validation
     },
     onSubmit: (values: TeacherFormValues) => {
-      handleAddTeacher(values);
+      handleConfirm(values);
     },
   });
 

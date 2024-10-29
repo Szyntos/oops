@@ -7,6 +7,7 @@ type CategoriesListProps = {
   categories: Category[];
   selectedCategories: Category[];
   handleSelectCategoryClick: (category: Category) => void;
+  handleEditCategoryClick: (category: Category) => void;
   title: string;
 };
 
@@ -14,6 +15,7 @@ export const CategoriesList = ({
   categories,
   selectedCategories,
   handleSelectCategoryClick,
+  handleEditCategoryClick,
   title,
 }: CategoriesListProps) => {
   return (
@@ -30,6 +32,7 @@ export const CategoriesList = ({
                   )
                 }
                 handleSelectClick={() => handleSelectCategoryClick(category)}
+                handleEditClick={() => handleEditCategoryClick(category)}
               />
             ))
           : EMPTY_FIELD_STRING}

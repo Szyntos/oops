@@ -10,6 +10,7 @@ import { CategoriesFormValues } from "../../../components/Edition/Sections/Categ
 import { FormSubcategory } from "../../../components/Edition/Sections/CategoriesSection/AddCategoryForm/SubcategoryRows";
 import { useSetupCategoryCreateMutation } from "../../../graphql/setupCategoryCreate.graphql.types";
 import { useError } from "../../common/useGlobalError";
+import { useSetupCategoryEditMutation } from "../../../graphql/setupCategoryEdit.graphql.types";
 
 export type Category = SetupCategoriesQuery["categories"][number];
 
@@ -78,16 +79,58 @@ export const useCategoriesSection = (editionId: number) => {
     });
   };
 
+  const [selectedCategory, setSelectedCategory] = useState<
+    Category | undefined
+  >(undefined);
+  const [iseEditCategory, setIsEditCategory] = useState(false);
+  const openEditCategory = (category: Category) => {
+    setSelectedCategory(category);
+    setIsEditCategory(true);
+  };
+  const closeEditCategory = () => {
+    setIsEditCategory(false);
+    setFormError(undefined);
+  };
+
+  const [editCategory] = useSetupCategoryEditMutation();
+  const handleEditCategory = (
+    values: CategoriesFormValues,
+    subcategories: FormSubcategory[],
+  ) => {
+    localErrorWrapper(setFormError, async () => {
+      await editCategory({
+        variables: {
+          categoryId: parseInt(selectedCategory?.categoryId ?? "-1"),
+          ...values,
+          subcategories: subcategories.map((row, index) => {
+            return {
+              label: "",
+              maxPoints: row.max.toString(),
+              ordinalNumber: index,
+              subcategoryName: row.name,
+            };
+          }),
+        },
+      });
+      refetch();
+    });
+  };
+
   return {
     categories,
     selectedCategories,
     loading,
     error,
     formError,
+    selectedCategory,
     isAddCategory,
     handleSelectCategory,
     openAddCategory,
     closeAddCategory,
     handleAddCategory,
+    iseEditCategory,
+    openEditCategory,
+    closeEditCategory,
+    handleEditCategory,
   };
 };

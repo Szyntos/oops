@@ -20,18 +20,22 @@ type AddCategoryFormProps = {
   ) => void;
   formError?: string;
   title: string;
+  initialValues?: CategoriesFormValues;
+  initialSelectedSubcategories?: FormSubcategory[];
 };
 
 export const AddCategoryForm = ({
   handleConfirm,
   formError,
   title,
+  initialValues = {
+    categoryName: "",
+    canAddPoints: false,
+  },
+  initialSelectedSubcategories = [],
 }: AddCategoryFormProps) => {
   const formik = useFormik({
-    initialValues: {
-      categoryName: "",
-      canAddPoints: false,
-    },
+    initialValues,
     validate: (values: CategoriesFormValues) => {
       try {
         ValidationSchema.parse(values);
@@ -48,7 +52,9 @@ export const AddCategoryForm = ({
     },
   });
 
-  const [subcategories, setSubcategories] = useState<FormSubcategory[]>([]);
+  const [subcategories, setSubcategories] = useState<FormSubcategory[]>(
+    initialSelectedSubcategories,
+  );
 
   const handleAdd = (subcategory: SubcategoriesFormValues) => {
     setSubcategories((prev) => [

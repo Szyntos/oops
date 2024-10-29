@@ -16,11 +16,16 @@ export const CategoriesSection = () => {
     loading,
     error,
     formError,
+    selectedCategory,
     isAddCategory,
     handleSelectCategory,
     openAddCategory,
     closeAddCategory,
     handleAddCategory,
+    iseEditCategory,
+    openEditCategory,
+    closeEditCategory,
+    handleEditCategory,
   } = useCategoriesSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -34,6 +39,7 @@ export const CategoriesSection = () => {
         categories={selectedCategories}
         selectedCategories={selectedCategories}
         handleSelectCategoryClick={handleSelectCategory}
+        handleEditCategoryClick={openEditCategory}
         title={"Selected categories"}
       />
       <CategoriesList
@@ -41,6 +47,7 @@ export const CategoriesSection = () => {
         selectedCategories={selectedCategories}
         handleSelectCategoryClick={handleSelectCategory}
         title={"All categories"}
+        handleEditCategoryClick={openEditCategory}
       />
 
       <Dialog open={isAddCategory}>
@@ -49,6 +56,22 @@ export const CategoriesSection = () => {
           formError={formError}
           handleConfirm={handleAddCategory}
           title={"Add Category"}
+        />
+      </Dialog>
+
+      <Dialog open={iseEditCategory}>
+        <CloseHeader onCloseClick={closeEditCategory} />
+        <AddCategoryForm
+          formError={formError}
+          handleConfirm={handleEditCategory}
+          title={"Edit Category"}
+          initialValues={selectedCategory}
+          initialSelectedSubcategories={
+            selectedCategory?.subcategories.map((s) => ({
+              name: s.subcategoryName,
+              max: parseInt(s.maxPoints),
+            })) ?? []
+          }
         />
       </Dialog>
     </div>

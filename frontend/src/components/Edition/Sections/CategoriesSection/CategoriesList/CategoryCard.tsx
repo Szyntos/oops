@@ -6,12 +6,14 @@ type CategoryCardProps = {
   category: Category;
   isSelected: boolean;
   handleSelectClick: () => void;
+  handleEditClick: () => void;
 };
 
 export const CategoryCard = ({
   category,
   isSelected,
   handleSelectClick,
+  handleEditClick,
 }: CategoryCardProps) => {
   const getSubcategoriesString = (category: Category) => {
     const subcategoryNames = category.subcategories.map(
@@ -34,9 +36,9 @@ export const CategoryCard = ({
       <SetupButtons
         selected={isSelected}
         handleSelect={handleSelectClick}
+        handleEdit={handleEditClick}
         disableCopy={true}
         disableDelete={true}
-        disableEdit={true}
       />
     </div>
   );

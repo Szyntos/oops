@@ -15,6 +15,7 @@ import {
 } from "../../graphql/setupUsers.graphql.types";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useSetupGroupCsvParseMutation } from "../../graphql/setupGroupCSVParse.graphql.types";
+import { useSetupGroupEditMutation } from "../../graphql/setupGroupEdit.graphql.types";
 
 export type Group = NonNullable<
   SetupGroupsQuery["editionByPk"]
@@ -168,13 +169,45 @@ export const useGroupsSection = (editionId: number) => {
     setIsEditOpen(false);
   };
 
-  const handleUpdateConfirmation = (
+  const [editGroup] = useSetupGroupEditMutation();
+
+  const handleUpdateConfirmation = async (
     values: GroupFormValues,
     selectedStudents: Student[],
   ) => {
-    console.log(values);
-    console.log(selectedStudents);
-    // TODO add update group
+    try {
+      await editGroup({
+        variables: {
+          groupId: parseInt(selectedGroup?.groupsId ?? "-1"),
+          startTime: values.startTime,
+          endTime: values.endTime,
+          teacherId: parseInt(values.teacherId),
+          usosId: values.usosId,
+          weekdayId: parseInt(values.weekdayId),
+          // users: selectedStudents.map((s) => {
+          //   return {
+          //     createFirebaseUser: false,
+          //     email: `${s.indexNumber}@student.agh.edu.pl`,
+          //     firstName: s.firstName,
+          //     indexNumber: s.indexNumber,
+          //     label: "",
+          //     nick: s.nick,
+          //     role: s.role,
+          //     secondName: s.secondName,
+          //     sendEmail: false,
+          //   };
+          // }),
+        },
+      });
+      console.log("SELECTED STUDENTS: ", selectedStudents);
+      refetch();
+      closeEditDialog();
+    } catch (error) {
+      console.error(error);
+      setFormError(
+        error instanceof Error ? error.message : "Unexpected error received.",
+      );
+    }
   };
 
   const handleStudentGroupChange = (

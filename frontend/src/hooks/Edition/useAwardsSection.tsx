@@ -16,12 +16,6 @@ export type Award = SetupAwardsQuery["award"][number];
 
 export const useAwardsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();
-  const {
-    data,
-    loading: awardsLoading,
-    error: awardsError,
-    refetch,
-  } = useSetupAwardsQuery();
 
   const {
     selectedCategories,
@@ -29,16 +23,27 @@ export const useAwardsSection = (editionId: number) => {
     error: categoriesError,
   } = useCategoriesSection(editionId);
 
+  const {
+    data,
+    loading: awardsLoading,
+    error: awardsError,
+    refetch,
+  } = useSetupAwardsQuery();
+
   const awards: Award[] = data?.award ?? [];
 
-  const selectedAwards: Award[] = awards.filter((a) => {
-    const found = a.awardEditions.find(
+  const selectedAwards: Award[] = awards.filter((a) =>
+    a.awardEditions.some(
       (edition) => edition.editionId === editionId.toString(),
-    );
-    return found !== undefined;
-  });
+    ),
+  );
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
+  const [selectedAward, setSelectedAward] = useState<Award | undefined>(
+    undefined,
+  );
+
+  // ADD AWARD
 
   const [isAddAward, setIsAddAward] = useState(false);
   const openAddAward = () => {
@@ -54,14 +59,10 @@ export const useAwardsSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await createAward({
         variables: {
-          awardName: values.awardName,
-          awardType: values.awardType,
-          awardValue: values.awardValue,
+          ...values,
           categoryId: parseInt(values.categoryId),
-          description: values.description,
-          maxUsages: values.maxUsages,
-          label: "",
           fileId: values.imageId,
+          label: "",
         },
       });
       refetch();
@@ -72,29 +73,24 @@ export const useAwardsSection = (editionId: number) => {
   const [addAward] = useSetupAwardEditionAddMutation();
   const [removeAward] = useSetupAwardEditionRemoveMutation();
   const handleSelectAward = async (award: Award) => {
-    const isAwardSelected = !!selectedAwards.find((a) => {
-      return a.awardId === award.awardId;
-    });
-
+    const isAwardSelected = selectedAwards.some(
+      (a) => a.awardId === award.awardId,
+    );
     const variables = {
-      variables: {
-        editionId,
-        awardId: parseInt(award.awardId),
-      },
+      editionId,
+      awardId: parseInt(award.awardId),
     };
-
     globalErrorWrapper(async () => {
       isAwardSelected
-        ? await removeAward(variables)
-        : await addAward(variables);
+        ? await removeAward({ variables })
+        : await addAward({ variables });
       refetch();
     });
   };
 
+  // EDIT AWARD
+
   const [isEditAward, setIsEditAward] = useState(false);
-  const [selectedAward, setSelectedAward] = useState<Award | undefined>(
-    undefined,
-  );
   const openEditAward = (award: Award) => {
     setSelectedAward(award);
     setIsEditAward(true);
@@ -110,13 +106,9 @@ export const useAwardsSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await editAward({
         variables: {
+          ...values,
           awardId: parseInt(selectedAward?.awardId ?? "-1"),
-          awardName: values.awardName,
-          awardType: values.awardType,
-          awardValue: values.awardValue,
           categoryId: parseInt(values.categoryId),
-          description: values.description,
-          maxUsages: values.maxUsages,
           fileId: values.imageId,
         },
       });

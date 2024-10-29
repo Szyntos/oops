@@ -103,6 +103,15 @@ export const AddStudentForm = ({
             )}
             helperText={formik.touched.indexNumber && formik.errors.indexNumber}
           />
+
+          <TextField
+            disabled={true}
+            fullWidth
+            name="email"
+            label="email"
+            variant="outlined"
+            value={`${formik.values.indexNumber}@student.agh.edu.pl`}
+          />
         </div>
 
         <button type="submit">confirm</button>

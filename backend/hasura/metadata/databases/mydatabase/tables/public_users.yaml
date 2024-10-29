@@ -94,6 +94,7 @@ select_permissions:
         - role
         - second_name
         - user_id
+        - email
       computed_fields:
         - fullName
       filter: {}
@@ -159,6 +160,7 @@ update_permissions:
         - nick
         - role
         - second_name
+        - email
       filter:
         _not:
           userGroups:

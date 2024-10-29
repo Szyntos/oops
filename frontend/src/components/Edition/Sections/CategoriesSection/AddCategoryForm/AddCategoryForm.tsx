@@ -14,16 +14,18 @@ const ValidationSchema = z.object({
 });
 
 type AddCategoryFormProps = {
-  handleAddCategory: (
+  handleConfirm: (
     values: CategoriesFormValues,
     subcategories: FormSubcategory[],
   ) => void;
-  createError?: string;
+  formError?: string;
+  title: string;
 };
 
 export const AddCategoryForm = ({
-  handleAddCategory,
-  createError,
+  handleConfirm,
+  formError,
+  title,
 }: AddCategoryFormProps) => {
   const formik = useFormik({
     initialValues: {
@@ -42,7 +44,7 @@ export const AddCategoryForm = ({
       // TODO create subcategories validation
     },
     onSubmit: (values: CategoriesFormValues) => {
-      handleAddCategory(values, subcategories);
+      handleConfirm(values, subcategories);
     },
   });
 
@@ -94,7 +96,7 @@ export const AddCategoryForm = ({
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>Add Category</div>
+      <div style={styles.title}>{title}</div>
       <form onSubmit={formik.handleSubmit}>
         <div>
           <TextField
@@ -136,10 +138,10 @@ export const AddCategoryForm = ({
           />
         </div>
 
-        <button type="submit">add category</button>
+        <button type="submit">confirm</button>
       </form>
 
-      {createError && <p style={styles.error}>Error: {createError}</p>}
+      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
 };

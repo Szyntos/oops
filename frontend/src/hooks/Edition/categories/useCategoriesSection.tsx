@@ -9,45 +9,42 @@ import { useSetupCategoryEditionRemoveMutation } from "../../../graphql/setupCat
 import { CategoriesFormValues } from "../../../components/Edition/Sections/CategoriesSection/AddCategoryForm/AddCategoryForm";
 import { FormSubcategory } from "../../../components/Edition/Sections/CategoriesSection/AddCategoryForm/SubcategoryRows";
 import { useSetupCategoryCreateMutation } from "../../../graphql/setupCategoryCreate.graphql.types";
+import { useError } from "../../common/useGlobalError";
 
 export type Category = SetupCategoriesQuery["categories"][number];
 
 export const useCategoriesSection = (editionId: number) => {
+  const { localErrorWrapper, globalErrorWrapper } = useError();
+
   const { data, loading, error, refetch } = useSetupCategoriesQuery();
 
   const categories: Category[] = data?.categories ?? [];
 
-  const selectedCategories: Category[] = categories.filter((c: Category) => {
-    const found = c.categoryEditions.find(
-      (category) => category.editionId === editionId.toString(),
-    );
-    return !!found;
-  });
+  const selectedCategories: Category[] = categories.filter(
+    ({ categoryEditions }) =>
+      categoryEditions.some(({ editionId: id }) => id === editionId.toString()),
+  );
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [createCategory] = useSetupCategoryCreateMutation();
-  const [createCategoryError, setCreateCategoryError] = useState<
-    string | undefined
-  >(undefined);
-
-  const [addCategory] = useSetupCategoryEditionAddMutation();
-  const [removeCategory] = useSetupCategoryEditionRemoveMutation();
-
-  const closeDialog = () => {
-    setIsOpen(false);
-    setCreateCategoryError(undefined);
+  const [isAddCategory, setIsAddCategory] = useState(false);
+  const openAddCategory = () => {
+    setIsAddCategory(true);
+  };
+  const closeAddCategory = () => {
+    setIsAddCategory(false);
+    setFormError(undefined);
   };
 
-  const handleCreate = async (
+  const [formError, setFormError] = useState<string | undefined>(undefined);
+
+  const [createCategory] = useSetupCategoryCreateMutation();
+  const handleAddCategory = async (
     values: CategoriesFormValues,
     subcategories: FormSubcategory[],
   ) => {
-    try {
+    localErrorWrapper(setFormError, async () => {
       await createCategory({
         variables: {
-          categoryName: values.categoryName,
-          canAddPoints: values.canAddPoints,
+          ...values,
           subcategories: subcategories.map((row, index) => {
             return {
               label: "",
@@ -58,41 +55,27 @@ export const useCategoriesSection = (editionId: number) => {
           }),
         },
       });
-
       refetch();
-      closeDialog();
-    } catch (error) {
-      console.error(error);
-
-      setCreateCategoryError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+      closeAddCategory();
+    });
   };
 
-  const handleSelectClick = async (category: Category) => {
+  const [selectCategory] = useSetupCategoryEditionAddMutation();
+  const [unselectCategory] = useSetupCategoryEditionRemoveMutation();
+  const handleSelectCategory = async (category: Category) => {
     const isCategorySelected = !!selectedCategories.find(
       (c) => c.categoryId === category.categoryId,
     );
-
     const variables = {
-      variables: {
-        editionId,
-        categoryId: parseInt(category.categoryId),
-      },
+      editionId,
+      categoryId: parseInt(category.categoryId),
     };
-
-    try {
-      // TODO add some kind of global error
-      if (isCategorySelected) {
-        await removeCategory(variables);
-      } else {
-        await addCategory(variables);
-      }
+    globalErrorWrapper(async () => {
+      isCategorySelected
+        ? await unselectCategory({ variables })
+        : await selectCategory({ variables });
       refetch();
-    } catch (error) {
-      console.error(error);
-    }
+    });
   };
 
   return {
@@ -100,11 +83,11 @@ export const useCategoriesSection = (editionId: number) => {
     selectedCategories,
     loading,
     error,
-    handleSelectClick,
-    handleCreate,
-    createCategoryError,
-    isOpen,
-    closeDialog,
-    openDialog: () => setIsOpen(true),
+    formError,
+    isAddCategory,
+    handleSelectCategory,
+    openAddCategory,
+    closeAddCategory,
+    handleAddCategory,
   };
 };

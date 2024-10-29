@@ -29,7 +29,7 @@ export const CategoriesList = ({
                     (c) => c.categoryId === category.categoryId,
                   )
                 }
-                onSelectClick={() => handleSelectCategoryClick(category)}
+                handleSelectClick={() => handleSelectCategoryClick(category)}
               />
             ))
           : EMPTY_FIELD_STRING}

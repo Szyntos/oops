@@ -15,12 +15,12 @@ export const CategoriesSection = () => {
     selectedCategories,
     loading,
     error,
-    handleSelectClick,
-    handleCreate,
-    createCategoryError,
-    isOpen,
-    closeDialog,
-    openDialog,
+    formError,
+    isAddCategory,
+    handleSelectCategory,
+    openAddCategory,
+    closeAddCategory,
+    handleAddCategory,
   } = useCategoriesSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -28,26 +28,27 @@ export const CategoriesSection = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openDialog}>add category</button>
+      <button onClick={openAddCategory}>add category</button>
 
       <CategoriesList
         categories={selectedCategories}
         selectedCategories={selectedCategories}
-        handleSelectCategoryClick={handleSelectClick}
+        handleSelectCategoryClick={handleSelectCategory}
         title={"Selected categories"}
       />
       <CategoriesList
         categories={categories}
         selectedCategories={selectedCategories}
-        handleSelectCategoryClick={handleSelectClick}
+        handleSelectCategoryClick={handleSelectCategory}
         title={"All categories"}
       />
 
-      <Dialog open={isOpen}>
-        <CloseHeader onCloseClick={closeDialog} />
+      <Dialog open={isAddCategory}>
+        <CloseHeader onCloseClick={closeAddCategory} />
         <AddCategoryForm
-          createError={createCategoryError}
-          handleAddCategory={handleCreate}
+          formError={formError}
+          handleConfirm={handleAddCategory}
+          title={"Add Category"}
         />
       </Dialog>
     </div>

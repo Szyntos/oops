@@ -31,6 +31,8 @@ export const AwardCard = ({
         selected={isSelected}
         handleSelect={onSelectClick}
         handleEdit={onEditClick}
+        disableCopy={true}
+        disableDelete={true}
       />
     </div>
   );

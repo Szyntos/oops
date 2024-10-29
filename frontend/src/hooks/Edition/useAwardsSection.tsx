@@ -10,10 +10,12 @@ import { useSetupAwardEditionRemoveMutation } from "../../graphql/setupAwardEdit
 import { AwardFormValues } from "../../components/Edition/Sections/AwardsSection/AddAwardForm/AddAwardForm";
 import { useCategoriesSection } from "./categories/useCategoriesSection";
 import { useSetupAwardEditMutation } from "../../graphql/setupAwardEdit.graphql.types";
+import { useError } from "../common/useGlobalError";
 
 export type Award = SetupAwardsQuery["award"][number];
 
 export const useAwardsSection = (editionId: number) => {
+  const { globalErrorWrapper, localErrorWrapper } = useError();
   const {
     data,
     loading: awardsLoading,
@@ -49,7 +51,7 @@ export const useAwardsSection = (editionId: number) => {
 
   const [createAward] = useSetupAwardCreateMutation();
   const handleAddAward = async (values: AwardFormValues) => {
-    errorWrapper(async () => {
+    localErrorWrapper(setFormError, async () => {
       await createAward({
         variables: {
           awardName: values.awardName,
@@ -62,7 +64,6 @@ export const useAwardsSection = (editionId: number) => {
           fileId: values.imageId,
         },
       });
-
       refetch();
       closeAddAward();
     });
@@ -82,17 +83,12 @@ export const useAwardsSection = (editionId: number) => {
       },
     };
 
-    try {
-      // TODO add some kind of global error
-      if (isAwardSelected) {
-        await removeAward(variables);
-      } else {
-        await addAward(variables);
-      }
+    globalErrorWrapper(async () => {
+      isAwardSelected
+        ? await removeAward(variables)
+        : await addAward(variables);
       refetch();
-    } catch (error) {
-      console.error(error);
-    }
+    });
   };
 
   const [isEditAward, setIsEditAward] = useState(false);
@@ -111,7 +107,7 @@ export const useAwardsSection = (editionId: number) => {
 
   const [editAward] = useSetupAwardEditMutation();
   const handleEditAward = (values: AwardFormValues) => {
-    errorWrapper(async () => {
+    localErrorWrapper(setFormError, async () => {
       await editAward({
         variables: {
           awardId: parseInt(selectedAward?.awardId ?? "-1"),
@@ -127,16 +123,6 @@ export const useAwardsSection = (editionId: number) => {
       refetch();
       closeEditAward();
     });
-  };
-
-  const errorWrapper = (foo: () => void) => {
-    try {
-      foo();
-    } catch (error) {
-      setFormError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
   };
 
   return {

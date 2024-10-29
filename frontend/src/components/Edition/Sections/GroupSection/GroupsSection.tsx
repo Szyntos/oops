@@ -21,21 +21,23 @@ export const GroupsSection = () => {
     groups,
     weekdays,
     teachers,
+    students,
     loading,
     error,
-    handleAddGroup,
-    openAddDialog,
-    isAddDialogOpen,
-    closeAddDialog,
     formError,
-    students,
-    handleUploadStudents,
-    variant,
-    isEditOpen,
-    closeEditDialog,
+    isAddGroupOpen,
+    openAddGroup,
+    closeAddGroup,
+    handleAddGroup,
+    isEditGroupOpen,
     openEditDialog,
+    closeEditDialog,
+    handleEditGroupConfirm,
+    handleDeleteGroup,
+    handleUploadStudents,
+    // handleStudentGroupChange,
+    variant,
     selectedGroup,
-    handleUpdateConfirmation,
   } = useGroupsSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -44,13 +46,18 @@ export const GroupsSection = () => {
   return (
     <div>
       <div>
-        <button onClick={() => openAddDialog("select")}>add group</button>
-        <button onClick={() => openAddDialog("import")}>import group</button>
+        <button onClick={() => openAddGroup("select")}>add group</button>
+        <button onClick={() => openAddGroup("import")}>import group</button>
       </div>
-      <GroupsList groups={groups} title="groups" editClick={openEditDialog} />
+      <GroupsList
+        groups={groups}
+        title="groups"
+        editClick={openEditDialog}
+        deleteClick={handleDeleteGroup}
+      />
 
-      <Dialog open={isAddDialogOpen}>
-        <CloseHeader onCloseClick={closeAddDialog} />
+      <Dialog open={isAddGroupOpen}>
+        <CloseHeader onCloseClick={closeAddGroup} />
         <AddGroupForm
           createError={formError}
           handleAddGroup={handleAddGroup}
@@ -63,41 +70,28 @@ export const GroupsSection = () => {
         />
       </Dialog>
 
-      <Dialog open={isEditOpen}>
+      <Dialog open={isEditGroupOpen}>
         <CloseHeader onCloseClick={closeEditDialog} />
         <AddGroupForm
           createError={formError}
-          handleAddGroup={handleUpdateConfirmation}
+          handleAddGroup={handleEditGroupConfirm}
           weekdays={weekdays}
           teachers={teachers}
           students={students}
           editionId={editionId}
           variant={"select"}
           initSelected={
-            selectedGroup?.userGroups.map((u) => {
-              const s = u.user;
-              const t: Student = {
-                __typename: "Users",
-                firstName: s.firstName,
-                imageFileId: s.imageFileId,
-                fullName: s.fullName,
-                indexNumber: s.indexNumber,
-                nick: s.nick,
-                role: s.role,
-                secondName: s.secondName,
-                userId: s.userId,
-                email: s.email,
-              };
-              return t;
-            }) ?? []
+            selectedGroup?.userGroups.map((u) => u.user as Student) ?? []
           }
-          initValues={{
-            startTime: selectedGroup?.startTime as string,
-            endTime: selectedGroup?.endTime as string,
-            weekdayId: selectedGroup?.weekday.weekdayId as string,
-            teacherId: selectedGroup?.teacher.userId as string,
-            usosId: selectedGroup?.usosId as number,
-          }}
+          initValues={
+            selectedGroup
+              ? {
+                  ...selectedGroup,
+                  weekdayId: selectedGroup.weekday.weekdayId,
+                  teacherId: selectedGroup.teacher.userId,
+                }
+              : undefined
+          }
         />
       </Dialog>
     </div>

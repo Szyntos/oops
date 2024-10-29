@@ -16,6 +16,7 @@ import {
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useSetupGroupCsvParseMutation } from "../../graphql/setupGroupCSVParse.graphql.types";
 import { useSetupGroupEditMutation } from "../../graphql/setupGroupEdit.graphql.types";
+import { useDeleteGroupMutation } from "../../graphql/deleteGroup.graphql.types";
 
 export type Group = NonNullable<
   SetupGroupsQuery["editionByPk"]
@@ -27,14 +28,14 @@ export type Student = SetupUsersQuery["users"][number];
 export const useGroupsSection = (editionId: number) => {
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const openAddDialog = (v: AddGroupVariant) => {
-    setIsAddDialogOpen(true);
+  const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
+  const openAddGroup = (v: AddGroupVariant) => {
+    setIsAddGroupOpen(true);
     setVariant(v);
   };
-  const closeAddDialog = () => {
+  const closeAddGroup = () => {
     setFormError(undefined);
-    setIsAddDialogOpen(false);
+    setIsAddGroupOpen(false);
   };
 
   const { data, loading, error, refetch } = useSetupGroupsQuery({
@@ -43,6 +44,7 @@ export const useGroupsSection = (editionId: number) => {
 
   const groups: Group[] = data?.editionByPk?.groups ?? [];
 
+  // TODO, this might be another hook
   const {
     weekdays,
     loading: weekdaysLoading,
@@ -55,26 +57,24 @@ export const useGroupsSection = (editionId: number) => {
     error: UsersError,
   } = useSetupUsersQuery();
 
-  // TODO can be reused form users section hook
   const teachers: Teacher[] =
     usersData?.users.filter(
       (u) =>
         u.role.toLocaleUpperCase() === UsersRolesType.Coordinator ||
         u.role.toLocaleUpperCase() === UsersRolesType.Teacher,
     ) ?? [];
-
   const students: Student[] =
     usersData?.users.filter(
       (u) => u.role.toLocaleUpperCase() === UsersRolesType.Student,
     ) ?? [];
+  // TODO end
 
   const [createGroup] = useSetupGroupCreateMutation();
-
   const handleAddGroup = async (
     values: GroupFormValues,
     selectedStudents: Student[],
   ) => {
-    try {
+    errorWrapper(async () => {
       await createGroup({
         variables: {
           editionId,
@@ -99,17 +99,12 @@ export const useGroupsSection = (editionId: number) => {
         },
       });
       refetch();
-      closeAddDialog();
-    } catch (error) {
-      console.error(error);
-      setFormError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+      closeAddGroup();
+    });
   };
 
+  // TODO to another hook
   const [parseCSV] = useSetupGroupCsvParseMutation();
-
   const handleUploadStudents = async (
     editionId: number,
     formData: FormData,
@@ -154,29 +149,29 @@ export const useGroupsSection = (editionId: number) => {
     }
   };
 
-  const [variant, setVariant] = useState<"import" | "select">("import");
+  const [variant, setVariant] = useState<AddGroupVariant>("import");
 
   const [selectedGroup, setSelectedGroup] = useState<Group | undefined>(
     undefined,
   );
 
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isEditGroupOpen, setIsEditGroupOpen] = useState(false);
   const openEditDialog = (group: Group) => {
     setSelectedGroup(group);
-    setIsEditOpen(true);
+    setIsEditGroupOpen(true);
   };
   const closeEditDialog = () => {
     setSelectedGroup(undefined);
-    setIsEditOpen(false);
+    setIsEditGroupOpen(false);
   };
 
   const [editGroup] = useSetupGroupEditMutation();
-
-  const handleUpdateConfirmation = async (
+  const handleEditGroupConfirm = async (
     values: GroupFormValues,
     selectedStudents: Student[],
   ) => {
-    try {
+    console.log(selectedStudents);
+    errorWrapper(async () => {
       await editGroup({
         variables: {
           groupId: parseInt(selectedGroup?.groupsId ?? "-1"),
@@ -200,15 +195,9 @@ export const useGroupsSection = (editionId: number) => {
           // }),
         },
       });
-      console.log("SELECTED STUDENTS: ", selectedStudents);
       refetch();
       closeEditDialog();
-    } catch (error) {
-      console.error(error);
-      setFormError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+    });
   };
 
   const handleStudentGroupChange = (
@@ -220,6 +209,27 @@ export const useGroupsSection = (editionId: number) => {
     // TODO change user group
   };
 
+  const [deleteGroup] = useDeleteGroupMutation();
+  const handleDeleteGroup = async (group: Group) => {
+    try {
+      await deleteGroup({ variables: { groupId: parseInt(group.groupsId) } });
+      refetch();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const errorWrapper = (foo: () => void) => {
+    try {
+      foo();
+    } catch (error) {
+      console.error(error);
+      setFormError(
+        error instanceof Error ? error.message : "Unexpected error received.",
+      );
+    }
+  };
+
   return {
     groups,
     weekdays,
@@ -227,18 +237,23 @@ export const useGroupsSection = (editionId: number) => {
     students,
     loading: loading || weekdaysLoading || usersLoading,
     error: error || weekdaysError || UsersError,
-    handleAddGroup,
-    openAddDialog,
-    isAddDialogOpen,
-    closeAddDialog,
     formError,
-    handleUploadStudents,
-    variant,
-    isEditOpen,
+
+    isAddGroupOpen,
+    openAddGroup,
+    closeAddGroup,
+    handleAddGroup,
+
+    isEditGroupOpen,
     openEditDialog,
     closeEditDialog,
-    handleUpdateConfirmation,
+    handleEditGroupConfirm,
+    handleDeleteGroup,
+
+    handleUploadStudents,
     handleStudentGroupChange,
+
+    variant,
     selectedGroup,
   };
 };

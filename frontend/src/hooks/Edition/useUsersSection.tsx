@@ -9,6 +9,7 @@ import { StudentFormValues } from "../../components/Edition/Sections/UsersSectio
 import { useSetupTeacherCreateMutation } from "../../graphql/setupTeacherCreate.graphql.types";
 import { TeacherFormValues } from "../../components/Edition/Sections/UsersSection/TeacherAddForm";
 import { useSEtupUserEditMutation } from "../../graphql/setupUserEdit.graphql.types";
+import { useDeleteUserMutation } from "../../graphql/deleteUser.graphql.types";
 
 export type User = SetupUsersQuery["users"][number];
 
@@ -149,6 +150,20 @@ export const useUsersSection = () => {
     }
   };
 
+  const [deleteUser] = useDeleteUserMutation();
+
+  const handleDeleteClick = async (u: User) => {
+    try {
+      await deleteUser({
+        variables: { userId: parseInt(u.userId) },
+      });
+      refetch();
+    } catch (error) {
+      console.error(error);
+      // TODO global error
+    }
+  };
+
   return {
     teachers,
     students,
@@ -176,5 +191,6 @@ export const useUsersSection = () => {
       handleEditClick(selectedUser as User, { type: "teacher", data: values });
     },
     selectedUser,
+    handleDeleteClick,
   };
 };

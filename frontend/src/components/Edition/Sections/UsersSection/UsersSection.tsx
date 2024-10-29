@@ -1,8 +1,5 @@
 import { Dialog } from "@mui/material";
-import {
-  User,
-  useUsersSection,
-} from "../../../../hooks/Edition/useUsersSection";
+import { useUsersSection } from "../../../../hooks/Edition/useUsersSection";
 import { Styles } from "../../../../utils/Styles";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddStudentForm } from "./StudentAddForm";
@@ -33,14 +30,12 @@ export const UsersSection = () => {
     handleEditStudentConfirm,
     handleEditTeacherConfirm,
     selectedUser,
+    handleDeleteClick,
   } = useUsersSection();
 
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
-  const handleDeleteClick = (u: User) => {
-    console.log("hejka ", u);
-  };
   return (
     <div>
       <div style={styles.buttonsContainer}>

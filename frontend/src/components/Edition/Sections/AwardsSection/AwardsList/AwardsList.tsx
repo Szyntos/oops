@@ -25,6 +25,7 @@ export const AwardsList = ({
         {awards.length !== 0
           ? awards.map((award) => (
               <AwardCard
+                key={award.awardId}
                 award={award}
                 isSelected={selectedAwards.some(
                   (a) => a.awardId === award.awardId,

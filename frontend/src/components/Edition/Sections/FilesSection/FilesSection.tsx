@@ -4,6 +4,8 @@ import { Styles } from "../../../../utils/Styles";
 import { useParams } from "react-router-dom";
 import { Folder, FolderNavbar } from "./FolderNavbar/FolderNavbar";
 import { ImagesList } from "./ImagesList/ImagesList";
+import { useError } from "../../../../hooks/common/useGlobalError";
+import { UPLOAD_FILES_URL } from "../../../../utils/constants";
 
 const folders: Folder[] = [
   { title: "award", pathPrefix: `image/award` },
@@ -16,6 +18,8 @@ const folders: Folder[] = [
 export const FilesSection = () => {
   const params = useParams();
   const editionId = params.id ? parseInt(params.id) : -1;
+
+  const { globalErrorWrapper } = useError();
 
   const [activeFolder, setActiveFolder] = useState<Folder>(folders[0]);
   const [fetchFiles, { loading, error, data, refetch }] = useFilesLazyQuery();
@@ -44,22 +48,15 @@ export const FilesSection = () => {
       formData.append("file", files[0]);
       formData.append("fileType", activeFolder.pathPrefix);
 
-      try {
-        const res = await fetch("http://localhost:9090/files/upload", {
+      globalErrorWrapper(async () => {
+        const res = await fetch(UPLOAD_FILES_URL, {
           method: "POST",
           body: formData,
         });
-
-        if (!res.ok) {
-          throw new Error(`Error: ${res.statusText}`);
-        }
-
+        if (!res.ok) throw new Error(`Error: ${res.statusText}`);
         await refetch();
-
         event.target.value = "";
-      } catch (error) {
-        console.error("Failed to upload file", error);
-      }
+      });
     }
   };
 

@@ -10,7 +10,7 @@ export const useError = () => {
     }
   }, [globalError]);
 
-  const globalErrorWrapper = async (foo: () => Promise<void>) => {
+  const globalErrorWrapper = async (foo: () => Promise<void> | void) => {
     try {
       await foo();
     } catch (err) {
@@ -23,7 +23,7 @@ export const useError = () => {
 
   const localErrorWrapper = async (
     setError: (text: string) => void,
-    foo: () => Promise<void>,
+    foo: () => Promise<void> | void,
   ) => {
     try {
       await foo();

@@ -28,6 +28,7 @@ type AddAwardFormProps = {
   formError?: string;
   categories: Category[];
   initialValues?: AwardFormValues;
+  title: string;
 };
 
 const awardTypes = Object.values(AwardTypeType);
@@ -45,6 +46,7 @@ export const AddAwardForm = ({
     maxUsages: 0,
     imageId: 0,
   },
+  title,
 }: AddAwardFormProps) => {
   const formik = useFormik({
     initialValues,
@@ -65,7 +67,7 @@ export const AddAwardForm = ({
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>Add Award</div>
+      <div style={styles.title}>{title}</div>
       <form onSubmit={formik.handleSubmit}>
         <div style={styles.fieldsContainer}>
           <TextField
@@ -180,7 +182,7 @@ export const AddAwardForm = ({
           />
         </div>
 
-        <button type="submit">Add Award</button>
+        <button type="submit">confirm</button>
       </form>
 
       {formError && <p style={styles.error}>Error: {formError}</p>}

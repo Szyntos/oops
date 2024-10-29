@@ -44,16 +44,16 @@ export const AwardsSection = () => {
       <AwardsList
         awards={selectedAwards}
         selectedAwards={selectedAwards}
-        handleSelectAwardClick={handleSelectAward}
+        handleSelectAward={handleSelectAward}
         title={"Selected awards"}
-        handleEditAwardClick={openEditAward}
+        handleEditAward={openEditAward}
       />
       <AwardsList
         awards={awards}
         selectedAwards={selectedAwards}
-        handleSelectAwardClick={handleSelectAward}
+        handleSelectAward={handleSelectAward}
         title={"All awards"}
-        handleEditAwardClick={openEditAward}
+        handleEditAward={openEditAward}
       />
 
       <Dialog open={isAddAward}>
@@ -62,6 +62,7 @@ export const AwardsSection = () => {
           formError={formError}
           handleConfirm={handleAddAward}
           categories={formCategories}
+          title="Add Award"
         />
       </Dialog>
 
@@ -74,16 +75,13 @@ export const AwardsSection = () => {
           initialValues={
             selectedAward
               ? {
-                  awardName: selectedAward.awardName,
-                  awardType: selectedAward.awardType,
+                  ...selectedAward,
                   awardValue: parseInt(selectedAward.awardValue),
-                  categoryId: selectedAward.categoryId,
-                  description: selectedAward.description,
-                  maxUsages: selectedAward.maxUsages,
                   imageId: parseInt(selectedAward.imageFileId ?? "-1"),
                 }
               : undefined
           }
+          title="Edit Award"
         />
       </Dialog>
     </div>

@@ -15,6 +15,7 @@ type AddTeacherFormProps = {
   handleConfirm: (values: TeacherFormValues) => void;
   createError?: string;
   initialValues?: TeacherFormValues;
+  title: string;
 };
 
 export const AddTeacherForm = ({
@@ -25,6 +26,7 @@ export const AddTeacherForm = ({
     secondName: "",
     email: "",
   },
+  title,
 }: AddTeacherFormProps) => {
   const formik = useFormik({
     initialValues,
@@ -46,7 +48,7 @@ export const AddTeacherForm = ({
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>Add user</div>
+      <div style={styles.title}>{title}</div>
       <form onSubmit={formik.handleSubmit}>
         <div>
           <TextField

@@ -1,4 +1,4 @@
-import { User } from "../../../../../hooks/Edition/useUsersSection";
+import { User } from "../../../../../hooks/Edition/users/useUsersSection";
 import { Styles } from "../../../../../utils/Styles";
 
 type GroupCardProps = {

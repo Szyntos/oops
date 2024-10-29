@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { UsersRolesType } from "../../../__generated__/schema.graphql.types";
 import {
   SetupUsersQuery,
   useSetupUsersQuery,
-} from "../../graphql/setupUsers.graphql.types";
-import { useSetupStudentCreateMutation } from "../../graphql/setupStudentCreate.graphql.types";
-import { StudentFormValues } from "../../components/Edition/Sections/UsersSection/StudentAddForm";
-import { useSetupTeacherCreateMutation } from "../../graphql/setupTeacherCreate.graphql.types";
-import { TeacherFormValues } from "../../components/Edition/Sections/UsersSection/TeacherAddForm";
-import { useSEtupUserEditMutation } from "../../graphql/setupUserEdit.graphql.types";
-import { useDeleteUserMutation } from "../../graphql/deleteUser.graphql.types";
+} from "../../../graphql/setupUsers.graphql.types";
+import { useSetupStudentCreateMutation } from "../../../graphql/setupStudentCreate.graphql.types";
+import { StudentFormValues } from "../../../components/Edition/Sections/UsersSection/StudentAddForm";
+import { useSetupTeacherCreateMutation } from "../../../graphql/setupTeacherCreate.graphql.types";
+import { TeacherFormValues } from "../../../components/Edition/Sections/UsersSection/TeacherAddForm";
+import { useSEtupUserEditMutation } from "../../../graphql/setupUserEdit.graphql.types";
+import { useDeleteUserMutation } from "../../../graphql/deleteUser.graphql.types";
 
 export type User = SetupUsersQuery["users"][number];
 
@@ -26,18 +26,20 @@ export const useUsersSection = () => {
       (u) => u.role.toUpperCase() === UsersRolesType.Student,
     ) ?? [];
 
-  const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
+
+  // STUDENT ----------------------------------------------------
+  const [isAddStudentOpen, setIsAddOpen] = useState(false);
   const openAddStudent = () => {
-    setIsAddStudentOpen(true);
+    setIsAddOpen(true);
   };
   const closeAddStudent = () => {
     setFormError(undefined);
-    setIsAddStudentOpen(false);
+    setIsAddOpen(false);
   };
 
   const [createStudent] = useSetupStudentCreateMutation();
-
-  const handleAddStudent = async (values: StudentFormValues) => {
+  const handleAddStudentConfirm = async (values: StudentFormValues) => {
     try {
       await createStudent({
         variables: {
@@ -57,6 +59,18 @@ export const useUsersSection = () => {
     }
   };
 
+  const [isEditStudentOpen, setIsEditStudentOpen] = useState(false);
+  const openEditStudent = (user: User) => {
+    setSelectedUser(user);
+    setIsEditStudentOpen(true);
+  };
+  const closeEditStudent = () => {
+    setSelectedUser(undefined);
+    setIsEditStudentOpen(false);
+    setFormError(undefined);
+  };
+
+  // TEACHER --------------------------------------------------
   const [isAddTeacherOpen, setIsAddTeacherOpen] = useState(false);
   const openAddTeacher = () => {
     setIsAddTeacherOpen(true);
@@ -67,8 +81,7 @@ export const useUsersSection = () => {
   };
 
   const [createTeacher] = useSetupTeacherCreateMutation();
-
-  const handleAddTeacher = async (values: TeacherFormValues) => {
+  const handleAddTeacherConfirm = async (values: TeacherFormValues) => {
     try {
       await createTeacher({
         variables: {
@@ -87,7 +100,6 @@ export const useUsersSection = () => {
     }
   };
 
-  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
   const [isEditTeacherOpen, setIsEditTeacherOpen] = useState(false);
   const openEditTeacher = (user: User) => {
     setSelectedUser(user);
@@ -99,45 +111,33 @@ export const useUsersSection = () => {
     setFormError(undefined);
   };
 
-  const [isEditStudentOpen, setIsEditStudentOpen] = useState(false);
-  const openEditStudent = (user: User) => {
-    setSelectedUser(user);
-    setIsEditStudentOpen(true);
-  };
-  const closeEditStudent = () => {
-    setSelectedUser(undefined);
-    setIsEditStudentOpen(false);
-    setFormError(undefined);
-  };
-
+  // COMMON -------------------------------------------------
   const [editUser] = useSEtupUserEditMutation();
-
-  const handleEditClick = async (
-    user: User,
-    data:
-      | { type: "student"; data: StudentFormValues }
-      | { type: "teacher"; data: TeacherFormValues },
+  const handleEditUserConfirm = async (
+    props:
+      | { type: "student"; formValues: StudentFormValues }
+      | { type: "teacher"; formValues: TeacherFormValues },
   ) => {
     const variables = {
-      userId: parseInt(user.userId),
-      firstName: data.data.firstName,
-      secondName: data.data.secondName,
+      userId: parseInt(selectedUser?.userId as string),
+      firstName: props.formValues.firstName,
+      secondName: props.formValues.secondName,
     };
 
     try {
       await editUser({
         variables:
-          data.type == "teacher"
+          props.type == "teacher"
             ? variables
             : {
                 ...variables,
-                nick: data.data.nick,
-                indexNumber: data.data.indexNumber,
+                nick: props.formValues.nick,
+                indexNumber: props.formValues.indexNumber,
               },
       });
       refetch();
 
-      if (data.type === "student") {
+      if (props.type === "student") {
         closeEditStudent();
       } else {
         closeEditTeacher();
@@ -151,8 +151,7 @@ export const useUsersSection = () => {
   };
 
   const [deleteUser] = useDeleteUserMutation();
-
-  const handleDeleteClick = async (u: User) => {
+  const handleDeleteConfirm = async (u: User) => {
     try {
       await deleteUser({
         variables: { userId: parseInt(u.userId) },
@@ -169,28 +168,36 @@ export const useUsersSection = () => {
     students,
     loading,
     error,
-    handleAddStudent,
-    handleAddTeacher,
+    formError,
+    selectedUser,
+    handleDeleteConfirm,
+    // STUDENT
     isAddStudentOpen,
     openAddStudent,
     closeAddStudent,
-    isAddTeacherOpen,
-    openAddTeacher,
-    closeAddTeacher,
-    formError,
+    handleAddStudentConfirm,
     isEditStudentOpen,
     closeEditStudent,
     openEditStudent,
+    handleEditStudentConfirm: (values: StudentFormValues) => {
+      handleEditUserConfirm({
+        type: "student",
+        formValues: values,
+      });
+    },
+    // TEACHER
+    isAddTeacherOpen,
+    openAddTeacher,
+    closeAddTeacher,
+    handleAddTeacherConfirm,
     isEditTeacherOpen,
     closeEditTeacher,
     openEditTeacher,
-    handleEditStudentConfirm: (values: StudentFormValues) => {
-      handleEditClick(selectedUser as User, { type: "student", data: values });
-    },
     handleEditTeacherConfirm: (values: TeacherFormValues) => {
-      handleEditClick(selectedUser as User, { type: "teacher", data: values });
+      handleEditUserConfirm({
+        type: "teacher",
+        formValues: values,
+      });
     },
-    selectedUser,
-    handleDeleteClick,
   };
 };

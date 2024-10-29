@@ -1,5 +1,5 @@
 import { Dialog } from "@mui/material";
-import { useUsersSection } from "../../../../hooks/Edition/useUsersSection";
+import { useUsersSection } from "../../../../hooks/Edition/users/useUsersSection";
 import { Styles } from "../../../../utils/Styles";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddStudentForm } from "./StudentAddForm";
@@ -12,25 +12,27 @@ export const UsersSection = () => {
     students,
     loading,
     error,
-    isAddStudentOpen,
-    closeAddStudent,
-    openAddStudent,
-    handleAddStudent,
-    isAddTeacherOpen,
-    closeAddTeacher,
-    openAddTeacher,
-    handleAddTeacher,
     formError,
-    isEditStudentOpen,
-    openEditStudent,
-    closeEditStudent,
-    isEditTeacherOpen,
-    openEditTeacher,
-    closeEditTeacher,
-    handleEditStudentConfirm,
-    handleEditTeacherConfirm,
     selectedUser,
-    handleDeleteClick,
+    handleDeleteConfirm,
+    // STUDENT
+    isAddStudentOpen,
+    openAddStudent,
+    closeAddStudent,
+    handleAddStudentConfirm,
+    isEditStudentOpen,
+    closeEditStudent,
+    openEditStudent,
+    handleEditStudentConfirm,
+    // TEACHER
+    isAddTeacherOpen,
+    openAddTeacher,
+    closeAddTeacher,
+    handleAddTeacherConfirm,
+    isEditTeacherOpen,
+    closeEditTeacher,
+    openEditTeacher,
+    handleEditTeacherConfirm,
   } = useUsersSection();
 
   if (loading) return <div>loading...</div>;
@@ -45,13 +47,13 @@ export const UsersSection = () => {
       <UsersList
         users={teachers}
         title="TEACHERS"
-        handleDeleteClick={handleDeleteClick}
+        handleDeleteClick={handleDeleteConfirm}
         handleEditClick={openEditTeacher}
       />
       <UsersList
         users={students}
         title="STUDENTS"
-        handleDeleteClick={handleDeleteClick}
+        handleDeleteClick={handleDeleteConfirm}
         handleEditClick={openEditStudent}
       />
 
@@ -59,15 +61,8 @@ export const UsersSection = () => {
         <CloseHeader onCloseClick={closeAddStudent} />
         <AddStudentForm
           createError={formError}
-          handleConfirm={handleAddStudent}
-        />
-      </Dialog>
-
-      <Dialog open={isAddTeacherOpen}>
-        <CloseHeader onCloseClick={closeAddTeacher} />
-        <AddTeacherForm
-          createError={formError}
-          handleConfirm={handleAddTeacher}
+          handleConfirm={handleAddStudentConfirm}
+          title={"Add student"}
         />
       </Dialog>
 
@@ -77,6 +72,7 @@ export const UsersSection = () => {
           createError={formError}
           handleConfirm={handleEditStudentConfirm}
           initialValues={selectedUser ? selectedUser : undefined}
+          title={"Edit student"}
         />
       </Dialog>
 
@@ -86,6 +82,16 @@ export const UsersSection = () => {
           createError={formError}
           handleConfirm={handleEditTeacherConfirm}
           initialValues={selectedUser ? selectedUser : undefined}
+          title={"Add teacher"}
+        />
+      </Dialog>
+
+      <Dialog open={isAddTeacherOpen}>
+        <CloseHeader onCloseClick={closeAddTeacher} />
+        <AddTeacherForm
+          createError={formError}
+          handleConfirm={handleAddTeacherConfirm}
+          title={"Edit teacher"}
         />
       </Dialog>
     </div>

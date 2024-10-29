@@ -7,13 +7,15 @@ type AwardsListProps = {
   awards: Award[];
   selectedAwards: Award[];
   handleSelectAwardClick: (award: Award) => void;
+  handleEditAwardClick: (award: Award) => void;
   title: string;
 };
 
 export const AwardsList = ({
-  awards: awards,
+  awards,
   selectedAwards,
   handleSelectAwardClick,
+  handleEditAwardClick,
   title,
 }: AwardsListProps) => {
   return (
@@ -28,6 +30,7 @@ export const AwardsList = ({
                   !!selectedAwards.find((a) => a.awardId === award.awardId)
                 }
                 onSelectClick={() => handleSelectAwardClick(award)}
+                onEditClick={() => handleEditAwardClick(award)}
               />
             ))
           : EMPTY_FIELD_STRING}

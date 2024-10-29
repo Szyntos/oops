@@ -24,28 +24,30 @@ const ValidationSchema = z.object({
 export type AwardFormValues = z.infer<typeof ValidationSchema>;
 
 type AddAwardFormProps = {
-  handleAddAward: (values: AwardFormValues) => void;
-  createError?: string;
+  handleConfirm: (values: AwardFormValues) => void;
+  formError?: string;
   categories: Category[];
+  initialValues?: AwardFormValues;
 };
 
 const awardTypes = Object.values(AwardTypeType);
 
 export const AddAwardForm = ({
-  handleAddAward,
+  handleConfirm,
   categories,
-  createError,
+  formError,
+  initialValues = {
+    awardName: "",
+    awardType: "",
+    awardValue: 0,
+    categoryId: "",
+    description: "",
+    maxUsages: 0,
+    imageId: 0,
+  },
 }: AddAwardFormProps) => {
   const formik = useFormik({
-    initialValues: {
-      awardName: "",
-      awardType: "",
-      awardValue: 0,
-      categoryId: "",
-      description: "",
-      maxUsages: 0,
-      imageId: 0,
-    },
+    initialValues,
     validate: (values: AwardFormValues) => {
       try {
         ValidationSchema.parse(values);
@@ -57,7 +59,7 @@ export const AddAwardForm = ({
       return {};
     },
     onSubmit: (values: AwardFormValues) => {
-      handleAddAward(values);
+      handleConfirm(values);
     },
   });
 
@@ -181,7 +183,7 @@ export const AddAwardForm = ({
         <button type="submit">Add Award</button>
       </form>
 
-      {createError && <p style={styles.error}>Error: {createError}</p>}
+      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
 };

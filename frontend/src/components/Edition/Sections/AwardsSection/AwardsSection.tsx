@@ -17,12 +17,21 @@ export const AwardsSection = () => {
     formCategories,
     loading,
     error,
-    handleSelectClick,
-    handleCreate,
-    createAwardError,
-    isOpen,
-    closeDialog,
-    openDialog,
+
+    handleSelectAward,
+    formError,
+
+    isAddAward,
+    closeAddAward,
+    openAddAward,
+    handleAddAward,
+
+    isEditAward,
+    openEditAward,
+    closeEditAward,
+    handleEditAward,
+
+    selectedAward,
   } = useAwardsSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -30,27 +39,51 @@ export const AwardsSection = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openDialog}>add award</button>
+      <button onClick={openAddAward}>add award</button>
 
       <AwardsList
         awards={selectedAwards}
         selectedAwards={selectedAwards}
-        handleSelectAwardClick={handleSelectClick}
+        handleSelectAwardClick={handleSelectAward}
         title={"Selected awards"}
+        handleEditAwardClick={openEditAward}
       />
       <AwardsList
         awards={awards}
         selectedAwards={selectedAwards}
-        handleSelectAwardClick={handleSelectClick}
+        handleSelectAwardClick={handleSelectAward}
         title={"All awards"}
+        handleEditAwardClick={openEditAward}
       />
 
-      <Dialog open={isOpen}>
-        <CloseHeader onCloseClick={closeDialog} />
+      <Dialog open={isAddAward}>
+        <CloseHeader onCloseClick={closeAddAward} />
         <AddAwardForm
-          createError={createAwardError}
-          handleAddAward={handleCreate}
+          formError={formError}
+          handleConfirm={handleAddAward}
           categories={formCategories}
+        />
+      </Dialog>
+
+      <Dialog open={isEditAward}>
+        <CloseHeader onCloseClick={closeEditAward} />
+        <AddAwardForm
+          formError={formError}
+          handleConfirm={handleEditAward}
+          categories={formCategories}
+          initialValues={
+            selectedAward
+              ? {
+                  awardName: selectedAward.awardName,
+                  awardType: selectedAward.awardType,
+                  awardValue: parseInt(selectedAward.awardValue),
+                  categoryId: selectedAward.categoryId,
+                  description: selectedAward.description,
+                  maxUsages: selectedAward.maxUsages,
+                  imageId: parseInt(selectedAward.imageFileId ?? "-1"),
+                }
+              : undefined
+          }
         />
       </Dialog>
     </div>

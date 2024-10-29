@@ -9,6 +9,7 @@ import { useSetupAwardEditionAddMutation } from "../../graphql/setupAwardEdition
 import { useSetupAwardEditionRemoveMutation } from "../../graphql/setupAwardEditionRemove.graphql.types";
 import { AwardFormValues } from "../../components/Edition/Sections/AwardsSection/AddAwardForm/AddAwardForm";
 import { useCategoriesSection } from "./categories/useCategoriesSection";
+import { useSetupAwardEditMutation } from "../../graphql/setupAwardEdit.graphql.types";
 
 export type Award = SetupAwardsQuery["award"][number];
 
@@ -35,23 +36,20 @@ export const useAwardsSection = (editionId: number) => {
     return found !== undefined;
   });
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [formError, setFormError] = useState<string | undefined>(undefined);
 
-  const [createAward] = useSetupAwardCreateMutation();
-  const [createAwardError, setCreateAwardError] = useState<string | undefined>(
-    undefined,
-  );
-
-  const [addAward] = useSetupAwardEditionAddMutation();
-  const [removeAward] = useSetupAwardEditionRemoveMutation();
-
-  const closeDialog = () => {
-    setIsOpen(false);
-    setCreateAwardError(undefined);
+  const [isAddAward, setIsAddAward] = useState(false);
+  const openAddAward = () => {
+    setIsAddAward(true);
+  };
+  const closeAddAward = () => {
+    setIsAddAward(false);
+    setFormError(undefined);
   };
 
-  const handleCreate = async (values: AwardFormValues) => {
-    try {
+  const [createAward] = useSetupAwardCreateMutation();
+  const handleAddAward = async (values: AwardFormValues) => {
+    errorWrapper(async () => {
       await createAward({
         variables: {
           awardName: values.awardName,
@@ -66,17 +64,13 @@ export const useAwardsSection = (editionId: number) => {
       });
 
       refetch();
-      closeDialog();
-    } catch (error) {
-      console.error(error);
-
-      setCreateAwardError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+      closeAddAward();
+    });
   };
 
-  const handleSelectClick = async (award: Award) => {
+  const [addAward] = useSetupAwardEditionAddMutation();
+  const [removeAward] = useSetupAwardEditionRemoveMutation();
+  const handleSelectAward = async (award: Award) => {
     const isAwardSelected = !!selectedAwards.find((a) => {
       return a.awardId === award.awardId;
     });
@@ -101,17 +95,70 @@ export const useAwardsSection = (editionId: number) => {
     }
   };
 
+  const [isEditAward, setIsEditAward] = useState(false);
+  const [selectedAward, setSelectedAward] = useState<Award | undefined>(
+    undefined,
+  );
+  const openEditAward = (award: Award) => {
+    setSelectedAward(award);
+    setIsEditAward(true);
+  };
+  const closeEditAward = () => {
+    setIsEditAward(false);
+    setSelectedAward(undefined);
+    setFormError(undefined);
+  };
+
+  const [editAward] = useSetupAwardEditMutation();
+  const handleEditAward = (values: AwardFormValues) => {
+    errorWrapper(async () => {
+      await editAward({
+        variables: {
+          awardId: parseInt(selectedAward?.awardId ?? "-1"),
+          awardName: values.awardName,
+          awardType: values.awardType,
+          awardValue: values.awardValue,
+          categoryId: parseInt(values.categoryId),
+          description: values.description,
+          maxUsages: values.maxUsages,
+          fileId: values.imageId,
+        },
+      });
+      refetch();
+      closeEditAward();
+    });
+  };
+
+  const errorWrapper = (foo: () => void) => {
+    try {
+      foo();
+    } catch (error) {
+      setFormError(
+        error instanceof Error ? error.message : "Unexpected error received.",
+      );
+    }
+  };
+
   return {
     awards,
     selectedAwards,
     formCategories: selectedCategories,
     loading: awardsLoading || categoriesLoading,
     error: awardsError || categoriesError,
-    handleSelectClick,
-    handleCreate,
-    createAwardError,
-    isOpen,
-    closeDialog,
-    openDialog: () => setIsOpen(true),
+
+    handleSelectAward,
+    formError,
+
+    isAddAward,
+    closeAddAward,
+    openAddAward,
+    handleAddAward,
+
+    isEditAward,
+    openEditAward,
+    closeEditAward,
+    handleEditAward,
+
+    selectedAward,
   };
 };

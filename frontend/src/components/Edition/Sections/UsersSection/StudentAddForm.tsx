@@ -13,21 +13,23 @@ const ValidationSchema = z.object({
 });
 
 type AddStudentFormProps = {
-  handleAddStudent: (values: StudentFormValues) => void;
+  handleConfirm: (values: StudentFormValues) => void;
   createError?: string;
+  initialValues?: StudentFormValues;
 };
 
 export const AddStudentForm = ({
-  handleAddStudent,
+  handleConfirm,
   createError,
+  initialValues = {
+    firstName: "",
+    secondName: "",
+    indexNumber: 100000,
+    nick: "",
+  },
 }: AddStudentFormProps) => {
   const formik = useFormik({
-    initialValues: {
-      firstName: "",
-      secondName: "",
-      indexNumber: 100000,
-      nick: "",
-    },
+    initialValues,
     validate: (values: StudentFormValues) => {
       try {
         ValidationSchema.parse(values);
@@ -40,7 +42,7 @@ export const AddStudentForm = ({
       // TODO create subuser validation
     },
     onSubmit: (values: StudentFormValues) => {
-      handleAddStudent(values);
+      handleConfirm(values);
     },
   });
 

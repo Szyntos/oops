@@ -141,6 +141,7 @@ export const useGroupsSection = (editionId: number) => {
           role: u.role,
           secondName: u.secondName,
           userId: u.userId,
+          email: u.email,
         })) ?? [];
 
       return uploadedStudents;

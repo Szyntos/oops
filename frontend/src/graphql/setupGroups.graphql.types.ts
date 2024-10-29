@@ -45,6 +45,7 @@ export type SetupGroupsQuery = {
           role: string;
           secondName: string;
           userId: string;
+          email: string;
         };
       }>;
     }>;
@@ -85,6 +86,7 @@ export const SetupGroupsDocument = gql`
             role
             secondName
             userId
+            email
           }
         }
       }

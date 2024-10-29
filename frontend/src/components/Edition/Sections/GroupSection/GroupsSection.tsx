@@ -86,6 +86,7 @@ export const GroupsSection = () => {
                 role: s.role,
                 secondName: s.secondName,
                 userId: s.userId,
+                email: s.email,
               };
               return t;
             }) ?? []

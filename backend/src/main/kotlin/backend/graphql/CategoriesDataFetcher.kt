@@ -1,7 +1,10 @@
 package backend.graphql
 
+import backend.award.AwardRepository
 import backend.categories.Categories
 import backend.categories.CategoriesRepository
+import backend.categoryEdition.CategoryEditionRepository
+import backend.gradingChecks.GradingChecksRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRoles
 import backend.utils.UserMapper
@@ -15,6 +18,15 @@ import java.time.LocalDate
 
 @DgsComponent
 class CategoriesDataFetcher {
+    @Autowired
+    private lateinit var categoryEditionRepository: CategoryEditionRepository
+
+    @Autowired
+    private lateinit var gradingChecksRepository: GradingChecksRepository
+
+    @Autowired
+    private lateinit var awardRepository: AwardRepository
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -81,6 +93,16 @@ class CategoriesDataFetcher {
         }
         if (category.categoryEdition.any { categoryEdition -> categoryEdition.edition.startDate.isBefore(LocalDate.now()) }) {
             throw IllegalArgumentException("Category is already in an edition that has started")
+        }
+        if (awardRepository.existsByCategory(category)) {
+            throw IllegalArgumentException("Category is already used in awards")
+        }
+        if (gradingChecksRepository.existsByProject(category)) {
+            throw IllegalArgumentException("Category is already used in grading checks")
+        }
+        val categoryEditions = category.categoryEdition
+        categoryEditions.forEach {
+            categoryEditionRepository.delete(it)
         }
         val subcategories = subcategoriesRepository.findByCategory(category)
         subcategories.forEach {

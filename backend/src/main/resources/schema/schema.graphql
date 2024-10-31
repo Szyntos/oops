@@ -223,6 +223,18 @@ type Mutation {
     label: String
   ): GroupType
 
+  editGroupWithUsers(
+    groupId: Int!,
+    groupName: String,
+    usosId: Int,
+    weekdayId: Int,
+    startTime: String,
+    endTime: String,
+    teacherId: Int,
+    label: String
+    users: UserIdsType!
+  ): GroupType
+
   removeGroup(
     groupId: Int!
   ): Boolean
@@ -648,5 +660,9 @@ input UsersInputTypeType {
   label: String!
   createFirebaseUser: Boolean!
   sendEmail: Boolean!
+}
+
+input UserIdsType {
+  userIds: [Int!]!
 }
 

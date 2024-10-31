@@ -147,6 +147,10 @@ type Mutation {
     label: String
   ): AwardType
 
+  removeAward(
+    awardId: Int!
+  ): Boolean
+
   removeCategory(
     categoryId: Int!
   ): Boolean

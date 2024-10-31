@@ -115,4 +115,44 @@ class UserGroupsDataFetcher {
         userGroupsRepository.deleteByUserAndGroup(user, group)
         return true
     }
+
+    @DgsMutation
+    @Transactional
+    fun changeStudentGroup(@InputArgument userId: Long, @InputArgument groupId: Long): UserGroups {
+        val currentUser = userMapper.getCurrentUser()
+        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
+            throw IllegalArgumentException("Student cannot change groups")
+        }
+        if (currentUser.role == UsersRoles.TEACHER){
+            val group = groupsRepository.findById(groupId).orElseThrow { throw IllegalArgumentException("Group not found") }
+            if (group.teacher.userId != currentUser.userId){
+                throw IllegalArgumentException("Teacher can only change groups of their students")
+            }
+        }
+
+        val user = usersRepository.findById(userId).orElseThrow { throw IllegalArgumentException("User not found") }
+        if (user.role != UsersRoles.STUDENT){
+            throw IllegalArgumentException("This mutation is only for students")
+        }
+        val group = groupsRepository.findById(groupId).orElseThrow { throw IllegalArgumentException("Group not found") }
+
+        if (userGroupsRepository.existsByUserAndGroup(user, group)){
+            throw IllegalArgumentException("This User already exists in this Group")
+        }
+
+        if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
+            throw IllegalArgumentException("Edition has already ended")
+        }
+
+        val userGroups = userGroupsRepository.findByUserAndGroup_Edition(user, group.edition)
+        userGroups.forEach {
+            userGroupsRepository.delete(it)
+        }
+        val newUserGroup = UserGroups(
+            user = user,
+            group = group
+        )
+        return userGroupsRepository.save(newUserGroup)
+    }
+
 }

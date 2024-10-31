@@ -3,8 +3,10 @@ package backend.graphql
 import backend.award.Award
 import backend.award.AwardRepository
 import backend.award.AwardType
+import backend.awardEdition.AwardEditionRepository
 import backend.bonuses.BonusesRepository
 import backend.categories.CategoriesRepository
+import backend.chestAward.ChestAwardRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.groups.GroupsRepository
@@ -22,6 +24,12 @@ import java.math.RoundingMode
 
 @DgsComponent
 class AwardsDataFetcher {
+
+    @Autowired
+    private lateinit var awardEditionRepository: AwardEditionRepository
+
+    @Autowired
+    private lateinit var chestAwardRepository: ChestAwardRepository
 
     @Autowired
     private lateinit var userMapper: UserMapper
@@ -205,6 +213,29 @@ class AwardsDataFetcher {
 
     @DgsMutation
     @Transactional
+    fun removeAward(@InputArgument awardId: Long): Boolean {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can remove awards")
+        }
+
+        val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+        if (award.awardEditions.map { it.edition }.any { it.endDate.isBefore(java.time.LocalDate.now()) }) {
+            throw IllegalArgumentException("Edition with this award has already ended")
+        }
+
+        if (bonusesRepository.existsByAward(award)) {
+            throw IllegalArgumentException("Award is already in use")
+        }
+
+        chestAwardRepository.deleteAllByAward(award)
+        awardEditionRepository.deleteAllByAward(award)
+        awardRepository.delete(award)
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
     fun copyAward(@InputArgument awardId: Long): Award {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
@@ -219,8 +250,6 @@ class AwardsDataFetcher {
             i++
         }
         val awardName = "$awardNameRoot (Copy $i)"
-
-
 
         val awardCopy = Award(
             awardName = awardName,

@@ -34,6 +34,11 @@ type Mutation {
     fileId: Int
     label: String = ""
   ): AwardType
+
+  copyAward(
+    awardId: Int!
+  ): AwardType
+
   addAwardToEdition(awardId: Int!, editionId: Int!): AwardEditionType
   addChestToUser(
     userId: Int!

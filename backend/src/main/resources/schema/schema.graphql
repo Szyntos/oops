@@ -267,6 +267,11 @@ type Mutation {
     groupId: Int!
   ): UserGroupType
 
+  changeStudentGroup(
+    userId: Int!,
+    groupId: Int!
+  ): UserGroupType
+
   removeUserFromGroup(
     userId: Int!,
     groupId: Int!

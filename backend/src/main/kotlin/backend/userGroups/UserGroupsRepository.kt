@@ -11,4 +11,5 @@ interface UserGroupsRepository : JpaRepository<UserGroups, Long> {
     fun existsByUserAndGroup(user: Users, group: Groups): Boolean
     fun existsByUserAndGroup_Edition(user: Users, edition: Edition): Boolean
     fun deleteByUserAndGroup(user: Users, group: Groups)
+    fun findByUserAndGroup_Edition(user: Users, edition: Edition): List<UserGroups>
 }

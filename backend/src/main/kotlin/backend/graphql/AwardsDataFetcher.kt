@@ -203,4 +203,37 @@ class AwardsDataFetcher {
         return award
     }
 
+    @DgsMutation
+    @Transactional
+    fun copyAward(@InputArgument awardId: Long): Award {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can copy awards")
+        }
+
+        val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+
+        val awardNameRoot = award.awardName
+        var i = 1
+        while (awardRepository.findAllByAwardName("$awardNameRoot (Copy $i)").isNotEmpty()) {
+            i++
+        }
+        val awardName = "$awardNameRoot (Copy $i)"
+
+
+
+        val awardCopy = Award(
+            awardName = awardName,
+            awardType = award.awardType,
+            awardValue = award.awardValue,
+            category = award.category,
+            maxUsages = award.maxUsages,
+            description = award.description,
+            label = award.label
+        )
+        val savedAward = awardRepository.save(awardCopy)
+
+        assignPhotoToAward(awardCopy.awardId, award.imageFile?.fileId)
+        return savedAward
+    }
 }

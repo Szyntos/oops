@@ -10,5 +10,6 @@ import backend.groups.Groups
 interface UserGroupsRepository : JpaRepository<UserGroups, Long> {
     fun existsByUserAndGroup(user: Users, group: Groups): Boolean
     fun existsByUserAndGroup_Edition(user: Users, edition: Edition): Boolean
+    fun findByGroup_GroupsId(groupId: Long): List<UserGroups>
     fun deleteByUserAndGroup(user: Users, group: Groups)
 }

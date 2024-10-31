@@ -345,9 +345,7 @@ class GroupsDataFetcher {
             throw IllegalArgumentException("Edition has already ended")
         }
 
-        if (group.userGroups.map { it.user }.map { it.role }.contains(UsersRoles.STUDENT)) {
-            throw IllegalArgumentException("Group has students assigned to it")
-        }
+        userGroupsRepository.findByGroup_GroupsId(groupId).forEach(userGroupsRepository::delete)
 
         groupsRepository.delete(group)
         return true

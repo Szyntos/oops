@@ -13,6 +13,7 @@ export type SetupCategoriesQuery = {
     __typename?: "Categories";
     categoryId: string;
     categoryName: string;
+    canAddPoints: boolean;
     categoryEditions: Array<{
       __typename?: "CategoryEdition";
       editionId: string;
@@ -43,6 +44,7 @@ export const SetupCategoriesDocument = gql`
         maxPoints
         ordinalNumber
       }
+      canAddPoints
     }
   }
 `;

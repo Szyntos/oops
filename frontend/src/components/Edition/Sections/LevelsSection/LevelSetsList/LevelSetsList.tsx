@@ -8,6 +8,7 @@ type LevelSetsListProps = {
   selectedLevelSets: LevelSet[];
   handleSelect: (levelSet: LevelSet) => void;
   handleEdit: (levelSet: LevelSet) => void;
+  handleDelete: (levelSet: LevelSet) => void;
   title: string;
 };
 
@@ -16,6 +17,7 @@ export const LevelSetsList = ({
   selectedLevelSets,
   handleSelect,
   handleEdit,
+  handleDelete,
   title,
 }: LevelSetsListProps) => {
   return (
@@ -32,6 +34,9 @@ export const LevelSetsList = ({
                 )}
                 onSelectClick={() => handleSelect(levelSet)}
                 onEditClick={() => handleEdit(levelSet)}
+                handleDelete={() => {
+                  handleDelete(levelSet);
+                }}
               />
             ))
           : EMPTY_FIELD_STRING}

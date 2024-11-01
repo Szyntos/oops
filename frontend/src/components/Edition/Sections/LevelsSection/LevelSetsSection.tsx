@@ -31,6 +31,8 @@ export const LevelSetsSection = () => {
     handleEditSet,
 
     selectedLevelSet,
+
+    handleDeleteSet,
   } = useLevelSetsSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -46,6 +48,7 @@ export const LevelSetsSection = () => {
         handleSelect={handleSelectSet}
         title={"Selected level set"}
         handleEdit={openEditSet}
+        handleDelete={handleDeleteSet}
       />
       <LevelSetsList
         levelSets={levelSets}
@@ -53,6 +56,7 @@ export const LevelSetsSection = () => {
         handleSelect={handleSelectSet}
         title={"All level sets"}
         handleEdit={openEditSet}
+        handleDelete={handleDeleteSet}
       />
 
       <Dialog open={isAddSetOpen}>

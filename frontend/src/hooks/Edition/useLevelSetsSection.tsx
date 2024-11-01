@@ -9,6 +9,7 @@ import { useSetupLevelSetEditionAddMutation } from "../../graphql/setupLevelSetE
 import { useSetupLevelSetEditionRemoveMutation } from "../../graphql/setupLevelSetEditionRemove.graphql.types";
 import { useAddLevelSetMutation } from "../../graphql/addLevelSet.graphql.types";
 import { RowLevel } from "../../components/Edition/Sections/LevelsSection/LevelsRows/LevelRow";
+import { useDeleteLevelSetMutation } from "../../graphql/deleteLevelSet.graphql.types";
 
 export type LevelSet = SetupLevelSetsQuery["getLevelSets"][number];
 
@@ -58,7 +59,7 @@ export const useLevelSetsSection = (editionId: number) => {
   // SELECT
   const [addSet] = useSetupLevelSetEditionAddMutation();
   const [removeSet] = useSetupLevelSetEditionRemoveMutation();
-  const handleSelectSet = async (set: LevelSet) => {
+  const handleSelectSet = (set: LevelSet) => {
     console.log(set);
     const isLevelSetSelected = selectedLevelSets.some(
       (l) => l.levelSetId === set.levelSetId,
@@ -105,6 +106,15 @@ export const useLevelSetsSection = (editionId: number) => {
     });
   };
 
+  // DELETE
+  const [deleteSet] = useDeleteLevelSetMutation();
+  const handleDeleteSet = (set: LevelSet) => {
+    globalErrorWrapper(async () => {
+      await deleteSet({ variables: { levelSetId: set.levelSetId } });
+      refetch();
+    });
+  };
+
   return {
     levelSets,
     selectedLevelSets,
@@ -125,5 +135,7 @@ export const useLevelSetsSection = (editionId: number) => {
     handleEditSet,
 
     selectedLevelSet,
+
+    handleDeleteSet,
   };
 };

@@ -245,6 +245,10 @@ type Mutation {
     levels: [LevelInputType!]!
   ): [LevelType!]!
 
+  copyLevelSet(
+    levelSet: Int!
+  ): [LevelType!]!
+
   editLevelSet(
     levelSet: Int!,
     levels: [LevelInputType!]!

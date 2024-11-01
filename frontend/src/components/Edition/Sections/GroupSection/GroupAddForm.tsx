@@ -37,6 +37,7 @@ type AddGroupFormProps = {
   editionId: number;
   initSelected?: Student[];
   initValues?: GroupFormValues;
+  title: string;
 };
 
 export type AddGroupVariant = "select" | "import";
@@ -58,6 +59,7 @@ export const AddGroupForm = ({
     teacherId: "",
     usosId: 0,
   },
+  title,
 }: AddGroupFormProps) => {
   const formik = useFormik({
     initialValues: {
@@ -132,7 +134,7 @@ export const AddGroupForm = ({
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>Add group</div>
+      <div style={styles.title}>{title}</div>
       <form onSubmit={formik.handleSubmit}>
         <div>
           <TextField
@@ -247,7 +249,7 @@ export const AddGroupForm = ({
           )}
         </div>
 
-        <button type="submit">Add Group</button>
+        <button type="submit">confirm</button>
       </form>
 
       {createError && <p style={styles.error}>Error: {createError}</p>}

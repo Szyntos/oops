@@ -17,6 +17,8 @@ import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useSetupGroupCsvParseMutation } from "../../graphql/setupGroupCSVParse.graphql.types";
 import { useSetupGroupEditMutation } from "../../graphql/setupGroupEdit.graphql.types";
 import { useDeleteGroupMutation } from "../../graphql/deleteGroup.graphql.types";
+import { useError } from "../common/useGlobalError";
+import { UPLOAD_FILES_URL } from "../../utils/constants";
 
 export type Group = NonNullable<
   SetupGroupsQuery["editionByPk"]
@@ -26,6 +28,8 @@ export type Teacher = SetupUsersQuery["users"][number];
 export type Student = SetupUsersQuery["users"][number];
 
 export const useGroupsSection = (editionId: number) => {
+  const { globalErrorWrapper, localErrorWrapper } = useError();
+
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
   const [isAddGroupOpen, setIsAddGroupOpen] = useState(false);
@@ -44,7 +48,6 @@ export const useGroupsSection = (editionId: number) => {
 
   const groups: Group[] = data?.editionByPk?.groups ?? [];
 
-  // TODO, this might be another hook
   const {
     weekdays,
     loading: weekdaysLoading,
@@ -67,32 +70,26 @@ export const useGroupsSection = (editionId: number) => {
     usersData?.users.filter(
       (u) => u.role.toLocaleUpperCase() === UsersRolesType.Student,
     ) ?? [];
-  // TODO end
 
+  // ADD
   const [createGroup] = useSetupGroupCreateMutation();
   const handleAddGroup = async (
     values: GroupFormValues,
     selectedStudents: Student[],
   ) => {
-    errorWrapper(async () => {
+    localErrorWrapper(setFormError, async () => {
       await createGroup({
         variables: {
+          ...values,
           editionId,
-          startTime: values.startTime,
-          endTime: values.endTime,
           teacherId: parseInt(values.teacherId),
-          usosId: values.usosId,
           weekdayId: parseInt(values.weekdayId),
           users: selectedStudents.map((s) => {
             return {
+              ...s,
               createFirebaseUser: false,
               email: `${s.indexNumber}@student.agh.edu.pl`,
-              firstName: s.firstName,
-              indexNumber: s.indexNumber,
               label: "",
-              nick: s.nick,
-              role: s.role,
-              secondName: s.secondName,
               sendEmail: false,
             };
           }),
@@ -103,15 +100,63 @@ export const useGroupsSection = (editionId: number) => {
     });
   };
 
+  // EDIT
+  const [selectedGroup, setSelectedGroup] = useState<Group | undefined>(
+    undefined,
+  );
+  const [isEditGroupOpen, setIsEditGroupOpen] = useState(false);
+  const openEditDialog = (group: Group) => {
+    setSelectedGroup(group);
+    setIsEditGroupOpen(true);
+  };
+  const closeEditDialog = () => {
+    setSelectedGroup(undefined);
+    setIsEditGroupOpen(false);
+  };
+  const [variant, setVariant] = useState<AddGroupVariant>("import");
+
+  const [editGroup] = useSetupGroupEditMutation();
+  const handleEditGroupConfirm = async (
+    values: GroupFormValues,
+    selectedStudents: Student[],
+  ) => {
+    localErrorWrapper(setFormError, async () => {
+      await editGroup({
+        variables: {
+          groupId: parseInt(selectedGroup?.groupsId ?? "-1"),
+          startTime: values.startTime,
+          endTime: values.endTime,
+          teacherId: parseInt(values.teacherId),
+          usosId: values.usosId,
+          weekdayId: parseInt(values.weekdayId),
+          userIds: selectedStudents.map((s) => parseInt(s.userId)) ?? [],
+        },
+      });
+      refetch();
+      closeEditDialog();
+    });
+  };
+
+  // DELETE
+  const [deleteGroup] = useDeleteGroupMutation();
+  const handleDeleteGroup = async (group: Group) => {
+    globalErrorWrapper(async () => {
+      await deleteGroup({ variables: { groupId: parseInt(group.groupsId) } });
+      refetch();
+    });
+  };
+
+  // IMPORT
   // TODO to another hook
   const [parseCSV] = useSetupGroupCsvParseMutation();
   const handleUploadStudents = async (
     editionId: number,
     formData: FormData,
   ): Promise<Student[]> => {
+    // TODO maybe global error wrapper with return ?
     try {
       // upload file
-      const res = await fetch("http://localhost:9090/files/upload", {
+      const res = await fetch(UPLOAD_FILES_URL, {
         method: "POST",
         body: formData,
       });
@@ -149,57 +194,7 @@ export const useGroupsSection = (editionId: number) => {
     }
   };
 
-  const [variant, setVariant] = useState<AddGroupVariant>("import");
-
-  const [selectedGroup, setSelectedGroup] = useState<Group | undefined>(
-    undefined,
-  );
-
-  const [isEditGroupOpen, setIsEditGroupOpen] = useState(false);
-  const openEditDialog = (group: Group) => {
-    setSelectedGroup(group);
-    setIsEditGroupOpen(true);
-  };
-  const closeEditDialog = () => {
-    setSelectedGroup(undefined);
-    setIsEditGroupOpen(false);
-  };
-
-  const [editGroup] = useSetupGroupEditMutation();
-  const handleEditGroupConfirm = async (
-    values: GroupFormValues,
-    selectedStudents: Student[],
-  ) => {
-    console.log(selectedStudents);
-    errorWrapper(async () => {
-      await editGroup({
-        variables: {
-          groupId: parseInt(selectedGroup?.groupsId ?? "-1"),
-          startTime: values.startTime,
-          endTime: values.endTime,
-          teacherId: parseInt(values.teacherId),
-          usosId: values.usosId,
-          weekdayId: parseInt(values.weekdayId),
-          // users: selectedStudents.map((s) => {
-          //   return {
-          //     createFirebaseUser: false,
-          //     email: `${s.indexNumber}@student.agh.edu.pl`,
-          //     firstName: s.firstName,
-          //     indexNumber: s.indexNumber,
-          //     label: "",
-          //     nick: s.nick,
-          //     role: s.role,
-          //     secondName: s.secondName,
-          //     sendEmail: false,
-          //   };
-          // }),
-        },
-      });
-      refetch();
-      closeEditDialog();
-    });
-  };
-
+  // GROUP CHANGE
   const handleStudentGroupChange = (
     userId: string,
     groupId: string | undefined,
@@ -207,27 +202,6 @@ export const useGroupsSection = (editionId: number) => {
     console.log(userId);
     console.log(groupId);
     // TODO change user group
-  };
-
-  const [deleteGroup] = useDeleteGroupMutation();
-  const handleDeleteGroup = async (group: Group) => {
-    try {
-      await deleteGroup({ variables: { groupId: parseInt(group.groupsId) } });
-      refetch();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const errorWrapper = (foo: () => void) => {
-    try {
-      foo();
-    } catch (error) {
-      console.error(error);
-      setFormError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
   };
 
   return {

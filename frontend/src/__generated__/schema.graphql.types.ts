@@ -8611,6 +8611,10 @@ export type UserGroupsVarianceOrderBy = {
   userId?: InputMaybe<OrderBy>;
 };
 
+export type UserIdsType = {
+  userIds: Array<Scalars["Int"]["input"]>;
+};
+
 /** columns and relationships of "user_level" */
 export type UserLevel = {
   __typename?: "UserLevel";
@@ -10464,6 +10468,7 @@ export type Mutation_Root = {
   editEdition?: Maybe<EditionType>;
   editGradingCheck?: Maybe<GradingChecksType>;
   editGroup?: Maybe<GroupType>;
+  editGroupWithUsers?: Maybe<GroupType>;
   editLevel?: Maybe<LevelType>;
   editPoints?: Maybe<PointType>;
   editSubcategory?: Maybe<SubcategoryType>;
@@ -11187,6 +11192,19 @@ export type Mutation_RootEditGroupArgs = {
   label?: InputMaybe<Scalars["String"]["input"]>;
   startTime?: InputMaybe<Scalars["String"]["input"]>;
   teacherId?: InputMaybe<Scalars["Int"]["input"]>;
+  usosId?: InputMaybe<Scalars["Int"]["input"]>;
+  weekdayId?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+/** mutation root */
+export type Mutation_RootEditGroupWithUsersArgs = {
+  endTime?: InputMaybe<Scalars["String"]["input"]>;
+  groupId: Scalars["Int"]["input"];
+  groupName?: InputMaybe<Scalars["String"]["input"]>;
+  label?: InputMaybe<Scalars["String"]["input"]>;
+  startTime?: InputMaybe<Scalars["String"]["input"]>;
+  teacherId?: InputMaybe<Scalars["Int"]["input"]>;
+  users: UserIdsType;
   usosId?: InputMaybe<Scalars["Int"]["input"]>;
   weekdayId?: InputMaybe<Scalars["Int"]["input"]>;
 };

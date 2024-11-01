@@ -10,11 +10,12 @@ export type SetupGroupEditMutationVariables = Types.Exact<{
   usosId: Types.Scalars["Int"]["input"];
   weekdayId: Types.Scalars["Int"]["input"];
   teacherId: Types.Scalars["Int"]["input"];
+  userIds: Array<Types.Scalars["Int"]["input"]> | Types.Scalars["Int"]["input"];
 }>;
 
 export type SetupGroupEditMutation = {
   __typename?: "mutation_root";
-  editGroup?: { __typename?: "GroupType"; usosId: number } | null;
+  editGroupWithUsers?: { __typename?: "GroupType"; groupsId: string } | null;
 };
 
 export const SetupGroupEditDocument = gql`
@@ -25,16 +26,18 @@ export const SetupGroupEditDocument = gql`
     $usosId: Int!
     $weekdayId: Int!
     $teacherId: Int!
+    $userIds: [Int!]!
   ) {
-    editGroup(
+    editGroupWithUsers(
       groupId: $groupId
       endTime: $endTime
       startTime: $startTime
       teacherId: $teacherId
       usosId: $usosId
       weekdayId: $weekdayId
+      users: { userIds: $userIds }
     ) {
-      usosId
+      groupsId
     }
   }
 `;
@@ -62,6 +65,7 @@ export type SetupGroupEditMutationFn = Apollo.MutationFunction<
  *      usosId: // value for 'usosId'
  *      weekdayId: // value for 'weekdayId'
  *      teacherId: // value for 'teacherId'
+ *      userIds: // value for 'userIds'
  *   },
  * });
  */

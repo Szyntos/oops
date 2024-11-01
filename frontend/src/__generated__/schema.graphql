@@ -12063,6 +12063,10 @@ input UserGroupsVarianceOrderBy {
   userId: OrderBy
 }
 
+input UserIdsType {
+  userIds: [Int!]!
+}
+
 """
 columns and relationships of "user_level"
 """
@@ -15133,6 +15137,17 @@ type mutation_root {
     label: String
     startTime: String
     teacherId: Int
+    usosId: Int
+    weekdayId: Int
+  ): GroupType
+  editGroupWithUsers(
+    endTime: String
+    groupId: Int!
+    groupName: String
+    label: String
+    startTime: String
+    teacherId: Int
+    users: UserIdsType!
     usosId: Int
     weekdayId: Int
   ): GroupType

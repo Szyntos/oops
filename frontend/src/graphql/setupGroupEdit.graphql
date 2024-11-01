@@ -5,15 +5,17 @@ mutation SetupGroupEdit(
   $usosId: Int!
   $weekdayId: Int!
   $teacherId: Int!
+  $userIds: [Int!]!
 ) {
-  editGroup(
+  editGroupWithUsers(
     groupId: $groupId
     endTime: $endTime
     startTime: $startTime
     teacherId: $teacherId
     usosId: $usosId
     weekdayId: $weekdayId
+    users: { userIds: $userIds }
   ) {
-    usosId
+    groupsId
   }
 }

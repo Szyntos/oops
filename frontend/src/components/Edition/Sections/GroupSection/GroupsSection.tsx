@@ -67,6 +67,7 @@ export const GroupsSection = () => {
           handleUploadStudents={handleUploadStudents}
           editionId={editionId}
           variant={variant}
+          title={"Add group"}
         />
       </Dialog>
 
@@ -92,6 +93,7 @@ export const GroupsSection = () => {
                 }
               : undefined
           }
+          title="Edit group"
         />
       </Dialog>
     </div>

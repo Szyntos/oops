@@ -22,6 +22,7 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
+      levelSet: number;
       edition?: {
         __typename?: "EditionType";
         editionId: string;
@@ -52,6 +53,7 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
+      levelSet: number;
       edition?: {
         __typename?: "EditionType";
         editionId: string;
@@ -82,6 +84,7 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
+      levelSet: number;
       edition?: {
         __typename?: "EditionType";
         editionId: string;
@@ -134,6 +137,7 @@ export const NeighboringLevelsDocument = gql`
           createdAt
           updatedAt
         }
+        levelSet
       }
       nextLevel {
         highest
@@ -161,6 +165,7 @@ export const NeighboringLevelsDocument = gql`
           createdAt
           updatedAt
         }
+        levelSet
       }
       prevLevel {
         highest
@@ -188,6 +193,7 @@ export const NeighboringLevelsDocument = gql`
           createdAt
           updatedAt
         }
+        levelSet
       }
     }
   }

@@ -1,15 +1,18 @@
 import { Styles } from "../../../../../utils/Styles";
 import { TextField } from "@mui/material";
 import { useState } from "react";
+import { Image } from "../../../../images/Image";
 
 export type RowLevel = {
   name: string;
   maxPoints: number;
   grade: string;
+  imageId?: string;
 };
 
 type LevelRowProps = {
   initialValues: RowLevel;
+  minPoints?: number;
   ordinal?: number;
   blockUp?: boolean;
   blockDown?: boolean;
@@ -17,12 +20,7 @@ type LevelRowProps = {
   handleDelete: (ordinal: number) => void;
   handleUp: (ordinal: number) => void;
   handleDown: (ordinal: number) => void;
-  display: {
-    direction: boolean;
-    add: boolean;
-    delete: boolean;
-  };
-  disabled?: boolean;
+  varinat: "add" | "display";
 };
 
 // TODO make all row editable -> support error messages
@@ -30,14 +28,14 @@ type LevelRowProps = {
 export const LevelRow = ({
   initialValues,
   ordinal,
+  minPoints,
   blockUp = false,
   blockDown = false,
   handleAdd,
   handleDelete,
   handleUp,
   handleDown,
-  display,
-  disabled = false,
+  varinat,
 }: LevelRowProps) => {
   const [maxPoints, setMaxPoints] = useState<number>(initialValues.maxPoints);
   const [name, setName] = useState<string>(initialValues.name);
@@ -45,11 +43,24 @@ export const LevelRow = ({
 
   return (
     <div style={styles.innerContainer}>
+      {varinat === "display" && (
+        <Image size={64} disabled={false} id={initialValues.imageId} />
+      )}
+
       <TextField
         name="ordinal"
         label="ordinal"
         variant="outlined"
         value={ordinal ?? "?"}
+        style={styles.points}
+        disabled={true}
+      />
+
+      <TextField
+        name="min"
+        label="min"
+        variant="outlined"
+        value={minPoints ?? "?"}
         style={styles.points}
         disabled={true}
       />
@@ -65,11 +76,10 @@ export const LevelRow = ({
         helperText={undefined}
         style={styles.points}
         type="number"
-        disabled={disabled}
+        disabled={varinat === "display"}
       />
 
       <TextField
-        fullWidth
         name="name"
         label="name"
         variant="outlined"
@@ -79,11 +89,10 @@ export const LevelRow = ({
         error={undefined}
         helperText={undefined}
         style={styles.number}
-        disabled={disabled}
+        disabled={varinat === "display"}
       />
 
       <TextField
-        fullWidth
         name="grade"
         label="grade"
         variant="outlined"
@@ -93,11 +102,11 @@ export const LevelRow = ({
         error={undefined}
         helperText={undefined}
         style={styles.number}
-        disabled={disabled}
+        disabled={varinat === "display"}
       />
 
       <div>
-        {display.direction && ordinal && (
+        {varinat === "display" && ordinal && (
           <div>
             <button
               type="button"
@@ -113,18 +122,18 @@ export const LevelRow = ({
             >
               do
             </button>
+            <button type="button" onClick={() => handleDelete(ordinal)}>
+              -
+            </button>
           </div>
         )}
-        {display.delete && ordinal && (
-          <button type="button" onClick={() => handleDelete(ordinal)}>
-            -
-          </button>
-        )}
-        {display.add && (
+
+        {varinat === "add" && (
           <button
             type="button"
             onClick={() =>
               handleAdd({
+                imageId: initialValues.imageId,
                 name,
                 grade,
                 maxPoints,

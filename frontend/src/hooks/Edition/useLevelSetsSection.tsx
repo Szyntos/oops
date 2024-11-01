@@ -10,6 +10,7 @@ import { useSetupLevelSetEditionRemoveMutation } from "../../graphql/setupLevelS
 import { useAddLevelSetMutation } from "../../graphql/addLevelSet.graphql.types";
 import { RowLevel } from "../../components/Edition/Sections/LevelsSection/LevelsRows/LevelRow";
 import { useDeleteLevelSetMutation } from "../../graphql/deleteLevelSet.graphql.types";
+import { useFilesQuery } from "../../graphql/files.graphql.types";
 
 export type LevelSet = SetupLevelSetsQuery["getLevelSets"][number];
 
@@ -23,6 +24,17 @@ export const useLevelSetsSection = (editionId: number) => {
   const selectedLevelSets: LevelSet[] = levelSets.filter(
     (s) => s && parseInt(s.editionId as string) === editionId,
   );
+
+  const {
+    data: imageData,
+    loading: imageLoading,
+    error: imageError,
+  } = useFilesQuery({ variables: { paths: ["image/level"] } });
+
+  const imageIds: string[] =
+    imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>
+      i.files.map((f) => f.fileId),
+    ) ?? [];
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [selectedLevelSet, setSelectedLevelSet] = useState<
@@ -118,8 +130,9 @@ export const useLevelSetsSection = (editionId: number) => {
   return {
     levelSets,
     selectedLevelSets,
-    loading,
-    error,
+    imageIds,
+    loading: loading || imageLoading,
+    error: error || imageError,
 
     handleSelectSet,
     formError,

@@ -13,6 +13,7 @@ export const LevelSetsSection = () => {
 
   const {
     levelSets,
+    imageIds,
     selectedLevelSets,
     loading,
     error,
@@ -46,29 +47,30 @@ export const LevelSetsSection = () => {
         levelSets={selectedLevelSets}
         selectedLevelSets={selectedLevelSets}
         handleSelect={handleSelectSet}
-        title={"Selected level set"}
         handleEdit={openEditSet}
         handleDelete={handleDeleteSet}
+        title={"Selected level set"}
       />
       <LevelSetsList
         levelSets={levelSets}
         selectedLevelSets={selectedLevelSets}
         handleSelect={handleSelectSet}
-        title={"All level sets"}
         handleEdit={openEditSet}
         handleDelete={handleDeleteSet}
+        title={"All level sets"}
       />
 
-      <Dialog open={isAddSetOpen}>
+      <Dialog open={isAddSetOpen} maxWidth={"lg"}>
         <CloseHeader onCloseClick={closeAddSet} />
         <AddLevelFakeForm
           formError={formError}
           initialLevelValues={[]}
           handleAdd={handleAddSet}
+          imageIds={imageIds}
         />
       </Dialog>
 
-      <Dialog open={isEditSetOpen}>
+      <Dialog open={isEditSetOpen} maxWidth={"lg"}>
         <CloseHeader onCloseClick={closeEditSet} />
         <AddLevelFakeForm
           initialLevelValues={
@@ -78,11 +80,13 @@ export const LevelSetsSection = () => {
                 name: l.levelName,
                 maxPoints: parseInt(l.maximumPoints),
                 grade: l.grade,
+                imageId: l.imageFile?.fileId,
               };
             }) ?? []
           }
           formError={formError}
           handleAdd={handleEditSet}
+          imageIds={imageIds}
         />
       </Dialog>
     </div>

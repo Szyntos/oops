@@ -15,12 +15,17 @@ export const CategoriesSection = () => {
     selectedCategories,
     loading,
     error,
-    handleSelectClick,
-    handleCreate,
-    createCategoryError,
-    isOpen,
-    closeDialog,
-    openDialog,
+    formError,
+    selectedCategory,
+    isAddCategory,
+    handleSelectCategory,
+    openAddCategory,
+    closeAddCategory,
+    handleAddCategory,
+    iseEditCategory,
+    openEditCategory,
+    closeEditCategory,
+    handleEditCategory,
   } = useCategoriesSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -28,26 +33,45 @@ export const CategoriesSection = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openDialog}>add category</button>
+      <button onClick={openAddCategory}>add category</button>
 
       <CategoriesList
         categories={selectedCategories}
         selectedCategories={selectedCategories}
-        handleSelectCategoryClick={handleSelectClick}
+        handleSelectCategoryClick={handleSelectCategory}
+        handleEditCategoryClick={openEditCategory}
         title={"Selected categories"}
       />
       <CategoriesList
         categories={categories}
         selectedCategories={selectedCategories}
-        handleSelectCategoryClick={handleSelectClick}
+        handleSelectCategoryClick={handleSelectCategory}
         title={"All categories"}
+        handleEditCategoryClick={openEditCategory}
       />
 
-      <Dialog open={isOpen}>
-        <CloseHeader onCloseClick={closeDialog} />
+      <Dialog open={isAddCategory}>
+        <CloseHeader onCloseClick={closeAddCategory} />
         <AddCategoryForm
-          createError={createCategoryError}
-          handleAddCategory={handleCreate}
+          formError={formError}
+          handleConfirm={handleAddCategory}
+          title={"Add Category"}
+        />
+      </Dialog>
+
+      <Dialog open={iseEditCategory}>
+        <CloseHeader onCloseClick={closeEditCategory} />
+        <AddCategoryForm
+          formError={formError}
+          handleConfirm={handleEditCategory}
+          title={"Edit Category"}
+          initialValues={selectedCategory}
+          initialSelectedSubcategories={
+            selectedCategory?.subcategories.map((s) => ({
+              name: s.subcategoryName,
+              max: parseInt(s.maxPoints),
+            })) ?? []
+          }
         />
       </Dialog>
     </div>

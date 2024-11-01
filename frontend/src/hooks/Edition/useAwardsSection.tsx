@@ -9,10 +9,21 @@ import { useSetupAwardEditionAddMutation } from "../../graphql/setupAwardEdition
 import { useSetupAwardEditionRemoveMutation } from "../../graphql/setupAwardEditionRemove.graphql.types";
 import { AwardFormValues } from "../../components/Edition/Sections/AwardsSection/AddAwardForm/AddAwardForm";
 import { useCategoriesSection } from "./categories/useCategoriesSection";
+import { useSetupAwardEditMutation } from "../../graphql/setupAwardEdit.graphql.types";
+import { useError } from "../common/useGlobalError";
+import { useFilesQuery } from "../../graphql/files.graphql.types";
 
 export type Award = SetupAwardsQuery["award"][number];
 
 export const useAwardsSection = (editionId: number) => {
+  const { globalErrorWrapper, localErrorWrapper } = useError();
+
+  const {
+    selectedCategories,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useCategoriesSection(editionId);
+
   const {
     data,
     loading: awardsLoading,
@@ -21,97 +32,124 @@ export const useAwardsSection = (editionId: number) => {
   } = useSetupAwardsQuery();
 
   const {
-    selectedCategories,
-    loading: categoriesLoading,
-    error: categoriesError,
-  } = useCategoriesSection(editionId);
+    data: imageData,
+    loading: imageLoading,
+    error: imageError,
+  } = useFilesQuery({ variables: { paths: ["image/award"] } });
+
+  const imageIds: string[] =
+    imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>
+      i.files.map((f) => f.fileId),
+    ) ?? [];
 
   const awards: Award[] = data?.award ?? [];
 
-  const selectedAwards: Award[] = awards.filter((a) => {
-    const found = a.awardEditions.find(
+  const selectedAwards: Award[] = awards.filter((a) =>
+    a.awardEditions.some(
       (edition) => edition.editionId === editionId.toString(),
-    );
-    return found !== undefined;
-  });
+    ),
+  );
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [createAward] = useSetupAwardCreateMutation();
-  const [createAwardError, setCreateAwardError] = useState<string | undefined>(
+  const [formError, setFormError] = useState<string | undefined>(undefined);
+  const [selectedAward, setSelectedAward] = useState<Award | undefined>(
     undefined,
   );
 
-  const [addAward] = useSetupAwardEditionAddMutation();
-  const [removeAward] = useSetupAwardEditionRemoveMutation();
+  // ADD AWARD
 
-  const closeDialog = () => {
-    setIsOpen(false);
-    setCreateAwardError(undefined);
+  const [isAddAward, setIsAddAward] = useState(false);
+  const openAddAward = () => {
+    setIsAddAward(true);
+  };
+  const closeAddAward = () => {
+    setIsAddAward(false);
+    setFormError(undefined);
   };
 
-  const handleCreate = async (values: AwardFormValues) => {
-    try {
+  const [createAward] = useSetupAwardCreateMutation();
+  const handleAddAward = async (values: AwardFormValues) => {
+    localErrorWrapper(setFormError, async () => {
       await createAward({
         variables: {
-          awardName: values.awardName,
-          awardType: values.awardType,
-          awardValue: values.awardValue,
+          ...values,
           categoryId: parseInt(values.categoryId),
-          description: values.description,
-          maxUsages: values.maxUsages,
+          fileId: parseInt(values.imageId ?? "-1"),
           label: "",
-          fileId: values.imageId,
         },
       });
-
       refetch();
-      closeDialog();
-    } catch (error) {
-      console.error(error);
-
-      setCreateAwardError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+      closeAddAward();
+    });
   };
 
-  const handleSelectClick = async (award: Award) => {
-    const isAwardSelected = !!selectedAwards.find((a) => {
-      return a.awardId === award.awardId;
-    });
-
+  const [addAward] = useSetupAwardEditionAddMutation();
+  const [removeAward] = useSetupAwardEditionRemoveMutation();
+  const handleSelectAward = async (award: Award) => {
+    const isAwardSelected = selectedAwards.some(
+      (a) => a.awardId === award.awardId,
+    );
     const variables = {
-      variables: {
-        editionId,
-        awardId: parseInt(award.awardId),
-      },
+      editionId,
+      awardId: parseInt(award.awardId),
     };
-
-    try {
-      // TODO add some kind of global error
-      if (isAwardSelected) {
-        await removeAward(variables);
-      } else {
-        await addAward(variables);
-      }
+    globalErrorWrapper(async () => {
+      isAwardSelected
+        ? await removeAward({ variables })
+        : await addAward({ variables });
       refetch();
-    } catch (error) {
-      console.error(error);
-    }
+    });
+  };
+
+  // EDIT AWARD
+
+  const [isEditAward, setIsEditAward] = useState(false);
+  const openEditAward = (award: Award) => {
+    setSelectedAward(award);
+    setIsEditAward(true);
+  };
+  const closeEditAward = () => {
+    setIsEditAward(false);
+    setSelectedAward(undefined);
+    setFormError(undefined);
+  };
+
+  const [editAward] = useSetupAwardEditMutation();
+  const handleEditAward = (values: AwardFormValues) => {
+    localErrorWrapper(setFormError, async () => {
+      await editAward({
+        variables: {
+          ...values,
+          awardId: parseInt(selectedAward?.awardId ?? "-1"),
+          categoryId: parseInt(values.categoryId),
+          fileId: parseInt(values.imageId ?? "-1"),
+        },
+      });
+      refetch();
+      closeEditAward();
+    });
   };
 
   return {
     awards,
     selectedAwards,
     formCategories: selectedCategories,
-    loading: awardsLoading || categoriesLoading,
-    error: awardsError || categoriesError,
-    handleSelectClick,
-    handleCreate,
-    createAwardError,
-    isOpen,
-    closeDialog,
-    openDialog: () => setIsOpen(true),
+    imageIds,
+    loading: awardsLoading || categoriesLoading || imageLoading,
+    error: awardsError || categoriesError || imageError,
+
+    handleSelectAward,
+    formError,
+
+    isAddAward,
+    closeAddAward,
+    openAddAward,
+    handleAddAward,
+
+    isEditAward,
+    openEditAward,
+    closeEditAward,
+    handleEditAward,
+
+    selectedAward,
   };
 };

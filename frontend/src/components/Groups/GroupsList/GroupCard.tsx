@@ -1,5 +1,5 @@
 import { Group } from "../../../hooks/common/useGroupsData";
-import { FILES_URL } from "../../../utils/constants";
+import { FETCH_FILES_URL } from "../../../utils/constants";
 import { Styles } from "../../../utils/Styles";
 import { EditableIndicator } from "../../EditableIndicator";
 
@@ -17,7 +17,7 @@ export const GroupCard = ({
   return (
     <div style={styles.container} onClick={onClick}>
       <img
-        src={`${FILES_URL}${group.imageId}`}
+        src={`${FETCH_FILES_URL}${group.imageId}`}
         alt={`img id ${group.imageId}`}
         style={styles.img}
       />

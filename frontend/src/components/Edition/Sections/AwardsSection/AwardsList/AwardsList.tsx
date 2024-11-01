@@ -6,14 +6,16 @@ import { AwardCard } from "./AwardCard";
 type AwardsListProps = {
   awards: Award[];
   selectedAwards: Award[];
-  handleSelectAwardClick: (award: Award) => void;
+  handleSelectAward: (award: Award) => void;
+  handleEditAward: (award: Award) => void;
   title: string;
 };
 
 export const AwardsList = ({
-  awards: awards,
+  awards,
   selectedAwards,
-  handleSelectAwardClick,
+  handleSelectAward,
+  handleEditAward,
   title,
 }: AwardsListProps) => {
   return (
@@ -23,11 +25,13 @@ export const AwardsList = ({
         {awards.length !== 0
           ? awards.map((award) => (
               <AwardCard
+                key={award.awardId}
                 award={award}
-                isSelected={
-                  !!selectedAwards.find((a) => a.awardId === award.awardId)
-                }
-                onSelectClick={() => handleSelectAwardClick(award)}
+                isSelected={selectedAwards.some(
+                  (a) => a.awardId === award.awardId,
+                )}
+                onSelectClick={() => handleSelectAward(award)}
+                onEditClick={() => handleEditAward(award)}
               />
             ))
           : EMPTY_FIELD_STRING}

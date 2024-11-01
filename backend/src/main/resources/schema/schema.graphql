@@ -325,6 +325,7 @@ type Query {
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
+  getLevelSets: [LevelSetType!]!
 
 }
 
@@ -645,6 +646,12 @@ type ParsedUsersTypeType {
 type NotValidUserType {
   user: UserType!
   group: GroupType!
+}
+
+type LevelSetType {
+  levelSetId: Int!,
+  editionId: ID,
+  levels: [LevelType!]!
 }
 
 input SubcategoryInputType {

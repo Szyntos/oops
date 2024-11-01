@@ -234,6 +234,19 @@ class LevelsDataFetcher {
 
     @DgsQuery
     @Transactional
+    fun getLevelSets(): List<LevelSet>{
+        return levelsRepository.findAll()
+            .groupBy { it.levelSet }
+            .map { (levelSet, levels) ->
+                LevelSet(
+                    levelSet,
+                    levels.first().edition?.editionId,
+                    levels.sortedBy { it.ordinalNumber })
+            }
+    }
+
+    @DgsQuery
+    @Transactional
     fun getNeighboringLevels(@InputArgument studentId: Long, @InputArgument editionId: Long): NeighboringLevelsType {
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
@@ -466,4 +479,10 @@ data class LevelInput(
     val maximumPoints: Double,
     val grade: Double,
     val imageFileId: Long? = null
+)
+
+data class LevelSet(
+    val levelSetId: Int,
+    val editionId: Long?,
+    val levels: List<Levels>
 )

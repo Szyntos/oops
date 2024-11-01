@@ -20,6 +20,15 @@ export type Section = {
 
 const sections: Section[] = [
   {
+    title: "categories",
+    path: pathsGenerator.coordinator.EditionChildren.Categories,
+  },
+  {
+    title: "levels",
+    path: pathsGenerator.coordinator.EditionChildren.Levels,
+  },
+  // grading checks
+  {
     title: "awards",
     path: pathsGenerator.coordinator.EditionChildren.Awards,
   },
@@ -28,24 +37,16 @@ const sections: Section[] = [
     path: pathsGenerator.coordinator.EditionChildren.Chests,
   },
   {
-    title: "categories",
-    path: pathsGenerator.coordinator.EditionChildren.Categories,
-  },
-  {
-    title: "files",
-    path: pathsGenerator.coordinator.EditionChildren.Files,
-  },
-  {
-    title: "levels",
-    path: pathsGenerator.coordinator.EditionChildren.Levels,
+    title: "users",
+    path: pathsGenerator.coordinator.EditionChildren.Users,
   },
   {
     title: "groups",
     path: pathsGenerator.coordinator.EditionChildren.Groups,
   },
   {
-    title: "users",
-    path: pathsGenerator.coordinator.EditionChildren.Users,
+    title: "files",
+    path: pathsGenerator.coordinator.EditionChildren.Files,
   },
 ];
 

@@ -14757,6 +14757,8 @@ type mutation_root {
   assignPhotoToLevel(fileId: Int, levelId: Int!): Boolean
   assignPhotoToUser(fileId: Int, userId: Int!): Boolean
   assignPhotosToGroups(editionId: Int!): Boolean
+  changeStudentGroup(groupId: Int!, userId: Int!): UserGroupType
+  copyAward(awardId: Int!): AwardType
   copyChest(chestId: Int!, editionId: Int!): ChestType
 
   """
@@ -15797,6 +15799,7 @@ type mutation_root {
     onConflict: WeekdaysOnConflict
   ): Weekdays
   parseUsersFromCsv(editionId: Int!, fileId: Int!): ParsedUsersTypeType!
+  removeAward(awardId: Int!): Boolean
   removeAwardFromChest(awardId: Int!, chestId: Int!): Boolean
   removeAwardFromEdition(awardId: Int!, editionId: Int!): Boolean
   removeCategory(categoryId: Int!): Boolean

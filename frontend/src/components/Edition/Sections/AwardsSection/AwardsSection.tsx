@@ -33,6 +33,8 @@ export const AwardsSection = () => {
     handleEditAward,
 
     selectedAward,
+
+    handleDeleteAward,
   } = useAwardsSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -48,6 +50,7 @@ export const AwardsSection = () => {
         handleSelectAward={handleSelectAward}
         title={"Selected awards"}
         handleEditAward={openEditAward}
+        handleDeleteAward={handleDeleteAward}
       />
       <AwardsList
         awards={awards}
@@ -55,6 +58,7 @@ export const AwardsSection = () => {
         handleSelectAward={handleSelectAward}
         title={"All awards"}
         handleEditAward={openEditAward}
+        handleDeleteAward={handleDeleteAward}
       />
 
       <Dialog open={isAddAward}>

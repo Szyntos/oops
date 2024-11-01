@@ -37,7 +37,10 @@ export const SetupCategoriesDocument = gql`
       categoryEditions {
         editionId
       }
-      subcategories(orderBy: { ordinalNumber: ASC }) {
+      subcategories(
+        orderBy: { ordinalNumber: ASC }
+        where: { editionId: { _isNull: true } }
+      ) {
         editionId
         subcategoryId
         subcategoryName

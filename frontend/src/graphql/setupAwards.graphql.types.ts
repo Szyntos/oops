@@ -24,7 +24,7 @@ export type SetupAwardsQuery = {
 
 export const SetupAwardsDocument = gql`
   query SetupAwards {
-    award {
+    award(orderBy: { awardName: ASC }) {
       awardEditions {
         editionId
       }

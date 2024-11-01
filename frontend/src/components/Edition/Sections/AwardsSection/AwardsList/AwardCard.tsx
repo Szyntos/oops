@@ -9,6 +9,7 @@ type AwardCardProps = {
   onSelectClick: () => void;
   onEditClick: () => void;
   onDeleteClick: () => void;
+  onCopyClick: () => void;
 };
 
 export const AwardCard = ({
@@ -17,6 +18,7 @@ export const AwardCard = ({
   onSelectClick,
   onEditClick,
   onDeleteClick,
+  onCopyClick,
 }: AwardCardProps) => {
   return (
     <div
@@ -34,7 +36,7 @@ export const AwardCard = ({
         handleSelect={onSelectClick}
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
-        disableCopy={true}
+        handleCopy={onCopyClick}
       />
     </div>
   );

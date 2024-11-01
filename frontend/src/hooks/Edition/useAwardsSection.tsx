@@ -183,4 +183,6 @@ export const useAwardsSection = (editionId: number) => {
     handleDeleteAward,
     handleCopyAward,
   };
+
+  // TODO maybe section handles - edit, select, copy, delete should be returned in one object
 };

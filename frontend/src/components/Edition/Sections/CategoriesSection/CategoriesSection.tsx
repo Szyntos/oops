@@ -41,16 +41,16 @@ export const CategoriesSection = () => {
         selectedCategories={selectedCategories}
         handleSelectClick={handleSelectCategory}
         handleEditClick={openEditCategory}
-        title={"Selected categories"}
         handleDeleteClick={handleDeleteCategory}
+        title="Selected categories"
       />
       <CategoriesList
         categories={categories}
         selectedCategories={selectedCategories}
         handleSelectClick={handleSelectCategory}
-        title={"All categories"}
         handleEditClick={openEditCategory}
         handleDeleteClick={handleDeleteCategory}
+        title="All categories"
       />
 
       <Dialog open={isAddCategory}>

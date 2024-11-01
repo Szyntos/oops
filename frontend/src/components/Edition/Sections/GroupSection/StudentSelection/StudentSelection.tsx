@@ -16,13 +16,13 @@ export const StudentSelection = ({
   handleDelete,
 }: StudentSelectionProps) => {
   return (
-    <>
-      <div>Selected Students:</div>
+    <div>
       <SelectedStudentsList
         students={selectedStudents}
         handleDelete={handleDelete}
+        title="Selected Students"
       />
       <SelectStudent students={students} handleAddStudent={handleAdd} />
-    </>
+    </div>
   );
 };

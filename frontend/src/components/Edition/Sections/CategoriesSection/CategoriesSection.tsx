@@ -26,6 +26,7 @@ export const CategoriesSection = () => {
     openEditCategory,
     closeEditCategory,
     handleEditCategory,
+    handleDeleteCategory,
   } = useCategoriesSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -38,16 +39,18 @@ export const CategoriesSection = () => {
       <CategoriesList
         categories={selectedCategories}
         selectedCategories={selectedCategories}
-        handleSelectCategoryClick={handleSelectCategory}
-        handleEditCategoryClick={openEditCategory}
+        handleSelectClick={handleSelectCategory}
+        handleEditClick={openEditCategory}
         title={"Selected categories"}
+        handleDeleteClick={handleDeleteCategory}
       />
       <CategoriesList
         categories={categories}
         selectedCategories={selectedCategories}
-        handleSelectCategoryClick={handleSelectCategory}
+        handleSelectClick={handleSelectCategory}
         title={"All categories"}
-        handleEditCategoryClick={openEditCategory}
+        handleEditClick={openEditCategory}
+        handleDeleteClick={handleDeleteCategory}
       />
 
       <Dialog open={isAddCategory}>

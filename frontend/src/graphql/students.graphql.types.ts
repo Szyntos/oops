@@ -55,7 +55,7 @@ export const StudentsDocument = gql`
         userGroups: { group: { editionId: { _eq: $editionId } } }
       }
     ) {
-      userGroups(where: { group: { editionId: { _eq: "1" } } }) {
+      userGroups(where: { group: { editionId: { _eq: $editionId } } }) {
         user {
           userId
           firstName

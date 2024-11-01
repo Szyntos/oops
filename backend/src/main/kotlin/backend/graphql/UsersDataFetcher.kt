@@ -448,7 +448,8 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                                firstName: String,  secondName: String,
                                role: String,  email: String,
                                label: String = "",  createFirebaseUser: Boolean = false,
-                               sendEmail: Boolean = false): Users {
+                               sendEmail: Boolean = false,
+                               imageFileId: Long? = null): Users {
         val currentUser = userMapper.getCurrentUser()
 
         if (currentUser.userId != 0L && (currentUser.role != UsersRoles.COORDINATOR && currentUser.role != UsersRoles.TEACHER)) {
@@ -544,6 +545,9 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                 }
             }
             user.firebaseUid = firebaseUid
+        }
+        if (imageFileId != null) {
+            photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", user.userId, imageFileId)
         }
         return user
     }

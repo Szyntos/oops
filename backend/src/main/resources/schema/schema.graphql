@@ -665,6 +665,7 @@ input SubcategoryInputType {
 }
 
 input UsersInputTypeType {
+  userId: Int
   indexNumber: Int!
   nick: String!
   firstName: String!

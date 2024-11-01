@@ -15,18 +15,56 @@ import { useRef, useState } from "react";
 
 export type GroupFormValues = z.infer<typeof ValidationSchema>;
 
-const ValidationSchema = z.object({
-  startTime: z.string().min(1, "required"),
-  endTime: z.string().min(1, "required"),
-  weekdayId: z.string().min(1, "required"),
-  teacherId: z.string().min(1, "required"),
-  usosId: z.number().min(0),
-});
+const timeRegex = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
+
+const ValidationSchema = z
+  .object({
+    startTime: z
+      .string()
+      .min(1, { message: "required " })
+      .regex(timeRegex, { message: "Start Time must be in hh:mm format" }),
+    endTime: z
+      .string()
+      .min(1, { message: "required " })
+      .regex(timeRegex, { message: "End Time must be in hh:mm format" }),
+    weekdayId: z.string().min(1, { message: "required" }),
+    teacherId: z.string().min(1, { message: "required" }),
+    usosId: z
+      .number()
+      .min(1, { message: "USOS ID must be a non-negative number" }),
+  })
+  .refine(
+    (data) => {
+      const [startHour, startMinute] = data.startTime.split(":").map(Number);
+      const [endHour, endMinute] = data.endTime.split(":").map(Number);
+
+      if (startHour < endHour) return true;
+      if (startHour === endHour && startMinute < endMinute) return true;
+      return false;
+    },
+    {
+      message: "Start Time must be before End Time",
+      path: ["endTime"],
+    },
+  );
+
+type UsersInputType = {
+  userId: string | null;
+  indexNumber: number;
+  nick: string;
+  firstName: string;
+  secondName: string;
+  role: string;
+  email: string;
+  label: string;
+  createFirebaseUser: boolean;
+  sendEmail: boolean;
+};
 
 type AddGroupFormProps = {
   handleAddGroup: (
     values: GroupFormValues,
-    selectedStudents: Student[],
+    selectedStudents: UsersInputType[],
   ) => void;
   createError?: string;
   weekdays: Weekday[];
@@ -57,7 +95,7 @@ export const AddGroupForm = ({
     endTime: "",
     weekdayId: "",
     teacherId: "",
-    usosId: 0,
+    usosId: 1,
   },
   title,
 }: AddGroupFormProps) => {
@@ -79,7 +117,29 @@ export const AddGroupForm = ({
       }
     },
     onSubmit: (values: GroupFormValues) => {
-      handleAddGroup(values, selectedStudents);
+      const groupValues = {
+        startTime: values.startTime + ":00",
+        endTime: values.endTime + ":00",
+        weekdayId: values.weekdayId,
+        teacherId: values.teacherId,
+        usosId: values.usosId,
+      };
+      handleAddGroup(
+        groupValues,
+        selectedStudents.map((student) => ({
+          userId: student.userId,
+          indexNumber: student.indexNumber,
+          nick: student.nick,
+          firstName: student.firstName,
+          secondName: student.secondName,
+          role: student.role,
+          email: student.email,
+          label: "",
+          // TODO: change to true on production
+          createFirebaseUser: false,
+          sendEmail: false,
+        })),
+      );
     },
   });
 
@@ -142,7 +202,7 @@ export const AddGroupForm = ({
             name="startTime"
             label="Start Time"
             variant="outlined"
-            placeholder="xx:xx:xx"
+            placeholder="hh:mm"
             value={formik.values.startTime}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -155,7 +215,7 @@ export const AddGroupForm = ({
             name="endTime"
             label="End Time"
             variant="outlined"
-            placeholder="xx:xx:xx"
+            placeholder="hh:mm"
             value={formik.values.endTime}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

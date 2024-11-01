@@ -13,14 +13,16 @@ export const LevelRows = ({
   const [levels, setLevels] = useState<RowLevel[]>(initLevelValues);
 
   const handleAdd = (level: RowLevel) => {
-    setLevels((prev) => [
-      ...prev,
+    // TODO check if not duplicates
+    const updatedRows = [
+      ...levels,
       {
         name: level.name,
         maxPoints: level.maxPoints,
         grade: level.grade,
       },
-    ]);
+    ].sort((a, b) => a.maxPoints - b.maxPoints);
+    setLevels(updatedRows);
   };
 
   const handleDelete = (ordinal: number) => {
@@ -35,8 +37,10 @@ export const LevelRows = ({
   const handleUp = (ordinal: number) => {
     const index = ordinal - 1;
     const updated = levels.map((row, i) => {
-      if (i === index - 1) return levels[index];
-      if (i === index) return levels[index - 1];
+      if (i === index - 1)
+        return { ...levels[index], maxPoints: levels[index - 1].maxPoints };
+      if (i === index)
+        return { ...levels[index - 1], maxPoints: levels[index].maxPoints };
       return row;
     });
     setLevels(updated);
@@ -45,8 +49,10 @@ export const LevelRows = ({
   const handleDown = (ordinal: number) => {
     const index = ordinal - 1;
     const updated = levels.map((row, i) => {
-      if (i === index) return levels[index + 1];
-      if (i === index + 1) return levels[index];
+      if (i === index)
+        return { ...levels[index + 1], maxPoints: levels[index].maxPoints };
+      if (i === index + 1)
+        return { ...levels[index], maxPoints: levels[index + 1].maxPoints };
       return row;
     });
     setLevels(updated);

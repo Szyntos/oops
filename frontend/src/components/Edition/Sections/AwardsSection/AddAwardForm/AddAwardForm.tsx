@@ -1,5 +1,5 @@
 import { z, ZodError } from "zod";
-import { useFormik } from "formik";
+import { FormikErrors, useFormik } from "formik";
 import { Styles } from "../../../../../utils/Styles";
 import {
   TextField,
@@ -10,60 +10,70 @@ import {
 } from "@mui/material";
 import { AwardTypeType } from "../../../../../__generated__/schema.graphql.types";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
+import { SelectImage } from "../../../../inputs/SelectImage";
 
 const ValidationSchema = z.object({
   awardName: z.string().min(1),
   awardType: z.string().min(1),
   awardValue: z.number().min(0),
   categoryId: z.string().min(1),
-  description: z.string(),
+  description: z.string().min(1),
   maxUsages: z.number(),
-  imageId: z.number(),
+  imageId: z.string().min(1),
 });
 
 export type AwardFormValues = z.infer<typeof ValidationSchema>;
 
 type AddAwardFormProps = {
-  handleAddAward: (values: AwardFormValues) => void;
-  createError?: string;
+  handleConfirm: (values: AwardFormValues) => void;
+  formError?: string;
   categories: Category[];
+  initialValues?: AwardFormValues;
+  title: string;
+  imageIds: string[];
+};
+
+const defaultInitialValues: AwardFormValues = {
+  awardName: "",
+  awardType: "",
+  awardValue: 0,
+  categoryId: "",
+  description: "",
+  maxUsages: 0,
+  imageId: "",
 };
 
 const awardTypes = Object.values(AwardTypeType);
 
 export const AddAwardForm = ({
-  handleAddAward,
+  handleConfirm,
   categories,
-  createError,
+  imageIds,
+  formError,
+  initialValues = defaultInitialValues,
+  title,
 }: AddAwardFormProps) => {
   const formik = useFormik({
-    initialValues: {
-      awardName: "",
-      awardType: "",
-      awardValue: 0,
-      categoryId: "",
-      description: "",
-      maxUsages: 0,
-      imageId: 0,
-    },
+    initialValues,
     validate: (values: AwardFormValues) => {
+      const errors: FormikErrors<AwardFormValues> = {};
       try {
         ValidationSchema.parse(values);
       } catch (error) {
         if (error instanceof ZodError) {
-          return error.formErrors.fieldErrors;
+          Object.assign(errors, error.formErrors.fieldErrors);
         }
       }
-      return {};
+      return errors;
     },
     onSubmit: (values: AwardFormValues) => {
-      handleAddAward(values);
+      handleConfirm({ ...values });
     },
   });
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>Add Award</div>
+      <div style={styles.title}>{title}</div>
       <form onSubmit={formik.handleSubmit}>
         <div style={styles.fieldsContainer}>
           <TextField
@@ -77,7 +87,6 @@ export const AddAwardForm = ({
             error={Boolean(formik.touched.awardName && formik.errors.awardName)}
             helperText={formik.touched.awardName && formik.errors.awardName}
           />
-
           <FormControl fullWidth>
             <InputLabel>Category</InputLabel>
             <Select
@@ -99,7 +108,6 @@ export const AddAwardForm = ({
               <div style={{ color: "red" }}>{formik.errors.categoryId}</div>
             )}
           </FormControl>
-
           <FormControl fullWidth>
             <InputLabel>Award Type</InputLabel>
             <Select
@@ -121,7 +129,6 @@ export const AddAwardForm = ({
               <div style={{ color: "red" }}>{formik.errors.awardType}</div>
             )}
           </FormControl>
-
           <TextField
             fullWidth
             name="awardValue"
@@ -136,7 +143,6 @@ export const AddAwardForm = ({
             )}
             helperText={formik.touched.awardValue && formik.errors.awardValue}
           />
-
           <TextField
             fullWidth
             name="description"
@@ -150,7 +156,6 @@ export const AddAwardForm = ({
             )}
             helperText={formik.touched.description && formik.errors.description}
           />
-
           <TextField
             fullWidth
             name="maxUsages"
@@ -164,24 +169,22 @@ export const AddAwardForm = ({
             helperText={formik.touched.maxUsages && formik.errors.maxUsages}
           />
 
-          <TextField
-            fullWidth
-            name="imageId"
-            label="imageId"
-            type="number"
-            variant="outlined"
-            value={formik.values.imageId}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={Boolean(formik.touched.imageId && formik.errors.imageId)}
-            helperText={formik.touched.maxUsages && formik.errors.imageId}
+          <SelectImage
+            ids={imageIds}
+            selectedId={formik.values.imageId}
+            onSelectClick={(id: string) =>
+              formik.setValues({ ...formik.values, imageId: id })
+            }
+            error={
+              formik.errors.imageId && !formik.values.imageId
+                ? formik.errors.imageId
+                : undefined
+            }
           />
         </div>
-
-        <button type="submit">Add Award</button>
+        <button type="submit">confirm</button>
       </form>
-
-      {createError && <p style={styles.error}>Error: {createError}</p>}
+      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
 };

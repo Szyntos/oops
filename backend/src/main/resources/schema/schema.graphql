@@ -34,6 +34,11 @@ type Mutation {
     fileId: Int
     label: String = ""
   ): AwardType
+
+  copyAward(
+    awardId: Int!
+  ): AwardType
+
   addAwardToEdition(awardId: Int!, editionId: Int!): AwardEditionType
   addChestToUser(
     userId: Int!
@@ -146,6 +151,10 @@ type Mutation {
     fileId: Int,
     label: String
   ): AwardType
+
+  removeAward(
+    awardId: Int!
+  ): Boolean
 
   removeCategory(
     categoryId: Int!
@@ -263,6 +272,11 @@ type Mutation {
   ): Boolean
 
   addUserToGroup(
+    userId: Int!,
+    groupId: Int!
+  ): UserGroupType
+
+  changeStudentGroup(
     userId: Int!,
     groupId: Int!
   ): UserGroupType

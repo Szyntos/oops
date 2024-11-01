@@ -1,16 +1,19 @@
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
 import { Styles } from "../../../../../utils/Styles";
+import { SetupButtons } from "../../SetupButtons";
 
 type CategoryCardProps = {
   category: Category;
   isSelected: boolean;
-  onSelectClick: () => void;
+  handleSelectClick: () => void;
+  handleEditClick: () => void;
 };
 
 export const CategoryCard = ({
   category,
   isSelected,
-  onSelectClick,
+  handleSelectClick,
+  handleEditClick,
 }: CategoryCardProps) => {
   const getSubcategoriesString = (category: Category) => {
     const subcategoryNames = category.subcategories.map(
@@ -28,10 +31,15 @@ export const CategoryCard = ({
       }}
     >
       <div>{category.categoryName}</div>
-      <button onClick={onSelectClick}>
-        {isSelected ? "unselect" : "select"}
-      </button>
       <div>subcategories: {getSubcategoriesString(category)}</div>
+
+      <SetupButtons
+        selected={isSelected}
+        handleSelect={handleSelectClick}
+        handleEdit={handleEditClick}
+        disableCopy={true}
+        disableDelete={true}
+      />
     </div>
   );
 };

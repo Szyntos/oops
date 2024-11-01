@@ -17,6 +17,7 @@ export type SetupAwardsQuery = {
     imageFileId?: string | null;
     label: string;
     maxUsages: number;
+    categoryId: string;
     awardEditions: Array<{ __typename?: "AwardEdition"; editionId: string }>;
   }>;
 };
@@ -35,6 +36,7 @@ export const SetupAwardsDocument = gql`
       imageFileId
       label
       maxUsages
+      categoryId
     }
   }
 `;

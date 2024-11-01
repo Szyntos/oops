@@ -1,0 +1,23 @@
+mutation SetupAwardEdit(
+  $awardId: Int!
+  $awardName: String!
+  $awardType: String!
+  $awardValue: Float!
+  $categoryId: Int!
+  $description: String!
+  $maxUsages: Int!
+  $fileId: Int!
+) {
+  editAward(
+    awardId: $awardId
+    awardName: $awardName
+    awardType: $awardType
+    awardValue: $awardValue
+    categoryId: $categoryId
+    description: $description
+    maxUsages: $maxUsages
+    fileId: $fileId
+  ) {
+    awardId
+  }
+}

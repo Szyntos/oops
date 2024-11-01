@@ -332,6 +332,129 @@ class GroupsDataFetcher {
 
     @DgsMutation
     @Transactional
+    fun editGroupWithUsers(
+        @InputArgument groupId: Long,
+        @InputArgument groupName: String?,
+        @InputArgument usosId: Int?,
+        @InputArgument weekdayId: Long?,
+        @InputArgument startTime: Time?,
+        @InputArgument endTime: Time?,
+        @InputArgument teacherId: Long?,
+        @InputArgument label: String?,
+        @InputArgument users: UserIdsType
+    ): Groups {
+        val currentUser = userMapper.getCurrentUser()
+        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
+            throw IllegalArgumentException("Student cannot edit groups")
+        }
+
+        val group = groupsRepository.findById(groupId)
+            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+
+        if (currentUser.role == UsersRoles.TEACHER){
+            if (group.teacher.userId != currentUser.userId){
+                throw IllegalArgumentException("Teacher can only edit their groups")
+            }
+            if (usosId != null || weekdayId != null || startTime != null || endTime != null || teacherId != null){
+                throw IllegalArgumentException("Teacher can only edit groupName and label")
+            }
+        }
+
+        if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
+            throw IllegalArgumentException("Edition has already ended")
+        }
+
+        groupName?.let {
+            if (it != "" && groupsRepository.existsByGroupNameAndEdition(it, group.edition) && it != group.groupName) {
+                throw IllegalArgumentException("Group with name $it already exists for edition ${group.edition.editionId}")
+            }
+            group.groupName = it
+        }
+
+        usosId?.let {
+            if (groupsRepository.existsByUsosIdAndEdition(it.toLong(), group.edition) && it != group.usosId) {
+                throw IllegalArgumentException("Group with USOS ID $it already exists for edition ${group.edition.editionId}")
+            }
+            group.usosId = it
+        }
+
+        weekdayId?.let {
+            val weekday = weekdaysRepository.findById(it)
+                .orElseThrow { IllegalArgumentException("Invalid weekday ID") }
+            group.weekday = weekday
+        }
+
+        startTime?.let {
+            if (endTime != null && it.after(endTime)) {
+                throw IllegalArgumentException("Start time must be before end time")
+            }
+            group.startTime = it
+        }
+
+        endTime?.let {
+            if (startTime != null && startTime.after(it)) {
+                throw IllegalArgumentException("End time must be after start time")
+            }
+            group.endTime = it
+        }
+
+        teacherId?.let {
+            val teacher = usersRepository.findById(it)
+                .orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+            if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
+                throw IllegalArgumentException("User with ID $it is not a teacher nor a coordinator")
+            }
+            if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(
+                    teacher, group.weekday, group.startTime, group.endTime, group.edition
+                ) && it != group.teacher.userId
+            ) {
+                throw IllegalArgumentException("Teacher is already teaching a group at this time")
+            }
+            group.teacher = teacher
+        }
+
+        label?.let {
+            group.label = it
+        }
+
+        group.generatedName = generateGroupName(group.usosId, group.weekday, group.startTime, group.teacher)
+
+        val existingUsers = usersRepository.findByUserGroups_Group_GroupsId(groupId)
+        val inputUserIds = users.userIds.toSet()
+
+        // Remove userGroups not in input list
+        existingUsers.filter { it.userId !in inputUserIds }.filter { it.role == UsersRoles.STUDENT }
+            .forEach { userGroupsRepository.deleteByUserAndGroup(it, group) }
+
+        // users that are not in the group yet
+        users.userIds.filter { userId -> userId !in existingUsers.map { it.userId } }
+            .forEach { userId ->
+                val user = usersRepository.findById(userId)
+                    .orElseThrow { IllegalArgumentException("Invalid User ID: $userId") }
+                if (user.role != UsersRoles.STUDENT) {
+                    throw IllegalArgumentException("User with ID $userId is not a student")
+                }
+
+                if (userGroupsRepository.existsByUserAndGroup(user, group)){
+                    throw IllegalArgumentException("This User already exists in this Group")
+                }
+
+                if (userGroupsRepository.existsByUserAndGroup_Edition(user, group.edition)){
+                    throw IllegalArgumentException("This User already exists in a group in this Edition")
+                }
+
+                val userGroup = UserGroups(
+                    user = user,
+                    group = group
+                )
+                userGroupsRepository.save(userGroup)
+            }
+
+        return groupsRepository.save(group)
+    }
+
+    @DgsMutation
+    @Transactional
     fun removeGroup(@InputArgument groupId: Long): Boolean {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
@@ -639,6 +762,7 @@ data class GroupTeacherType(
 )
 
 data class UsersInputType (
+    val userId: Long? = -1,
     val indexNumber: Int,
     val nick: String,
     val firstName: String,
@@ -648,4 +772,8 @@ data class UsersInputType (
     val label: String,
     val createFirebaseUser: Boolean,
     val sendEmail: Boolean
+)
+
+data class UserIdsType(
+    val userIds: List<Long>
 )

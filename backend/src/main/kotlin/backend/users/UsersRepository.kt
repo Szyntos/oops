@@ -14,6 +14,6 @@ interface UsersRepository : JpaRepository<Users, Long> {
     fun findByIndexNumber(indexNumber: Int) : Users?
     fun findByUserGroups_Group_Edition(edition: Edition) : List<Users>
     fun findByFirebaseUid(firebaseUid: String) : Users?
-
     fun existsByEmail(email: String) : Boolean
+    fun existsByUserId(userId: Long) : Boolean
 }

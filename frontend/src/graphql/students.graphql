@@ -5,7 +5,7 @@ query Students($editionId: bigint!) {
       userGroups: { group: { editionId: { _eq: $editionId } } }
     }
   ) {
-    userGroups {
+    userGroups(where: { group: { editionId: { _eq: "1" } } }) {
       user {
         userId
         firstName

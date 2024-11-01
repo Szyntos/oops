@@ -36,6 +36,9 @@ import kotlin.math.min
 @DgsComponent
 class GroupsDataFetcher {
     @Autowired
+    private lateinit var photoAssigner: PhotoAssigner
+
+    @Autowired
     private lateinit var userMapper: UserMapper
 
     @Autowired
@@ -206,6 +209,7 @@ class GroupsDataFetcher {
             edition = edition
         )
         groupsRepository.save(group)
+        photoAssigner.assignPhotoToAssignee(groupsRepository, "image/group", group.groupsId, null)
         val userGroups = UserGroups(
             user = teacher,
             group = group
@@ -223,7 +227,8 @@ class GroupsDataFetcher {
                     it.email,
                     it.label,
                     it.createFirebaseUser,
-                    it.sendEmail
+                    it.sendEmail,
+                    it.imageFileId
                 )
             } else {
                 usersRepository.findByIndexNumber(it.indexNumber)
@@ -762,7 +767,6 @@ data class GroupTeacherType(
 )
 
 data class UsersInputType (
-    val userId: Long? = -1,
     val indexNumber: Int,
     val nick: String,
     val firstName: String,
@@ -770,6 +774,7 @@ data class UsersInputType (
     val role: String,
     val email: String,
     val label: String,
+    val imageFileId: Long?,
     val createFirebaseUser: Boolean,
     val sendEmail: Boolean
 )

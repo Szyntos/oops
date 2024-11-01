@@ -546,9 +546,8 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
             }
             user.firebaseUid = firebaseUid
         }
-        if (imageFileId != null) {
-            photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", user.userId, imageFileId)
-        }
+        photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", user.userId, imageFileId)
+
         return user
     }
 

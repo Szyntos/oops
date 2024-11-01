@@ -88,6 +88,8 @@ export const GroupsSection = () => {
             selectedGroup
               ? {
                   ...selectedGroup,
+                  startTime: selectedGroup.startTime.slice(0, -3),
+                  endTime: selectedGroup.endTime.slice(0, -3),
                   weekdayId: selectedGroup.weekday.weekdayId,
                   teacherId: selectedGroup.teacher.userId,
                 }

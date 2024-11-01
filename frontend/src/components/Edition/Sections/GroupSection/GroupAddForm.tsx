@@ -48,23 +48,10 @@ const ValidationSchema = z
     },
   );
 
-type UsersInputType = {
-  userId: string | null;
-  indexNumber: number;
-  nick: string;
-  firstName: string;
-  secondName: string;
-  role: string;
-  email: string;
-  label: string;
-  createFirebaseUser: boolean;
-  sendEmail: boolean;
-};
-
 type AddGroupFormProps = {
   handleAddGroup: (
     values: GroupFormValues,
-    selectedStudents: UsersInputType[],
+    selectedStudents: Student[],
   ) => void;
   createError?: string;
   weekdays: Weekday[];
@@ -124,22 +111,7 @@ export const AddGroupForm = ({
         teacherId: values.teacherId,
         usosId: values.usosId,
       };
-      handleAddGroup(
-        groupValues,
-        selectedStudents.map((student) => ({
-          userId: student.userId,
-          indexNumber: student.indexNumber,
-          nick: student.nick,
-          firstName: student.firstName,
-          secondName: student.secondName,
-          role: student.role,
-          email: student.email,
-          label: "",
-          // TODO: change to true on production
-          createFirebaseUser: false,
-          sendEmail: false,
-        })),
-      );
+      handleAddGroup(groupValues, selectedStudents);
     },
   });
 

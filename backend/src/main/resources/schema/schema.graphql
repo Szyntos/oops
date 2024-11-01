@@ -665,7 +665,6 @@ input SubcategoryInputType {
 }
 
 input UsersInputTypeType {
-  userId: Int
   indexNumber: Int!
   nick: String!
   firstName: String!
@@ -673,6 +672,7 @@ input UsersInputTypeType {
   role: String!,
   email: String!
   label: String!
+  imageFileId: Int
   createFirebaseUser: Boolean!
   sendEmail: Boolean!
 }

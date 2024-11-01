@@ -86,9 +86,15 @@ export const useGroupsSection = (editionId: number) => {
           weekdayId: parseInt(values.weekdayId),
           users: selectedStudents.map((s) => {
             return {
-              ...s,
+              indexNumber: s.indexNumber,
+              nick: s.nick,
+              firstName: s.firstName,
+              secondName: s.secondName,
+              role: s.role,
+              imageFileId: s.imageFileId ? Number(s.imageFileId) : undefined,
+              // TODO: change to true on production
               createFirebaseUser: false,
-              email: `${s.indexNumber}@student.agh.edu.pl`,
+              email: s.email,
               label: "",
               sendEmail: false,
             };

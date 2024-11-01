@@ -13566,6 +13566,7 @@ input UsersInputTypeType {
   createFirebaseUser: Boolean!
   email: String!
   firstName: String!
+  imageFileId: Int
   indexNumber: Int!
   label: String!
   nick: String!

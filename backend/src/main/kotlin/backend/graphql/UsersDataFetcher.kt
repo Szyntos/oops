@@ -272,12 +272,14 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
         userLevelRepository.deleteAllByUser_UserId(userId)
         try {
-            user.firebaseUid?.let { firebaseUserService.deleteFirebaseUser(it) }
-            } catch (e: FirebaseAuthException) {
-                if (e.errorCode != ErrorCode.NOT_FOUND) {
-                    throw e
-                }
+            if (user.firebaseUid != null && user.firebaseUid != "") {
+                firebaseUserService.deleteFirebaseUser(user.firebaseUid!!)
             }
+        } catch (e: FirebaseAuthException) {
+            if (e.errorCode != ErrorCode.NOT_FOUND) {
+                throw e
+            }
+        }
         usersRepository.delete(user)
         return true
     }

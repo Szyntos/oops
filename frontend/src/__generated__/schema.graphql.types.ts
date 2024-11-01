@@ -8611,6 +8611,10 @@ export type UserGroupsVarianceOrderBy = {
   userId?: InputMaybe<OrderBy>;
 };
 
+export type UserIdsType = {
+  userIds: Array<Scalars["Int"]["input"]>;
+};
+
 /** columns and relationships of "user_level" */
 export type UserLevel = {
   __typename?: "UserLevel";
@@ -10370,6 +10374,8 @@ export type Mutation_Root = {
   assignPhotoToLevel?: Maybe<Scalars["Boolean"]["output"]>;
   assignPhotoToUser?: Maybe<Scalars["Boolean"]["output"]>;
   assignPhotosToGroups?: Maybe<Scalars["Boolean"]["output"]>;
+  changeStudentGroup?: Maybe<UserGroupType>;
+  copyAward?: Maybe<AwardType>;
   copyChest?: Maybe<ChestType>;
   /** delete data from the table: "award" */
   deleteAward?: Maybe<AwardMutationResponse>;
@@ -10462,6 +10468,7 @@ export type Mutation_Root = {
   editEdition?: Maybe<EditionType>;
   editGradingCheck?: Maybe<GradingChecksType>;
   editGroup?: Maybe<GroupType>;
+  editGroupWithUsers?: Maybe<GroupType>;
   editLevel?: Maybe<LevelType>;
   editPoints?: Maybe<PointType>;
   editSubcategory?: Maybe<SubcategoryType>;
@@ -10552,6 +10559,7 @@ export type Mutation_Root = {
   /** insert a single row into the table: "weekdays" */
   insertWeekdaysOne?: Maybe<Weekdays>;
   parseUsersFromCsv: ParsedUsersTypeType;
+  removeAward?: Maybe<Scalars["Boolean"]["output"]>;
   removeAwardFromChest?: Maybe<Scalars["Boolean"]["output"]>;
   removeAwardFromEdition?: Maybe<Scalars["Boolean"]["output"]>;
   removeCategory?: Maybe<Scalars["Boolean"]["output"]>;
@@ -10886,6 +10894,17 @@ export type Mutation_RootAssignPhotosToGroupsArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootChangeStudentGroupArgs = {
+  groupId: Scalars["Int"]["input"];
+  userId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootCopyAwardArgs = {
+  awardId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
 export type Mutation_RootCopyChestArgs = {
   chestId: Scalars["Int"]["input"];
   editionId: Scalars["Int"]["input"];
@@ -11173,6 +11192,19 @@ export type Mutation_RootEditGroupArgs = {
   label?: InputMaybe<Scalars["String"]["input"]>;
   startTime?: InputMaybe<Scalars["String"]["input"]>;
   teacherId?: InputMaybe<Scalars["Int"]["input"]>;
+  usosId?: InputMaybe<Scalars["Int"]["input"]>;
+  weekdayId?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+/** mutation root */
+export type Mutation_RootEditGroupWithUsersArgs = {
+  endTime?: InputMaybe<Scalars["String"]["input"]>;
+  groupId: Scalars["Int"]["input"];
+  groupName?: InputMaybe<Scalars["String"]["input"]>;
+  label?: InputMaybe<Scalars["String"]["input"]>;
+  startTime?: InputMaybe<Scalars["String"]["input"]>;
+  teacherId?: InputMaybe<Scalars["Int"]["input"]>;
+  users: UserIdsType;
   usosId?: InputMaybe<Scalars["Int"]["input"]>;
   weekdayId?: InputMaybe<Scalars["Int"]["input"]>;
 };
@@ -11479,6 +11511,11 @@ export type Mutation_RootInsertWeekdaysOneArgs = {
 export type Mutation_RootParseUsersFromCsvArgs = {
   editionId: Scalars["Int"]["input"];
   fileId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootRemoveAwardArgs = {
+  awardId: Scalars["Int"]["input"];
 };
 
 /** mutation root */

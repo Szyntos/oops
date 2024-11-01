@@ -19,7 +19,7 @@ import org.springframework.context.annotation.PropertySource
 		"backend.edition",
 		"backend.files",
 		"backend.firebase",
-    "backend.gradingChecks",
+    	"backend.gradingChecks",
 		"backend.graphql",
 		"backend.groups",
 		"backend.levels",

@@ -1,0 +1,6 @@
+mutation AddLevelSet($levels: [LevelInputType!]!) {
+  addLevelSet(levels: $levels) {
+    grade
+    highest
+  }
+}

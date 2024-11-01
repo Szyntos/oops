@@ -1,0 +1,6 @@
+mutation SetupLevelSetEditionAdd($levelSetId: Int!, $editionId: Int!) {
+  addLevelSetToEdition(levelSet: $levelSetId, editionId: $editionId) {
+    grade
+    highest
+  }
+}

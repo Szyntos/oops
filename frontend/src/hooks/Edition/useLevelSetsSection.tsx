@@ -4,16 +4,19 @@ import {
   SetupLevelSetsQuery,
   useSetupLevelSetsQuery,
 } from "../../graphql/setupLevelSets.graphql.types";
-import { LevelSetFormValues } from "../../components/Edition/Sections/LevelsSection/LevelSetForm/AddLevelSetForm";
+import { useEditLevelSetMutation } from "../../graphql/editLevelSet.graphql.types";
+import { useSetupLevelSetEditionAddMutation } from "../../graphql/setupLevelSetEditionAdd.graphql.types";
+import { useSetupLevelSetEditionRemoveMutation } from "../../graphql/setupLevelSetEditionRemove.graphql.types";
+import { LevelInputType } from "../../__generated__/schema.graphql.types";
+import { useAddLevelSetMutation } from "../../graphql/addLevelSet.graphql.types";
+import { RowLevel } from "../../components/Edition/Sections/LevelsSection/LevelsRows/LevelRow";
 
 export type LevelSet = SetupLevelSetsQuery["getLevelSets"][number];
 
 export const useLevelSetsSection = (editionId: number) => {
-  const { localErrorWrapper } = useError();
+  const { globalErrorWrapper, localErrorWrapper } = useError();
 
-  console.log(editionId);
-
-  const { data, loading, error } = useSetupLevelSetsQuery();
+  const { data, loading, error, refetch } = useSetupLevelSetsQuery();
 
   const levelSets: LevelSet[] = data?.getLevelSets ?? [];
 
@@ -36,42 +39,41 @@ export const useLevelSetsSection = (editionId: number) => {
     setFormError(undefined);
   };
 
-  // TODO
-  //   const [createSet] = useSetupAwardCreateMutation();
-  const handleAddSet = async (values: LevelSetFormValues) => {
+  const [addLevelSet] = useAddLevelSetMutation();
+  const handleAddSet = (levels: RowLevel[]) => {
     localErrorWrapper(setFormError, async () => {
-      console.log(values);
-      //   await createAward({
-      //     variables: {
-      //       ...values,
-      //       categoryId: parseInt(values.categoryId),
-      //       fileId: parseInt(values.imageId ?? "-1"),
-      //       label: "",
-      //     },
-      //   });
-      //   refetch();
-      //   closeAddSet();
+      await addLevelSet({
+        variables: {
+          levels: levels.map((l) => ({
+            grade: l.grade,
+            maximumPoints: l.maxPoints.toString(),
+            name: l.name,
+          })),
+        },
+      });
+      refetch();
+      closeAddSet();
     });
   };
 
   // SELECT
-  //   const [addSet] = useSetupAwardEditionAddMutation();
-  //   const [removeSet] = useSetupAwardEditionRemoveMutation();
+  const [addSet] = useSetupLevelSetEditionAddMutation();
+  const [removeSet] = useSetupLevelSetEditionRemoveMutation();
   const handleSelectSet = async (set: LevelSet) => {
     console.log(set);
-    // const isAwardSelected = selectedLevelSets.some(
-    //   (a) => a.awardId === set.awardId
-    // );
-    // const variables = {
-    //   editionId,
-    //   awardId: parseInt(set.awardId),
-    // };
-    // globalErrorWrapper(async () => {
-    //   isAwardSelected
-    //     ? await removeSet({ variables })
-    //     : await addSet({ variables });
-    //   refetch();
-    // });
+    const isLevelSetSelected = selectedLevelSets.some(
+      (l) => l.levelSetId === set.levelSetId,
+    );
+    const variables = {
+      editionId,
+      levelSetId: set.levelSetId,
+    };
+    globalErrorWrapper(async () => {
+      isLevelSetSelected
+        ? await removeSet({ variables })
+        : await addSet({ variables });
+      refetch();
+    });
   };
 
   // EDIT
@@ -86,20 +88,17 @@ export const useLevelSetsSection = (editionId: number) => {
     setFormError(undefined);
   };
 
-  //   const [editSet] = useSetupAwardEditMutation();
-  const handleEditSet = (values: LevelSetFormValues) => {
+  const [editSet] = useEditLevelSetMutation();
+  const handleEditSet = (levels: LevelInputType[]) => {
     localErrorWrapper(setFormError, async () => {
-      console.log(values);
-      //   await editSet({
-      //     variables: {
-      //       ...values,
-      //       awardId: parseInt(selectedAward?.awardId ?? "-1"),
-      //       categoryId: parseInt(values.categoryId),
-      //       fileId: parseInt(values.imageId ?? "-1"),
-      //     },
-      //   });
-      //   refetch();
-      //   closeEditSet();
+      await editSet({
+        variables: {
+          levelSetId: selectedLevelSet?.levelSetId ?? -1,
+          levels,
+        },
+      });
+      refetch();
+      closeEditSet();
     });
   };
 

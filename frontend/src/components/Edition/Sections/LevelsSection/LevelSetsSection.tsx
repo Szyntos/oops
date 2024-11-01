@@ -1,11 +1,11 @@
 import { Dialog } from "@mui/material";
 import { Styles } from "../../../../utils/Styles";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
-import { AddLevelSetForm } from "./LevelSetForm/AddLevelSetForm";
 
 import { useParams } from "react-router-dom";
 import { useLevelSetsSection } from "../../../../hooks/Edition/useLevelSetsSection";
 import { LevelSetsList } from "./LevelSetsList/LevelSetsList";
+import { AddLevelFakeForm } from "./AddLevelFakeForm";
 
 export const LevelSetsSection = () => {
   const params = useParams();
@@ -30,7 +30,7 @@ export const LevelSetsSection = () => {
     //closeEditSet,
     //handleEditSet,
 
-    //selectedLevelSet,
+    selectedLevelSet,
   } = useLevelSetsSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -57,10 +57,19 @@ export const LevelSetsSection = () => {
 
       <Dialog open={isAddSetOpen}>
         <CloseHeader onCloseClick={closeAddSet} />
-        <AddLevelSetForm
+        <AddLevelFakeForm
+          initialLevelValues={
+            selectedLevelSet?.levels?.map((l, index) => {
+              return {
+                ordinal: index,
+                name: l.levelName,
+                maxPoints: parseInt(l.maximumPoints),
+                grade: l.grade,
+              };
+            }) ?? []
+          }
           formError={formError}
-          handleConfirm={handleAddSet}
-          title="Add Level Set"
+          handleAdd={handleAddSet}
         />
       </Dialog>
 

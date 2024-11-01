@@ -22,7 +22,7 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
-      edition: {
+      edition?: {
         __typename?: "EditionType";
         editionId: string;
         editionName: string;
@@ -30,7 +30,7 @@ export type NeighboringLevelsQuery = {
         endDate: string;
         label: string;
         startDate: string;
-      };
+      } | null;
       imageFile?: {
         __typename?: "FileType";
         fileId: string;
@@ -52,7 +52,7 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
-      edition: {
+      edition?: {
         __typename?: "EditionType";
         editionId: string;
         editionName: string;
@@ -60,7 +60,7 @@ export type NeighboringLevelsQuery = {
         endDate: string;
         label: string;
         startDate: string;
-      };
+      } | null;
       imageFile?: {
         __typename?: "FileType";
         fileId: string;
@@ -82,7 +82,7 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
-      edition: {
+      edition?: {
         __typename?: "EditionType";
         editionId: string;
         editionName: string;
@@ -90,7 +90,7 @@ export type NeighboringLevelsQuery = {
         endDate: string;
         label: string;
         startDate: string;
-      };
+      } | null;
       imageFile?: {
         __typename?: "FileType";
         fileId: string;

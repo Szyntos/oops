@@ -8501,14 +8501,29 @@ input IntComparisonExp {
   _nin: [Int!]
 }
 
+input LevelInputType {
+  grade: String!
+  imageFileId: ID
+  levelId: ID
+  maximumPoints: String!
+  name: String!
+}
+
+type LevelSetType {
+  editionId: ID
+  levelSetId: Int!
+  levels: [LevelType!]!
+}
+
 type LevelType {
-  edition: EditionType!
+  edition: EditionType
   grade: String!
   highest: Boolean!
   imageFile: FileType
   label: String!
   levelId: ID!
   levelName: String!
+  levelSet: Int!
   maximumPoints: String!
   minimumPoints: String!
   ordinalNumber: Int!
@@ -8522,8 +8537,8 @@ type Levels {
   """
   An object relationship
   """
-  edition: Edition!
-  editionId: bigint!
+  edition: Edition
+  editionId: bigint
 
   """
   An object relationship
@@ -8594,6 +8609,7 @@ type Levels {
   imageFileId: bigint
   label: String!
   levelId: bigint!
+  levelSet: Int
   maximumPoints: numeric!
   minimumPoints: numeric!
   name: String!
@@ -8728,6 +8744,7 @@ type LevelsAvgFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -8741,6 +8758,7 @@ input LevelsAvgOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -8763,6 +8781,7 @@ input LevelsBoolExp {
   imageFileId: BigintComparisonExp
   label: StringComparisonExp
   levelId: BigintComparisonExp
+  levelSet: IntComparisonExp
   maximumPoints: NumericComparisonExp
   minimumPoints: NumericComparisonExp
   name: StringComparisonExp
@@ -8789,6 +8808,7 @@ input LevelsIncInput {
   grade: numeric
   imageFileId: bigint
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   ordinalNumber: Int
@@ -8807,6 +8827,7 @@ input LevelsInsertInput {
   imageFileId: bigint
   label: String
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -8823,6 +8844,7 @@ type LevelsMaxFields {
   imageFileId: bigint
   label: String
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -8838,6 +8860,7 @@ input LevelsMaxOrderBy {
   imageFileId: OrderBy
   label: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   name: OrderBy
@@ -8853,6 +8876,7 @@ type LevelsMinFields {
   imageFileId: bigint
   label: String
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -8868,6 +8892,7 @@ input LevelsMinOrderBy {
   imageFileId: OrderBy
   label: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   name: OrderBy
@@ -8923,6 +8948,7 @@ input LevelsOrderBy {
   imageFileId: OrderBy
   label: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   name: OrderBy
@@ -8970,6 +8996,11 @@ enum LevelsSelectColumn {
   column name
   """
   levelId
+
+  """
+  column name
+  """
+  levelSet
 
   """
   column name
@@ -9022,6 +9053,7 @@ input LevelsSetInput {
   imageFileId: bigint
   label: String
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -9036,6 +9068,7 @@ type LevelsStddevFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9049,6 +9082,7 @@ input LevelsStddevOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9062,6 +9096,7 @@ type LevelsStddevPopFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9075,6 +9110,7 @@ input LevelsStddevPopOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9088,6 +9124,7 @@ type LevelsStddevSampFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9101,6 +9138,7 @@ input LevelsStddevSampOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9131,6 +9169,7 @@ input LevelsStreamCursorValueInput {
   imageFileId: bigint
   label: String
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -9145,6 +9184,7 @@ type LevelsSumFields {
   grade: numeric
   imageFileId: bigint
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   ordinalNumber: Int
@@ -9158,6 +9198,7 @@ input LevelsSumOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9196,6 +9237,11 @@ enum LevelsUpdateColumn {
   column name
   """
   levelId
+
+  """
+  column name
+  """
+  levelSet
 
   """
   column name
@@ -9243,6 +9289,7 @@ type LevelsVarPopFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9256,6 +9303,7 @@ input LevelsVarPopOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9269,6 +9317,7 @@ type LevelsVarSampFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9282,6 +9331,7 @@ input LevelsVarSampOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9295,6 +9345,7 @@ type LevelsVarianceFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9308,6 +9359,7 @@ input LevelsVarianceOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -14721,13 +14773,8 @@ type mutation_root {
     usosId: Int!
     weekdayId: Int!
   ): GroupType
-  addLevel(
-    editionId: Int!
-    grade: Float!
-    imageFileId: Int
-    maximumPoints: Float!
-    name: String!
-  ): LevelType
+  addLevelSet(levels: [LevelInputType!]!): [LevelType!]!
+  addLevelSetToEdition(editionId: Int!, levelSet: Int!): [LevelType!]!
   addPointsMutation(
     checkDates: Boolean = true
     studentId: Int!
@@ -15151,14 +15198,7 @@ type mutation_root {
     usosId: Int
     weekdayId: Int
   ): GroupType
-  editLevel(
-    grade: Float
-    imageFileId: Int
-    label: String
-    levelId: Int!
-    maximumPoints: Float
-    name: String
-  ): LevelType
+  editLevelSet(levelSet: Int!, levels: [LevelInputType!]!): [LevelType!]!
   editPoints(pointsId: Int!, updatedById: Int!, value: Float): PointType
   editSubcategory(
     label: String
@@ -15824,7 +15864,8 @@ type mutation_root {
   removeEdition(editionId: Int!): Boolean
   removeGradingCheck(gradingCheckId: Int!): Boolean
   removeGroup(groupId: Int!): Boolean
-  removeLevel(levelId: Int!): Boolean
+  removeLevelSet(levelSet: Int!): Boolean
+  removeLevelSetFromEdition(editionId: Int!, levelSet: Int!): Boolean
   removePoints(pointsId: Int!): Boolean
   removeSubcategory(subcategoryId: Int!): Boolean
   removeUser(userId: Int!): Boolean
@@ -17535,6 +17576,7 @@ type query_root {
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   getGroupsInEdition(editionId: Int!, teacherId: Int!): [GroupTeacherType!]!
+  getLevelSets: [LevelSetType!]!
   getNeighboringLevels(editionId: Int!, studentId: Int!): NeighboringLevelsType!
   getPossibleGroupDates(editionId: Int!): [GroupDateType!]!
   getPossibleGroupsTimeSpans(editionId: Int!): [TimeSpansType!]!

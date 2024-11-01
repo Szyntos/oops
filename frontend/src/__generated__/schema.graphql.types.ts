@@ -6002,15 +6002,31 @@ export type IntComparisonExp = {
   _nin?: InputMaybe<Array<Scalars["Int"]["input"]>>;
 };
 
+export type LevelInputType = {
+  grade: Scalars["String"]["input"];
+  imageFileId?: InputMaybe<Scalars["ID"]["input"]>;
+  levelId?: InputMaybe<Scalars["ID"]["input"]>;
+  maximumPoints: Scalars["String"]["input"];
+  name: Scalars["String"]["input"];
+};
+
+export type LevelSetType = {
+  __typename?: "LevelSetType";
+  editionId?: Maybe<Scalars["ID"]["output"]>;
+  levelSetId: Scalars["Int"]["output"];
+  levels: Array<LevelType>;
+};
+
 export type LevelType = {
   __typename?: "LevelType";
-  edition: EditionType;
+  edition?: Maybe<EditionType>;
   grade: Scalars["String"]["output"];
   highest: Scalars["Boolean"]["output"];
   imageFile?: Maybe<FileType>;
   label: Scalars["String"]["output"];
   levelId: Scalars["ID"]["output"];
   levelName: Scalars["String"]["output"];
+  levelSet: Scalars["Int"]["output"];
   maximumPoints: Scalars["String"]["output"];
   minimumPoints: Scalars["String"]["output"];
   ordinalNumber: Scalars["Int"]["output"];
@@ -6021,8 +6037,8 @@ export type LevelType = {
 export type Levels = {
   __typename?: "Levels";
   /** An object relationship */
-  edition: Edition;
-  editionId: Scalars["bigint"]["output"];
+  edition?: Maybe<Edition>;
+  editionId?: Maybe<Scalars["bigint"]["output"]>;
   /** An object relationship */
   file?: Maybe<Files>;
   grade: Scalars["numeric"]["output"];
@@ -6034,6 +6050,7 @@ export type Levels = {
   imageFileId?: Maybe<Scalars["bigint"]["output"]>;
   label: Scalars["String"]["output"];
   levelId: Scalars["bigint"]["output"];
+  levelSet?: Maybe<Scalars["Int"]["output"]>;
   maximumPoints: Scalars["numeric"]["output"];
   minimumPoints: Scalars["numeric"]["output"];
   name: Scalars["String"]["output"];
@@ -6144,6 +6161,7 @@ export type LevelsAvgFields = {
   grade?: Maybe<Scalars["Float"]["output"]>;
   imageFileId?: Maybe<Scalars["Float"]["output"]>;
   levelId?: Maybe<Scalars["Float"]["output"]>;
+  levelSet?: Maybe<Scalars["Float"]["output"]>;
   maximumPoints?: Maybe<Scalars["Float"]["output"]>;
   minimumPoints?: Maybe<Scalars["Float"]["output"]>;
   ordinalNumber?: Maybe<Scalars["Float"]["output"]>;
@@ -6155,6 +6173,7 @@ export type LevelsAvgOrderBy = {
   grade?: InputMaybe<OrderBy>;
   imageFileId?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   ordinalNumber?: InputMaybe<OrderBy>;
@@ -6175,6 +6194,7 @@ export type LevelsBoolExp = {
   imageFileId?: InputMaybe<BigintComparisonExp>;
   label?: InputMaybe<StringComparisonExp>;
   levelId?: InputMaybe<BigintComparisonExp>;
+  levelSet?: InputMaybe<IntComparisonExp>;
   maximumPoints?: InputMaybe<NumericComparisonExp>;
   minimumPoints?: InputMaybe<NumericComparisonExp>;
   name?: InputMaybe<StringComparisonExp>;
@@ -6195,6 +6215,7 @@ export type LevelsIncInput = {
   grade?: InputMaybe<Scalars["numeric"]["input"]>;
   imageFileId?: InputMaybe<Scalars["bigint"]["input"]>;
   levelId?: InputMaybe<Scalars["bigint"]["input"]>;
+  levelSet?: InputMaybe<Scalars["Int"]["input"]>;
   maximumPoints?: InputMaybe<Scalars["numeric"]["input"]>;
   minimumPoints?: InputMaybe<Scalars["numeric"]["input"]>;
   ordinalNumber?: InputMaybe<Scalars["Int"]["input"]>;
@@ -6211,6 +6232,7 @@ export type LevelsInsertInput = {
   imageFileId?: InputMaybe<Scalars["bigint"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
   levelId?: InputMaybe<Scalars["bigint"]["input"]>;
+  levelSet?: InputMaybe<Scalars["Int"]["input"]>;
   maximumPoints?: InputMaybe<Scalars["numeric"]["input"]>;
   minimumPoints?: InputMaybe<Scalars["numeric"]["input"]>;
   name?: InputMaybe<Scalars["String"]["input"]>;
@@ -6226,6 +6248,7 @@ export type LevelsMaxFields = {
   imageFileId?: Maybe<Scalars["bigint"]["output"]>;
   label?: Maybe<Scalars["String"]["output"]>;
   levelId?: Maybe<Scalars["bigint"]["output"]>;
+  levelSet?: Maybe<Scalars["Int"]["output"]>;
   maximumPoints?: Maybe<Scalars["numeric"]["output"]>;
   minimumPoints?: Maybe<Scalars["numeric"]["output"]>;
   name?: Maybe<Scalars["String"]["output"]>;
@@ -6239,6 +6262,7 @@ export type LevelsMaxOrderBy = {
   imageFileId?: InputMaybe<OrderBy>;
   label?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   name?: InputMaybe<OrderBy>;
@@ -6253,6 +6277,7 @@ export type LevelsMinFields = {
   imageFileId?: Maybe<Scalars["bigint"]["output"]>;
   label?: Maybe<Scalars["String"]["output"]>;
   levelId?: Maybe<Scalars["bigint"]["output"]>;
+  levelSet?: Maybe<Scalars["Int"]["output"]>;
   maximumPoints?: Maybe<Scalars["numeric"]["output"]>;
   minimumPoints?: Maybe<Scalars["numeric"]["output"]>;
   name?: Maybe<Scalars["String"]["output"]>;
@@ -6266,6 +6291,7 @@ export type LevelsMinOrderBy = {
   imageFileId?: InputMaybe<OrderBy>;
   label?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   name?: InputMaybe<OrderBy>;
@@ -6306,6 +6332,7 @@ export type LevelsOrderBy = {
   imageFileId?: InputMaybe<OrderBy>;
   label?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   name?: InputMaybe<OrderBy>;
@@ -6332,6 +6359,8 @@ export enum LevelsSelectColumn {
   Label = "label",
   /** column name */
   LevelId = "levelId",
+  /** column name */
+  LevelSet = "levelSet",
   /** column name */
   MaximumPoints = "maximumPoints",
   /** column name */
@@ -6362,6 +6391,7 @@ export type LevelsSetInput = {
   imageFileId?: InputMaybe<Scalars["bigint"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
   levelId?: InputMaybe<Scalars["bigint"]["input"]>;
+  levelSet?: InputMaybe<Scalars["Int"]["input"]>;
   maximumPoints?: InputMaybe<Scalars["numeric"]["input"]>;
   minimumPoints?: InputMaybe<Scalars["numeric"]["input"]>;
   name?: InputMaybe<Scalars["String"]["input"]>;
@@ -6375,6 +6405,7 @@ export type LevelsStddevFields = {
   grade?: Maybe<Scalars["Float"]["output"]>;
   imageFileId?: Maybe<Scalars["Float"]["output"]>;
   levelId?: Maybe<Scalars["Float"]["output"]>;
+  levelSet?: Maybe<Scalars["Float"]["output"]>;
   maximumPoints?: Maybe<Scalars["Float"]["output"]>;
   minimumPoints?: Maybe<Scalars["Float"]["output"]>;
   ordinalNumber?: Maybe<Scalars["Float"]["output"]>;
@@ -6386,6 +6417,7 @@ export type LevelsStddevOrderBy = {
   grade?: InputMaybe<OrderBy>;
   imageFileId?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   ordinalNumber?: InputMaybe<OrderBy>;
@@ -6398,6 +6430,7 @@ export type LevelsStddevPopFields = {
   grade?: Maybe<Scalars["Float"]["output"]>;
   imageFileId?: Maybe<Scalars["Float"]["output"]>;
   levelId?: Maybe<Scalars["Float"]["output"]>;
+  levelSet?: Maybe<Scalars["Float"]["output"]>;
   maximumPoints?: Maybe<Scalars["Float"]["output"]>;
   minimumPoints?: Maybe<Scalars["Float"]["output"]>;
   ordinalNumber?: Maybe<Scalars["Float"]["output"]>;
@@ -6409,6 +6442,7 @@ export type LevelsStddevPopOrderBy = {
   grade?: InputMaybe<OrderBy>;
   imageFileId?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   ordinalNumber?: InputMaybe<OrderBy>;
@@ -6421,6 +6455,7 @@ export type LevelsStddevSampFields = {
   grade?: Maybe<Scalars["Float"]["output"]>;
   imageFileId?: Maybe<Scalars["Float"]["output"]>;
   levelId?: Maybe<Scalars["Float"]["output"]>;
+  levelSet?: Maybe<Scalars["Float"]["output"]>;
   maximumPoints?: Maybe<Scalars["Float"]["output"]>;
   minimumPoints?: Maybe<Scalars["Float"]["output"]>;
   ordinalNumber?: Maybe<Scalars["Float"]["output"]>;
@@ -6432,6 +6467,7 @@ export type LevelsStddevSampOrderBy = {
   grade?: InputMaybe<OrderBy>;
   imageFileId?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   ordinalNumber?: InputMaybe<OrderBy>;
@@ -6453,6 +6489,7 @@ export type LevelsStreamCursorValueInput = {
   imageFileId?: InputMaybe<Scalars["bigint"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
   levelId?: InputMaybe<Scalars["bigint"]["input"]>;
+  levelSet?: InputMaybe<Scalars["Int"]["input"]>;
   maximumPoints?: InputMaybe<Scalars["numeric"]["input"]>;
   minimumPoints?: InputMaybe<Scalars["numeric"]["input"]>;
   name?: InputMaybe<Scalars["String"]["input"]>;
@@ -6466,6 +6503,7 @@ export type LevelsSumFields = {
   grade?: Maybe<Scalars["numeric"]["output"]>;
   imageFileId?: Maybe<Scalars["bigint"]["output"]>;
   levelId?: Maybe<Scalars["bigint"]["output"]>;
+  levelSet?: Maybe<Scalars["Int"]["output"]>;
   maximumPoints?: Maybe<Scalars["numeric"]["output"]>;
   minimumPoints?: Maybe<Scalars["numeric"]["output"]>;
   ordinalNumber?: Maybe<Scalars["Int"]["output"]>;
@@ -6477,6 +6515,7 @@ export type LevelsSumOrderBy = {
   grade?: InputMaybe<OrderBy>;
   imageFileId?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   ordinalNumber?: InputMaybe<OrderBy>;
@@ -6496,6 +6535,8 @@ export enum LevelsUpdateColumn {
   Label = "label",
   /** column name */
   LevelId = "levelId",
+  /** column name */
+  LevelSet = "levelSet",
   /** column name */
   MaximumPoints = "maximumPoints",
   /** column name */
@@ -6522,6 +6563,7 @@ export type LevelsVarPopFields = {
   grade?: Maybe<Scalars["Float"]["output"]>;
   imageFileId?: Maybe<Scalars["Float"]["output"]>;
   levelId?: Maybe<Scalars["Float"]["output"]>;
+  levelSet?: Maybe<Scalars["Float"]["output"]>;
   maximumPoints?: Maybe<Scalars["Float"]["output"]>;
   minimumPoints?: Maybe<Scalars["Float"]["output"]>;
   ordinalNumber?: Maybe<Scalars["Float"]["output"]>;
@@ -6533,6 +6575,7 @@ export type LevelsVarPopOrderBy = {
   grade?: InputMaybe<OrderBy>;
   imageFileId?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   ordinalNumber?: InputMaybe<OrderBy>;
@@ -6545,6 +6588,7 @@ export type LevelsVarSampFields = {
   grade?: Maybe<Scalars["Float"]["output"]>;
   imageFileId?: Maybe<Scalars["Float"]["output"]>;
   levelId?: Maybe<Scalars["Float"]["output"]>;
+  levelSet?: Maybe<Scalars["Float"]["output"]>;
   maximumPoints?: Maybe<Scalars["Float"]["output"]>;
   minimumPoints?: Maybe<Scalars["Float"]["output"]>;
   ordinalNumber?: Maybe<Scalars["Float"]["output"]>;
@@ -6556,6 +6600,7 @@ export type LevelsVarSampOrderBy = {
   grade?: InputMaybe<OrderBy>;
   imageFileId?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   ordinalNumber?: InputMaybe<OrderBy>;
@@ -6568,6 +6613,7 @@ export type LevelsVarianceFields = {
   grade?: Maybe<Scalars["Float"]["output"]>;
   imageFileId?: Maybe<Scalars["Float"]["output"]>;
   levelId?: Maybe<Scalars["Float"]["output"]>;
+  levelSet?: Maybe<Scalars["Float"]["output"]>;
   maximumPoints?: Maybe<Scalars["Float"]["output"]>;
   minimumPoints?: Maybe<Scalars["Float"]["output"]>;
   ordinalNumber?: Maybe<Scalars["Float"]["output"]>;
@@ -6579,6 +6625,7 @@ export type LevelsVarianceOrderBy = {
   grade?: InputMaybe<OrderBy>;
   imageFileId?: InputMaybe<OrderBy>;
   levelId?: InputMaybe<OrderBy>;
+  levelSet?: InputMaybe<OrderBy>;
   maximumPoints?: InputMaybe<OrderBy>;
   minimumPoints?: InputMaybe<OrderBy>;
   ordinalNumber?: InputMaybe<OrderBy>;
@@ -10363,7 +10410,8 @@ export type Mutation_Root = {
   addGradingCheck?: Maybe<GradingChecksType>;
   addGroup?: Maybe<GroupType>;
   addGroupWithUsers?: Maybe<GroupType>;
-  addLevel?: Maybe<LevelType>;
+  addLevelSet: Array<LevelType>;
+  addLevelSetToEdition: Array<LevelType>;
   addPointsMutation?: Maybe<PointType>;
   addSubcategory?: Maybe<SubcategoryType>;
   addTeacher?: Maybe<UserType>;
@@ -10469,7 +10517,7 @@ export type Mutation_Root = {
   editGradingCheck?: Maybe<GradingChecksType>;
   editGroup?: Maybe<GroupType>;
   editGroupWithUsers?: Maybe<GroupType>;
-  editLevel?: Maybe<LevelType>;
+  editLevelSet: Array<LevelType>;
   editPoints?: Maybe<PointType>;
   editSubcategory?: Maybe<SubcategoryType>;
   editUser?: Maybe<UserType>;
@@ -10569,7 +10617,8 @@ export type Mutation_Root = {
   removeEdition?: Maybe<Scalars["Boolean"]["output"]>;
   removeGradingCheck?: Maybe<Scalars["Boolean"]["output"]>;
   removeGroup?: Maybe<Scalars["Boolean"]["output"]>;
-  removeLevel?: Maybe<Scalars["Boolean"]["output"]>;
+  removeLevelSet?: Maybe<Scalars["Boolean"]["output"]>;
+  removeLevelSetFromEdition?: Maybe<Scalars["Boolean"]["output"]>;
   removePoints?: Maybe<Scalars["Boolean"]["output"]>;
   removeSubcategory?: Maybe<Scalars["Boolean"]["output"]>;
   removeUser?: Maybe<Scalars["Boolean"]["output"]>;
@@ -10813,12 +10862,14 @@ export type Mutation_RootAddGroupWithUsersArgs = {
 };
 
 /** mutation root */
-export type Mutation_RootAddLevelArgs = {
+export type Mutation_RootAddLevelSetArgs = {
+  levels: Array<LevelInputType>;
+};
+
+/** mutation root */
+export type Mutation_RootAddLevelSetToEditionArgs = {
   editionId: Scalars["Int"]["input"];
-  grade: Scalars["Float"]["input"];
-  imageFileId?: InputMaybe<Scalars["Int"]["input"]>;
-  maximumPoints: Scalars["Float"]["input"];
-  name: Scalars["String"]["input"];
+  levelSet: Scalars["Int"]["input"];
 };
 
 /** mutation root */
@@ -11210,13 +11261,9 @@ export type Mutation_RootEditGroupWithUsersArgs = {
 };
 
 /** mutation root */
-export type Mutation_RootEditLevelArgs = {
-  grade?: InputMaybe<Scalars["Float"]["input"]>;
-  imageFileId?: InputMaybe<Scalars["Int"]["input"]>;
-  label?: InputMaybe<Scalars["String"]["input"]>;
-  levelId: Scalars["Int"]["input"];
-  maximumPoints?: InputMaybe<Scalars["Float"]["input"]>;
-  name?: InputMaybe<Scalars["String"]["input"]>;
+export type Mutation_RootEditLevelSetArgs = {
+  levelSet: Scalars["Int"]["input"];
+  levels: Array<LevelInputType>;
 };
 
 /** mutation root */
@@ -11567,8 +11614,14 @@ export type Mutation_RootRemoveGroupArgs = {
 };
 
 /** mutation root */
-export type Mutation_RootRemoveLevelArgs = {
-  levelId: Scalars["Int"]["input"];
+export type Mutation_RootRemoveLevelSetArgs = {
+  levelSet: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootRemoveLevelSetFromEditionArgs = {
+  editionId: Scalars["Int"]["input"];
+  levelSet: Scalars["Int"]["input"];
 };
 
 /** mutation root */
@@ -12083,6 +12136,7 @@ export type Query_Root = {
   getFilesGroupedByType: Array<FileGroupType>;
   getFilesGroupedByTypeBySelectedTypes: Array<FileGroupType>;
   getGroupsInEdition: Array<GroupTeacherType>;
+  getLevelSets: Array<LevelSetType>;
   getNeighboringLevels: NeighboringLevelsType;
   getPossibleGroupDates: Array<GroupDateType>;
   getPossibleGroupsTimeSpans: Array<TimeSpansType>;

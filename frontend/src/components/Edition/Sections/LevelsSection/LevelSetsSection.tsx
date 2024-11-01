@@ -25,10 +25,10 @@ export const LevelSetsSection = () => {
     openAddSet,
     handleAddSet,
 
-    //isEditSetOpen,
+    isEditSetOpen,
     openEditSet,
-    //closeEditSet,
-    //handleEditSet,
+    closeEditSet,
+    handleEditSet,
 
     selectedLevelSet,
   } = useLevelSetsSection(editionId);
@@ -58,6 +58,15 @@ export const LevelSetsSection = () => {
       <Dialog open={isAddSetOpen}>
         <CloseHeader onCloseClick={closeAddSet} />
         <AddLevelFakeForm
+          formError={formError}
+          initialLevelValues={[]}
+          handleAdd={handleAddSet}
+        />
+      </Dialog>
+
+      <Dialog open={isEditSetOpen}>
+        <CloseHeader onCloseClick={closeEditSet} />
+        <AddLevelFakeForm
           initialLevelValues={
             selectedLevelSet?.levels?.map((l, index) => {
               return {
@@ -69,29 +78,9 @@ export const LevelSetsSection = () => {
             }) ?? []
           }
           formError={formError}
-          handleAdd={handleAddSet}
+          handleAdd={handleEditSet}
         />
       </Dialog>
-
-      {/* <Dialog open={isEditAward}>
-        <CloseHeader onCloseClick={closeEditAward} />
-        <AddLevelSetForm
-          formError={formError}
-          handleConfirm={handleEditAward}
-          categories={formCategories}
-          imageIds={imageIds}
-          initialValues={
-            selectedAward
-              ? {
-                  ...selectedAward,
-                  awardValue: parseInt(selectedAward.awardValue),
-                  imageId: selectedAward.imageFileId ?? "-1",
-                }
-              : undefined
-          }
-          title="Edit Award"
-        />
-      </Dialog> */}
     </div>
   );
 };

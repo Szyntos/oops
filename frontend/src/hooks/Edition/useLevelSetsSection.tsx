@@ -7,7 +7,6 @@ import {
 import { useEditLevelSetMutation } from "../../graphql/editLevelSet.graphql.types";
 import { useSetupLevelSetEditionAddMutation } from "../../graphql/setupLevelSetEditionAdd.graphql.types";
 import { useSetupLevelSetEditionRemoveMutation } from "../../graphql/setupLevelSetEditionRemove.graphql.types";
-import { LevelInputType } from "../../__generated__/schema.graphql.types";
 import { useAddLevelSetMutation } from "../../graphql/addLevelSet.graphql.types";
 import { RowLevel } from "../../components/Edition/Sections/LevelsSection/LevelsRows/LevelRow";
 
@@ -89,12 +88,16 @@ export const useLevelSetsSection = (editionId: number) => {
   };
 
   const [editSet] = useEditLevelSetMutation();
-  const handleEditSet = (levels: LevelInputType[]) => {
+  const handleEditSet = (levels: RowLevel[]) => {
     localErrorWrapper(setFormError, async () => {
       await editSet({
         variables: {
           levelSetId: selectedLevelSet?.levelSetId ?? -1,
-          levels,
+          levels: levels.map((l) => ({
+            grade: l.grade,
+            maximumPoints: l.maxPoints.toString(),
+            name: l.name,
+          })),
         },
       });
       refetch();

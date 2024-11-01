@@ -146,7 +146,7 @@ const styles: Styles = {
     gap: 12,
   },
   points: {
-    width: 200,
+    width: 240,
   },
   title: { fontWeight: "bold" },
   error: { color: "red" },

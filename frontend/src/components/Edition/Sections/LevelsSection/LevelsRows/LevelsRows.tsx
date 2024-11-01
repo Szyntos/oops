@@ -38,9 +38,9 @@ export const LevelRows = ({
     const index = ordinal - 1;
     const updated = levels.map((row, i) => {
       if (i === index - 1)
-        return { ...levels[index], maxPoints: levels[index - 1].maxPoints };
+        return { ...levels[index - 1], name: levels[index].name };
       if (i === index)
-        return { ...levels[index - 1], maxPoints: levels[index].maxPoints };
+        return { ...levels[index], name: levels[index - 1].name };
       return row;
     });
     setLevels(updated);
@@ -50,9 +50,9 @@ export const LevelRows = ({
     const index = ordinal - 1;
     const updated = levels.map((row, i) => {
       if (i === index)
-        return { ...levels[index + 1], maxPoints: levels[index].maxPoints };
+        return { ...levels[index], name: levels[index + 1].name };
       if (i === index + 1)
-        return { ...levels[index], maxPoints: levels[index + 1].maxPoints };
+        return { ...levels[index + 1], name: levels[index].name };
       return row;
     });
     setLevels(updated);

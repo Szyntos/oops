@@ -10,10 +10,13 @@ import { useSetupTeacherCreateMutation } from "../../../graphql/setupTeacherCrea
 import { TeacherFormValues } from "../../../components/Edition/Sections/UsersSection/TeacherAddForm";
 import { useSEtupUserEditMutation } from "../../../graphql/setupUserEdit.graphql.types";
 import { useDeleteUserMutation } from "../../../graphql/deleteUser.graphql.types";
+import { useError } from "../../common/useGlobalError";
 
 export type User = SetupUsersQuery["users"][number];
 
 export const useUsersSection = () => {
+  const { localErrorWrapper, globalErrorWrapper } = useError();
+
   const { data, loading, error, refetch } = useSetupUsersQuery();
   const [formError, setFormError] = useState<undefined | string>(undefined);
 
@@ -39,8 +42,8 @@ export const useUsersSection = () => {
   };
 
   const [createStudent] = useSetupStudentCreateMutation();
-  const handleAddStudentConfirm = async (values: StudentFormValues) => {
-    errorWrapper(async () => {
+  const handleAddStudentConfirm = (values: StudentFormValues) => {
+    localErrorWrapper(setFormError, async () => {
       await createStudent({
         variables: {
           firstName: values.firstName,
@@ -76,8 +79,8 @@ export const useUsersSection = () => {
   };
 
   const [createTeacher] = useSetupTeacherCreateMutation();
-  const handleAddTeacherConfirm = async (values: TeacherFormValues) => {
-    errorWrapper(async () => {
+  const handleAddTeacherConfirm = (values: TeacherFormValues) => {
+    localErrorWrapper(setFormError, async () => {
       await createTeacher({
         variables: {
           firstName: values.firstName,
@@ -103,12 +106,12 @@ export const useUsersSection = () => {
 
   // COMMON -------------------------------------------------
   const [editUser] = useSEtupUserEditMutation();
-  const handleEditUserConfirm = async (
+  const handleEditUserConfirm = (
     props:
       | { type: "student"; formValues: StudentFormValues }
       | { type: "teacher"; formValues: TeacherFormValues },
   ) => {
-    errorWrapper(async () => {
+    localErrorWrapper(setFormError, async () => {
       const variables = {
         userId: parseInt(selectedUser?.userId as string),
         firstName: props.formValues.firstName,
@@ -117,7 +120,7 @@ export const useUsersSection = () => {
 
       await editUser({
         variables:
-          props.type == "teacher"
+          props.type === "teacher"
             ? variables
             : {
                 ...variables,
@@ -132,27 +135,13 @@ export const useUsersSection = () => {
   };
 
   const [deleteUser] = useDeleteUserMutation();
-  const handleDeleteConfirm = async (u: User) => {
-    try {
+  const handleDeleteConfirm = (u: User) => {
+    globalErrorWrapper(async () => {
       await deleteUser({
         variables: { userId: parseInt(u.userId) },
       });
       refetch();
-    } catch (error) {
-      console.error(error);
-      // TODO global error
-    }
-  };
-
-  const errorWrapper = (foo: () => void) => {
-    try {
-      foo();
-    } catch (error) {
-      console.error(error);
-      setFormError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+    });
   };
 
   return {

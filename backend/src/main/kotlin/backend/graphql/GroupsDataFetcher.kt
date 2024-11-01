@@ -9,6 +9,7 @@ import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.groups.Groups
 import backend.groups.GroupsRepository
+import backend.levels.LevelsRepository
 import backend.points.Points
 import backend.points.PointsRepository
 import backend.subcategories.Subcategories
@@ -35,6 +36,9 @@ import kotlin.math.min
 
 @DgsComponent
 class GroupsDataFetcher {
+    @Autowired
+    private lateinit var levelsRepository: LevelsRepository
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -117,10 +121,13 @@ class GroupsDataFetcher {
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
             throw IllegalArgumentException("Edition has already ended")
         }
+        if (levelsRepository.findByEdition(edition).isEmpty()) {
+            throw IllegalArgumentException("Cannot add a group to an edition without levels")
+        }
         if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {
             throw IllegalArgumentException("Group with USOS ID $usosId already exists for edition ${edition.editionId}")
         }
-        if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName.isNotBlank() }) {
+        if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName?.isNotBlank() == true }) {
             throw IllegalArgumentException("Group with name $groupName already exists for edition ${edition.editionId}")
         }
         if (startTime.after(endTime)) {
@@ -173,10 +180,13 @@ class GroupsDataFetcher {
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
             throw IllegalArgumentException("Edition has already ended")
         }
+        if (levelsRepository.findByEdition(edition).isEmpty()) {
+            throw IllegalArgumentException("Cannot add a group to an edition without levels")
+        }
         if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {
             throw IllegalArgumentException("Group with USOS ID $usosId already exists for edition ${edition.editionId}")
         }
-        if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName.isNotBlank() }) {
+        if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName?.isNotBlank() == true }) {
             throw IllegalArgumentException("Group with name $groupName already exists for edition ${edition.editionId}")
         }
         if (startTime.after(endTime)) {

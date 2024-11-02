@@ -21,6 +21,7 @@ from utils.insert_users import insert_students, insert_teachers, insert_coordina
 from utils.insert_user_groups import insert_user_groups
 from utils.insert_levels import insert_levels
 from utils.insert_subcategories import insert_subcategories
+from utils.insert_chests_with_awards import insert_chests_with_awards
 from utils.insert_chest_awards import insert_chest_awards
 from utils.insert_points import insert_points
 
@@ -183,9 +184,11 @@ def insert_data():
     insert_category_editions(hasura_url, headers, editions, category_editions_type_map, random)
     inserted_levels = insert_levels(hasura_url, headers, editions, random, max_points, levels_data)
     insert_grading_checks(hasura_url, headers, editions, inserted_levels)
-    chest_ids = insert_chests(hasura_url, headers, editions, chests_data)
     award_ids, award_editions_type_map = insert_awards(hasura_url, headers, awards_data)
-    insert_award_editions(hasura_url, headers, editions, award_editions_type_map, random)
+    award_id_to_edition_ids = insert_award_editions(hasura_url, headers, editions, award_editions_type_map, random)
+    # chest_ids = insert_chests(hasura_url, headers, editions, chests_data)
+    # insert_chest_awards(hasura_url, headers, chest_ids, chests_data, awards_data)
+    insert_chests_with_awards(hasura_url, headers, editions, chests_data, awards_data, award_id_to_edition_ids, random)
     teachers_ids_and_roles = insert_teachers(hasura_url, headers, fake, random, number_of_teachers)
     teachers_ids_and_roles.append(coordinator_id_and_role)
     year_group_counts, groups = insert_groups(hasura_url, headers, editions, random, number_of_groups_per_year_bounds, teachers_ids_and_roles)
@@ -198,7 +201,6 @@ def insert_data():
     # subcategories, subcategory_to_category = insert_subcategories(hasura_url, headers, editions, categories,
     #                                                               category_data, random)
     #
-    insert_chest_awards(hasura_url, headers, chest_ids, chests_data, awards_data)
     insert_points(hasura_url, headers, cursor, editions, [user_id for user_id, role in teachers_ids_and_roles], random,
                   category_names_to_populate,
                   subcategories_percentage,

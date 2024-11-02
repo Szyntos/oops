@@ -111,11 +111,12 @@ update_permissions:
       filter:
         _and:
           - chest:
-              edition:
-                groups:
-                  userGroups:
-                    user_id:
-                      _eq: X-Hasura-User-Id
+              chestEditions:
+                edition:
+                  groups:
+                    userGroups:
+                      user_id:
+                        _eq: X-Hasura-User-Id
           - user:
               userGroups:
                 group:
@@ -139,11 +140,12 @@ update_permissions:
       check:
         _and:
           - chest:
-              edition:
-                groups:
-                  userGroups:
-                    user_id:
-                      _eq: X-Hasura-User-Id
+              chestEditions:
+                edition:
+                  groups:
+                    userGroups:
+                      user_id:
+                        _eq: X-Hasura-User-Id
           - user:
               userGroups:
                 group:

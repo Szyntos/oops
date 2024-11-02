@@ -14,6 +14,7 @@ import org.springframework.context.annotation.PropertySource
 		"backend.categories",
 		"backend.categoryEdition",
 		"backend.chestAward",
+		"backend.chestEdition",
 		"backend.chestHistory",
 		"backend.chests",
 		"backend.edition",

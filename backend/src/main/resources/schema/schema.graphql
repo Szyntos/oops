@@ -1,11 +1,11 @@
 type Mutation {
-  addBonusMutation(
+  addBonus(
     chestHistoryId: Int!
-    awardId: Int!
+    awardIds: [Int!]!
     checkDates: Boolean = true
-  ): AddBonusReturnType
+  ): [AddBonusReturnType!]!
 
-  addPointsMutation(
+  addPoints(
     studentId: Int!
     teacherId: Int!
     value: Float!
@@ -39,7 +39,15 @@ type Mutation {
     teacherId: Int!
     subcategoryId: Int!
   ): ChestHistoryType
-  addChest(chestType: String!, editionId: Int!, fileId: Int, label: String = ""): ChestType
+
+  addChest(
+    chestType: String!,
+    fileId: Int,
+    awardBundleCount: Int!,
+    label: String = "",
+    awardIds: [Int!]!
+  ): ChestType
+
   addCategory(
     categoryName: String!
     canAddPoints: Boolean!
@@ -194,9 +202,10 @@ type Mutation {
   editChest(
     chestId: Int!,
     chestType: String,
-    editionId: Int,
     fileId: Int,
-    label: String
+    awardBundleCount: Int,
+    label: String = "",
+    awardIds: [Int!]!
   ): ChestType
 
   removeChest(
@@ -317,8 +326,19 @@ type Mutation {
   ): Boolean
   copyChest(
     chestId: Int!,
-    editionId: Int!
   ): ChestType
+
+  addChestToEdition(
+    chestId: Int!,
+    editionId: Int!
+  ): ChestEditionType
+
+  removeChestFromEdition(
+    chestId: Int!,
+    editionId: Int!
+  ): Boolean
+
+
 }
 
 type Query {
@@ -411,7 +431,8 @@ type ChestType {
   chestId: ID!
   chestType: String!
   label: String!
-  edition: EditionType!
+  awardBundleCount: Int!
+  chestEdition: [ChestEditionType]!
   imageFile: FileType
 }
 
@@ -664,6 +685,13 @@ type LevelSetType {
   levelSetId: Int!,
   editionId: ID,
   levels: [LevelType!]!
+}
+
+type ChestEditionType {
+  chestEditionId: ID!
+  chest: ChestType!
+  edition: EditionType!
+  label: String!
 }
 
 input SubcategoryInputType {

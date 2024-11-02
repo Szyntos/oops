@@ -20,7 +20,7 @@ export type LevelsQuery = {
     ordinalNumber: number;
     label: string;
     highest: boolean;
-    editionId: string;
+    editionId?: string | null;
   }>;
 };
 

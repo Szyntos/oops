@@ -14,9 +14,10 @@ insert_permissions:
       check:
         _not:
           chest:
-            edition:
-              end_date:
-                _lte: now()
+            chestEditions:
+              edition:
+                end_date:
+                  _lte: now()
       set:
         label: '""'
       columns:
@@ -44,11 +45,12 @@ select_permissions:
         - label
       filter:
         chest:
-          edition:
-            groups:
-              userGroups:
-                user_id:
-                  _eq: X-Hasura-User-Id
+          chestEditions:
+            edition:
+              groups:
+                userGroups:
+                  user_id:
+                    _eq: X-Hasura-User-Id
     comment: ""
   - role: teacher
     permission:
@@ -59,11 +61,12 @@ select_permissions:
         - label
       filter:
         chest:
-          edition:
-            groups:
-              userGroups:
-                user_id:
-                  _eq: X-Hasura-User-Id
+          chestEditions:
+            edition:
+              groups:
+                userGroups:
+                  user_id:
+                    _eq: X-Hasura-User-Id
     comment: ""
 update_permissions:
   - role: coordinator
@@ -74,9 +77,10 @@ update_permissions:
         _and:
           - _not:
               chest:
-                edition:
-                  end_date:
-                    _lte: now()
+                chestEditions:
+                  edition:
+                    end_date:
+                      _lte: now()
           - _not:
               award:
                 bonuses:
@@ -86,9 +90,10 @@ update_permissions:
         _and:
           - _not:
               chest:
-                edition:
-                  end_date:
-                    _lte: now()
+                chestEditions:
+                  edition:
+                    end_date:
+                      _lte: now()
           - _not:
               award:
                 bonuses:
@@ -104,9 +109,10 @@ delete_permissions:
         _and:
           - _not:
               chest:
-                edition:
-                  end_date:
-                    _lte: now()
+                chestEditions:
+                  edition:
+                    end_date:
+                      _lte: now()
           - _not:
               award:
                 bonuses:

@@ -109,6 +109,7 @@ export const useCategoriesSection = (editionId: number) => {
           subcategories: subcategories.map((row, index) => {
             return {
               label: "",
+              categoryId: parseInt(selectedCategory?.categoryId ?? "-1"),
               maxPoints: row.max.toString(),
               ordinalNumber: index,
               subcategoryName: row.name,

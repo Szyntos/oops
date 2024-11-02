@@ -168,13 +168,22 @@ class CategoriesDataFetcher {
         label?.let {
             category.label = it
         }
+        val subcategoriesInEditions = subcategoriesRepository.findByCategory(category).filter { it.edition != null }
+        val editions = category.categoryEdition.map { it.edition }
+        subcategoriesInEditions.forEach { subcategory ->
+            subcategoriesRepository.delete(subcategory)
+        }
 
         val existingSubcategories = subcategoriesRepository.findByCategory(category)
         val inputSubcategoryIds = subcategories.mapNotNull { it.subcategoryId }.toSet()
 
+
+
         // Remove subcategories not in input list
         existingSubcategories.filter { it.subcategoryId !in inputSubcategoryIds }
-            .forEach { subcategoriesRepository.delete(it) }
+            .forEach {
+                subcategoriesRepository.delete(it)
+            }
 
         // Process input subcategories
         subcategories.forEach { subcategoryInput ->
@@ -198,9 +207,25 @@ class CategoriesDataFetcher {
 
                 subcategoriesRepository.save(existingSubcategory)
             } else {
+                subcategoryInput.categoryId = categoryId
                 subcategoriesDataFetcher.addSubcategoryHelper(subcategoryInput)
             }
         }
+        val subcategoriesFromOneEdition = subcategoriesRepository.findByCategory(category)
+
+        editions.forEach { edition ->
+                subcategoriesFromOneEdition.forEach {
+                        val input = SubcategoryInput(
+                            subcategoryName = it.subcategoryName,
+                            maxPoints = it.maxPoints.toFloat(),
+                            ordinalNumber = it.ordinalNumber,
+                            categoryId = it.category.categoryId,
+                            editionId = edition.editionId,
+                            label = it.label
+                        )
+                        subcategoriesDataFetcher.addSubcategoryHelper(input)
+                    }
+            }
 
         return categoriesRepository.save(category)
     }

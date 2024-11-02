@@ -982,8 +982,8 @@ export type Bonuses = {
   awardId: Scalars["bigint"]["output"];
   bonusId: Scalars["bigint"]["output"];
   /** An object relationship */
-  chestHistory?: Maybe<ChestHistory>;
-  chestHistoryId?: Maybe<Scalars["bigint"]["output"]>;
+  chestHistory: ChestHistory;
+  chestHistoryId: Scalars["bigint"]["output"];
   createdAt: Scalars["timestamp"]["output"];
   label: Scalars["String"]["output"];
   /** An object relationship */
@@ -1085,8 +1085,6 @@ export type BonusesBoolExp = {
 export enum BonusesConstraint {
   /** unique or primary key constraint on columns "bonus_id" */
   BonusesPkey = "bonuses_pkey",
-  /** unique or primary key constraint on columns "chest_history_id" */
-  UkB9g0m7a50nte8ovqr4qmr2ush = "uk_b9g0m7a50nte8ovqr4qmr2ush",
 }
 
 /** input type for incrementing numeric columns in table "bonuses" */
@@ -1164,13 +1162,6 @@ export type BonusesMutationResponse = {
   affectedRows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Bonuses>;
-};
-
-/** input type for inserting object relation for remote table "bonuses" */
-export type BonusesObjRelInsertInput = {
-  data: BonusesInsertInput;
-  /** upsert condition */
-  onConflict?: InputMaybe<BonusesOnConflict>;
 };
 
 /** on_conflict condition type for table "bonuses" */
@@ -2865,8 +2856,10 @@ export type ChestEditionVarianceOrderBy = {
 /** columns and relationships of "chest_history" */
 export type ChestHistory = {
   __typename?: "ChestHistory";
-  /** An object relationship */
-  bonus?: Maybe<Bonuses>;
+  /** An array relationship */
+  bonuses: Array<Bonuses>;
+  /** An aggregate relationship */
+  bonusesAggregate: BonusesAggregate;
   /** An object relationship */
   chest: Chests;
   chestHistoryId: Scalars["bigint"]["output"];
@@ -2884,6 +2877,24 @@ export type ChestHistory = {
   /** An object relationship */
   userByTeacherId: Users;
   userId: Scalars["bigint"]["output"];
+};
+
+/** columns and relationships of "chest_history" */
+export type ChestHistoryBonusesArgs = {
+  distinctOn?: InputMaybe<Array<BonusesSelectColumn>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<BonusesOrderBy>>;
+  where?: InputMaybe<BonusesBoolExp>;
+};
+
+/** columns and relationships of "chest_history" */
+export type ChestHistoryBonusesAggregateArgs = {
+  distinctOn?: InputMaybe<Array<BonusesSelectColumn>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<BonusesOrderBy>>;
+  where?: InputMaybe<BonusesBoolExp>;
 };
 
 /** aggregated selection of "chest_history" */
@@ -2967,7 +2978,8 @@ export type ChestHistoryBoolExp = {
   _and?: InputMaybe<Array<ChestHistoryBoolExp>>;
   _not?: InputMaybe<ChestHistoryBoolExp>;
   _or?: InputMaybe<Array<ChestHistoryBoolExp>>;
-  bonus?: InputMaybe<BonusesBoolExp>;
+  bonuses?: InputMaybe<BonusesBoolExp>;
+  bonusesAggregate?: InputMaybe<BonusesAggregateBoolExp>;
   chest?: InputMaybe<ChestsBoolExp>;
   chestHistoryId?: InputMaybe<BigintComparisonExp>;
   chestId?: InputMaybe<BigintComparisonExp>;
@@ -3000,7 +3012,7 @@ export type ChestHistoryIncInput = {
 
 /** input type for inserting data into table "chest_history" */
 export type ChestHistoryInsertInput = {
-  bonus?: InputMaybe<BonusesObjRelInsertInput>;
+  bonuses?: InputMaybe<BonusesArrRelInsertInput>;
   chest?: InputMaybe<ChestsObjRelInsertInput>;
   chestHistoryId?: InputMaybe<Scalars["bigint"]["input"]>;
   chestId?: InputMaybe<Scalars["bigint"]["input"]>;
@@ -3091,7 +3103,7 @@ export type ChestHistoryOnConflict = {
 
 /** Ordering options when selecting data from "chest_history". */
 export type ChestHistoryOrderBy = {
-  bonus?: InputMaybe<BonusesOrderBy>;
+  bonusesAggregate?: InputMaybe<BonusesAggregateOrderBy>;
   chest?: InputMaybe<ChestsOrderBy>;
   chestHistoryId?: InputMaybe<OrderBy>;
   chestId?: InputMaybe<OrderBy>;

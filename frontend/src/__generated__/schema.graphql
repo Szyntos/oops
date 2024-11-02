@@ -1333,8 +1333,8 @@ type Bonuses {
   """
   An object relationship
   """
-  chestHistory: ChestHistory
-  chestHistoryId: bigint
+  chestHistory: ChestHistory!
+  chestHistoryId: bigint!
   createdAt: timestamp!
   label: String!
 
@@ -1451,11 +1451,6 @@ enum BonusesConstraint {
   unique or primary key constraint on columns "bonus_id"
   """
   bonuses_pkey
-
-  """
-  unique or primary key constraint on columns "chest_history_id"
-  """
-  uk_b9g0m7a50nte8ovqr4qmr2ush
 }
 
 """
@@ -1549,18 +1544,6 @@ type BonusesMutationResponse {
   data from the rows affected by the mutation
   """
   returning: [Bonuses!]!
-}
-
-"""
-input type for inserting object relation for remote table "bonuses"
-"""
-input BonusesObjRelInsertInput {
-  data: BonusesInsertInput!
-
-  """
-  upsert condition
-  """
-  onConflict: BonusesOnConflict
 }
 
 """
@@ -3908,9 +3891,64 @@ columns and relationships of "chest_history"
 """
 type ChestHistory {
   """
-  An object relationship
+  An array relationship
   """
-  bonus: Bonuses
+  bonuses(
+    """
+    distinct select on columns
+    """
+    distinctOn: [BonusesSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [BonusesOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: BonusesBoolExp
+  ): [Bonuses!]!
+
+  """
+  An aggregate relationship
+  """
+  bonusesAggregate(
+    """
+    distinct select on columns
+    """
+    distinctOn: [BonusesSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [BonusesOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: BonusesBoolExp
+  ): BonusesAggregate!
 
   """
   An object relationship
@@ -4031,7 +4069,8 @@ input ChestHistoryBoolExp {
   _and: [ChestHistoryBoolExp!]
   _not: ChestHistoryBoolExp
   _or: [ChestHistoryBoolExp!]
-  bonus: BonusesBoolExp
+  bonuses: BonusesBoolExp
+  bonusesAggregate: BonusesAggregateBoolExp
   chest: ChestsBoolExp
   chestHistoryId: BigintComparisonExp
   chestId: BigintComparisonExp
@@ -4072,7 +4111,7 @@ input ChestHistoryIncInput {
 input type for inserting data into table "chest_history"
 """
 input ChestHistoryInsertInput {
-  bonus: BonusesObjRelInsertInput
+  bonuses: BonusesArrRelInsertInput
   chest: ChestsObjRelInsertInput
   chestHistoryId: bigint
   chestId: bigint
@@ -4184,7 +4223,7 @@ input ChestHistoryOnConflict {
 Ordering options when selecting data from "chest_history".
 """
 input ChestHistoryOrderBy {
-  bonus: BonusesOrderBy
+  bonusesAggregate: BonusesAggregateOrderBy
   chest: ChestsOrderBy
   chestHistoryId: OrderBy
   chestId: OrderBy

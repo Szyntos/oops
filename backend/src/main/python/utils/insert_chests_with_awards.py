@@ -27,15 +27,15 @@ def insert_chests_with_awards(hasura_url, headers, editions, chests_data, awards
     if len(edition_to_awards_not_all) < len(chests_data) - 1:
         for i, chest in enumerate(chests_data[1:]):
             if i < len(edition_to_awards_not_all):
-                awards_to_chests.append(edition_to_awards_not_all.popitem() + random.sample(awards_in_all_editions, max(0, len(awards_in_all_editions)-3)))
+                awards_to_chests.append(edition_to_awards_not_all.popitem() + random.sample(awards_in_all_editions, max(1, len(awards_in_all_editions)-3)))
             else:
-                awards_to_chests.append((random.choice(list(editions.values())), random.sample(awards_in_all_editions, max(0, len(awards_in_all_editions)-3))))
+                awards_to_chests.append((random.choice(list(editions.values())), random.sample(awards_in_all_editions, max(1, len(awards_in_all_editions)-3))))
 
     else:
         for edition_id, awards in edition_to_awards_not_all.items():
-            awards_to_chests.append((edition_id, awards + random.sample(awards_in_all_editions, max(0, len(awards_in_all_editions)-2))))
+            awards_to_chests.append((edition_id, awards + random.sample(awards_in_all_editions, max(1, len(awards_in_all_editions)-2))))
     additional_chests = []
-    additional_chests.append((random.choice(list(editions.values())), random.sample(awards_in_all_editions, max(0, len(awards_in_all_editions)-3))))
+    additional_chests.append((random.choice(list(editions.values())), random.sample(awards_in_all_editions, max(1, len(awards_in_all_editions)-3))))
 
     print("Preparing chests for insertion...")
     editions_for_chest = editions.values()
@@ -100,7 +100,7 @@ def add_chest(hasura_url, headers, name, chest_name_to_filename, awards, edition
     variables = {
         "chestType": name,
         "fileId": file_id,
-        "awardBundleCount": random.randint(1, max(0, len(awards)//2+1)),
+        "awardBundleCount": random.randint(1, max(1, len(awards))),
         "label": "",
         "awardIds": awards
     }

@@ -75,6 +75,39 @@ class LevelSetDataFetcher {
 
     @DgsMutation
     @Transactional
+    fun copyLevelSet(@InputArgument levelSetId: Long): LevelSet {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can copy level sets")
+        }
+
+        val levelSet = levelSetRepository.findById(levelSetId)
+            .orElseThrow { IllegalArgumentException("Invalid level set ID") }
+
+        val levelsInSet = levelSet.levels.sortedBy { it.ordinalNumber }
+
+        val newLevelSet = levelSetRepository.save(LevelSet(levelSetName = ""))
+
+        val newLevels = mutableListOf<Levels>()
+        levelsInSet.sortedBy { it.maximumPoints }.forEachIndexed { index, level ->
+            newLevels +=
+                addLevelHelper(
+                    name = level.levelName,
+                    levelSetId = newLevelSet.levelSetId,
+                    maximumPoints = level.maximumPoints.toDouble(),
+                    grade = level.grade.toDouble(),
+                    imageFileId = level.imageFile?.fileId,
+                    ordinalNumber = index
+                )
+        }
+
+        newLevelSet.levels = newLevels.toSet()
+
+        return newLevelSet
+    }
+
+    @DgsMutation
+    @Transactional
     fun editLevelSet(@InputArgument levelSetId: Long, @InputArgument levels: List<LevelInput>): LevelSet {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {

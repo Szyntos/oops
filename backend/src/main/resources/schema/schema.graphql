@@ -243,24 +243,24 @@ type Mutation {
 
   addLevelSet(
     levels: [LevelInputType!]!
-  ): [LevelType!]!
+  ): LevelSetType!
 
   editLevelSet(
-    levelSet: Int!,
+    levelSetId: Int!,
     levels: [LevelInputType!]!
-  ): [LevelType!]!
+  ): LevelSetType!
 
   removeLevelSet(
-    levelSet: Int!
+    levelSetId: Int!
   ): Boolean
 
   addLevelSetToEdition(
-    levelSet: Int!
+    levelSetID: Int!
     editionId: Int!
-  ): [LevelType!]!
+  ): LevelSetType!
 
   removeLevelSetFromEdition(
-    levelSet: Int!,
+    levelSetId: Int!,
     editionId: Int!
   ): Boolean
 
@@ -337,8 +337,6 @@ type Query {
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
-  getLevelSets: [LevelSetType!]!
-
 }
 
 type AwardType {
@@ -661,8 +659,9 @@ type NotValidUserType {
 }
 
 type LevelSetType {
-  levelSetId: Int!,
-  editionId: ID,
+  levelSetId: ID!,
+  levelSetName: String!,
+  edition: [EditionType!]!
   levels: [LevelType!]!
 }
 

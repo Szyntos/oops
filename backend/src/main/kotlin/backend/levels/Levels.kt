@@ -2,6 +2,7 @@ package backend.levels
 
 import backend.edition.Edition
 import backend.files.FileEntity
+import backend.levelSet.LevelSet
 import backend.userLevel.UserLevel
 import backend.utils.HasImageFile
 import jakarta.persistence.*
@@ -41,11 +42,8 @@ class Levels(
     var label: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "edition_id", nullable = true)
-    var edition: Edition? = null,
-
-    @Column(name = "level_set", nullable = false)
-    var levelSet: Int,
+    @JoinColumn(name = "level_set_id", nullable = false)
+    var levelSet: LevelSet,
 
     @OneToMany(mappedBy = "level", fetch = FetchType.LAZY)
     val userLevels: Set<UserLevel> = HashSet(),
@@ -56,6 +54,6 @@ class Levels(
         maximumPoints = BigDecimal.ZERO,
         grade = (2.0).toBigDecimal().setScale(1),
         label = "",
-        levelSet = 0
+        levelSet = LevelSet()
     )
 }

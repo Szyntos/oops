@@ -464,11 +464,10 @@ type LevelType {
   grade: String!
   ordinalNumber: Int!
   label: String!
-  edition: EditionType
-  levelSet: Int!
+  levelSet: LevelSetType!
   highest: Boolean!
   imageFile: FileType
-  userLevels: [UserLevelType]
+  userLevels: [UserLevelType!]!
 }
 
 type PointType {

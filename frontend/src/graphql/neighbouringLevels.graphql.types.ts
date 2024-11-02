@@ -17,6 +17,7 @@ export type NeighboringLevelsQuery = {
       highest: boolean;
       levelId: string;
       levelName: string;
+      levelSet: number;
       maximumPoints: string;
       minimumPoints: string;
       ordinalNumber: number;
@@ -47,6 +48,7 @@ export type NeighboringLevelsQuery = {
       highest: boolean;
       levelId: string;
       levelName: string;
+      levelSet: number;
       maximumPoints: string;
       minimumPoints: string;
       ordinalNumber: number;
@@ -77,6 +79,7 @@ export type NeighboringLevelsQuery = {
       highest: boolean;
       levelId: string;
       levelName: string;
+      levelSet: number;
       maximumPoints: string;
       minimumPoints: string;
       ordinalNumber: number;
@@ -112,6 +115,7 @@ export const NeighboringLevelsDocument = gql`
         highest
         levelId
         levelName
+        levelSet
         maximumPoints
         minimumPoints
         ordinalNumber
@@ -139,6 +143,7 @@ export const NeighboringLevelsDocument = gql`
         highest
         levelId
         levelName
+        levelSet
         maximumPoints
         minimumPoints
         ordinalNumber
@@ -166,6 +171,7 @@ export const NeighboringLevelsDocument = gql`
         highest
         levelId
         levelName
+        levelSet
         maximumPoints
         minimumPoints
         ordinalNumber

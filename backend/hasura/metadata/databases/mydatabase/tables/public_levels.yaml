@@ -33,6 +33,7 @@ select_permissions:
         - image_file_id
         - label
         - level_id
+        - level_set
         - maximum_points
         - minimum_points
         - name
@@ -49,6 +50,7 @@ select_permissions:
         - image_file_id
         - label
         - level_id
+        - level_set
         - maximum_points
         - minimum_points
         - name
@@ -69,6 +71,7 @@ select_permissions:
         - image_file_id
         - label
         - level_id
+        - level_set
         - maximum_points
         - minimum_points
         - name

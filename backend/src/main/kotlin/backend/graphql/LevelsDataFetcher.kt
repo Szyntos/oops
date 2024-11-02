@@ -2,6 +2,7 @@ package backend.graphql
 
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.groups.GroupsRepository
 import backend.levels.Levels
 import backend.levels.LevelsRepository
 import backend.users.UsersRepository
@@ -18,6 +19,9 @@ import java.math.RoundingMode
 
 @DgsComponent
 class LevelsDataFetcher {
+    @Autowired
+    private lateinit var groupsRepository: GroupsRepository
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -36,43 +40,290 @@ class LevelsDataFetcher {
     @Autowired
     lateinit var usersRepository: UsersRepository
 
+
     @DgsMutation
     @Transactional
-    fun addLevel(@InputArgument editionId: Long, @InputArgument name: String, @InputArgument maximumPoints: Double,
-                    @InputArgument grade: Double, @InputArgument imageFileId: Long? = null): Levels {
+    fun addLevelSet(@InputArgument levels: List<LevelInput>): List<Levels> {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can add level sets")
+        }
+
+        val levelSetId = levelsRepository.findAll().maxOfOrNull { it.levelSet }?.plus(1) ?: 1
+
+        val levelSet = mutableListOf<Levels>()
+        levels.sortedBy { it.maximumPoints }.forEachIndexed { index, levelInput ->
+            levelSet +=
+            addLevelHelper(
+                name = levelInput.name,
+                levelSet = levelSetId,
+                maximumPoints = levelInput.maximumPoints,
+                grade = levelInput.grade,
+                imageFileId = levelInput.imageFileId
+            )
+        }
+
+        return levelSet
+    }
+
+    @DgsMutation
+    @Transactional
+    fun editLevelSet(@InputArgument levelSet: Int, @InputArgument levels: List<LevelInput>): List<Levels> {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can edit level sets")
+        }
+
+        val levelsInSet = levelsRepository.findByLevelSet(levelSet).sortedBy { it.ordinalNumber }
+        val inputLevelIds = levels.mapNotNull { it.levelId }.toSet()
+
+        // Remove levels not in input list
+        levelsInSet.filter { it.levelId !in inputLevelIds }
+            .forEach { levelNotInSet ->
+                val level = levelsRepository.findById(levelNotInSet.levelId)
+                    .orElseThrow { IllegalArgumentException("Invalid level ID") }
+                if (level.edition != null) {
+                    if (level.edition!!.endDate.isBefore(java.time.LocalDate.now())) {
+                        throw IllegalArgumentException("Edition has already ended")
+                    }
+                    if (level.edition!!.startDate.isBefore(java.time.LocalDate.now())) {
+                        throw IllegalArgumentException("Edition has already started")
+                    }
+                }
+
+                if (level.highest) {
+                    val prevLevel = levelsRepository.findByLevelSet(levelSet)
+                        .firstOrNull { it.ordinalNumber == level.ordinalNumber - 1 }
+
+                    prevLevel?.highest = true
+                    levelsRepository.save(prevLevel!!)
+                }
+
+                levelsRepository.delete(level)
+            }
+
+        levels.sortedBy { it.maximumPoints }.forEachIndexed { index, levelInput ->
+            val levelId = levelInput.levelId
+            if (levelId != null && levelId > 0) {
+                editLevelHelper(
+                    levelId = levelId,
+                    name = levelInput.name,
+                    maximumPoints = levelInput.maximumPoints,
+                    grade = levelInput.grade,
+                    imageFileId = levelInput.imageFileId,
+                    label = "",
+                    ordinalNumber = index
+                )
+            } else {
+                addLevelHelper(
+                    name = levelInput.name,
+                    levelSet = levelSet,
+                    maximumPoints = levelInput.maximumPoints,
+                    grade = levelInput.grade,
+                    imageFileId = levelInput.imageFileId
+                )
+            }
+        }
+        return levelsRepository.findByLevelSet(levelSet).sortedBy { it.ordinalNumber }
+    }
+
+    @DgsMutation
+    @Transactional
+    fun removeLevelSet(@InputArgument levelSet: Int): Boolean {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can remove level sets")
+        }
+
+
+
+        val levelsInSet = levelsRepository.findByLevelSet(levelSet)
+
+        val edition = levelsInSet.first().edition
+
+        if (edition != null) {
+            if (edition.endDate.isBefore(java.time.LocalDate.now())) {
+                throw IllegalArgumentException("Edition has already ended")
+            }
+            if (edition.startDate.isBefore(java.time.LocalDate.now())) {
+                throw IllegalArgumentException("Edition has already started")
+            }
+            if (groupsRepository.existsByEdition(edition)) {
+                throw IllegalArgumentException("A group exists with the edition with the level set")
+            }
+        }
+
+        levelsInSet.forEach { level ->
+            levelsRepository.delete(level)
+        }
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
+    fun addLevelSetToEdition(@InputArgument levelSet: Int, @InputArgument editionId: Long): List<Levels> {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can add level sets to editions")
+        }
+
+        val edition = editionRepository.findById(editionId)
+            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+
+        if (edition.endDate.isBefore(java.time.LocalDate.now())) {
+            throw IllegalArgumentException("Edition has already ended")
+        }
+
+        val levelsInSet = levelsRepository.findByLevelSet(levelSet)
+
+        levelsInSet.forEach { level ->
+            level.edition = edition
+        }
+
+        return levelsRepository.saveAll(levelsInSet)
+    }
+
+    @DgsMutation
+    @Transactional
+    fun removeLevelSetFromEdition(@InputArgument levelSet: Int, @InputArgument editionId: Long): Boolean {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can remove level sets from editions")
+        }
+
+        val edition = editionRepository.findById(editionId)
+            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+
+        if (edition.endDate.isBefore(java.time.LocalDate.now())) {
+            throw IllegalArgumentException("Edition has already ended")
+        }
+
+        if (edition.startDate.isBefore(java.time.LocalDate.now())) {
+            throw IllegalArgumentException("Edition has already started")
+        }
+
+        val levelsInSet = levelsRepository.findByLevelSet(levelSet)
+
+        levelsInSet.forEach { level ->
+            if (level.edition != edition) {
+                throw IllegalArgumentException("Level set is not in the edition")
+            }
+            level.edition = null
+        }
+
+        levelsRepository.saveAll(levelsInSet)
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
+    fun assignPhotoToLevel(@InputArgument levelId: Long, @InputArgument fileId: Long?): Boolean {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            throw IllegalArgumentException("Only coordinators can assign photos to levels")
+        }
+
+        val level = levelsRepository.findById(levelId).orElseThrow { IllegalArgumentException("Invalid level ID") }
+        if (level.edition != null){
+            if (level.edition!!.endDate.isBefore(java.time.LocalDate.now())){
+                throw IllegalArgumentException("Edition has already ended")
+            }
+        }
+        return photoAssigner.assignPhotoToAssignee(levelsRepository, "image/level", levelId, fileId)
+    }
+
+    @DgsQuery
+    @Transactional
+    fun getLevelSets(): List<LevelSet>{
+        return levelsRepository.findAll()
+            .groupBy { it.levelSet }
+            .map { (levelSet, levels) ->
+                LevelSet(
+                    levelSet,
+                    levels.first().edition?.editionId,
+                    levels.sortedBy { it.ordinalNumber })
+            }
+    }
+
+    @DgsQuery
+    @Transactional
+    fun getNeighboringLevels(@InputArgument studentId: Long, @InputArgument editionId: Long): NeighboringLevelsType {
+        val currentUser = userMapper.getCurrentUser()
+        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
+            if (currentUser.userId != studentId){
+                throw IllegalArgumentException("Student can only get neighboring levels for themselves")
+            }
+        }
+        if (currentUser.role == UsersRoles.TEACHER){
+            val student = usersRepository.findById(studentId)
+                .orElseThrow { IllegalArgumentException("Invalid student ID") }
+            val teacherEditions = currentUser.userGroups.map { it.group.edition }
+            val studentEditions = student.userGroups.map { it.group.edition }
+            if (teacherEditions.intersect(studentEditions.toSet()).isEmpty()){
+                throw IllegalArgumentException("Teacher can only get neighboring levels for students in their editions")
+            }
+        }
+
+        val edition = editionRepository.findById(editionId)
+            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val student = usersRepository.findById(studentId)
+            .orElseThrow { IllegalArgumentException("Invalid student ID") }
+        if (student.userGroups.none { it.group.edition == edition }){
+            throw IllegalArgumentException("Student is not in any group in the edition")
+        }
+        val userLevel = student.userLevels.find { it.edition == edition }
+            ?: throw IllegalArgumentException("Student does not have a level in the edition")
+        val currentLevel = userLevel.level
+        val previousLevel =
+            levelsRepository.findByLevelSet(currentLevel.levelSet)
+                .firstOrNull { it.ordinalNumber == currentLevel.ordinalNumber - 1 }
+        val nextLevel =
+            levelsRepository.findByLevelSet(currentLevel.levelSet)
+                .firstOrNull { it.ordinalNumber == currentLevel.ordinalNumber + 1 }
+        return NeighboringLevelsType(
+            prevLevel = previousLevel,
+            currLevel = currentLevel,
+            nextLevel = nextLevel
+        )
+    }
+
+    fun addLevelHelper(name: String, levelSet: Int, maximumPoints: Double,
+                       grade: Double, imageFileId: Long? = null, editionId: Long? = null): Levels {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can add levels")
         }
-
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
+        val edition = if (editionId == null){
+            null
+        } else {
+            editionRepository.findById(editionId)
+                .orElseThrow { IllegalArgumentException("Invalid edition ID") }
         }
-        val levelsInEdition = levelsRepository.findByEdition(edition)
 
         val levelImage = if (imageFileId == null){
             fileEntityRepository.findAllByFileType("image/level/sample").firstOrNull()
         } else {
             val imageFile = fileEntityRepository.findById(imageFileId)
                 .orElseThrow { IllegalArgumentException("Invalid image file ID") }
-            require(imageFile.fileType == "image/level") {
-                "Wrong fileType of file $imageFileId. Please upload a file with fileType = image/level and try again."
-            }
-            val levelsWithSameImage = levelsRepository.findByImageFile(imageFile).filter { it.edition == edition }
+            val levelsWithSameImage = levelsRepository.findByImageFile(imageFile).filter { it.levelSet == levelSet }
             if (levelsWithSameImage.isNotEmpty()){
                 throw IllegalArgumentException("Image is already used by another level")
             }
-            fileEntityRepository.findByFileId(imageFileId)
+            imageFile
         }
 
-        if (levelsInEdition.isEmpty()){
+        val levelsInSet = levelsRepository.findByLevelSet(levelSet)
+
+        val highestLevel = levelsInSet.maxByOrNull { it.ordinalNumber }
+
+        if (highestLevel == null){
             val level = Levels(
                 levelName = name,
                 minimumPoints = BigDecimal.ZERO,
                 maximumPoints = maximumPoints.toBigDecimal().setScale(2, RoundingMode.HALF_UP),
                 grade = grade.toBigDecimal().setScale(2, RoundingMode.HALF_UP),
                 label = "",
+                levelSet = levelSet,
                 edition = edition
             )
             level.ordinalNumber = 0
@@ -82,21 +333,20 @@ class LevelsDataFetcher {
             return level
         }
 
-        val highestLevel = levelsInEdition.maxByOrNull { it.ordinalNumber }!!
-
         if (highestLevel.maximumPoints >= maximumPoints.toBigDecimal()){
             throw IllegalArgumentException("Maximum points must be higher than the highest level in the edition")
         }
         if (highestLevel.grade > grade.toBigDecimal()){
             throw IllegalArgumentException("Grade must be higher or equal to the highest level in the edition")
         }
-        if (levelsInEdition.any { it.levelName == name }){
+        if (levelsInSet.any { it.levelName == name }){
             throw IllegalArgumentException("Level with the same name already exists in the edition")
         }
 
 
         val level = Levels(
             levelName = name,
+            levelSet = levelSet,
             minimumPoints = highestLevel.maximumPoints,
             maximumPoints = maximumPoints.toBigDecimal().setScale(2, RoundingMode.HALF_UP),
             grade = grade.toBigDecimal().setScale(2, RoundingMode.HALF_UP),
@@ -111,15 +361,14 @@ class LevelsDataFetcher {
         return level
     }
 
-    @DgsMutation
-    @Transactional
-    fun editLevel(
-        @InputArgument levelId: Long,
-        @InputArgument name: String?,
-        @InputArgument maximumPoints: Double?,
-        @InputArgument grade: Double?,
-        @InputArgument imageFileId: Long?,
-        @InputArgument label: String?
+    fun editLevelHelper(
+        levelId: Long,
+        name: String?,
+        maximumPoints: Double?,
+        grade: Double?,
+        imageFileId: Long?,
+        ordinalNumber: Int?,
+        label: String?
     ): Levels {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
@@ -129,25 +378,28 @@ class LevelsDataFetcher {
         val level = levelsRepository.findById(levelId)
             .orElseThrow { IllegalArgumentException("Invalid level ID") }
 
-        if (level.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (level.edition.startDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already started")
+        if (level.edition != null){
+            if (level.edition!!.endDate.isBefore(java.time.LocalDate.now())){
+                throw IllegalArgumentException("Edition has already ended")
+            }
+            if (level.edition!!.startDate.isBefore(java.time.LocalDate.now())){
+                throw IllegalArgumentException("Edition has already started")
+            }
         }
 
         name?.let { newName ->
-            if (levelsRepository.findByEdition(level.edition).any { level -> level.levelName == newName && level.levelId != levelId }) {
+            if (levelsRepository.findByLevelSet(level.levelSet).any { level -> level.levelName == newName && level.levelId != levelId }) {
                 throw IllegalArgumentException("Level with the same name already exists in the edition")
             }
             level.levelName = newName
         }
 
         val previousLevel =
-            levelsRepository.findByEdition(level.edition)
+            levelsRepository.findByLevelSet(level.levelSet)
                 .firstOrNull { it.ordinalNumber == level.ordinalNumber - 1 }
+
         val nextLevel =
-            levelsRepository.findByEdition(level.edition)
+            levelsRepository.findByLevelSet(level.levelSet)
                 .firstOrNull { it.ordinalNumber == level.ordinalNumber + 1 }
 
         maximumPoints?.let {
@@ -197,94 +449,21 @@ class LevelsDataFetcher {
             levelsRepository.save(nextLevel)
         }
 
+        ordinalNumber?.let {
+            if (ordinalNumber < 0){
+                throw IllegalArgumentException("Ordinal number must be a non-negative value")
+            }
+            val levelsInSet = levelsRepository.findByLevelSet(level.levelSet)
+            if (ordinalNumber >= levelsInSet.size){
+                throw IllegalArgumentException("Ordinal number must be lower than the number of levels in the set")
+            }
+            val newOrdinalNumber = ordinalNumber.coerceAtMost(levelsInSet.size - 1)
+            val levelsToShift = levelsInSet.filter { it.ordinalNumber in newOrdinalNumber..level.ordinalNumber }
+            levelsToShift.forEach { it.ordinalNumber += 1 }
+            level.ordinalNumber = newOrdinalNumber
+        }
+
         return levelsRepository.save(level)
-    }
-
-    @DgsMutation
-    @Transactional
-    fun removeLevel(@InputArgument levelId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove levels")
-        }
-
-        val level = levelsRepository.findById(levelId)
-            .orElseThrow { IllegalArgumentException("Invalid level ID") }
-
-        if (level.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (level.edition.startDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already started")
-        }
-
-        if (level.highest) {
-            val prevLevel = levelsRepository.findByEdition(level.edition)
-                .firstOrNull { it.ordinalNumber == level.ordinalNumber - 1 }
-
-            prevLevel?.highest = true
-            levelsRepository.save(prevLevel!!)
-        }
-
-        levelsRepository.delete(level)
-        return true
-    }
-
-    @DgsMutation
-    @Transactional
-    fun assignPhotoToLevel(@InputArgument levelId: Long, @InputArgument fileId: Long?): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can assign photos to levels")
-        }
-
-        val level = levelsRepository.findById(levelId).orElseThrow { IllegalArgumentException("Invalid level ID") }
-        if (level.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        return photoAssigner.assignPhotoToAssignee(levelsRepository, "image/level", levelId, fileId)
-    }
-
-    @DgsQuery
-    @Transactional
-    fun getNeighboringLevels(@InputArgument studentId: Long, @InputArgument editionId: Long): NeighboringLevelsType {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            if (currentUser.userId != studentId){
-                throw IllegalArgumentException("Student can only get neighboring levels for themselves")
-            }
-        }
-        if (currentUser.role == UsersRoles.TEACHER){
-            val student = usersRepository.findById(studentId)
-                .orElseThrow { IllegalArgumentException("Invalid student ID") }
-            val teacherEditions = currentUser.userGroups.map { it.group.edition }
-            val studentEditions = student.userGroups.map { it.group.edition }
-            if (teacherEditions.intersect(studentEditions.toSet()).isEmpty()){
-                throw IllegalArgumentException("Teacher can only get neighboring levels for students in their editions")
-            }
-        }
-
-        val edition = editionRepository.findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        val student = usersRepository.findById(studentId)
-            .orElseThrow { IllegalArgumentException("Invalid student ID") }
-        if (student.userGroups.none { it.group.edition == edition }){
-            throw IllegalArgumentException("Student is not in any group in the edition")
-        }
-        val userLevel = student.userLevels.find { it.edition == edition }
-            ?: throw IllegalArgumentException("Student does not have a level in the edition")
-        val currentLevel = userLevel.level
-        val previousLevel =
-            levelsRepository.findByEdition(edition)
-                .firstOrNull { it.ordinalNumber == currentLevel.ordinalNumber - 1 }
-        val nextLevel =
-            levelsRepository.findByEdition(edition)
-                .firstOrNull { it.ordinalNumber == currentLevel.ordinalNumber + 1 }
-        return NeighboringLevelsType(
-            prevLevel = previousLevel,
-            currLevel = currentLevel,
-            nextLevel = nextLevel
-        )
     }
 }
 
@@ -292,4 +471,18 @@ data class NeighboringLevelsType(
     val prevLevel: Levels?,
     val currLevel: Levels,
     val nextLevel: Levels?
+)
+
+data class LevelInput(
+    val levelId: Long? = null,
+    val name: String,
+    val maximumPoints: Double,
+    val grade: Double,
+    val imageFileId: Long? = null
+)
+
+data class LevelSet(
+    val levelSetId: Int,
+    val editionId: Long?,
+    val levels: List<Levels>
 )

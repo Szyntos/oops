@@ -18,4 +18,5 @@ interface GroupsRepository : JpaRepository<Groups, Long> {
     fun findByUsosIdAndEdition(usosId: Long, edition: Edition): Groups?
     fun existsByUsosIdAndEdition(usosId: Long, edition: Edition): Boolean
     fun findByTeacher_UserId(userId: Long): List<Groups>
+    fun existsByEdition(edition: Edition): Boolean
 }

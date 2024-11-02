@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository
 interface LevelsRepository : JpaRepository<Levels, Long> {
     fun findByEdition(edition: Edition): List<Levels>
     fun findByImageFile_FileId(fileId: Long): List<Levels>
-
+    fun findByLevelSet(levelSet: Int): List<Levels>
     fun findByImageFile(file: FileEntity): List<Levels>
 }

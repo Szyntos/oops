@@ -17,13 +17,6 @@ type Mutation {
   assignPhotoToLevel(levelId: Int!, fileId: Int): Boolean
   assignPhotoToAward(awardId: Int!, fileId: Int): Boolean
   assignPhotoToChest(chestId: Int!, fileId: Int): Boolean
-  addLevel(
-    editionId: Int!
-    name: String!
-    maximumPoints: Float!
-    grade: Float!
-    imageFileId: Int
-  ): LevelType
   addAward(
     awardName: String!
     awardType: String!
@@ -248,18 +241,29 @@ type Mutation {
     groupId: Int!
   ): Boolean
 
-  editLevel(
-    levelId: Int!,
-    name: String,
-    maximumPoints: Float,
-    grade: Float,
-    imageFileId: Int,
-    label: String
-  ): LevelType
+  addLevelSet(
+    levels: [LevelInputType!]!
+  ): [LevelType!]!
 
-  removeLevel(
-    levelId: Int!
+  editLevelSet(
+    levelSet: Int!,
+    levels: [LevelInputType!]!
+  ): [LevelType!]!
+
+  removeLevelSet(
+    levelSet: Int!
   ): Boolean
+
+  addLevelSetToEdition(
+    levelSet: Int!
+    editionId: Int!
+  ): [LevelType!]!
+
+  removeLevelSetFromEdition(
+    levelSet: Int!,
+    editionId: Int!
+  ): Boolean
+
 
   editPoints(
     pointsId: Int!,
@@ -333,6 +337,7 @@ type Query {
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
+  getLevelSets: [LevelSetType!]!
 
 }
 
@@ -461,7 +466,8 @@ type LevelType {
   grade: String!
   ordinalNumber: Int!
   label: String!
-  edition: EditionType!
+  edition: EditionType
+  levelSet: Int!
   highest: Boolean!
   imageFile: FileType
   userLevels: [UserLevelType]
@@ -654,6 +660,12 @@ type NotValidUserType {
   group: GroupType!
 }
 
+type LevelSetType {
+  levelSetId: Int!,
+  editionId: ID,
+  levels: [LevelType!]!
+}
+
 input SubcategoryInputType {
   subcategoryId: ID
   subcategoryName: String!
@@ -677,7 +689,14 @@ input UsersInputTypeType {
   sendEmail: Boolean!
 }
 
+input LevelInputType {
+  levelId: ID
+  name: String!,
+  maximumPoints: String!,
+  grade: String!,
+  imageFileId: ID
+}
+
 input UserIdsType {
   userIds: [Int!]!
 }
-

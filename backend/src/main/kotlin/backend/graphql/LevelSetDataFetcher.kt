@@ -58,18 +58,16 @@ class LevelSetDataFetcher {
 
         val levelsInSet = mutableListOf<Levels>()
         levels.sortedBy { it.maximumPoints }.forEachIndexed { index, levelInput ->
-            levelsInSet +=
-            addLevelHelper(
+            val level = addLevelHelper(
+                levelSet = levelSet,
                 name = levelInput.name,
-                levelSetId = levelSet.levelSetId,
                 maximumPoints = levelInput.maximumPoints,
                 grade = levelInput.grade,
                 imageFileId = levelInput.imageFileId,
                 ordinalNumber = index
             )
+            levelsInSet += level
         }
-        levelSet.levels = levelsInSet.toSet()
-
         return levelSet
     }
 
@@ -93,16 +91,13 @@ class LevelSetDataFetcher {
             newLevels +=
                 addLevelHelper(
                     name = level.levelName,
-                    levelSetId = newLevelSet.levelSetId,
+                    levelSet = newLevelSet,
                     maximumPoints = level.maximumPoints.toDouble(),
                     grade = level.grade.toDouble(),
                     imageFileId = level.imageFile?.fileId,
                     ordinalNumber = index
                 )
         }
-
-        newLevelSet.levels = newLevels.toSet()
-
         return newLevelSet
     }
 
@@ -139,12 +134,13 @@ class LevelSetDataFetcher {
                 if (level.highest) {
                     val prevLevel = levelsRepository.findByLevelSet(levelSet)
                         .firstOrNull { it.ordinalNumber == level.ordinalNumber - 1 }
-
-                    prevLevel?.highest = true
-                    levelsRepository.save(prevLevel!!)
+                    if (prevLevel != null) {
+                        prevLevel.highest = true
+                        levelsRepository.save(prevLevel)
+                    }
                 }
-
                 levelsRepository.delete(level)
+                levelSet.levels = levelSet.levels.filter { it.levelId != level.levelId }.toSet()
             }
 
         levels.sortedBy { it.maximumPoints }.forEachIndexed { index, levelInput ->
@@ -162,7 +158,7 @@ class LevelSetDataFetcher {
             } else {
                 addLevelHelper(
                     name = levelInput.name,
-                    levelSetId = levelSet.levelSetId,
+                    levelSet = levelSet,
                     maximumPoints = levelInput.maximumPoints,
                     grade = levelInput.grade,
                     imageFileId = levelInput.imageFileId,
@@ -261,15 +257,18 @@ class LevelSetDataFetcher {
         return true
     }
 
-    fun addLevelHelper(name: String, levelSetId: Long, maximumPoints: Double,
-                       grade: Double, imageFileId: Long? = null, ordinalNumber: Int? = null): Levels {
+    fun addLevelHelper(
+        levelSet: LevelSet,
+        name: String,
+        maximumPoints: Double,
+        grade: Double,
+        imageFileId: Long? = null,
+        ordinalNumber: Int? = null
+    ): Levels {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can add levels")
         }
-
-        val levelSet = levelSetRepository.findById(levelSetId)
-            .orElseThrow { IllegalArgumentException("Invalid level set ID") }
 
         val levelsInSet = levelSet.levels
 
@@ -288,6 +287,7 @@ class LevelSetDataFetcher {
             level.highest = true
             levelsRepository.save(level)
             photoAssigner.assignPhotoToAssignee(levelsRepository, "image/level", level.levelId, imageFileId)
+            levelSet.levels += level
             return level
         }
 
@@ -300,7 +300,6 @@ class LevelSetDataFetcher {
         if (levelsInSet.any { it.levelName == name }){
             throw IllegalArgumentException("Level with the same name already exists in the edition")
         }
-
 
         val level = Levels(
             levelName = name,
@@ -315,8 +314,10 @@ class LevelSetDataFetcher {
         level.highest = true
         levelsRepository.save(level)
         photoAssigner.assignPhotoToAssignee(levelsRepository, "image/level", level.levelId, imageFileId)
+        levelSet.levels += level
         return level
     }
+
 
     fun editLevelHelper(
         levelId: Long,

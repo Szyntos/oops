@@ -121,7 +121,7 @@ class GroupsDataFetcher {
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
             throw IllegalArgumentException("Edition has already ended")
         }
-        if (levelsRepository.findByEdition(edition).isEmpty()) {
+        if (edition.levelSet == null) {
             throw IllegalArgumentException("Cannot add a group to an edition without levels")
         }
         if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {
@@ -180,7 +180,7 @@ class GroupsDataFetcher {
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
             throw IllegalArgumentException("Edition has already ended")
         }
-        if (levelsRepository.findByEdition(edition).isEmpty()) {
+        if (edition.levelSet == null) {
             throw IllegalArgumentException("Cannot add a group to an edition without levels")
         }
         if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {

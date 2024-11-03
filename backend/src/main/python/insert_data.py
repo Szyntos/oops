@@ -90,9 +90,26 @@ def truncate_and_restart_sequences():
 
     # Truncate tables
     tables = [
-        "bonuses", "chest_history", "chest_award", "user_groups", "points",
-        "users", "subcategories", "levels", "groups", "chests", "categories",
-        "award", "edition", "award_edition", "user_level",
+        "award",
+        "award_edition",
+        "bonuses",
+        "categories",
+        "category_edition",
+        "chest_award",
+        "chest_history",
+        "chests",
+        "edition",
+        "files",
+        "grading_checks",
+        "groups",
+        "level_sets",
+        "levels",
+        "points",
+        "points_history",
+        "subcategories",
+        "user_groups",
+        "user_level",
+        "users"
     ]
 
 

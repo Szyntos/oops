@@ -252,24 +252,28 @@ type Mutation {
 
   addLevelSet(
     levels: [LevelInputType!]!
-  ): [LevelType!]!
+  ): LevelSetType!
+
+  copyLevelSet(
+    levelSetId: Int!
+  ): LevelSetType!
 
   editLevelSet(
-    levelSet: Int!,
+    levelSetId: Int!,
     levels: [LevelInputType!]!
-  ): [LevelType!]!
+  ): LevelSetType!
 
   removeLevelSet(
-    levelSet: Int!
+    levelSetId: Int!
   ): Boolean
 
   addLevelSetToEdition(
-    levelSet: Int!
+    levelSetID: Int!
     editionId: Int!
-  ): [LevelType!]!
+  ): LevelSetType!
 
   removeLevelSetFromEdition(
-    levelSet: Int!,
+    levelSetId: Int!,
     editionId: Int!
   ): Boolean
 
@@ -357,8 +361,6 @@ type Query {
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
-  getLevelSets: [LevelSetType!]!
-
 }
 
 type AwardType {
@@ -487,11 +489,10 @@ type LevelType {
   grade: String!
   ordinalNumber: Int!
   label: String!
-  edition: EditionType
-  levelSet: Int!
+  levelSet: LevelSetType!
   highest: Boolean!
   imageFile: FileType
-  userLevels: [UserLevelType]
+  userLevels: [UserLevelType!]!
 }
 
 type PointType {
@@ -682,8 +683,9 @@ type NotValidUserType {
 }
 
 type LevelSetType {
-  levelSetId: Int!,
-  editionId: ID,
+  levelSetId: ID!,
+  levelSetName: String!,
+  edition: [EditionType!]!
   levels: [LevelType!]!
 }
 

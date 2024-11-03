@@ -13,6 +13,7 @@
 - "!include public_grading_checks.yaml"
 - "!include public_groups.yaml"
 - "!include public_hall_of_fame.yaml"
+- "!include public_level_sets.yaml"
 - "!include public_levels.yaml"
 - "!include public_points.yaml"
 - "!include public_points_history.yaml"

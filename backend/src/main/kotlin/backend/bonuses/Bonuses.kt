@@ -27,8 +27,8 @@ class Bonuses(
     @JoinColumn(name = "award_id", referencedColumnName = "award_id")
     var award: Award,
 
-    @OneToOne
-    @JoinColumn(name = "chest_history_id", referencedColumnName = "chest_history_id")
+    @ManyToOne
+    @JoinColumn(name = "chest_history_id", referencedColumnName = "chest_history_id", nullable = false)
     var chestHistory: ChestHistory,
 
     @Column(name = "label", nullable = false, length = 256)

@@ -4,7 +4,7 @@ mutation CreatePoints(
   $teacherId: Int!
   $value: Float!
 ) {
-  addPointsMutation(
+  addPoints(
     studentId: $studentId
     subcategoryId: $subcategoryId
     teacherId: $teacherId

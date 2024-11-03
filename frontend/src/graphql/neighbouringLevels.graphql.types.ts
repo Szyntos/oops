@@ -17,12 +17,13 @@ export type NeighboringLevelsQuery = {
       highest: boolean;
       levelId: string;
       levelName: string;
+      levelSet: number;
       maximumPoints: string;
       minimumPoints: string;
       ordinalNumber: number;
       grade: string;
       label: string;
-      edition: {
+      edition?: {
         __typename?: "EditionType";
         editionId: string;
         editionName: string;
@@ -30,7 +31,7 @@ export type NeighboringLevelsQuery = {
         endDate: string;
         label: string;
         startDate: string;
-      };
+      } | null;
       imageFile?: {
         __typename?: "FileType";
         fileId: string;
@@ -47,12 +48,13 @@ export type NeighboringLevelsQuery = {
       highest: boolean;
       levelId: string;
       levelName: string;
+      levelSet: number;
       maximumPoints: string;
       minimumPoints: string;
       ordinalNumber: number;
       grade: string;
       label: string;
-      edition: {
+      edition?: {
         __typename?: "EditionType";
         editionId: string;
         editionName: string;
@@ -60,7 +62,7 @@ export type NeighboringLevelsQuery = {
         endDate: string;
         label: string;
         startDate: string;
-      };
+      } | null;
       imageFile?: {
         __typename?: "FileType";
         fileId: string;
@@ -77,12 +79,13 @@ export type NeighboringLevelsQuery = {
       highest: boolean;
       levelId: string;
       levelName: string;
+      levelSet: number;
       maximumPoints: string;
       minimumPoints: string;
       ordinalNumber: number;
       grade: string;
       label: string;
-      edition: {
+      edition?: {
         __typename?: "EditionType";
         editionId: string;
         editionName: string;
@@ -90,7 +93,7 @@ export type NeighboringLevelsQuery = {
         endDate: string;
         label: string;
         startDate: string;
-      };
+      } | null;
       imageFile?: {
         __typename?: "FileType";
         fileId: string;
@@ -112,6 +115,7 @@ export const NeighboringLevelsDocument = gql`
         highest
         levelId
         levelName
+        levelSet
         maximumPoints
         minimumPoints
         ordinalNumber
@@ -139,6 +143,7 @@ export const NeighboringLevelsDocument = gql`
         highest
         levelId
         levelName
+        levelSet
         maximumPoints
         minimumPoints
         ordinalNumber
@@ -166,6 +171,7 @@ export const NeighboringLevelsDocument = gql`
         highest
         levelId
         levelName
+        levelSet
         maximumPoints
         minimumPoints
         ordinalNumber

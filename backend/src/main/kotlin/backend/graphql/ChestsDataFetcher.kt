@@ -1,10 +1,13 @@
 package backend.graphql
 
+import backend.award.AwardRepository
 import backend.awardEdition.AwardEdition
 import backend.awardEdition.AwardEditionRepository
 import backend.categories.CategoriesRepository
 import backend.chestAward.ChestAward
 import backend.chestAward.ChestAwardRepository
+import backend.chestEdition.ChestEditionRepository
+import backend.chestHistory.ChestHistoryRepository
 import backend.chests.Chests
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
@@ -24,6 +27,15 @@ import java.time.LocalDate
 
 @DgsComponent
 class ChestsDataFetcher {
+    @Autowired
+    private lateinit var chestEditionRepository: ChestEditionRepository
+
+    @Autowired
+    private lateinit var chestHistoryRepository: ChestHistoryRepository
+
+    @Autowired
+    private lateinit var awardRepository: AwardRepository
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -69,36 +81,46 @@ class ChestsDataFetcher {
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
-        if (chest.edition.endDate.isBefore(java.time.LocalDate.now())){
+
+        val chestEditions = chest.chestEdition.map { it.edition }
+
+        if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
             throw IllegalArgumentException("Edition has already ended")
         }
+
         return photoAssigner.assignPhotoToAssignee(chestsRepository, "image/chest", chestId, fileId)
     }
 
     @DgsMutation
     @Transactional
-    fun addChest(@InputArgument chestType: String, @InputArgument editionId: Long,
-                 @InputArgument fileId: Long?, @InputArgument label: String = ""): Chests {
+    fun addChest(@InputArgument chestType: String,
+                 @InputArgument fileId: Long?,
+                 @InputArgument awardBundleCount: Int,
+                 @InputArgument label: String = "",
+                 @InputArgument awardIds: List<Long>): Chests {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can add chests")
         }
 
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (chestsRepository.existsByChestTypeAndEditionAndActive(chestType, edition, true)) {
-            throw IllegalArgumentException("Chest with type $chestType already exists for edition ${edition.editionId}")
-        }
-        if (edition.endDate.isBefore(LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
         val chest = Chests(
             chestType = chestType,
             label = label,
-            edition = edition
+            awardBundleCount = awardBundleCount
         )
         val savedChest = chestsRepository.save(chest)
         fileId?.let {
             photoAssigner.assignPhotoToAssignee(chestsRepository, "image/chest", savedChest.chestId, fileId)
+        }
+
+        awardIds.forEach { awardId ->
+            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+            val chestAward = ChestAward(
+                chest = savedChest,
+                award = award,
+                label = ""
+            )
+            chestAwardRepository.save(chestAward)
         }
 
         return savedChest
@@ -109,36 +131,25 @@ class ChestsDataFetcher {
     fun editChest(
         @InputArgument chestId: Long,
         @InputArgument chestType: String?,
-        @InputArgument editionId: Long?,
         @InputArgument fileId: Long?,
-        @InputArgument label: String?
+        @InputArgument awardBundleCount: Int?,
+        @InputArgument label: String?,
+        @InputArgument awardIds: List<Long>
     ): Chests {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can edit chests")
         }
 
-        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
+        var chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
 
-        if (chest.edition.endDate.isBefore(LocalDate.now())) {
+        val chestEditions = chest.chestEdition.map { it.edition }
+
+        if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
             throw IllegalArgumentException("Edition has already ended")
         }
         chestType?.let {
-            if (chest.edition.startDate.isBefore(LocalDate.now())) {
-                throw IllegalArgumentException("Edition has already started")
-            }
-            if (chestsRepository.existsByChestTypeAndEditionAndActive(it, chest.edition, true) && it != chest.chestType) {
-                throw IllegalArgumentException("Chest with type $it already exists for edition ${chest.edition.editionId}")
-            }
             chest.chestType = it
-        }
-
-        editionId?.let {
-            if (chest.edition.startDate.isBefore(LocalDate.now())) {
-                throw IllegalArgumentException("Edition has already started")
-            }
-            val edition = editionRepository.findById(it).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-            chest.edition = edition
         }
 
         fileId?.let {
@@ -147,6 +158,88 @@ class ChestsDataFetcher {
 
         label?.let {
             chest.label = it
+        }
+
+        awardBundleCount?.let { newCount ->
+            if (chestHistoryRepository.findByChest(chest).any { it.opened }) {
+                throw IllegalArgumentException("Users have already opened this chest")
+            }
+            chest.awardBundleCount = newCount
+        }
+
+        val newAwardIds = awardIds.toSet()
+
+        val oldAwardIds = chestAwardRepository.findByChest(chest).map { it.award.awardId }.toSet()
+
+        val toRemove = oldAwardIds.minus(newAwardIds)
+
+        val toAdd = newAwardIds.minus(oldAwardIds)
+
+        toRemove.forEach { awardId ->
+            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+            if (chestHistoryRepository.findByChest(chest).any { it.opened }) {
+                chest.active = false
+                chestsRepository.save(chest)
+                val newChest = Chests(
+                    chestType = chest.chestType,
+                    label = chest.label,
+                    awardBundleCount = chest.awardBundleCount
+                )
+                newChest.imageFile = chest.imageFile
+                chestsRepository.save(newChest)
+                chestAwardRepository.findByChest(chest).forEach {
+                    chestAwardRepository.save(
+                        ChestAward(
+                            award = it.award,
+                            chest = newChest,
+                            label = it.label
+                        )
+                    )
+                }
+                chestHistoryRepository.findByChest(chest).filter { !it.opened }.forEach {
+                    it.chest = newChest
+                    chestHistoryRepository.save(it)
+                }
+                chest = newChest
+            }
+            chestAwardRepository.findByChestAndAward(chest, award)?.let {
+                chestAwardRepository.delete(it)
+            }
+        }
+
+        toAdd.forEach { awardId ->
+            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+            if (chestHistoryRepository.findByChest(chest).any { it.opened }) {
+                chest.active = false
+                chestsRepository.save(chest)
+                val newChest = Chests(
+                    chestType = chest.chestType,
+                    label = chest.label,
+                    awardBundleCount = chest.awardBundleCount
+                )
+                newChest.imageFile = chest.imageFile
+                chestsRepository.save(newChest)
+                chestAwardRepository.findByChest(chest).forEach {
+                    chestAwardRepository.save(
+                        ChestAward(
+                            award = it.award,
+                            chest = newChest,
+                            label = it.label
+                        )
+                    )
+                }
+                chestHistoryRepository.findByChest(chest).filter { !it.opened }.forEach {
+                    it.chest = newChest
+                    chestHistoryRepository.save(it)
+                }
+                chest = newChest
+            }
+            val chestAward = ChestAward(
+                chest = chest,
+                award = award,
+                label = ""
+            )
+            chestAwardRepository.save(chestAward)
         }
 
         return chestsRepository.save(chest)
@@ -161,12 +254,17 @@ class ChestsDataFetcher {
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
-        if (chest.edition.endDate.isBefore(LocalDate.now())) {
+
+        val chestEditions = chest.chestEdition.map { it.edition }
+
+        if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
             throw IllegalArgumentException("Edition has already ended")
         }
-        if (chest.edition.startDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already started")
+        if (chestEditions.any { it.startDate.isBefore(LocalDate.now()) } && chestHistoryRepository.existsByChest(chest)) {
+            throw IllegalArgumentException("Users have already been given this chest")
         }
+
+        chestEditionRepository.deleteByChest(chest)
         chestAwardRepository.findByChest(chest).forEach {
             chestAwardRepository.delete(it)
         }
@@ -177,37 +275,21 @@ class ChestsDataFetcher {
 
     @DgsMutation
     @Transactional
-    fun copyChest(@InputArgument chestId: Long, @InputArgument editionId: Long): Chests {
+    fun copyChest(@InputArgument chestId: Long): Chests {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can copy chests")
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
-        val edition =
-            editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (chestsRepository.existsByChestTypeAndEditionAndActive(chest.chestType, edition, true)) {
-            throw IllegalArgumentException("Chest with type ${chest.chestType} already exists for edition ${edition.editionId}")
-        }
-        if (edition.endDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
         val newChest = Chests(
             chestType = chest.chestType,
             label = chest.label,
-            edition = edition
+            awardBundleCount = chest.awardBundleCount
         )
         newChest.imageFile = chest.imageFile
         chestsRepository.save(newChest)
         chestAwardRepository.findByChest(chest).forEach { chestAward ->
-            if (chestAward.award.awardEditions.none { it.edition.editionId == editionId }) {
-                val awardEdition = AwardEdition(
-                    edition = edition,
-                    award = chestAward.award,
-                    label = ""
-                )
-                awardEditionRepository.save(awardEdition)
-            }
             val newChestAward = ChestAward(
                 chest = newChest,
                 award = chestAward.award,

@@ -1333,8 +1333,8 @@ type Bonuses {
   """
   An object relationship
   """
-  chestHistory: ChestHistory
-  chestHistoryId: bigint
+  chestHistory: ChestHistory!
+  chestHistoryId: bigint!
   createdAt: timestamp!
   label: String!
 
@@ -1451,11 +1451,6 @@ enum BonusesConstraint {
   unique or primary key constraint on columns "bonus_id"
   """
   bonuses_pkey
-
-  """
-  unique or primary key constraint on columns "chest_history_id"
-  """
-  uk_b9g0m7a50nte8ovqr4qmr2ush
 }
 
 """
@@ -1549,18 +1544,6 @@ type BonusesMutationResponse {
   data from the rows affected by the mutation
   """
   returning: [Bonuses!]!
-}
-
-"""
-input type for inserting object relation for remote table "bonuses"
-"""
-input BonusesObjRelInsertInput {
-  data: BonusesInsertInput!
-
-  """
-  upsert condition
-  """
-  onConflict: BonusesOnConflict
 }
 
 """
@@ -3439,13 +3422,533 @@ input ChestAwardVarianceOrderBy {
 }
 
 """
+columns and relationships of "chest_edition"
+"""
+type ChestEdition {
+  """
+  An object relationship
+  """
+  chest: Chests!
+  chestEditionId: bigint!
+  chestId: bigint!
+
+  """
+  An object relationship
+  """
+  edition: Edition!
+  editionId: bigint!
+  label: String!
+}
+
+"""
+aggregated selection of "chest_edition"
+"""
+type ChestEditionAggregate {
+  aggregate: ChestEditionAggregateFields
+  nodes: [ChestEdition!]!
+}
+
+input ChestEditionAggregateBoolExp {
+  count: chestEditionAggregateBoolExpCount
+}
+
+"""
+aggregate fields of "chest_edition"
+"""
+type ChestEditionAggregateFields {
+  avg: ChestEditionAvgFields
+  count(columns: [ChestEditionSelectColumn!], distinct: Boolean): Int!
+  max: ChestEditionMaxFields
+  min: ChestEditionMinFields
+  stddev: ChestEditionStddevFields
+  stddevPop: ChestEditionStddevPopFields
+  stddevSamp: ChestEditionStddevSampFields
+  sum: ChestEditionSumFields
+  varPop: ChestEditionVarPopFields
+  varSamp: ChestEditionVarSampFields
+  variance: ChestEditionVarianceFields
+}
+
+"""
+order by aggregate values of table "chest_edition"
+"""
+input ChestEditionAggregateOrderBy {
+  avg: ChestEditionAvgOrderBy
+  count: OrderBy
+  max: ChestEditionMaxOrderBy
+  min: ChestEditionMinOrderBy
+  stddev: ChestEditionStddevOrderBy
+  stddevPop: ChestEditionStddevPopOrderBy
+  stddevSamp: ChestEditionStddevSampOrderBy
+  sum: ChestEditionSumOrderBy
+  varPop: ChestEditionVarPopOrderBy
+  varSamp: ChestEditionVarSampOrderBy
+  variance: ChestEditionVarianceOrderBy
+}
+
+"""
+input type for inserting array relation for remote table "chest_edition"
+"""
+input ChestEditionArrRelInsertInput {
+  data: [ChestEditionInsertInput!]!
+
+  """
+  upsert condition
+  """
+  onConflict: ChestEditionOnConflict
+}
+
+"""
+aggregate avg on columns
+"""
+type ChestEditionAvgFields {
+  chestEditionId: Float
+  chestId: Float
+  editionId: Float
+}
+
+"""
+order by avg() on columns of table "chest_edition"
+"""
+input ChestEditionAvgOrderBy {
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  editionId: OrderBy
+}
+
+"""
+Boolean expression to filter rows from the table "chest_edition". All fields are combined with a logical 'AND'.
+"""
+input ChestEditionBoolExp {
+  _and: [ChestEditionBoolExp!]
+  _not: ChestEditionBoolExp
+  _or: [ChestEditionBoolExp!]
+  chest: ChestsBoolExp
+  chestEditionId: BigintComparisonExp
+  chestId: BigintComparisonExp
+  edition: EditionBoolExp
+  editionId: BigintComparisonExp
+  label: StringComparisonExp
+}
+
+"""
+unique or primary key constraints on table "chest_edition"
+"""
+enum ChestEditionConstraint {
+  """
+  unique or primary key constraint on columns "edition_id", "chest_id"
+  """
+  chest_edition_pkey
+
+  """
+  unique or primary key constraint on columns "edition_id", "chest_id"
+  """
+  unique_chest_edition
+}
+
+"""
+input type for incrementing numeric columns in table "chest_edition"
+"""
+input ChestEditionIncInput {
+  chestEditionId: bigint
+  chestId: bigint
+  editionId: bigint
+}
+
+"""
+input type for inserting data into table "chest_edition"
+"""
+input ChestEditionInsertInput {
+  chest: ChestsObjRelInsertInput
+  chestEditionId: bigint
+  chestId: bigint
+  edition: EditionObjRelInsertInput
+  editionId: bigint
+  label: String
+}
+
+"""
+aggregate max on columns
+"""
+type ChestEditionMaxFields {
+  chestEditionId: bigint
+  chestId: bigint
+  editionId: bigint
+  label: String
+}
+
+"""
+order by max() on columns of table "chest_edition"
+"""
+input ChestEditionMaxOrderBy {
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  editionId: OrderBy
+  label: OrderBy
+}
+
+"""
+aggregate min on columns
+"""
+type ChestEditionMinFields {
+  chestEditionId: bigint
+  chestId: bigint
+  editionId: bigint
+  label: String
+}
+
+"""
+order by min() on columns of table "chest_edition"
+"""
+input ChestEditionMinOrderBy {
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  editionId: OrderBy
+  label: OrderBy
+}
+
+"""
+response of any mutation on the table "chest_edition"
+"""
+type ChestEditionMutationResponse {
+  """
+  number of rows affected by the mutation
+  """
+  affectedRows: Int!
+
+  """
+  data from the rows affected by the mutation
+  """
+  returning: [ChestEdition!]!
+}
+
+"""
+on_conflict condition type for table "chest_edition"
+"""
+input ChestEditionOnConflict {
+  constraint: ChestEditionConstraint!
+  updateColumns: [ChestEditionUpdateColumn!]! = []
+  where: ChestEditionBoolExp
+}
+
+"""
+Ordering options when selecting data from "chest_edition".
+"""
+input ChestEditionOrderBy {
+  chest: ChestsOrderBy
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  edition: EditionOrderBy
+  editionId: OrderBy
+  label: OrderBy
+}
+
+"""
+primary key columns input for table: chest_edition
+"""
+input ChestEditionPkColumnsInput {
+  chestId: bigint!
+  editionId: bigint!
+}
+
+"""
+select columns of table "chest_edition"
+"""
+enum ChestEditionSelectColumn {
+  """
+  column name
+  """
+  chestEditionId
+
+  """
+  column name
+  """
+  chestId
+
+  """
+  column name
+  """
+  editionId
+
+  """
+  column name
+  """
+  label
+}
+
+"""
+input type for updating data in table "chest_edition"
+"""
+input ChestEditionSetInput {
+  chestEditionId: bigint
+  chestId: bigint
+  editionId: bigint
+  label: String
+}
+
+"""
+aggregate stddev on columns
+"""
+type ChestEditionStddevFields {
+  chestEditionId: Float
+  chestId: Float
+  editionId: Float
+}
+
+"""
+order by stddev() on columns of table "chest_edition"
+"""
+input ChestEditionStddevOrderBy {
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  editionId: OrderBy
+}
+
+"""
+aggregate stddevPop on columns
+"""
+type ChestEditionStddevPopFields {
+  chestEditionId: Float
+  chestId: Float
+  editionId: Float
+}
+
+"""
+order by stddevPop() on columns of table "chest_edition"
+"""
+input ChestEditionStddevPopOrderBy {
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  editionId: OrderBy
+}
+
+"""
+aggregate stddevSamp on columns
+"""
+type ChestEditionStddevSampFields {
+  chestEditionId: Float
+  chestId: Float
+  editionId: Float
+}
+
+"""
+order by stddevSamp() on columns of table "chest_edition"
+"""
+input ChestEditionStddevSampOrderBy {
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  editionId: OrderBy
+}
+
+"""
+Streaming cursor of the table "chest_edition"
+"""
+input ChestEditionStreamCursorInput {
+  """
+  Stream column input with initial value
+  """
+  initialValue: ChestEditionStreamCursorValueInput!
+
+  """
+  cursor ordering
+  """
+  ordering: CursorOrdering
+}
+
+"""
+Initial value of the column from where the streaming should start
+"""
+input ChestEditionStreamCursorValueInput {
+  chestEditionId: bigint
+  chestId: bigint
+  editionId: bigint
+  label: String
+}
+
+"""
+aggregate sum on columns
+"""
+type ChestEditionSumFields {
+  chestEditionId: bigint
+  chestId: bigint
+  editionId: bigint
+}
+
+"""
+order by sum() on columns of table "chest_edition"
+"""
+input ChestEditionSumOrderBy {
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  editionId: OrderBy
+}
+
+type ChestEditionType {
+  chest: ChestType!
+  chestEditionId: ID!
+  edition: EditionType!
+  label: String!
+}
+
+"""
+update columns of table "chest_edition"
+"""
+enum ChestEditionUpdateColumn {
+  """
+  column name
+  """
+  chestEditionId
+
+  """
+  column name
+  """
+  chestId
+
+  """
+  column name
+  """
+  editionId
+
+  """
+  column name
+  """
+  label
+}
+
+input ChestEditionUpdates {
+  """
+  increments the numeric columns with given value of the filtered values
+  """
+  _inc: ChestEditionIncInput
+
+  """
+  sets the columns of the filtered rows to the given values
+  """
+  _set: ChestEditionSetInput
+
+  """
+  filter the rows which have to be updated
+  """
+  where: ChestEditionBoolExp!
+}
+
+"""
+aggregate varPop on columns
+"""
+type ChestEditionVarPopFields {
+  chestEditionId: Float
+  chestId: Float
+  editionId: Float
+}
+
+"""
+order by varPop() on columns of table "chest_edition"
+"""
+input ChestEditionVarPopOrderBy {
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  editionId: OrderBy
+}
+
+"""
+aggregate varSamp on columns
+"""
+type ChestEditionVarSampFields {
+  chestEditionId: Float
+  chestId: Float
+  editionId: Float
+}
+
+"""
+order by varSamp() on columns of table "chest_edition"
+"""
+input ChestEditionVarSampOrderBy {
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  editionId: OrderBy
+}
+
+"""
+aggregate variance on columns
+"""
+type ChestEditionVarianceFields {
+  chestEditionId: Float
+  chestId: Float
+  editionId: Float
+}
+
+"""
+order by variance() on columns of table "chest_edition"
+"""
+input ChestEditionVarianceOrderBy {
+  chestEditionId: OrderBy
+  chestId: OrderBy
+  editionId: OrderBy
+}
+
+"""
 columns and relationships of "chest_history"
 """
 type ChestHistory {
   """
-  An object relationship
+  An array relationship
   """
-  bonus: Bonuses
+  bonuses(
+    """
+    distinct select on columns
+    """
+    distinctOn: [BonusesSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [BonusesOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: BonusesBoolExp
+  ): [Bonuses!]!
+
+  """
+  An aggregate relationship
+  """
+  bonusesAggregate(
+    """
+    distinct select on columns
+    """
+    distinctOn: [BonusesSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [BonusesOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: BonusesBoolExp
+  ): BonusesAggregate!
 
   """
   An object relationship
@@ -3566,7 +4069,8 @@ input ChestHistoryBoolExp {
   _and: [ChestHistoryBoolExp!]
   _not: ChestHistoryBoolExp
   _or: [ChestHistoryBoolExp!]
-  bonus: BonusesBoolExp
+  bonuses: BonusesBoolExp
+  bonusesAggregate: BonusesAggregateBoolExp
   chest: ChestsBoolExp
   chestHistoryId: BigintComparisonExp
   chestId: BigintComparisonExp
@@ -3607,7 +4111,7 @@ input ChestHistoryIncInput {
 input type for inserting data into table "chest_history"
 """
 input ChestHistoryInsertInput {
-  bonus: BonusesObjRelInsertInput
+  bonuses: BonusesArrRelInsertInput
   chest: ChestsObjRelInsertInput
   chestHistoryId: bigint
   chestId: bigint
@@ -3719,7 +4223,7 @@ input ChestHistoryOnConflict {
 Ordering options when selecting data from "chest_history".
 """
 input ChestHistoryOrderBy {
-  bonus: BonusesOrderBy
+  bonusesAggregate: BonusesAggregateOrderBy
   chest: ChestsOrderBy
   chestHistoryId: OrderBy
   chestId: OrderBy
@@ -4091,9 +4595,10 @@ input ChestHistoryVarianceOrderBy {
 }
 
 type ChestType {
+  awardBundleCount: Int!
+  chestEdition: [ChestEditionType]!
   chestId: ID!
   chestType: String!
-  edition: EditionType!
   imageFile: FileType
   label: String!
 }
@@ -4103,6 +4608,7 @@ columns and relationships of "chests"
 """
 type Chests {
   active: Boolean!
+  awardBundleCount: Int!
 
   """
   An array relationship
@@ -4167,6 +4673,66 @@ type Chests {
   """
   An array relationship
   """
+  chestEditions(
+    """
+    distinct select on columns
+    """
+    distinctOn: [ChestEditionSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [ChestEditionOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: ChestEditionBoolExp
+  ): [ChestEdition!]!
+
+  """
+  An aggregate relationship
+  """
+  chestEditionsAggregate(
+    """
+    distinct select on columns
+    """
+    distinctOn: [ChestEditionSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [ChestEditionOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: ChestEditionBoolExp
+  ): ChestEditionAggregate!
+
+  """
+  An array relationship
+  """
   chestHistories(
     """
     distinct select on columns
@@ -4224,12 +4790,6 @@ type Chests {
     where: ChestHistoryBoolExp
   ): ChestHistoryAggregate!
   chestId: bigint!
-
-  """
-  An object relationship
-  """
-  edition: Edition!
-  editionId: bigint!
 
   """
   An object relationship
@@ -4304,8 +4864,8 @@ input ChestsArrRelInsertInput {
 aggregate avg on columns
 """
 type ChestsAvgFields {
+  awardBundleCount: Float
   chestId: Float
-  editionId: Float
   imageFileId: Float
 }
 
@@ -4313,8 +4873,8 @@ type ChestsAvgFields {
 order by avg() on columns of table "chests"
 """
 input ChestsAvgOrderBy {
+  awardBundleCount: OrderBy
   chestId: OrderBy
-  editionId: OrderBy
   imageFileId: OrderBy
 }
 
@@ -4326,13 +4886,14 @@ input ChestsBoolExp {
   _not: ChestsBoolExp
   _or: [ChestsBoolExp!]
   active: BooleanComparisonExp
+  awardBundleCount: IntComparisonExp
   chestAwards: ChestAwardBoolExp
   chestAwardsAggregate: ChestAwardAggregateBoolExp
+  chestEditions: ChestEditionBoolExp
+  chestEditionsAggregate: ChestEditionAggregateBoolExp
   chestHistories: ChestHistoryBoolExp
   chestHistoriesAggregate: ChestHistoryAggregateBoolExp
   chestId: BigintComparisonExp
-  edition: EditionBoolExp
-  editionId: BigintComparisonExp
   file: FilesBoolExp
   imageFileId: BigintComparisonExp
   label: StringComparisonExp
@@ -4353,8 +4914,8 @@ enum ChestsConstraint {
 input type for incrementing numeric columns in table "chests"
 """
 input ChestsIncInput {
+  awardBundleCount: Int
   chestId: bigint
-  editionId: bigint
   imageFileId: bigint
 }
 
@@ -4363,11 +4924,11 @@ input type for inserting data into table "chests"
 """
 input ChestsInsertInput {
   active: Boolean
+  awardBundleCount: Int
   chestAwards: ChestAwardArrRelInsertInput
+  chestEditions: ChestEditionArrRelInsertInput
   chestHistories: ChestHistoryArrRelInsertInput
   chestId: bigint
-  edition: EditionObjRelInsertInput
-  editionId: bigint
   file: FilesObjRelInsertInput
   imageFileId: bigint
   label: String
@@ -4378,8 +4939,8 @@ input ChestsInsertInput {
 aggregate max on columns
 """
 type ChestsMaxFields {
+  awardBundleCount: Int
   chestId: bigint
-  editionId: bigint
   imageFileId: bigint
   label: String
   type: String
@@ -4389,8 +4950,8 @@ type ChestsMaxFields {
 order by max() on columns of table "chests"
 """
 input ChestsMaxOrderBy {
+  awardBundleCount: OrderBy
   chestId: OrderBy
-  editionId: OrderBy
   imageFileId: OrderBy
   label: OrderBy
   type: OrderBy
@@ -4400,8 +4961,8 @@ input ChestsMaxOrderBy {
 aggregate min on columns
 """
 type ChestsMinFields {
+  awardBundleCount: Int
   chestId: bigint
-  editionId: bigint
   imageFileId: bigint
   label: String
   type: String
@@ -4411,8 +4972,8 @@ type ChestsMinFields {
 order by min() on columns of table "chests"
 """
 input ChestsMinOrderBy {
+  awardBundleCount: OrderBy
   chestId: OrderBy
-  editionId: OrderBy
   imageFileId: OrderBy
   label: OrderBy
   type: OrderBy
@@ -4459,11 +5020,11 @@ Ordering options when selecting data from "chests".
 """
 input ChestsOrderBy {
   active: OrderBy
+  awardBundleCount: OrderBy
   chestAwardsAggregate: ChestAwardAggregateOrderBy
+  chestEditionsAggregate: ChestEditionAggregateOrderBy
   chestHistoriesAggregate: ChestHistoryAggregateOrderBy
   chestId: OrderBy
-  edition: EditionOrderBy
-  editionId: OrderBy
   file: FilesOrderBy
   imageFileId: OrderBy
   label: OrderBy
@@ -4489,12 +5050,12 @@ enum ChestsSelectColumn {
   """
   column name
   """
-  chestId
+  awardBundleCount
 
   """
   column name
   """
-  editionId
+  chestId
 
   """
   column name
@@ -4537,8 +5098,8 @@ input type for updating data in table "chests"
 """
 input ChestsSetInput {
   active: Boolean
+  awardBundleCount: Int
   chestId: bigint
-  editionId: bigint
   imageFileId: bigint
   label: String
   type: String
@@ -4548,8 +5109,8 @@ input ChestsSetInput {
 aggregate stddev on columns
 """
 type ChestsStddevFields {
+  awardBundleCount: Float
   chestId: Float
-  editionId: Float
   imageFileId: Float
 }
 
@@ -4557,8 +5118,8 @@ type ChestsStddevFields {
 order by stddev() on columns of table "chests"
 """
 input ChestsStddevOrderBy {
+  awardBundleCount: OrderBy
   chestId: OrderBy
-  editionId: OrderBy
   imageFileId: OrderBy
 }
 
@@ -4566,8 +5127,8 @@ input ChestsStddevOrderBy {
 aggregate stddevPop on columns
 """
 type ChestsStddevPopFields {
+  awardBundleCount: Float
   chestId: Float
-  editionId: Float
   imageFileId: Float
 }
 
@@ -4575,8 +5136,8 @@ type ChestsStddevPopFields {
 order by stddevPop() on columns of table "chests"
 """
 input ChestsStddevPopOrderBy {
+  awardBundleCount: OrderBy
   chestId: OrderBy
-  editionId: OrderBy
   imageFileId: OrderBy
 }
 
@@ -4584,8 +5145,8 @@ input ChestsStddevPopOrderBy {
 aggregate stddevSamp on columns
 """
 type ChestsStddevSampFields {
+  awardBundleCount: Float
   chestId: Float
-  editionId: Float
   imageFileId: Float
 }
 
@@ -4593,8 +5154,8 @@ type ChestsStddevSampFields {
 order by stddevSamp() on columns of table "chests"
 """
 input ChestsStddevSampOrderBy {
+  awardBundleCount: OrderBy
   chestId: OrderBy
-  editionId: OrderBy
   imageFileId: OrderBy
 }
 
@@ -4618,8 +5179,8 @@ Initial value of the column from where the streaming should start
 """
 input ChestsStreamCursorValueInput {
   active: Boolean
+  awardBundleCount: Int
   chestId: bigint
-  editionId: bigint
   imageFileId: bigint
   label: String
   type: String
@@ -4629,8 +5190,8 @@ input ChestsStreamCursorValueInput {
 aggregate sum on columns
 """
 type ChestsSumFields {
+  awardBundleCount: Int
   chestId: bigint
-  editionId: bigint
   imageFileId: bigint
 }
 
@@ -4638,8 +5199,8 @@ type ChestsSumFields {
 order by sum() on columns of table "chests"
 """
 input ChestsSumOrderBy {
+  awardBundleCount: OrderBy
   chestId: OrderBy
-  editionId: OrderBy
   imageFileId: OrderBy
 }
 
@@ -4655,12 +5216,12 @@ enum ChestsUpdateColumn {
   """
   column name
   """
-  chestId
+  awardBundleCount
 
   """
   column name
   """
-  editionId
+  chestId
 
   """
   column name
@@ -4699,8 +5260,8 @@ input ChestsUpdates {
 aggregate varPop on columns
 """
 type ChestsVarPopFields {
+  awardBundleCount: Float
   chestId: Float
-  editionId: Float
   imageFileId: Float
 }
 
@@ -4708,8 +5269,8 @@ type ChestsVarPopFields {
 order by varPop() on columns of table "chests"
 """
 input ChestsVarPopOrderBy {
+  awardBundleCount: OrderBy
   chestId: OrderBy
-  editionId: OrderBy
   imageFileId: OrderBy
 }
 
@@ -4717,8 +5278,8 @@ input ChestsVarPopOrderBy {
 aggregate varSamp on columns
 """
 type ChestsVarSampFields {
+  awardBundleCount: Float
   chestId: Float
-  editionId: Float
   imageFileId: Float
 }
 
@@ -4726,8 +5287,8 @@ type ChestsVarSampFields {
 order by varSamp() on columns of table "chests"
 """
 input ChestsVarSampOrderBy {
+  awardBundleCount: OrderBy
   chestId: OrderBy
-  editionId: OrderBy
   imageFileId: OrderBy
 }
 
@@ -4735,8 +5296,8 @@ input ChestsVarSampOrderBy {
 aggregate variance on columns
 """
 type ChestsVarianceFields {
+  awardBundleCount: Float
   chestId: Float
-  editionId: Float
   imageFileId: Float
 }
 
@@ -4744,8 +5305,8 @@ type ChestsVarianceFields {
 order by variance() on columns of table "chests"
 """
 input ChestsVarianceOrderBy {
+  awardBundleCount: OrderBy
   chestId: OrderBy
-  editionId: OrderBy
   imageFileId: OrderBy
 }
 
@@ -4906,11 +5467,11 @@ type Edition {
   """
   An array relationship
   """
-  chests(
+  chestEditions(
     """
     distinct select on columns
     """
-    distinctOn: [ChestsSelectColumn!]
+    distinctOn: [ChestEditionSelectColumn!]
 
     """
     limit the number of rows returned
@@ -4925,22 +5486,22 @@ type Edition {
     """
     sort the rows by one or more columns
     """
-    orderBy: [ChestsOrderBy!]
+    orderBy: [ChestEditionOrderBy!]
 
     """
     filter the rows returned
     """
-    where: ChestsBoolExp
-  ): [Chests!]!
+    where: ChestEditionBoolExp
+  ): [ChestEdition!]!
 
   """
   An aggregate relationship
   """
-  chestsAggregate(
+  chestEditionsAggregate(
     """
     distinct select on columns
     """
-    distinctOn: [ChestsSelectColumn!]
+    distinctOn: [ChestEditionSelectColumn!]
 
     """
     limit the number of rows returned
@@ -4955,13 +5516,13 @@ type Edition {
     """
     sort the rows by one or more columns
     """
-    orderBy: [ChestsOrderBy!]
+    orderBy: [ChestEditionOrderBy!]
 
     """
     filter the rows returned
     """
-    where: ChestsBoolExp
-  ): ChestsAggregate!
+    where: ChestEditionBoolExp
+  ): ChestEditionAggregate!
   editionId: bigint!
   editionYear: Int!
   endDate: date!
@@ -5314,8 +5875,8 @@ input EditionBoolExp {
   awardEditionsAggregate: AwardEditionAggregateBoolExp
   categoryEditions: CategoryEditionBoolExp
   categoryEditionsAggregate: CategoryEditionAggregateBoolExp
-  chests: ChestsBoolExp
-  chestsAggregate: ChestsAggregateBoolExp
+  chestEditions: ChestEditionBoolExp
+  chestEditionsAggregate: ChestEditionAggregateBoolExp
   editionId: BigintComparisonExp
   editionYear: IntComparisonExp
   endDate: DateComparisonExp
@@ -5358,7 +5919,7 @@ input type for inserting data into table "edition"
 input EditionInsertInput {
   awardEditions: AwardEditionArrRelInsertInput
   categoryEditions: CategoryEditionArrRelInsertInput
-  chests: ChestsArrRelInsertInput
+  chestEditions: ChestEditionArrRelInsertInput
   editionId: bigint
   editionYear: Int
   endDate: date
@@ -5438,7 +5999,7 @@ Ordering options when selecting data from "edition".
 input EditionOrderBy {
   awardEditionsAggregate: AwardEditionAggregateOrderBy
   categoryEditionsAggregate: CategoryEditionAggregateOrderBy
-  chestsAggregate: ChestsAggregateOrderBy
+  chestEditionsAggregate: ChestEditionAggregateOrderBy
   editionId: OrderBy
   editionYear: OrderBy
   endDate: OrderBy
@@ -8501,14 +9062,29 @@ input IntComparisonExp {
   _nin: [Int!]
 }
 
+input LevelInputType {
+  grade: String!
+  imageFileId: ID
+  levelId: ID
+  maximumPoints: String!
+  name: String!
+}
+
+type LevelSetType {
+  editionId: ID
+  levelSetId: Int!
+  levels: [LevelType!]!
+}
+
 type LevelType {
-  edition: EditionType!
+  edition: EditionType
   grade: String!
   highest: Boolean!
   imageFile: FileType
   label: String!
   levelId: ID!
   levelName: String!
+  levelSet: Int!
   maximumPoints: String!
   minimumPoints: String!
   ordinalNumber: Int!
@@ -8522,8 +9098,8 @@ type Levels {
   """
   An object relationship
   """
-  edition: Edition!
-  editionId: bigint!
+  edition: Edition
+  editionId: bigint
 
   """
   An object relationship
@@ -8594,6 +9170,7 @@ type Levels {
   imageFileId: bigint
   label: String!
   levelId: bigint!
+  levelSet: Int
   maximumPoints: numeric!
   minimumPoints: numeric!
   name: String!
@@ -8728,6 +9305,7 @@ type LevelsAvgFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -8741,6 +9319,7 @@ input LevelsAvgOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -8763,6 +9342,7 @@ input LevelsBoolExp {
   imageFileId: BigintComparisonExp
   label: StringComparisonExp
   levelId: BigintComparisonExp
+  levelSet: IntComparisonExp
   maximumPoints: NumericComparisonExp
   minimumPoints: NumericComparisonExp
   name: StringComparisonExp
@@ -8789,6 +9369,7 @@ input LevelsIncInput {
   grade: numeric
   imageFileId: bigint
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   ordinalNumber: Int
@@ -8807,6 +9388,7 @@ input LevelsInsertInput {
   imageFileId: bigint
   label: String
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -8823,6 +9405,7 @@ type LevelsMaxFields {
   imageFileId: bigint
   label: String
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -8838,6 +9421,7 @@ input LevelsMaxOrderBy {
   imageFileId: OrderBy
   label: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   name: OrderBy
@@ -8853,6 +9437,7 @@ type LevelsMinFields {
   imageFileId: bigint
   label: String
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -8868,6 +9453,7 @@ input LevelsMinOrderBy {
   imageFileId: OrderBy
   label: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   name: OrderBy
@@ -8923,6 +9509,7 @@ input LevelsOrderBy {
   imageFileId: OrderBy
   label: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   name: OrderBy
@@ -8970,6 +9557,11 @@ enum LevelsSelectColumn {
   column name
   """
   levelId
+
+  """
+  column name
+  """
+  levelSet
 
   """
   column name
@@ -9022,6 +9614,7 @@ input LevelsSetInput {
   imageFileId: bigint
   label: String
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -9036,6 +9629,7 @@ type LevelsStddevFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9049,6 +9643,7 @@ input LevelsStddevOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9062,6 +9657,7 @@ type LevelsStddevPopFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9075,6 +9671,7 @@ input LevelsStddevPopOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9088,6 +9685,7 @@ type LevelsStddevSampFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9101,6 +9699,7 @@ input LevelsStddevSampOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9131,6 +9730,7 @@ input LevelsStreamCursorValueInput {
   imageFileId: bigint
   label: String
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -9145,6 +9745,7 @@ type LevelsSumFields {
   grade: numeric
   imageFileId: bigint
   levelId: bigint
+  levelSet: Int
   maximumPoints: numeric
   minimumPoints: numeric
   ordinalNumber: Int
@@ -9158,6 +9759,7 @@ input LevelsSumOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9196,6 +9798,11 @@ enum LevelsUpdateColumn {
   column name
   """
   levelId
+
+  """
+  column name
+  """
+  levelSet
 
   """
   column name
@@ -9243,6 +9850,7 @@ type LevelsVarPopFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9256,6 +9864,7 @@ input LevelsVarPopOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9269,6 +9878,7 @@ type LevelsVarSampFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9282,6 +9892,7 @@ input LevelsVarSampOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9295,6 +9906,7 @@ type LevelsVarianceFields {
   grade: Float
   imageFileId: Float
   levelId: Float
+  levelSet: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9308,6 +9920,7 @@ input LevelsVarianceOrderBy {
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
+  levelSet: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -14498,6 +15111,13 @@ input chestAwardAggregateBoolExpCount {
   predicate: IntComparisonExp!
 }
 
+input chestEditionAggregateBoolExpCount {
+  arguments: [ChestEditionSelectColumn!]
+  distinct: Boolean
+  filter: ChestEditionBoolExp
+  predicate: IntComparisonExp!
+}
+
 input chestHistoryAggregateBoolExpBool_and {
   arguments: ChestHistorySelectColumnChestHistoryAggregateBoolExpBool_andArgumentsColumns!
   distinct: Boolean
@@ -14661,11 +15281,11 @@ type mutation_root {
   ): AwardType
   addAwardToChest(awardId: Int!, chestId: Int!): ChestAwardType
   addAwardToEdition(awardId: Int!, editionId: Int!): AwardEditionType
-  addBonusMutation(
-    awardId: Int!
+  addBonus(
+    awardIds: [Int!]!
     checkDates: Boolean = true
     chestHistoryId: Int!
-  ): AddBonusReturnType
+  ): [AddBonusReturnType!]!
   addCategory(
     canAddPoints: Boolean!
     categoryName: String!
@@ -14676,11 +15296,13 @@ type mutation_root {
   ): CategoryType
   addCategoryToEdition(categoryId: Int!, editionId: Int!): CategoryEditionType
   addChest(
+    awardBundleCount: Int!
+    awardIds: [Int!]!
     chestType: String!
-    editionId: Int!
     fileId: Int
     label: String = ""
   ): ChestType
+  addChestToEdition(chestId: Int!, editionId: Int!): ChestEditionType
   addChestToUser(
     chestId: Int!
     subcategoryId: Int!
@@ -14721,14 +15343,9 @@ type mutation_root {
     usosId: Int!
     weekdayId: Int!
   ): GroupType
-  addLevel(
-    editionId: Int!
-    grade: Float!
-    imageFileId: Int
-    maximumPoints: Float!
-    name: String!
-  ): LevelType
-  addPointsMutation(
+  addLevelSet(levels: [LevelInputType!]!): [LevelType!]!
+  addLevelSetToEdition(editionId: Int!, levelSet: Int!): [LevelType!]!
+  addPoints(
     checkDates: Boolean = true
     studentId: Int!
     subcategoryId: Int!
@@ -14763,7 +15380,7 @@ type mutation_root {
   assignPhotosToGroups(editionId: Int!): Boolean
   changeStudentGroup(groupId: Int!, userId: Int!): UserGroupType
   copyAward(awardId: Int!): AwardType
-  copyChest(chestId: Int!, editionId: Int!): ChestType
+  copyChest(chestId: Int!): ChestType
 
   """
   delete data from the table: "award"
@@ -14857,6 +15474,21 @@ type mutation_root {
   delete single row from the table: "chest_award"
   """
   deleteChestAwardByPk(chestAwardId: bigint!): ChestAward
+
+  """
+  delete data from the table: "chest_edition"
+  """
+  deleteChestEdition(
+    """
+    filter the rows which have to be deleted
+    """
+    where: ChestEditionBoolExp!
+  ): ChestEditionMutationResponse
+
+  """
+  delete single row from the table: "chest_edition"
+  """
+  deleteChestEditionByPk(chestId: bigint!, editionId: bigint!): ChestEdition
 
   """
   delete data from the table: "chest_history"
@@ -15103,11 +15735,12 @@ type mutation_root {
     subcategories: [SubcategoryInputType!]
   ): CategoryType
   editChest(
+    awardBundleCount: Int
+    awardIds: [Int!]!
     chestId: Int!
     chestType: String
-    editionId: Int
     fileId: Int
-    label: String
+    label: String = ""
   ): ChestType
   editChestHistory(
     chestHistoryId: Int!
@@ -15151,14 +15784,7 @@ type mutation_root {
     usosId: Int
     weekdayId: Int
   ): GroupType
-  editLevel(
-    grade: Float
-    imageFileId: Int
-    label: String
-    levelId: Int!
-    maximumPoints: Float
-    name: String
-  ): LevelType
+  editLevelSet(levelSet: Int!, levels: [LevelInputType!]!): [LevelType!]!
   editPoints(pointsId: Int!, updatedById: Int!, value: Float): PointType
   editSubcategory(
     label: String
@@ -15363,6 +15989,36 @@ type mutation_root {
     """
     onConflict: ChestAwardOnConflict
   ): ChestAward
+
+  """
+  insert data into the table: "chest_edition"
+  """
+  insertChestEdition(
+    """
+    the rows to be inserted
+    """
+    objects: [ChestEditionInsertInput!]!
+
+    """
+    upsert condition
+    """
+    onConflict: ChestEditionOnConflict
+  ): ChestEditionMutationResponse
+
+  """
+  insert a single row into the table: "chest_edition"
+  """
+  insertChestEditionOne(
+    """
+    the row to be inserted
+    """
+    object: ChestEditionInsertInput!
+
+    """
+    upsert condition
+    """
+    onConflict: ChestEditionOnConflict
+  ): ChestEdition
 
   """
   insert data into the table: "chest_history"
@@ -15820,11 +16476,13 @@ type mutation_root {
   removeCategory(categoryId: Int!): Boolean
   removeCategoryFromEdition(categoryId: Int!, editionId: Int!): Boolean
   removeChest(chestId: Int!): Boolean
+  removeChestFromEdition(chestId: Int!, editionId: Int!): Boolean
   removeChestFromUser(chestHistoryId: Int!): Boolean
   removeEdition(editionId: Int!): Boolean
   removeGradingCheck(gradingCheckId: Int!): Boolean
   removeGroup(groupId: Int!): Boolean
-  removeLevel(levelId: Int!): Boolean
+  removeLevelSet(levelSet: Int!): Boolean
+  removeLevelSetFromEdition(editionId: Int!, levelSet: Int!): Boolean
   removePoints(pointsId: Int!): Boolean
   removeSubcategory(subcategoryId: Int!): Boolean
   removeUser(userId: Int!): Boolean
@@ -16106,6 +16764,52 @@ type mutation_root {
     """
     updates: [ChestAwardUpdates!]!
   ): [ChestAwardMutationResponse]
+
+  """
+  update data of the table: "chest_edition"
+  """
+  updateChestEdition(
+    """
+    increments the numeric columns with given value of the filtered values
+    """
+    _inc: ChestEditionIncInput
+
+    """
+    sets the columns of the filtered rows to the given values
+    """
+    _set: ChestEditionSetInput
+
+    """
+    filter the rows which have to be updated
+    """
+    where: ChestEditionBoolExp!
+  ): ChestEditionMutationResponse
+
+  """
+  update single row of the table: "chest_edition"
+  """
+  updateChestEditionByPk(
+    """
+    increments the numeric columns with given value of the filtered values
+    """
+    _inc: ChestEditionIncInput
+
+    """
+    sets the columns of the filtered rows to the given values
+    """
+    _set: ChestEditionSetInput
+    pkColumns: ChestEditionPkColumnsInput!
+  ): ChestEdition
+
+  """
+  update multiples rows of table: "chest_edition"
+  """
+  updateChestEditionMany(
+    """
+    updates to execute, in order
+    """
+    updates: [ChestEditionUpdates!]!
+  ): [ChestEditionMutationResponse]
 
   """
   update data of the table: "chest_history"
@@ -17208,6 +17912,71 @@ type query_root {
   chestAwardByPk(chestAwardId: bigint!): ChestAward
 
   """
+  fetch data from the table: "chest_edition"
+  """
+  chestEdition(
+    """
+    distinct select on columns
+    """
+    distinctOn: [ChestEditionSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [ChestEditionOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: ChestEditionBoolExp
+  ): [ChestEdition!]!
+
+  """
+  fetch aggregated fields from the table: "chest_edition"
+  """
+  chestEditionAggregate(
+    """
+    distinct select on columns
+    """
+    distinctOn: [ChestEditionSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [ChestEditionOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: ChestEditionBoolExp
+  ): ChestEditionAggregate!
+
+  """
+  fetch data from the table: "chest_edition" using primary key columns
+  """
+  chestEditionByPk(chestId: bigint!, editionId: bigint!): ChestEdition
+
+  """
   fetch data from the table: "chest_history"
   """
   chestHistory(
@@ -17535,6 +18304,7 @@ type query_root {
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   getGroupsInEdition(editionId: Int!, teacherId: Int!): [GroupTeacherType!]!
+  getLevelSets: [LevelSetType!]!
   getNeighboringLevels(editionId: Int!, studentId: Int!): NeighboringLevelsType!
   getPossibleGroupDates(editionId: Int!): [GroupDateType!]!
   getPossibleGroupsTimeSpans(editionId: Int!): [TimeSpansType!]!
@@ -18778,6 +19548,91 @@ type subscription_root {
     """
     where: ChestAwardBoolExp
   ): [ChestAward!]!
+
+  """
+  fetch data from the table: "chest_edition"
+  """
+  chestEdition(
+    """
+    distinct select on columns
+    """
+    distinctOn: [ChestEditionSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [ChestEditionOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: ChestEditionBoolExp
+  ): [ChestEdition!]!
+
+  """
+  fetch aggregated fields from the table: "chest_edition"
+  """
+  chestEditionAggregate(
+    """
+    distinct select on columns
+    """
+    distinctOn: [ChestEditionSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [ChestEditionOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: ChestEditionBoolExp
+  ): ChestEditionAggregate!
+
+  """
+  fetch data from the table: "chest_edition" using primary key columns
+  """
+  chestEditionByPk(chestId: bigint!, editionId: bigint!): ChestEdition
+
+  """
+  fetch data from the table in a streaming manner: "chest_edition"
+  """
+  chestEditionStream(
+    """
+    maximum number of rows returned in a single batch
+    """
+    batchSize: Int!
+
+    """
+    cursor to stream the results returned by the query
+    """
+    cursor: [ChestEditionStreamCursorInput]!
+
+    """
+    filter the rows returned
+    """
+    where: ChestEditionBoolExp
+  ): [ChestEdition!]!
 
   """
   fetch data from the table: "chest_history"

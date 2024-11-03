@@ -20,12 +20,12 @@ array_relationships:
         table:
           name: category_edition
           schema: public
-  - name: chests
+  - name: chestEditions
     using:
       foreign_key_constraint_on:
         column: edition_id
         table:
-          name: chests
+          name: chest_edition
           schema: public
   - name: gradingChecks
     using:

@@ -1,6 +1,10 @@
 table:
   name: edition
   schema: public
+object_relationships:
+  - name: levelSet
+    using:
+      foreign_key_constraint_on: level_set_id
 array_relationships:
   - name: awardEditions
     using:
@@ -36,13 +40,6 @@ array_relationships:
         column: edition_id
         table:
           name: groups
-          schema: public
-  - name: levels
-    using:
-      foreign_key_constraint_on:
-        column: edition_id
-        table:
-          name: levels
           schema: public
   - name: subcategories
     using:

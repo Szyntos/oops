@@ -23,6 +23,7 @@ import org.springframework.context.annotation.PropertySource
 		"backend.graphql",
 		"backend.groups",
 		"backend.levels",
+		"backend.levelSet",
 		"backend.points",
 		"backend.subcategories",
 		"backend.userGroups",

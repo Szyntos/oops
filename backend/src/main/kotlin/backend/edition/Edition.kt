@@ -1,6 +1,7 @@
 package backend.edition
 
 import backend.categoryEdition.CategoryEdition
+import backend.levelSet.LevelSet
 import backend.userLevel.UserLevel
 import jakarta.persistence.*
 import java.time.LocalDate
@@ -27,6 +28,10 @@ class Edition(
 
     @Column(name = "end_date", nullable = false)
     var endDate: LocalDate,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "level_set_id")
+    var levelSet: LevelSet? = null,
 
     @OneToMany(mappedBy = "edition", fetch = FetchType.LAZY)
     val userLevels: Set<UserLevel> = HashSet(),

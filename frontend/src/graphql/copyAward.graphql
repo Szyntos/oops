@@ -1,0 +1,5 @@
+mutation CopyAward($awardId: Int!) {
+  copyAward(awardId: $awardId) {
+    awardId
+  }
+}

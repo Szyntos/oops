@@ -1,0 +1,10 @@
+query SetupTeachers {
+  users(
+    distinctOn: userId
+    where: { role: { _in: ["teacher", "coordinator"] } }
+  ) {
+    userId
+    role
+    fullName
+  }
+}

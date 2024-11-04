@@ -714,6 +714,7 @@ input UsersInputTypeType {
   role: String!,
   email: String!
   label: String!
+  imageFileId: Int
   createFirebaseUser: Boolean!
   sendEmail: Boolean!
 }

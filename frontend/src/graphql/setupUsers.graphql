@@ -1,0 +1,13 @@
+query SetupUsers {
+  users(orderBy: { fullName: ASC }) {
+    firstName
+    imageFileId
+    fullName
+    indexNumber
+    nick
+    role
+    secondName
+    userId
+    email
+  }
+}

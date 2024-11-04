@@ -82,6 +82,9 @@ const coordinatorPaths = {
       Groups: {
         path: "groups",
       },
+      Users: {
+        path: "users",
+      },
     },
   },
 };
@@ -124,6 +127,8 @@ export const pathsGenerator = {
         `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Levels.path}`,
       Groups: (id: string) =>
         `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Groups.path}`,
+      Users: (id: string) =>
+        `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Users.path}`,
     },
   },
 };

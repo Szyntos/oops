@@ -6,16 +6,18 @@ import { CategoryCard } from "./CategoryCard";
 type CategoriesListProps = {
   categories: Category[];
   selectedCategories: Category[];
-  handleSelectCategoryClick: (category: Category) => void;
-  handleEditCategoryClick: (category: Category) => void;
+  handleSelectClick: (category: Category) => void;
+  handleEditClick: (category: Category) => void;
+  handleDeleteClick: (category: Category) => void;
   title: string;
 };
 
 export const CategoriesList = ({
   categories,
   selectedCategories,
-  handleSelectCategoryClick,
-  handleEditCategoryClick,
+  handleSelectClick,
+  handleEditClick,
+  handleDeleteClick,
   title,
 }: CategoriesListProps) => {
   return (
@@ -31,8 +33,9 @@ export const CategoriesList = ({
                     (c) => c.categoryId === category.categoryId,
                   )
                 }
-                handleSelectClick={() => handleSelectCategoryClick(category)}
-                handleEditClick={() => handleEditCategoryClick(category)}
+                handleSelectClick={() => handleSelectClick(category)}
+                handleEditClick={() => handleEditClick(category)}
+                handleDeleteClick={() => handleDeleteClick(category)}
               />
             ))
           : EMPTY_FIELD_STRING}

@@ -33,6 +33,9 @@ export const AwardsSection = () => {
     handleEditAward,
 
     selectedAward,
+
+    handleDeleteAward,
+    handleCopyAward,
   } = useAwardsSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -48,6 +51,8 @@ export const AwardsSection = () => {
         handleSelectAward={handleSelectAward}
         title={"Selected awards"}
         handleEditAward={openEditAward}
+        handleDeleteAward={handleDeleteAward}
+        handleCopyAward={handleCopyAward}
       />
       <AwardsList
         awards={awards}
@@ -55,6 +60,8 @@ export const AwardsSection = () => {
         handleSelectAward={handleSelectAward}
         title={"All awards"}
         handleEditAward={openEditAward}
+        handleDeleteAward={handleDeleteAward}
+        handleCopyAward={handleCopyAward}
       />
 
       <Dialog open={isAddAward}>
@@ -79,6 +86,7 @@ export const AwardsSection = () => {
             selectedAward
               ? {
                   ...selectedAward,
+                  awardType: selectedAward.awardType.toUpperCase(),
                   awardValue: parseInt(selectedAward.awardValue),
                   imageId: selectedAward.imageFileId ?? "-1",
                 }

@@ -12,6 +12,8 @@ import { useCategoriesSection } from "./categories/useCategoriesSection";
 import { useSetupAwardEditMutation } from "../../graphql/setupAwardEdit.graphql.types";
 import { useError } from "../common/useGlobalError";
 import { useFilesQuery } from "../../graphql/files.graphql.types";
+import { useDeleteAwardMutation } from "../../graphql/deleteAward.graphql.types";
+import { useCopyAwardMutation } from "../../graphql/copyAward.graphql.types";
 
 export type Award = SetupAwardsQuery["award"][number];
 
@@ -129,6 +131,32 @@ export const useAwardsSection = (editionId: number) => {
     });
   };
 
+  // DELETE
+  const [deleteAward] = useDeleteAwardMutation();
+  const handleDeleteAward = (award: Award) => {
+    globalErrorWrapper(async () => {
+      await deleteAward({
+        variables: {
+          awardId: parseInt(award.awardId),
+        },
+      });
+      refetch();
+    });
+  };
+
+  // COPY
+  const [copyAward] = useCopyAwardMutation();
+  const handleCopyAward = (award: Award) => {
+    globalErrorWrapper(async () => {
+      await copyAward({
+        variables: {
+          awardId: parseInt(award.awardId),
+        },
+      });
+      refetch();
+    });
+  };
+
   return {
     awards,
     selectedAwards,
@@ -151,5 +179,10 @@ export const useAwardsSection = (editionId: number) => {
     handleEditAward,
 
     selectedAward,
+
+    handleDeleteAward,
+    handleCopyAward,
   };
+
+  // TODO maybe section handles - edit, select, copy, delete should be returned in one object
 };

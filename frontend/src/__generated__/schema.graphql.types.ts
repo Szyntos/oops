@@ -9966,6 +9966,7 @@ export type UsersInputTypeType = {
   createFirebaseUser: Scalars["Boolean"]["input"];
   email: Scalars["String"]["input"];
   firstName: Scalars["String"]["input"];
+  imageFileId?: InputMaybe<Scalars["Int"]["input"]>;
   indexNumber: Scalars["Int"]["input"];
   label: Scalars["String"]["input"];
   nick: Scalars["String"]["input"];

@@ -1,0 +1,21 @@
+mutation SetupGroupEdit(
+  $groupId: Int!
+  $startTime: String!
+  $endTime: String!
+  $usosId: Int!
+  $weekdayId: Int!
+  $teacherId: Int!
+  $userIds: [Int!]!
+) {
+  editGroupWithUsers(
+    groupId: $groupId
+    endTime: $endTime
+    startTime: $startTime
+    teacherId: $teacherId
+    usosId: $usosId
+    weekdayId: $weekdayId
+    users: { userIds: $userIds }
+  ) {
+    groupsId
+  }
+}

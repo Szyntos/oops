@@ -269,7 +269,7 @@ export const AddGroupForm = ({
               <input
                 type="file"
                 ref={fileInputRef}
-                accept=".csv,text/csv"
+                accept=".csv"
                 onChange={handleFileChange}
                 style={{ display: "none" }}
               />

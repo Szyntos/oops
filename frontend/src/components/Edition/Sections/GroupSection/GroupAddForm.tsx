@@ -107,8 +107,8 @@ export const AddGroupForm = ({
     },
     onSubmit: (values: GroupFormValues) => {
       const groupValues = {
-        startTime: values.startTime + ":00",
-        endTime: values.endTime + ":00",
+        startTime: values.startTime,
+        endTime: values.endTime,
         weekdayId: values.weekdayId,
         teacherId: values.teacherId,
         usosId: values.usosId,

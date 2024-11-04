@@ -80,8 +80,10 @@ export const useGroupsSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await createGroup({
         variables: {
-          ...values,
           editionId,
+          usosId: values.usosId,
+          endTime: values.endTime + ":00",
+          startTime: values.startTime + ":00",
           teacherId: parseInt(values.teacherId),
           weekdayId: parseInt(values.weekdayId),
           users: selectedStudents.map((s) => {

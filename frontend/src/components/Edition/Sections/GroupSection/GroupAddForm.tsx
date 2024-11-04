@@ -17,36 +17,21 @@ export type GroupFormValues = z.infer<typeof ValidationSchema>;
 
 const timeRegex = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
 
-const ValidationSchema = z
-  .object({
-    startTime: z
-      .string()
-      .min(1, { message: "required " })
-      .regex(timeRegex, { message: "Start Time must be in hh:mm format" }),
-    endTime: z
-      .string()
-      .min(1, { message: "required " })
-      .regex(timeRegex, { message: "End Time must be in hh:mm format" }),
-    weekdayId: z.string().min(1, { message: "required" }),
-    teacherId: z.string().min(1, { message: "required" }),
-    usosId: z
-      .number()
-      .min(1, { message: "USOS ID must be a non-negative number" }),
-  })
-  .refine(
-    (data) => {
-      const [startHour, startMinute] = data.startTime.split(":").map(Number);
-      const [endHour, endMinute] = data.endTime.split(":").map(Number);
-
-      if (startHour < endHour) return true;
-      if (startHour === endHour && startMinute < endMinute) return true;
-      return false;
-    },
-    {
-      message: "Start Time must be before End Time",
-      path: ["endTime"],
-    },
-  );
+const ValidationSchema = z.object({
+  startTime: z
+    .string()
+    .min(1, { message: "required " })
+    .regex(timeRegex, { message: "Start Time must be in hh:mm format" }),
+  endTime: z
+    .string()
+    .min(1, { message: "required " })
+    .regex(timeRegex, { message: "End Time must be in hh:mm format" }),
+  weekdayId: z.string().min(1, { message: "required" }),
+  teacherId: z.string().min(1, { message: "required" }),
+  usosId: z
+    .number()
+    .min(1, { message: "USOS ID must be a non-negative number" }),
+});
 
 type AddGroupFormProps = {
   handleAddGroup: (
@@ -95,12 +80,29 @@ export const AddGroupForm = ({
       usosId: initValues.usosId,
     },
     validate: (values: GroupFormValues) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const errors: any = {};
       try {
         ValidationSchema.parse(values);
       } catch (error) {
         if (error instanceof ZodError) {
-          return error.formErrors.fieldErrors;
+          Object.assign(errors, error.formErrors.fieldErrors);
         }
+
+        const [startHour, startMinute] = values.startTime
+          .split(":")
+          .map(Number);
+        const [endHour, endMinute] = values.endTime.split(":").map(Number);
+
+        const isEndTimeValid: boolean =
+          startHour < endHour ||
+          (startHour === endHour && startMinute < endMinute);
+
+        if (!isEndTimeValid) {
+          errors.endTime = `end time must be after start time`;
+        }
+
+        return errors;
       }
     },
     onSubmit: (values: GroupFormValues) => {

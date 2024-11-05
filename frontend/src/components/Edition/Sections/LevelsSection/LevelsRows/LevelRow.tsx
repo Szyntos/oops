@@ -1,5 +1,11 @@
 import { Styles } from "../../../../../utils/Styles";
-import { TextField } from "@mui/material";
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { useState } from "react";
 import { Image } from "../../../../images/Image";
 
@@ -10,8 +16,10 @@ export type RowLevel = {
   imageId?: string;
 };
 
+const gradeOptions = ["2.0", "3.0", "3.5", "4.0", "4.5", "5.0"];
+
 type LevelRowProps = {
-  initialValues: RowLevel;
+  initialValues?: RowLevel;
   minPoints?: number;
   ordinal?: number;
   blockUp?: boolean;
@@ -20,13 +28,17 @@ type LevelRowProps = {
   handleDelete: (ordinal: number) => void;
   handleUp: (ordinal: number) => void;
   handleDown: (ordinal: number) => void;
-  varinat: "add" | "display";
+  variant: "add" | "display";
 };
 
-// TODO make all row editable -> support error messages
+// TODO: Make all row editable -> support error messages
 
 export const LevelRow = ({
-  initialValues,
+  initialValues = {
+    name: "",
+    maxPoints: 0,
+    grade: "2.0",
+  },
   ordinal,
   minPoints,
   blockUp = false,
@@ -35,7 +47,7 @@ export const LevelRow = ({
   handleDelete,
   handleUp,
   handleDown,
-  varinat,
+  variant,
 }: LevelRowProps) => {
   const [maxPoints, setMaxPoints] = useState<number>(initialValues.maxPoints);
   const [name, setName] = useState<string>(initialValues.name);
@@ -43,7 +55,7 @@ export const LevelRow = ({
 
   return (
     <div style={styles.innerContainer}>
-      {varinat === "display" && (
+      {variant === "display" && (
         <Image size={64} disabled={false} id={initialValues.imageId} />
       )}
 
@@ -72,11 +84,9 @@ export const LevelRow = ({
         value={maxPoints}
         onChange={(e) => setMaxPoints(parseInt(e.target.value))}
         onBlur={() => {}}
-        error={undefined}
-        helperText={undefined}
         style={styles.points}
         type="number"
-        disabled={varinat === "display"}
+        disabled={variant === "display"}
       />
 
       <TextField
@@ -86,27 +96,31 @@ export const LevelRow = ({
         value={name}
         onChange={(e) => setName(e.target.value)}
         onBlur={() => {}}
-        error={undefined}
-        helperText={undefined}
         style={styles.number}
-        disabled={varinat === "display"}
+        disabled={variant === "display"}
       />
 
-      <TextField
-        name="grade"
-        label="grade"
-        variant="outlined"
-        value={grade}
-        onChange={(e) => setGrade(e.target.value)}
-        onBlur={() => {}}
-        error={undefined}
-        helperText={undefined}
+      <FormControl
+        fullWidth
         style={styles.number}
-        disabled={varinat === "display"}
-      />
+        disabled={variant === "display"}
+      >
+        <InputLabel>Grade</InputLabel>
+        <Select
+          value={grade}
+          onChange={(e) => setGrade(e.target.value)}
+          label="Grade"
+        >
+          {gradeOptions.map((gradeOption) => (
+            <MenuItem key={gradeOption} value={gradeOption}>
+              {gradeOption}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
       <div>
-        {varinat === "display" && ordinal && (
+        {variant === "display" && ordinal && (
           <div>
             <button
               type="button"
@@ -120,7 +134,7 @@ export const LevelRow = ({
               onClick={() => handleDown(ordinal)}
               disabled={blockDown}
             >
-              do
+              down
             </button>
             <button type="button" onClick={() => handleDelete(ordinal)}>
               -
@@ -128,7 +142,7 @@ export const LevelRow = ({
           </div>
         )}
 
-        {varinat === "add" && (
+        {variant === "add" && (
           <button
             type="button"
             onClick={() =>
@@ -159,4 +173,7 @@ const styles: Styles = {
   },
   title: { fontWeight: "bold" },
   error: { color: "red" },
+  number: {
+    width: 120,
+  },
 };

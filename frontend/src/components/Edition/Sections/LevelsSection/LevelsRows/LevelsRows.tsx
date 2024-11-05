@@ -96,7 +96,7 @@ export const LevelRows = ({
               handleDown={handleDown}
               blockDown={index === levels.length - 1}
               blockUp={index === 0}
-              varinat="display"
+              variant="display"
             />
           ))
         : EMPTY_FIELD_STRING}
@@ -104,16 +104,11 @@ export const LevelRows = ({
       <div>
         <div>Add level:</div>
         <LevelRow
-          initialValues={{
-            name: "",
-            maxPoints: 0,
-            grade: "",
-          }}
           handleAdd={handleAdd}
           handleDelete={handleDelete}
           handleUp={handleUp}
           handleDown={handleDown}
-          varinat="add"
+          variant="add"
         />
         <SelectImage
           ids={imageIds}

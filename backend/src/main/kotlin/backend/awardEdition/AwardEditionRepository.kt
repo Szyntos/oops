@@ -13,4 +13,5 @@ interface AwardEditionRepository : JpaRepository<AwardEdition, Long> {
     fun existsByAwardAndEdition(award: Award, edition: Edition): Boolean
     fun deleteAllByAward(award: Award)
     fun deleteByAwardAndEdition(award: Award, edition: Edition)
+    fun findByAwardIn(awards: List<Award>): List<AwardEdition>
 }

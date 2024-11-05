@@ -1,20 +1,21 @@
 query SetupLevelSets {
-  getLevelSets {
-    editionId
+  levelSets {
     levelSetId
     levels {
       grade
       highest
       label
       levelId
-      levelName
-      levelSet
       maximumPoints
       minimumPoints
       ordinalNumber
-      imageFile {
-        fileId
-      }
+      imageFileId
+      name
+      levelSetId
+    }
+    levelSetName
+    edition {
+      editionId
     }
   }
 }

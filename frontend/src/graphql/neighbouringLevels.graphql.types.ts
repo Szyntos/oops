@@ -22,16 +22,6 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
-      levelSet: number;
-      edition?: {
-        __typename?: "EditionType";
-        editionId: string;
-        editionName: string;
-        editionYear: number;
-        endDate: string;
-        label: string;
-        startDate: string;
-      } | null;
       imageFile?: {
         __typename?: "FileType";
         fileId: string;
@@ -53,16 +43,6 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
-      levelSet: number;
-      edition?: {
-        __typename?: "EditionType";
-        editionId: string;
-        editionName: string;
-        editionYear: number;
-        endDate: string;
-        label: string;
-        startDate: string;
-      } | null;
       imageFile?: {
         __typename?: "FileType";
         fileId: string;
@@ -84,16 +64,6 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
-      levelSet: number;
-      edition?: {
-        __typename?: "EditionType";
-        editionId: string;
-        editionName: string;
-        editionYear: number;
-        endDate: string;
-        label: string;
-        startDate: string;
-      } | null;
       imageFile?: {
         __typename?: "FileType";
         fileId: string;
@@ -120,14 +90,6 @@ export const NeighboringLevelsDocument = gql`
         ordinalNumber
         grade
         label
-        edition {
-          editionId
-          editionName
-          editionYear
-          endDate
-          label
-          startDate
-        }
         imageFile {
           fileId
           fileName
@@ -137,7 +99,6 @@ export const NeighboringLevelsDocument = gql`
           createdAt
           updatedAt
         }
-        levelSet
       }
       nextLevel {
         highest
@@ -148,14 +109,6 @@ export const NeighboringLevelsDocument = gql`
         ordinalNumber
         grade
         label
-        edition {
-          editionId
-          editionName
-          editionYear
-          endDate
-          label
-          startDate
-        }
         imageFile {
           fileId
           fileName
@@ -165,7 +118,6 @@ export const NeighboringLevelsDocument = gql`
           createdAt
           updatedAt
         }
-        levelSet
       }
       prevLevel {
         highest
@@ -176,14 +128,6 @@ export const NeighboringLevelsDocument = gql`
         ordinalNumber
         grade
         label
-        edition {
-          editionId
-          editionName
-          editionYear
-          endDate
-          label
-          startDate
-        }
         imageFile {
           fileId
           fileName
@@ -193,7 +137,6 @@ export const NeighboringLevelsDocument = gql`
           createdAt
           updatedAt
         }
-        levelSet
       }
     }
   }

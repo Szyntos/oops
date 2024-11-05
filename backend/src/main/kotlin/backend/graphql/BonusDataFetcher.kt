@@ -9,6 +9,7 @@ import backend.award.AwardType
 import backend.awardEdition.AwardEditionRepository
 import backend.bonuses.Bonuses
 import backend.bonuses.BonusesRepository
+import backend.chestAward.ChestAwardRepository
 import backend.chestHistory.ChestHistory
 import backend.edition.Edition
 import backend.groups.GroupsRepository
@@ -26,6 +27,9 @@ import kotlin.math.min
 
 @DgsComponent
 class BonusDataFetcher {
+
+    @Autowired
+    private lateinit var chestAwardRepository: ChestAwardRepository
 
     @Autowired
     private lateinit var userMapper: UserMapper
@@ -53,8 +57,8 @@ class BonusDataFetcher {
 
     @DgsMutation
     @Transactional
-    fun addBonusMutation(@InputArgument chestHistoryId: Long, @InputArgument awardId: Long,
-                         @InputArgument checkDates: Boolean = true): AddBonusReturnType {
+    fun addBonus(@InputArgument chestHistoryId: Long, @InputArgument awardIds: List<Long>,
+                         @InputArgument checkDates: Boolean = true): List<AddBonusReturnType> {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.STUDENT && currentUser.role != UsersRoles.COORDINATOR) {
             throw IllegalArgumentException("Only students (and a coordinator) can open chests.")
@@ -72,57 +76,58 @@ class BonusDataFetcher {
             throw IllegalArgumentException("Chest is already opened.")
         }
 
-        val award = awardRepository.findById(awardId)
-            .orElseThrow { IllegalArgumentException("Invalid award ID") }
+        val awards = awardIds.map { awardRepository.findById(it).orElseThrow { IllegalArgumentException("Invalid award ID") } }
 
-        if (award.maxUsages != -1 && chestHistory.user.getAwardUsageCount(award, bonusRepository) >= award.maxUsages) {
-            throw IllegalArgumentException("Cannot apply more than ${award.maxUsages} bonuses for this award.")
+        if (chestHistory.chest.awardBundleCount != awards.size) {
+            throw IllegalArgumentException("Invalid number of awards.")
         }
-
         val userEditions = getUserEditions(chestHistory.user.userId)
-        val awardEditions = getAwardEditions(award)
 
-        val commonEditions = userEditions.intersect(awardEditions)
+        val savedBonuses = mutableListOf<AddBonusReturnType>()
 
-        if (commonEditions.isEmpty()) {
-            throw IllegalArgumentException("User's edition is not in the award's editions.")
-        }
-
-        val edition = if (commonEditions.size > 1) {
-            commonEditions.maxByOrNull { it.editionYear }!!
-        } else {
-            commonEditions.first()
-        }
-
-        if (checkDates){
-            if (edition.startDate.isAfter(java.time.LocalDate.now())){
-                throw IllegalArgumentException("Edition has not started yet")
+        awards.forEach { award ->
+            if (award.maxUsages != -1 && chestHistory.user.getAwardUsageCount(award, bonusRepository) >= award.maxUsages) {
+                throw IllegalArgumentException("Cannot apply more than ${award.maxUsages} bonuses for ${award.awardName} (${award.awardId}).")
             }
-            if (edition.endDate.isBefore(java.time.LocalDate.now())){
-                throw IllegalArgumentException("Edition has already ended")
+            if (chestAwardRepository.findByChest(chestHistory.chest).none { it.award == award }) {
+                throw IllegalArgumentException("Award ${award.awardName} (${award.awardId}) is not available in the chest.")
             }
-        }
+            val awardEditions = getAwardEditions(award)
+            val commonEditions = userEditions.intersect(awardEditions)
+            if (commonEditions.isEmpty()) {
+                throw IllegalArgumentException("User's edition is not in the award's editions.")
+            }
+            val edition = chestHistory.subcategory.edition ?: throw IllegalArgumentException("Subcategory's edition is not set.")
+            if (checkDates){
+                if (edition.startDate.isAfter(java.time.LocalDate.now())){
+                    throw IllegalArgumentException("Edition has not started yet")
+                }
+                if (edition.endDate.isBefore(java.time.LocalDate.now())){
+                    throw IllegalArgumentException("Edition has already ended")
+                }
+            }
+            val points = when (award.awardType) {
+                AwardType.ADDITIVE -> createAdditivePoints(chestHistory, award)
+                AwardType.ADDITIVE_NEXT -> createAdditiveNextPoints(chestHistory, award, edition)
+                AwardType.ADDITIVE_PREV -> createAdditivePrevPoints(chestHistory, award, edition)
+                AwardType.MULTIPLICATIVE -> createMultiplicativePoints(chestHistory, award, edition)
+            }
 
-        val points = when (award.awardType) {
-            AwardType.ADDITIVE -> createAdditivePoints(chestHistory, award)
-            AwardType.ADDITIVE_NEXT -> createAdditiveNextPoints(chestHistory, award, edition)
-            AwardType.ADDITIVE_PREV -> createAdditivePrevPoints(chestHistory, award, edition)
-            AwardType.MULTIPLICATIVE -> createMultiplicativePoints(chestHistory, award, edition)
+            val savedPoints = pointsRepository.save(points)
+            val bonus = Bonuses(
+                points = savedPoints,
+                award = award,
+                chestHistory = chestHistory,
+                label = ""
+            )
+            val savedBonus = bonusRepository.save(bonus)
+            savedBonuses.add(AddBonusReturnType(savedBonus, savedPoints))
         }
-
-        val savedPoints = pointsRepository.save(points)
-        val bonus = Bonuses(
-            points = savedPoints,
-            award = award,
-            chestHistory = chestHistory,
-            label = ""
-        )
-        val savedBonus = bonusRepository.save(bonus)
 
         chestHistory.opened = true
         chestHistoryRepository.save(chestHistory)
 
-        return AddBonusReturnType(savedBonus, savedPoints)
+        return savedBonuses
     }
 
     private fun getUserEditions(userId: Long): Set<Edition> {

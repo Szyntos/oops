@@ -77,7 +77,7 @@ def insert_points(hasura_url, headers, cursor, editions, teacher_ids, random, ca
         if random.random() < chest_percentage:  # 1% chance to give a chest
             query_chests = """
             query MyQuery($editionId: bigint!) {
-                chests(where: {editionId: {_eq: $editionId}}) {
+                chests(where: {chestEditions: {editionId: {_eq: $editionId}}}) {
                     chestId
                 }
             }
@@ -147,7 +147,7 @@ def insert_points(hasura_url, headers, cursor, editions, teacher_ids, random, ca
 
         mutation_add_points = """
         mutation AddPoints($studentId: Int!, $teacherId: Int!, $value: Float!, $subcategoryId: Int!) {
-            addPointsMutation(studentId: $studentId, teacherId: $teacherId, value: $value, subcategoryId: $subcategoryId, checkDates: false) {
+            addPoints(studentId: $studentId, teacherId: $teacherId, value: $value, subcategoryId: $subcategoryId, checkDates: false) {
                 pointsId
                 value
                 subcategory {
@@ -179,8 +179,11 @@ def insert_points(hasura_url, headers, cursor, editions, teacher_ids, random, ca
         # Step 1: The student chooses an award from the chest
         query_awards = """
         query MyQuery($chestId: bigint!) {
-            chestAward(where: {chestId: {_eq: $chestId}}) {
-                awardId
+            chests(where: {chestId: {_eq: $chestId}}) {
+                awardBundleCount
+                chestAwards {
+                    awardId
+                }
             }
         }
         """
@@ -191,18 +194,19 @@ def insert_points(hasura_url, headers, cursor, editions, teacher_ids, random, ca
             json={"query": query_awards, "variables": variables},
             headers=headers
         )
-        available_awards = response_awards.json()["data"]["chestAward"]
+        available_awards = response_awards.json()["data"]["chests"][0]["chestAwards"]
+        awardBundleCount = response_awards.json()["data"]["chests"][0]["awardBundleCount"]
 
         if not available_awards:
             print(f"No awards available for chest {chest_id}")
             return None
 
-        chosen_award_id = random.choice(available_awards)["awardId"]
+        chosen_award_ids = [award["awardId"] for award in random.sample(available_awards, awardBundleCount)]
 
         # Step 2: Apply the chosen award using addBonusMutation
         mutation_add_bonus = """
-        mutation AddBonus($chestHistoryId: Int!, $awardId: Int!) {
-            addBonusMutation(chestHistoryId: $chestHistoryId, awardId: $awardId, checkDates: false) {
+        mutation AddBonus($chestHistoryId: Int!, $awardIds: [Int!]!) {
+            addBonus(chestHistoryId: $chestHistoryId, awardIds: $awardIds, checkDates: false) {
                 bonus {
                     bonusId
                 }
@@ -215,7 +219,7 @@ def insert_points(hasura_url, headers, cursor, editions, teacher_ids, random, ca
         """
         variables_add_bonus = {
             "chestHistoryId": chest_history_id,
-            "awardId": chosen_award_id
+            "awardIds": chosen_award_ids
         }
 
         response_add_bonus = requests.post(
@@ -228,7 +232,7 @@ def insert_points(hasura_url, headers, cursor, editions, teacher_ids, random, ca
             print(f"Error applying bonus for chest history {chest_history_id}: {response_add_bonus.json()['errors']}")
             return None
 
-        result = response_add_bonus.json()["data"]["addBonusMutation"]
+        result = response_add_bonus.json()["data"]["addBonus"][0]
         bonus_id = result["bonus"]["bonusId"]
         points_id = result["points"]["pointsId"]
         points_value = result["points"]["value"]

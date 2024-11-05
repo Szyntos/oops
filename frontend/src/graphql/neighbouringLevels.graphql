@@ -9,14 +9,6 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
       ordinalNumber
       grade
       label
-      edition {
-        editionId
-        editionName
-        editionYear
-        endDate
-        label
-        startDate
-      }
       imageFile {
         fileId
         fileName
@@ -26,7 +18,6 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
         createdAt
         updatedAt
       }
-      levelSet
     }
     nextLevel {
       highest
@@ -37,14 +28,6 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
       ordinalNumber
       grade
       label
-      edition {
-        editionId
-        editionName
-        editionYear
-        endDate
-        label
-        startDate
-      }
       imageFile {
         fileId
         fileName
@@ -54,7 +37,6 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
         createdAt
         updatedAt
       }
-      levelSet
     }
     prevLevel {
       highest
@@ -65,14 +47,6 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
       ordinalNumber
       grade
       label
-      edition {
-        editionId
-        editionName
-        editionYear
-        endDate
-        label
-        startDate
-      }
       imageFile {
         fileId
         fileName
@@ -82,7 +56,6 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
         createdAt
         updatedAt
       }
-      levelSet
     }
   }
 }

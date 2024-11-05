@@ -47,7 +47,7 @@ class PhotoAssigner {
         } ?: fileRepository.findAllByFileType("$fileType/sample").firstOrNull()
 
         photo?.let {
-            require(it.fileType == fileType) {
+            require(it.fileType == fileType || it.fileType == "$fileType/sample") {
                 "Wrong fileType of file $fileId. Please upload a file with fileType = $fileType and try again."
             }
         }

@@ -9,18 +9,13 @@ export type AddLevelSetMutationVariables = Types.Exact<{
 
 export type AddLevelSetMutation = {
   __typename?: "mutation_root";
-  addLevelSet: Array<{
-    __typename?: "LevelType";
-    grade: string;
-    highest: boolean;
-  }>;
+  addLevelSet: { __typename?: "LevelSetType"; levelSetId: string };
 };
 
 export const AddLevelSetDocument = gql`
   mutation AddLevelSet($levels: [LevelInputType!]!) {
     addLevelSet(levels: $levels) {
-      grade
-      highest
+      levelSetId
     }
   }
 `;

@@ -35,7 +35,7 @@ class PointsDataFetcher {
 
     @DgsMutation
     @Transactional
-    fun addPointsMutation(@InputArgument studentId: Long, @InputArgument teacherId: Long, value: Float,
+    fun addPoints(@InputArgument studentId: Long, @InputArgument teacherId: Long, value: Float,
                           @InputArgument subcategoryId: Long, @InputArgument checkDates: Boolean = true): Points {
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){

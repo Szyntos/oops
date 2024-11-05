@@ -1,6 +1,6 @@
 mutation EditLevelSet($levelSetId: Int!, $levels: [LevelInputType!]!) {
-  editLevelSet(levelSet: $levelSetId, levels: $levels) {
-    grade
-    highest
+  editLevelSet(levelSetId: $levelSetId, levels: $levels) {
+    levelSetId
+    levelSetName
   }
 }

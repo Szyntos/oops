@@ -272,12 +272,14 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
         userLevelRepository.deleteAllByUser_UserId(userId)
         try {
-            user.firebaseUid?.let { firebaseUserService.deleteFirebaseUser(it) }
-            } catch (e: FirebaseAuthException) {
-                if (e.errorCode != ErrorCode.NOT_FOUND) {
-                    throw e
-                }
+            if (user.firebaseUid != null && user.firebaseUid != "") {
+                firebaseUserService.deleteFirebaseUser(user.firebaseUid!!)
             }
+        } catch (e: FirebaseAuthException) {
+            if (e.errorCode != ErrorCode.NOT_FOUND) {
+                throw e
+            }
+        }
         usersRepository.delete(user)
         return true
     }
@@ -448,7 +450,8 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                                firstName: String,  secondName: String,
                                role: String,  email: String,
                                label: String = "",  createFirebaseUser: Boolean = false,
-                               sendEmail: Boolean = false): Users {
+                               sendEmail: Boolean = false,
+                               imageFileId: Long? = null): Users {
         val currentUser = userMapper.getCurrentUser()
 
         if (currentUser.userId != 0L && (currentUser.role != UsersRoles.COORDINATOR && currentUser.role != UsersRoles.TEACHER)) {
@@ -545,6 +548,8 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
             }
             user.firebaseUid = firebaseUid
         }
+        photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", user.userId, imageFileId)
+
         return user
     }
 

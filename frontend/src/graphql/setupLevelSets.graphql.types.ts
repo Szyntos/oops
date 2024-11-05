@@ -9,44 +9,46 @@ export type SetupLevelSetsQueryVariables = Types.Exact<{
 
 export type SetupLevelSetsQuery = {
   __typename?: "query_root";
-  getLevelSets: Array<{
-    __typename?: "LevelSetType";
-    editionId?: string | null;
-    levelSetId: number;
+  levelSets: Array<{
+    __typename?: "LevelSets";
+    levelSetId: string;
+    levelSetName: string;
     levels: Array<{
-      __typename?: "LevelType";
+      __typename?: "Levels";
       grade: string;
       highest: boolean;
       label: string;
       levelId: string;
-      levelName: string;
-      levelSet: number;
       maximumPoints: string;
       minimumPoints: string;
       ordinalNumber: number;
-      imageFile?: { __typename?: "FileType"; fileId: string } | null;
+      imageFileId?: string | null;
+      name: string;
+      levelSetId?: string | null;
     }>;
+    edition: Array<{ __typename?: "Edition"; editionId: string }>;
   }>;
 };
 
 export const SetupLevelSetsDocument = gql`
   query SetupLevelSets {
-    getLevelSets {
-      editionId
+    levelSets {
       levelSetId
       levels {
         grade
         highest
         label
         levelId
-        levelName
-        levelSet
         maximumPoints
         minimumPoints
         ordinalNumber
-        imageFile {
-          fileId
-        }
+        imageFileId
+        name
+        levelSetId
+      }
+      levelSetName
+      edition {
+        editionId
       }
     }
   }

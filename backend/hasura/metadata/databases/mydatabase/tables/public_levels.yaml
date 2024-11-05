@@ -2,12 +2,12 @@ table:
   name: levels
   schema: public
 object_relationships:
-  - name: edition
-    using:
-      foreign_key_constraint_on: edition_id
   - name: file
     using:
       foreign_key_constraint_on: image_file_id
+  - name: levelSet
+    using:
+      foreign_key_constraint_on: level_set_id
 array_relationships:
   - name: gradingChecks
     using:
@@ -27,13 +27,12 @@ select_permissions:
   - role: coordinator
     permission:
       columns:
-        - edition_id
         - grade
         - highest
         - image_file_id
         - label
         - level_id
-        - level_set
+        - level_set_id
         - maximum_points
         - minimum_points
         - name
@@ -44,44 +43,44 @@ select_permissions:
   - role: student
     permission:
       columns:
-        - edition_id
         - grade
         - highest
         - image_file_id
         - label
         - level_id
-        - level_set
+        - level_set_id
         - maximum_points
         - minimum_points
         - name
         - ordinal_number
       filter:
-        edition:
-          groups:
-            userGroups:
-              user_id:
-                _eq: X-Hasura-User-Id
+        levelSet:
+          edition:
+            groups:
+              userGroups:
+                user_id:
+                  _eq: X-Hasura-User-Id
     comment: ""
   - role: teacher
     permission:
       columns:
-        - edition_id
         - grade
         - highest
         - image_file_id
         - label
         - level_id
-        - level_set
+        - level_set_id
         - maximum_points
         - minimum_points
         - name
         - ordinal_number
       filter:
-        edition:
-          groups:
-            userGroups:
-              user_id:
-                _eq: X-Hasura-User-Id
+        levelSet:
+          edition:
+            groups:
+              userGroups:
+                user_id:
+                  _eq: X-Hasura-User-Id
     comment: ""
 update_permissions:
   - role: coordinator
@@ -92,14 +91,16 @@ update_permissions:
         - name
       filter:
         _not:
-          edition:
-            start_date:
-              _lte: now()
+          levelSet:
+            edition:
+              start_date:
+                _lte: now()
       check:
         _not:
-          edition:
-            start_date:
-              _lte: now()
+          levelSet:
+            edition:
+              start_date:
+                _lte: now()
       set:
         label: '""'
     comment: ""
@@ -113,7 +114,8 @@ delete_permissions:
                 user_level_id:
                   _is_null: false
           - _not:
-              edition:
-                start_date:
-                  _lte: now()
+              levelSet:
+                edition:
+                  start_date:
+                    _lte: now()
     comment: ""

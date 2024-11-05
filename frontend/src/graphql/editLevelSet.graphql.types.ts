@@ -10,18 +10,18 @@ export type EditLevelSetMutationVariables = Types.Exact<{
 
 export type EditLevelSetMutation = {
   __typename?: "mutation_root";
-  editLevelSet: Array<{
-    __typename?: "LevelType";
-    grade: string;
-    highest: boolean;
-  }>;
+  editLevelSet: {
+    __typename?: "LevelSetType";
+    levelSetId: string;
+    levelSetName: string;
+  };
 };
 
 export const EditLevelSetDocument = gql`
   mutation EditLevelSet($levelSetId: Int!, $levels: [LevelInputType!]!) {
-    editLevelSet(levelSet: $levelSetId, levels: $levels) {
-      grade
-      highest
+    editLevelSet(levelSetId: $levelSetId, levels: $levels) {
+      levelSetId
+      levelSetName
     }
   }
 `;

@@ -97,13 +97,14 @@ class ChestHistoryDataFetcher {
         }
         val chest = chestsRepository.findById(chestId)
             .orElseThrow { IllegalArgumentException("Invalid chest ID") }
-        if (chest.edition.startDate.isAfter(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Chest's edition has not started yet")
+
+        if (!chest.active){
+            throw IllegalArgumentException("Chest is not active")
         }
-        if (chest.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Chest's edition has already ended")
-        }
-        if (!userEditions.contains(chest.edition)) {
+
+        val chestEditions = chest.chestEdition.map { it.edition }
+
+        if (userEditions.none { it in chestEditions }) {
             throw IllegalArgumentException("Chest and user must have the same edition")
         }
         val teacher = usersRepository.findById(teacherId)
@@ -114,7 +115,7 @@ class ChestHistoryDataFetcher {
         if (teacher.userGroups.isEmpty()) {
             throw IllegalArgumentException("Teacher has no groups")
         }
-        if (!teacher.userGroups.map { it.group.edition }.contains(chest.edition)) {
+        if (teacher.userGroups.map { it.group.edition }.none { it in chestEditions }) {
             throw IllegalArgumentException("Teacher and chest must have the same edition")
         }
         if (teacherId == userId) {
@@ -125,8 +126,19 @@ class ChestHistoryDataFetcher {
         }
         val subcategory = subcategoriesRepository.findById(subcategoryId)
             .orElseThrow { IllegalArgumentException("Invalid subcategory ID") }
-        if (subcategory.edition != chest.edition) {
+        if (subcategory.edition == null) {
+            throw IllegalArgumentException("Subcategory must have an edition")
+        }
+        if (chestEditions.none { it == subcategory.edition }) {
             throw IllegalArgumentException("Subcategory and chest must have the same edition")
+        }
+
+        if (subcategory.edition!!.endDate.isBefore(LocalDate.now())) {
+            throw IllegalArgumentException("Edition with this subcategory has already ended")
+        }
+
+        if (subcategory.edition!!.startDate.isAfter(LocalDate.now())) {
+            throw IllegalArgumentException("Edition with this subcategory has not started yet")
         }
 
         val chestHistory = ChestHistory(
@@ -140,6 +152,8 @@ class ChestHistoryDataFetcher {
 
         return chestHistory
     }
+
+
 
     @DgsMutation
     @Transactional
@@ -159,9 +173,14 @@ class ChestHistoryDataFetcher {
         val chestHistory = chestHistoryRepository.findById(chestHistoryId)
             .orElseThrow { IllegalArgumentException("Invalid chest history ID") }
 
-        if (chestHistory.chest.edition.endDate.isBefore(LocalDate.now())){
-            throw IllegalArgumentException("Chest's edition has already ended")
+        val chestEditions = chestHistory.chest.chestEdition.map { it.edition }
+
+        if (chestHistory.subcategory.edition != null) {
+            if (chestHistory.subcategory.edition!!.endDate.isBefore(LocalDate.now()) ) {
+                throw IllegalArgumentException("Edition with this chest has already ended")
+            }
         }
+
 
         if (chestHistory.opened){
             throw IllegalArgumentException("Chest has already been opened")
@@ -195,24 +214,21 @@ class ChestHistoryDataFetcher {
             if (userEditions.isEmpty()) {
                 throw IllegalArgumentException("User has no editions")
             }
-            if (!userEditions.contains(chestHistory.chest.edition)) {
+            if (userEditions.none { it in chestEditions }) {
                 throw IllegalArgumentException("Chest and user must have the same edition")
             }
             chestHistory.user = user
         }
 
-        chestId?.let {
-            val chest = chestsRepository.findById(it)
+        chestId?.let { newChestId ->
+            val chest = chestsRepository.findById(newChestId)
                 .orElseThrow { IllegalArgumentException("Invalid chest ID") }
 
-            if (chest.edition.startDate.isAfter(LocalDate.now())) {
-                throw IllegalArgumentException("Chest's edition has not started yet")
-            }
-            if (chest.edition.endDate.isBefore(LocalDate.now())) {
-                throw IllegalArgumentException("Chest's edition has already ended")
-            }
-            if (!chestHistory.user.userGroups.map { group -> group.group.edition }.contains(chest.edition)) {
+            if (chestHistory.user.userGroups.map { group -> group.group.edition }.none { edition -> edition in chestEditions }) {
                 throw IllegalArgumentException("Chest and user must have the same edition")
+            }
+            if (!chest.active){
+                throw IllegalArgumentException("Chest is not active")
             }
             chestHistory.chest = chest
         }
@@ -233,7 +249,7 @@ class ChestHistoryDataFetcher {
             if (teacher.userGroups.isEmpty()) {
                 throw IllegalArgumentException("Teacher has no groups")
             }
-            if (!teacher.userGroups.map { group -> group.group.edition }.contains(chestHistory.chest.edition)) {
+            if (teacher.userGroups.map { group -> group.group.edition }.none { edition -> edition in chestEditions }) {
                 throw IllegalArgumentException("Teacher and chest must have the same edition")
             }
             if (it == chestHistory.user.userId) {
@@ -245,12 +261,23 @@ class ChestHistoryDataFetcher {
             chestHistory.teacher = teacher
         }
 
-        subcategoryId?.let {
-            val subcategory = subcategoriesRepository.findById(it)
+        subcategoryId?.let { newSubcategoryId ->
+            val subcategory = subcategoriesRepository.findById(newSubcategoryId)
                 .orElseThrow { IllegalArgumentException("Invalid subcategory ID") }
-
-            if (subcategory.edition != chestHistory.chest.edition) {
+            if (subcategory.edition == null) {
+                throw IllegalArgumentException("Subcategory must have an edition")
+            }
+            if (chestEditions.none { it == subcategory.edition }) {
                 throw IllegalArgumentException("Subcategory and chest must have the same edition")
+            }
+            if (subcategory.edition!!.endDate.isBefore(LocalDate.now())) {
+                throw IllegalArgumentException("Edition with this subcategory has already ended")
+            }
+            if (subcategory.edition!!.startDate.isAfter(LocalDate.now())) {
+                throw IllegalArgumentException("Edition with this subcategory has not started yet")
+            }
+            if (chestHistory.chest.chestEdition.none { it.edition == subcategory.edition }) {
+                throw IllegalArgumentException("Chest and subcategory must have the same edition")
             }
             chestHistory.subcategory = subcategory
         }
@@ -273,8 +300,11 @@ class ChestHistoryDataFetcher {
         val chestHistory = chestHistoryRepository.findById(chestHistoryId)
             .orElseThrow { IllegalArgumentException("Invalid chest history ID") }
 
-        if (chestHistory.chest.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Chest's edition has already ended")
+
+        if (chestHistory.subcategory.edition != null) {
+            if (chestHistory.subcategory.edition!!.endDate.isBefore(LocalDate.now()) ) {
+                throw IllegalArgumentException("Edition with this chest has already ended")
+            }
         }
 
         if (chestHistory.opened){
@@ -286,13 +316,6 @@ class ChestHistoryDataFetcher {
                 throw IllegalArgumentException("Teacher is not a teacher of student's group")
             }
         }
-
-        val bonus = bonusesRepository.findByChestHistory(chestHistory).stream().findFirst().orElse(null)
-
-        val points = bonus.points
-
-        pointsRepository.delete(points)
-        bonusesRepository.delete(bonus)
 
         chestHistoryRepository.delete(chestHistory)
         return true

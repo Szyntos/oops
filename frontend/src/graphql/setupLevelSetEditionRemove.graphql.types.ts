@@ -15,7 +15,7 @@ export type SetupLevelSetEditionRemoveMutation = {
 
 export const SetupLevelSetEditionRemoveDocument = gql`
   mutation SetupLevelSetEditionRemove($levelSetId: Int!, $editionId: Int!) {
-    removeLevelSetFromEdition(levelSet: $levelSetId, editionId: $editionId)
+    removeLevelSetFromEdition(levelSetId: $levelSetId, editionId: $editionId)
   }
 `;
 export type SetupLevelSetEditionRemoveMutationFn = Apollo.MutationFunction<

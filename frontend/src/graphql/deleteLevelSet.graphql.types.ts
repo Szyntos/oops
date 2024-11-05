@@ -14,7 +14,7 @@ export type DeleteLevelSetMutation = {
 
 export const DeleteLevelSetDocument = gql`
   mutation DeleteLevelSet($levelSetId: Int!) {
-    removeLevelSet(levelSet: $levelSetId)
+    removeLevelSet(levelSetId: $levelSetId)
   }
 `;
 export type DeleteLevelSetMutationFn = Apollo.MutationFunction<

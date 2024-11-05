@@ -1,3 +1,3 @@
 mutation DeleteLevelSet($levelSetId: Int!) {
-  removeLevelSet(levelSet: $levelSetId)
+  removeLevelSet(levelSetId: $levelSetId)
 }

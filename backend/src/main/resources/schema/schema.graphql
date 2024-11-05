@@ -1,11 +1,11 @@
 type Mutation {
-  addBonusMutation(
+  addBonus(
     chestHistoryId: Int!
-    awardId: Int!
+    awardIds: [Int!]!
     checkDates: Boolean = true
-  ): AddBonusReturnType
+  ): [AddBonusReturnType!]!
 
-  addPointsMutation(
+  addPoints(
     studentId: Int!
     teacherId: Int!
     value: Float!
@@ -39,7 +39,15 @@ type Mutation {
     teacherId: Int!
     subcategoryId: Int!
   ): ChestHistoryType
-  addChest(chestType: String!, editionId: Int!, fileId: Int, label: String = ""): ChestType
+
+  addChest(
+    chestType: String!,
+    fileId: Int,
+    awardBundleCount: Int!,
+    label: String = "",
+    awardIds: [Int!]!
+  ): ChestType
+
   addCategory(
     categoryName: String!
     canAddPoints: Boolean!
@@ -194,9 +202,10 @@ type Mutation {
   editChest(
     chestId: Int!,
     chestType: String,
-    editionId: Int,
     fileId: Int,
-    label: String
+    awardBundleCount: Int,
+    label: String = "",
+    awardIds: [Int!]!
   ): ChestType
 
   removeChest(
@@ -243,24 +252,28 @@ type Mutation {
 
   addLevelSet(
     levels: [LevelInputType!]!
-  ): [LevelType!]!
+  ): LevelSetType!
+
+  copyLevelSet(
+    levelSetId: Int!
+  ): LevelSetType!
 
   editLevelSet(
-    levelSet: Int!,
+    levelSetId: Int!,
     levels: [LevelInputType!]!
-  ): [LevelType!]!
+  ): LevelSetType!
 
   removeLevelSet(
-    levelSet: Int!
+    levelSetId: Int!
   ): Boolean
 
   addLevelSetToEdition(
-    levelSet: Int!
+    levelSetID: Int!
     editionId: Int!
-  ): [LevelType!]!
+  ): LevelSetType!
 
   removeLevelSetFromEdition(
-    levelSet: Int!,
+    levelSetId: Int!,
     editionId: Int!
   ): Boolean
 
@@ -317,8 +330,19 @@ type Mutation {
   ): Boolean
   copyChest(
     chestId: Int!,
-    editionId: Int!
   ): ChestType
+
+  addChestToEdition(
+    chestId: Int!,
+    editionId: Int!
+  ): ChestEditionType
+
+  removeChestFromEdition(
+    chestId: Int!,
+    editionId: Int!
+  ): Boolean
+
+
 }
 
 type Query {
@@ -337,8 +361,6 @@ type Query {
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
-  getLevelSets: [LevelSetType!]!
-
 }
 
 type AwardType {
@@ -411,7 +433,8 @@ type ChestType {
   chestId: ID!
   chestType: String!
   label: String!
-  edition: EditionType!
+  awardBundleCount: Int!
+  chestEdition: [ChestEditionType]!
   imageFile: FileType
 }
 
@@ -466,11 +489,10 @@ type LevelType {
   grade: String!
   ordinalNumber: Int!
   label: String!
-  edition: EditionType
-  levelSet: Int!
+  levelSet: LevelSetType!
   highest: Boolean!
   imageFile: FileType
-  userLevels: [UserLevelType]
+  userLevels: [UserLevelType!]!
 }
 
 type PointType {
@@ -661,9 +683,17 @@ type NotValidUserType {
 }
 
 type LevelSetType {
-  levelSetId: Int!,
-  editionId: ID,
+  levelSetId: ID!,
+  levelSetName: String!,
+  edition: [EditionType!]!
   levels: [LevelType!]!
+}
+
+type ChestEditionType {
+  chestEditionId: ID!
+  chest: ChestType!
+  edition: EditionType!
+  label: String!
 }
 
 input SubcategoryInputType {
@@ -684,6 +714,7 @@ input UsersInputTypeType {
   role: String!,
   email: String!
   label: String!
+  imageFileId: Int
   createFirebaseUser: Boolean!
   sendEmail: Boolean!
 }

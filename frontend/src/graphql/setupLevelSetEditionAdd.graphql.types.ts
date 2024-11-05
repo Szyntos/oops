@@ -10,18 +10,18 @@ export type SetupLevelSetEditionAddMutationVariables = Types.Exact<{
 
 export type SetupLevelSetEditionAddMutation = {
   __typename?: "mutation_root";
-  addLevelSetToEdition: Array<{
-    __typename?: "LevelType";
-    grade: string;
-    highest: boolean;
-  }>;
+  addLevelSetToEdition: {
+    __typename?: "LevelSetType";
+    levelSetId: string;
+    levelSetName: string;
+  };
 };
 
 export const SetupLevelSetEditionAddDocument = gql`
   mutation SetupLevelSetEditionAdd($levelSetId: Int!, $editionId: Int!) {
-    addLevelSetToEdition(levelSet: $levelSetId, editionId: $editionId) {
-      grade
-      highest
+    addLevelSetToEdition(levelSetID: $levelSetId, editionId: $editionId) {
+      levelSetId
+      levelSetName
     }
   }
 `;

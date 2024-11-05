@@ -11,6 +11,7 @@ import { FormSubcategory } from "../../../components/Edition/Sections/Categories
 import { useSetupCategoryCreateMutation } from "../../../graphql/setupCategoryCreate.graphql.types";
 import { useError } from "../../common/useGlobalError";
 import { useSetupCategoryEditMutation } from "../../../graphql/setupCategoryEdit.graphql.types";
+import { useDeleteCategoryMutation } from "../../../graphql/deleteCategory.graphql.types";
 
 export type Category = SetupCategoriesQuery["categories"][number];
 
@@ -37,8 +38,9 @@ export const useCategoriesSection = (editionId: number) => {
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
+  // ADD
   const [createCategory] = useSetupCategoryCreateMutation();
-  const handleAddCategory = async (
+  const handleAddCategory = (
     values: CategoriesFormValues,
     subcategories: FormSubcategory[],
   ) => {
@@ -61,9 +63,10 @@ export const useCategoriesSection = (editionId: number) => {
     });
   };
 
+  // SELECT
   const [selectCategory] = useSetupCategoryEditionAddMutation();
   const [unselectCategory] = useSetupCategoryEditionRemoveMutation();
-  const handleSelectCategory = async (category: Category) => {
+  const handleSelectCategory = (category: Category) => {
     const isCategorySelected = !!selectedCategories.find(
       (c) => c.categoryId === category.categoryId,
     );
@@ -79,6 +82,7 @@ export const useCategoriesSection = (editionId: number) => {
     });
   };
 
+  // EDIT
   const [selectedCategory, setSelectedCategory] = useState<
     Category | undefined
   >(undefined);
@@ -105,12 +109,24 @@ export const useCategoriesSection = (editionId: number) => {
           subcategories: subcategories.map((row, index) => {
             return {
               label: "",
+              categoryId: parseInt(selectedCategory?.categoryId ?? "-1"),
               maxPoints: row.max.toString(),
               ordinalNumber: index,
               subcategoryName: row.name,
             };
           }),
         },
+      });
+      refetch();
+    });
+  };
+
+  // DELETE
+  const [deleteCategory] = useDeleteCategoryMutation();
+  const handleDeleteCategory = (category: Category) => {
+    globalErrorWrapper(async () => {
+      await deleteCategory({
+        variables: { categoryId: parseInt(category.categoryId) },
       });
       refetch();
     });
@@ -132,5 +148,6 @@ export const useCategoriesSection = (editionId: number) => {
     openEditCategory,
     closeEditCategory,
     handleEditCategory,
+    handleDeleteCategory,
   };
 };

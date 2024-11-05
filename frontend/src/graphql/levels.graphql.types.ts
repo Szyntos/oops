@@ -20,16 +20,17 @@ export type LevelsQuery = {
     ordinalNumber: number;
     label: string;
     highest: boolean;
-    editionId?: string | null;
+    levelSetId?: string | null;
+    levelSet?: {
+      __typename?: "LevelSets";
+      edition: Array<{ __typename?: "Edition"; editionId: string }>;
+    } | null;
   }>;
 };
 
 export const LevelsDocument = gql`
   query Levels($editionId: bigint!) {
-    levels(
-      where: { editionId: { _eq: $editionId } }
-      orderBy: { ordinalNumber: ASC }
-    ) {
+    levels(orderBy: { ordinalNumber: ASC }) {
       grade
       imageFileId
       levelId
@@ -39,7 +40,12 @@ export const LevelsDocument = gql`
       ordinalNumber
       label
       highest
-      editionId
+      levelSetId
+      levelSet {
+        edition(where: { editionId: { _eq: $editionId } }) {
+          editionId
+        }
+      }
     }
   }
 `;

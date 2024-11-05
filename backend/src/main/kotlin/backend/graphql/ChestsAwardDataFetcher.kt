@@ -79,15 +79,17 @@ class ChestsAwardDataFetcher {
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         var chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
 
-        if (chest.edition.endDate.isBefore(LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
+        val chestEditions = chest.chestEdition.map { it.edition }
+
+        if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
+            throw IllegalArgumentException("Edition with this chest has already ended")
         }
 
         if (!chest.active){
             throw IllegalArgumentException("Chest is not active")
         }
 
-        if (award.awardEditions.none { it.edition == chest.edition }){
+        if (award.awardEditions.none { it.edition in chestEditions }){
             throw IllegalArgumentException("Award does not exist in this edition")
         }
 
@@ -101,7 +103,7 @@ class ChestsAwardDataFetcher {
             val newChest = Chests(
                 chestType = chest.chestType,
                 label = chest.label,
-                edition = chest.edition
+                awardBundleCount = chest.awardBundleCount
             )
             newChest.imageFile = chest.imageFile
             chestsRepository.save(newChest)
@@ -141,8 +143,10 @@ class ChestsAwardDataFetcher {
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         var chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
 
-        if (chest.edition.endDate.isBefore(LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
+        val chestEditions = chest.chestEdition.map { it.edition }
+
+        if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
+            throw IllegalArgumentException("Edition with this chest has already ended")
         }
 
         if (!chest.active){
@@ -159,7 +163,7 @@ class ChestsAwardDataFetcher {
             val newChest = Chests(
                 chestType = chest.chestType,
                 label = chest.label,
-                edition = chest.edition
+                awardBundleCount = chest.awardBundleCount
             )
             newChest.imageFile = chest.imageFile
             chestsRepository.save(newChest)

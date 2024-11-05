@@ -5,14 +5,15 @@ import { Styles } from "../../utils/Styles";
 import { StudentCardData } from "../../hooks/StudentProfile/useStudentProfileData/useStudentData";
 import { AnimalCard } from "./cards/AnimalCard/AnimalCard";
 import { BonusesCard } from "./cards/BonusesCard";
-import { Bonus, Level } from "../../hooks/StudentProfile";
+import { Bonus } from "../../hooks/StudentProfile";
+import { NeighboringLevel } from "../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
 
 type SideBarProps = {
   student: StudentCardData;
   categoriesBarProps: ProgressBarProps[];
-  prevLevel: Level | undefined;
-  currLevel: Level;
-  nextLevel: Level | undefined;
+  prevLevel: NeighboringLevel | undefined;
+  currLevel: NeighboringLevel;
+  nextLevel: NeighboringLevel | undefined;
   bonuses: Bonus[];
 };
 

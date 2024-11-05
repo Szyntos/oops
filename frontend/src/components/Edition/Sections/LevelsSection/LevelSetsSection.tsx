@@ -77,10 +77,10 @@ export const LevelSetsSection = () => {
             selectedLevelSet?.levels?.map((l, index) => {
               return {
                 ordinal: index,
-                name: l.levelName,
+                name: l.name,
                 maxPoints: parseInt(l.maximumPoints),
                 grade: l.grade,
-                imageId: l.imageFile?.fileId,
+                imageId: l.imageFileId ?? undefined,
               };
             }) ?? []
           }

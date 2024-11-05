@@ -12,17 +12,17 @@ import { RowLevel } from "../../components/Edition/Sections/LevelsSection/Levels
 import { useDeleteLevelSetMutation } from "../../graphql/deleteLevelSet.graphql.types";
 import { useFilesQuery } from "../../graphql/files.graphql.types";
 
-export type LevelSet = SetupLevelSetsQuery["getLevelSets"][number];
+export type LevelSet = SetupLevelSetsQuery["levelSets"][number];
 
 export const useLevelSetsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();
 
   const { data, loading, error, refetch } = useSetupLevelSetsQuery();
 
-  const levelSets: LevelSet[] = data?.getLevelSets ?? [];
+  const levelSets: LevelSet[] = data?.levelSets ?? [];
 
-  const selectedLevelSets: LevelSet[] = levelSets.filter(
-    (s) => s && parseInt(s.editionId as string) === editionId,
+  const selectedLevelSets: LevelSet[] = levelSets.filter((s) =>
+    s.edition.some((e) => parseInt(e.editionId) === editionId),
   );
 
   const {
@@ -78,7 +78,7 @@ export const useLevelSetsSection = (editionId: number) => {
     );
     const variables = {
       editionId,
-      levelSetId: set.levelSetId,
+      levelSetId: parseInt(set.levelSetId),
     };
     globalErrorWrapper(async () => {
       isLevelSetSelected
@@ -105,7 +105,7 @@ export const useLevelSetsSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await editSet({
         variables: {
-          levelSetId: selectedLevelSet?.levelSetId ?? -1,
+          levelSetId: parseInt(selectedLevelSet?.levelSetId ?? "-1"),
           levels: levels.map((l) => ({
             grade: l.grade,
             maximumPoints: l.maxPoints.toString(),
@@ -122,7 +122,7 @@ export const useLevelSetsSection = (editionId: number) => {
   const [deleteSet] = useDeleteLevelSetMutation();
   const handleDeleteSet = (set: LevelSet) => {
     globalErrorWrapper(async () => {
-      await deleteSet({ variables: { levelSetId: set.levelSetId } });
+      await deleteSet({ variables: { levelSetId: parseInt(set.levelSetId) } });
       refetch();
     });
   };

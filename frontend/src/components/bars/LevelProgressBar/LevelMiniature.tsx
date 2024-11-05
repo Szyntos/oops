@@ -1,8 +1,8 @@
-import { Level } from "../../../hooks/StudentProfile";
+import { NeighboringLevel } from "../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
 import { Avatar } from "../../images/Avatar";
 
 type LevelMiniatureProps = {
-  level: Level;
+  level: NeighboringLevel;
   disabled?: boolean;
 };
 
@@ -12,8 +12,8 @@ export const LevelMiniature = ({
 }: LevelMiniatureProps) => {
   return (
     <div>
-      <Avatar id={level.imageId} size="s" disabled={disabled} />
-      <div>lvl. {level.realLevelNumber}</div>
+      <Avatar id={level.imageFile?.fileId} size="s" disabled={disabled} />
+      <div>lvl. {level.ordinalNumber + 1}</div>
     </div>
   );
 };

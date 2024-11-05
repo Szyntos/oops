@@ -1,13 +1,13 @@
 import { Styles } from "../../../../utils/Styles";
 import { Avatar } from "../../../images/Avatar";
 import { LevelsSection } from "./LevelsSection";
-import { Level } from "../../../../hooks/StudentProfile";
 import { LevelProgressBar } from "../../../bars/LevelProgressBar/LevelProgressBar";
+import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
 
 type AnimalCardProps = {
-  prevLevel: Level | undefined;
-  currLevel: Level;
-  nextLevel: Level | undefined;
+  prevLevel: NeighboringLevel | undefined;
+  currLevel: NeighboringLevel;
+  nextLevel: NeighboringLevel | undefined;
   totalPoints: number;
 };
 
@@ -19,9 +19,10 @@ export const AnimalCard = ({
 }: AnimalCardProps) => {
   return (
     <div style={styles.card}>
-      <Avatar id={currLevel.imageId} size="l" />
+      <Avatar id={currLevel.imageFile?.fileId} size="l" />
       <div style={styles.title}>
-        obecny level: {currLevel.name} - lvl. {currLevel.realLevelNumber}
+        {/* TODO what happened to real ordinal number? */}
+        obecny level: {currLevel.levelName} - lvl. {currLevel.ordinalNumber + 1}
       </div>
       <LevelProgressBar
         totalPoints={totalPoints + 10}

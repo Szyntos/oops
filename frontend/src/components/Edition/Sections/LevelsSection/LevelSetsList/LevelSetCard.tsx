@@ -31,7 +31,7 @@ export const LevelSetCard = ({
         {levelSet.levels.length > 0
           ? levelSet.levels.map((l) => (
               <div>
-                {l.ordinalNumber + 1}. {l.levelName}, {l.minimumPoints}-
+                {l.ordinalNumber + 1}. {l.name}, {l.minimumPoints}-
                 {l.maximumPoints}
               </div>
             ))

@@ -33,7 +33,7 @@ type LevelFormProps = {
 
 const defaultInitialValues: LevelFormValues = {
   name: "",
-  maxPoints: 0,
+  maxPoints: 1,
   grade: "2.0",
   imageId: "",
 };

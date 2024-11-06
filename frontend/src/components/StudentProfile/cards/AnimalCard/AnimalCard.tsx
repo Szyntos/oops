@@ -21,7 +21,6 @@ export const AnimalCard = ({
     <div style={styles.card}>
       <Avatar id={currLevel.imageFile?.fileId} size="l" />
       <div style={styles.title}>
-        {/* TODO what happened to real ordinal number? */}
         obecny level: {currLevel.levelName} - lvl. {currLevel.ordinalNumber + 1}
       </div>
       <LevelProgressBar

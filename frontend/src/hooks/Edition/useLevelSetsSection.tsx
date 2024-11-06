@@ -21,9 +21,9 @@ export const useLevelSetsSection = (editionId: number) => {
 
   const levelSets: LevelSet[] = data?.levelSets ?? [];
 
-  const selectedLevelSets: LevelSet[] = levelSets.filter((s) =>
+  const editionLevelSet: LevelSet = levelSets.filter((s) =>
     s.edition.some((e) => parseInt(e.editionId) === editionId),
-  );
+  )[0];
 
   const {
     data: imageData,
@@ -73,9 +73,8 @@ export const useLevelSetsSection = (editionId: number) => {
   const [removeSet] = useSetupLevelSetEditionRemoveMutation();
   const handleSelectSet = (set: LevelSet) => {
     console.log(set);
-    const isLevelSetSelected = selectedLevelSets.some(
-      (l) => l.levelSetId === set.levelSetId,
-    );
+    const isLevelSetSelected = editionLevelSet?.levelSetId === set.levelSetId;
+
     const variables = {
       editionId,
       levelSetId: parseInt(set.levelSetId),
@@ -129,7 +128,7 @@ export const useLevelSetsSection = (editionId: number) => {
 
   return {
     levelSets,
-    selectedLevelSets,
+    editionLevelSet,
     imageIds,
     loading: loading || imageLoading,
     error: error || imageError,

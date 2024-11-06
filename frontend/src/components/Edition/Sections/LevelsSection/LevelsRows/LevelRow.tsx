@@ -16,6 +16,7 @@ export type RowLevel = {
   imageId?: string;
 };
 
+// TODO pro
 const gradeOptions = ["2.0", "3.0", "3.5", "4.0", "4.5", "5.0"];
 
 type LevelRowProps = {
@@ -32,6 +33,7 @@ type LevelRowProps = {
 };
 
 // TODO: Make all row editable -> support error messages
+// TODO: add validation - especially for grade input (check points ect.)
 
 export const LevelRow = ({
   initialValues = {

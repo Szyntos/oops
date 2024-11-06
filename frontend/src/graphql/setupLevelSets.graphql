@@ -1,5 +1,5 @@
 query SetupLevelSets {
-  levelSets {
+  levelSets(orderBy: { levelSetId: ASC }) {
     levelSetId
     levels {
       grade

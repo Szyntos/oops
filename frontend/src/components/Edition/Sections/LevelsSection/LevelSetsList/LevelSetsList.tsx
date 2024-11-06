@@ -5,7 +5,7 @@ import { LevelSetCard } from "./LevelSetCard";
 
 type LevelSetsListProps = {
   levelSets: LevelSet[];
-  selectedLevelSets: LevelSet[];
+  selectedLevelSet?: LevelSet;
   handleSelect: (levelSet: LevelSet) => void;
   handleEdit: (levelSet: LevelSet) => void;
   handleDelete: (levelSet: LevelSet) => void;
@@ -14,7 +14,7 @@ type LevelSetsListProps = {
 
 export const LevelSetsList = ({
   levelSets,
-  selectedLevelSets,
+  selectedLevelSet,
   handleSelect,
   handleEdit,
   handleDelete,
@@ -29,12 +29,12 @@ export const LevelSetsList = ({
               <LevelSetCard
                 key={levelSet.levelSetId}
                 levelSet={levelSet}
-                isSelected={selectedLevelSets.some(
-                  (ls) => ls.levelSetId === levelSet.levelSetId,
-                )}
+                isSelected={
+                  selectedLevelSet?.levelSetId === levelSet.levelSetId
+                }
                 onSelectClick={() => handleSelect(levelSet)}
                 onEditClick={() => handleEdit(levelSet)}
-                handleDelete={() => {
+                onDeleteClick={() => {
                   handleDelete(levelSet);
                 }}
               />

@@ -32,7 +32,7 @@ export type SetupLevelSetsQuery = {
 
 export const SetupLevelSetsDocument = gql`
   query SetupLevelSets {
-    levelSets {
+    levelSets(orderBy: { levelSetId: ASC }) {
       levelSetId
       levels {
         grade

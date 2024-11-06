@@ -6,6 +6,8 @@ import { useParams } from "react-router-dom";
 import { useLevelSetsSection } from "../../../../hooks/Edition/useLevelSetsSection";
 import { LevelSetsList } from "./LevelSetsList/LevelSetsList";
 import { AddLevelFakeForm } from "./AddLevelFakeForm";
+import { LevelSetCard } from "./LevelSetsList/LevelSetCard";
+import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 
 export const LevelSetsSection = () => {
   const params = useParams();
@@ -14,7 +16,7 @@ export const LevelSetsSection = () => {
   const {
     levelSets,
     imageIds,
-    selectedLevelSets,
+    editionLevelSet,
     loading,
     error,
 
@@ -43,17 +45,35 @@ export const LevelSetsSection = () => {
     <div style={styles.container}>
       <button onClick={openAddSet}>add level set</button>
 
-      <LevelSetsList
-        levelSets={selectedLevelSets}
-        selectedLevelSets={selectedLevelSets}
-        handleSelect={handleSelectSet}
-        handleEdit={openEditSet}
-        handleDelete={handleDeleteSet}
-        title={"Selected level set"}
-      />
+      <div>
+        <div>Selected Set:</div>
+        {/* TODO add selected level card */}
+        {editionLevelSet ? (
+          <LevelSetCard
+            levelSet={editionLevelSet}
+            isSelected={true}
+            onSelectClick={() => handleSelectSet(editionLevelSet)}
+            onEditClick={() =>
+              handleEditSet(
+                editionLevelSet.levels.map((l) => ({
+                  name: l.name,
+                  maxPoints: parseFloat(l.maximumPoints),
+                  grade: l.grade,
+                })),
+              )
+            }
+            onDeleteClick={() => {
+              handleDeleteSet(editionLevelSet);
+            }}
+          />
+        ) : (
+          EMPTY_FIELD_STRING
+        )}
+      </div>
+
       <LevelSetsList
         levelSets={levelSets}
-        selectedLevelSets={selectedLevelSets}
+        selectedLevelSet={editionLevelSet}
         handleSelect={handleSelectSet}
         handleEdit={openEditSet}
         handleDelete={handleDeleteSet}

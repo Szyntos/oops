@@ -152,7 +152,8 @@ export const AddLevelForm = ({
             onSelectClick={(id: string) =>
               formik.setValues({ ...formik.values, imageId: id })
             }
-            error={formik.errors.imageId ? formik.errors.imageId : undefined}
+            error={formik.errors.imageId}
+            touched={formik.touched.imageId}
           />
         </div>
         <button type="submit">confirm</button>

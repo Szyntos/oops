@@ -16,7 +16,7 @@ export const LevelSetsSection = () => {
   const {
     levelSets,
     imageIds,
-    editionLevelSet,
+    activeSet,
     loading,
     error,
 
@@ -33,7 +33,7 @@ export const LevelSetsSection = () => {
     closeEditSet,
     handleEditSet,
 
-    selectedLevelSet,
+    selectedToEditSet,
 
     handleDeleteSet,
   } = useLevelSetsSection(editionId);
@@ -47,13 +47,13 @@ export const LevelSetsSection = () => {
 
       <div>
         <div>Selected Set:</div>
-        {editionLevelSet ? (
+        {activeSet ? (
           <SelectedSetCard
-            levelSet={editionLevelSet}
-            onSelectClick={() => handleSelectSet(editionLevelSet)}
-            onEditClick={() => openEditSet(editionLevelSet)}
+            levelSet={activeSet}
+            onSelectClick={() => handleSelectSet(activeSet)}
+            onEditClick={() => openEditSet(activeSet)}
             onDeleteClick={() => {
-              handleDeleteSet(editionLevelSet);
+              handleDeleteSet(activeSet);
             }}
           />
         ) : (
@@ -63,14 +63,13 @@ export const LevelSetsSection = () => {
 
       <LevelSetsList
         levelSets={levelSets}
-        selectedLevelSet={editionLevelSet}
+        selectedLevelSet={activeSet}
         handleSelect={handleSelectSet}
         handleEdit={openEditSet}
         handleDelete={handleDeleteSet}
         title={"All level sets"}
       />
 
-      {/* ADD */}
       <Dialog open={isAddSetOpen} maxWidth={"lg"}>
         <CloseHeader onCloseClick={closeAddSet} />
         <AddSetForm
@@ -81,12 +80,11 @@ export const LevelSetsSection = () => {
         />
       </Dialog>
 
-      {/* EDIT */}
       <Dialog open={isEditSetOpen} maxWidth={"lg"}>
         <CloseHeader onCloseClick={closeEditSet} />
         <AddSetForm
           initLevels={
-            selectedLevelSet?.levels?.map((l, index) => ({
+            selectedToEditSet?.levels?.map((l, index) => ({
               ...l,
               ordinal: index,
               minPoints: parseFloat(l.minimumPoints),

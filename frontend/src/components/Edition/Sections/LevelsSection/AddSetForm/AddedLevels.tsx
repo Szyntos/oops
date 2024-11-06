@@ -14,7 +14,6 @@ export const AddedLevels = ({
   handleDown,
   handleDelete,
 }: AddedLevelsProps) => {
-  console.log("added ;evels: ", levels);
   return (
     <div>
       <div>Added levels: </div>

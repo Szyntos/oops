@@ -21,7 +21,7 @@ export const useLevelSetsSection = (editionId: number) => {
 
   const levelSets: LevelSet[] = data?.levelSets ?? [];
 
-  const editionLevelSet: LevelSet = levelSets.filter((s) =>
+  const activeSet: LevelSet = levelSets.filter((s) =>
     s.edition.some((e) => parseInt(e.editionId) === editionId),
   )[0];
 
@@ -37,7 +37,7 @@ export const useLevelSetsSection = (editionId: number) => {
     ) ?? [];
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [selectedLevelSet, setSelectedLevelSet] = useState<
+  const [selectedToEditSet, setSelectedToEditSet] = useState<
     LevelSet | undefined
   >(undefined);
 
@@ -73,7 +73,7 @@ export const useLevelSetsSection = (editionId: number) => {
   const [removeSet] = useSetupLevelSetEditionRemoveMutation();
   const handleSelectSet = (set: LevelSet) => {
     console.log(set);
-    const isLevelSetSelected = editionLevelSet?.levelSetId === set.levelSetId;
+    const isLevelSetSelected = activeSet?.levelSetId === set.levelSetId;
 
     const variables = {
       editionId,
@@ -90,12 +90,12 @@ export const useLevelSetsSection = (editionId: number) => {
   // EDIT
   const [isEditSetOpen, setIsEditSetOpen] = useState(false);
   const openEditSet = (levelSet: LevelSet) => {
-    setSelectedLevelSet(levelSet);
+    setSelectedToEditSet(levelSet);
     setIsEditSetOpen(true);
   };
   const closeEditSet = () => {
     setIsEditSetOpen(false);
-    setSelectedLevelSet(undefined);
+    setSelectedToEditSet(undefined);
     setFormError(undefined);
   };
 
@@ -104,7 +104,7 @@ export const useLevelSetsSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await editSet({
         variables: {
-          levelSetId: parseInt(selectedLevelSet?.levelSetId ?? "-1"),
+          levelSetId: parseInt(selectedToEditSet?.levelSetId ?? "-1"),
           levels: levels.map((l) => ({
             grade: l.grade,
             maximumPoints: l.maxPoints.toString(),
@@ -128,7 +128,7 @@ export const useLevelSetsSection = (editionId: number) => {
 
   return {
     levelSets,
-    editionLevelSet,
+    activeSet,
     imageIds,
     loading: loading || imageLoading,
     error: error || imageError,
@@ -146,7 +146,7 @@ export const useLevelSetsSection = (editionId: number) => {
     closeEditSet,
     handleEditSet,
 
-    selectedLevelSet,
+    selectedToEditSet,
 
     handleDeleteSet,
   };

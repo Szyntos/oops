@@ -5,9 +5,9 @@ import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useParams } from "react-router-dom";
 import { useLevelSetsSection } from "../../../../hooks/Edition/useLevelSetsSection";
 import { LevelSetsList } from "./LevelSetsList/LevelSetsList";
-import { AddLevelFakeForm } from "./AddLevelFakeForm";
-import { LevelSetCard } from "./LevelSetsList/LevelSetCard";
+import { AddSetForm } from "./AddSetForm/AddSetForm";
 import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
+import { SelectedSetCard } from "./LevelSetsList/SelectedSetCard";
 
 export const LevelSetsSection = () => {
   const params = useParams();
@@ -47,21 +47,11 @@ export const LevelSetsSection = () => {
 
       <div>
         <div>Selected Set:</div>
-        {/* TODO add selected level card */}
         {editionLevelSet ? (
-          <LevelSetCard
+          <SelectedSetCard
             levelSet={editionLevelSet}
-            isSelected={true}
             onSelectClick={() => handleSelectSet(editionLevelSet)}
-            onEditClick={() =>
-              handleEditSet(
-                editionLevelSet.levels.map((l) => ({
-                  name: l.name,
-                  maxPoints: parseFloat(l.maximumPoints),
-                  grade: l.grade,
-                })),
-              )
-            }
+            onEditClick={() => openEditSet(editionLevelSet)}
             onDeleteClick={() => {
               handleDeleteSet(editionLevelSet);
             }}
@@ -80,32 +70,32 @@ export const LevelSetsSection = () => {
         title={"All level sets"}
       />
 
+      {/* ADD */}
       <Dialog open={isAddSetOpen} maxWidth={"lg"}>
         <CloseHeader onCloseClick={closeAddSet} />
-        <AddLevelFakeForm
+        <AddSetForm
           formError={formError}
-          initialLevelValues={[]}
-          handleAdd={handleAddSet}
+          initLevels={[]}
+          handleConfirm={handleAddSet}
           imageIds={imageIds}
         />
       </Dialog>
 
+      {/* EDIT */}
       <Dialog open={isEditSetOpen} maxWidth={"lg"}>
         <CloseHeader onCloseClick={closeEditSet} />
-        <AddLevelFakeForm
-          initialLevelValues={
-            selectedLevelSet?.levels?.map((l, index) => {
-              return {
-                ordinal: index,
-                name: l.name,
-                maxPoints: parseInt(l.maximumPoints),
-                grade: l.grade,
-                imageId: l.imageFileId ?? undefined,
-              };
-            }) ?? []
+        <AddSetForm
+          initLevels={
+            selectedLevelSet?.levels?.map((l, index) => ({
+              ...l,
+              ordinal: index,
+              minPoints: parseFloat(l.minimumPoints),
+              maxPoints: parseFloat(l.maximumPoints),
+              imageId: l.imageFileId ?? "-1",
+            })) ?? []
           }
           formError={formError}
-          handleAdd={handleEditSet}
+          handleConfirm={handleEditSet}
           imageIds={imageIds}
         />
       </Dialog>

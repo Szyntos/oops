@@ -8,9 +8,9 @@ import { useEditLevelSetMutation } from "../../graphql/editLevelSet.graphql.type
 import { useSetupLevelSetEditionAddMutation } from "../../graphql/setupLevelSetEditionAdd.graphql.types";
 import { useSetupLevelSetEditionRemoveMutation } from "../../graphql/setupLevelSetEditionRemove.graphql.types";
 import { useAddLevelSetMutation } from "../../graphql/addLevelSet.graphql.types";
-import { RowLevel } from "../../components/Edition/Sections/LevelsSection/LevelsRows/LevelRow";
 import { useDeleteLevelSetMutation } from "../../graphql/deleteLevelSet.graphql.types";
 import { useFilesQuery } from "../../graphql/files.graphql.types";
+import { AddedLevel } from "../../components/Edition/Sections/LevelsSection/AddSetForm/LevelRow";
 
 export type LevelSet = SetupLevelSetsQuery["levelSets"][number];
 
@@ -52,7 +52,7 @@ export const useLevelSetsSection = (editionId: number) => {
   };
 
   const [addLevelSet] = useAddLevelSetMutation();
-  const handleAddSet = (levels: RowLevel[]) => {
+  const handleAddSet = (levels: AddedLevel[]) => {
     localErrorWrapper(setFormError, async () => {
       await addLevelSet({
         variables: {
@@ -100,7 +100,7 @@ export const useLevelSetsSection = (editionId: number) => {
   };
 
   const [editSet] = useEditLevelSetMutation();
-  const handleEditSet = (levels: RowLevel[]) => {
+  const handleEditSet = (levels: AddedLevel[]) => {
     localErrorWrapper(setFormError, async () => {
       await editSet({
         variables: {

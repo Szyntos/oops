@@ -11,11 +11,12 @@ export type AddSetFormProps = {
   imageIds: string[];
 };
 
-export type ValidateWithAddedLevels = {
+export type WithAddedLevelsValidateErrors = {
   nameError: string | undefined;
   maxPointsError: string | undefined;
   gradeError: string | undefined;
 };
+
 export const AddSetForm = ({
   initLevels,
   formError,
@@ -25,8 +26,6 @@ export const AddSetForm = ({
   const [levels, setLevels] = useState<AddedLevel[]>(initLevels);
 
   const handleAdd = (values: LevelFormValues) => {
-    // TODO maybe we should create fields for grades?
-    // TODO validation for unique names
     const updatedRows: AddedLevel[] = [
       ...levels,
       {
@@ -38,13 +37,12 @@ export const AddSetForm = ({
 
     const index = updatedRows.findIndex((l) => l.name === values.name);
 
-    // set update minimum points
+    // update minimum points
     if (index === 0) {
       updatedRows[index].minPoints = 0;
     } else {
       updatedRows[index].minPoints = updatedRows[index - 1].maxPoints;
     }
-
     if (index !== updatedRows.length - 1) {
       updatedRows[index + 1].minPoints = updatedRows[index].maxPoints;
     }
@@ -102,7 +100,7 @@ export const AddSetForm = ({
 
   const validateWithAddedLevels = (
     values: LevelFormValues,
-  ): ValidateWithAddedLevels => {
+  ): WithAddedLevelsValidateErrors => {
     // check if name not duplicated
     const nameError = levels.find((l) => l.name === values.name)
       ? "duplicated name"
@@ -113,8 +111,8 @@ export const AddSetForm = ({
       ? "duplicated maxPoints"
       : undefined;
 
-    // check if grade is ok - too much?
-    const gradeError = undefined;
+    // TODO: check if grade is consistent
+    let gradeError: string | undefined;
 
     return {
       nameError,

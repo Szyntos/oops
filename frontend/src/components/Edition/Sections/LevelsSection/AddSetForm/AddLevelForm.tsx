@@ -9,7 +9,7 @@ import {
   Select,
 } from "@mui/material";
 import { SelectImage } from "../../../../inputs/SelectImage";
-import { ValidateWithAddedLevels } from "./AddSetForm";
+import { WithAddedLevelsValidateErrors } from "./AddSetForm";
 
 const ValidationSchema = z.object({
   name: z.string().min(1),
@@ -26,7 +26,9 @@ type LevelFormProps = {
   initialValues?: LevelFormValues;
   title: string;
   imageIds: string[];
-  validateWithAddedLevels: (values: LevelFormValues) => ValidateWithAddedLevels;
+  validateWithAddedLevels: (
+    values: LevelFormValues,
+  ) => WithAddedLevelsValidateErrors;
 };
 
 const defaultInitialValues: LevelFormValues = {
@@ -58,19 +60,13 @@ export const AddLevelForm = ({
         }
       }
 
-      const addedLevelsErrors = validateWithAddedLevels(values);
+      // validate with already added levels
+      const { nameError, maxPointsError, gradeError } =
+        validateWithAddedLevels(values);
 
-      errors.name = addedLevelsErrors.nameError
-        ? addedLevelsErrors.nameError
-        : errors.name;
-
-      errors.grade = addedLevelsErrors.gradeError
-        ? addedLevelsErrors.gradeError
-        : errors.grade;
-
-      errors.maxPoints = addedLevelsErrors.maxPointsError
-        ? addedLevelsErrors.maxPointsError
-        : errors.maxPoints;
+      errors.name = nameError ?? errors.name;
+      errors.maxPoints = maxPointsError ?? errors.maxPoints;
+      errors.grade = gradeError ?? errors.grade;
 
       return errors;
     },

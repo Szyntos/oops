@@ -135,7 +135,12 @@ export const AddSetForm = ({
         imageIds={imageIds}
         validateWithAddedLevels={validateWithAddedLevels}
       />
-      <button onClick={() => handleConfirm(levels)}>confirm</button>
+      <button
+        onClick={() => handleConfirm(levels)}
+        disabled={levels.length === 0}
+      >
+        confirm
+      </button>
       <div style={styles.error}>{formError}</div>
     </div>
   );

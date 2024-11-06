@@ -156,7 +156,7 @@ export const AddLevelForm = ({
             touched={formik.touched.imageId}
           />
         </div>
-        <button type="submit">confirm</button>
+        <button type="submit">attach level</button>
       </form>
       {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>

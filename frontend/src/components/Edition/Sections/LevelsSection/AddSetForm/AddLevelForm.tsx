@@ -51,7 +51,7 @@ export const AddLevelForm = ({
   const formik = useFormik({
     initialValues,
     validate: (values: LevelFormValues) => {
-      const errors: FormikErrors<LevelFormValues> = {};
+      let errors: FormikErrors<LevelFormValues> = {};
       try {
         ValidationSchema.parse(values);
       } catch (error) {
@@ -64,9 +64,11 @@ export const AddLevelForm = ({
       const { nameError, maxPointsError, gradeError } =
         validateWithAddedLevels(values);
 
-      errors.name = nameError ?? errors.name;
-      errors.maxPoints = maxPointsError ?? errors.maxPoints;
-      errors.grade = gradeError ?? errors.grade;
+      errors = nameError ? { ...errors, name: nameError } : errors;
+      errors = maxPointsError
+        ? { ...errors, maxPoints: maxPointsError }
+        : errors;
+      errors = gradeError ? { ...errors, grade: gradeError } : errors;
 
       return errors;
     },

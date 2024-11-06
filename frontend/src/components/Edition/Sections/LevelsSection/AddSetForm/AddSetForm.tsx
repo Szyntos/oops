@@ -11,6 +11,11 @@ export type AddSetFormProps = {
   imageIds: string[];
 };
 
+export type ValidateWithAddedLevels = {
+  nameError: string | undefined;
+  maxPointsError: string | undefined;
+  gradeError: string | undefined;
+};
 export const AddSetForm = ({
   initLevels,
   formError,
@@ -95,6 +100,29 @@ export const AddSetForm = ({
     setLevels(updated);
   };
 
+  const validateWithAddedLevels = (
+    values: LevelFormValues,
+  ): ValidateWithAddedLevels => {
+    // check if name not duplicated
+    const nameError = levels.find((l) => l.name === values.name)
+      ? "duplicated name"
+      : undefined;
+
+    // check if max points not duplicated
+    const maxPointsError = levels.find((l) => l.maxPoints === values.maxPoints)
+      ? "duplicated maxPoints"
+      : undefined;
+
+    // check if grade is ok - too much?
+    const gradeError = undefined;
+
+    return {
+      nameError,
+      maxPointsError,
+      gradeError,
+    };
+  };
+
   return (
     <div style={styles.container}>
       <AddedLevels
@@ -107,6 +135,7 @@ export const AddSetForm = ({
         handleAdd={handleAdd}
         title={"Add level form"}
         imageIds={imageIds}
+        validateWithAddedLevels={validateWithAddedLevels}
       />
       <button onClick={() => handleConfirm(levels)}>confirm</button>
       <div style={styles.error}>{formError}</div>

@@ -1,0 +1,21 @@
+query SetupLevelSets {
+  levelSets(orderBy: { levelSetId: ASC }) {
+    levelSetId
+    levels {
+      grade
+      highest
+      label
+      levelId
+      maximumPoints
+      minimumPoints
+      ordinalNumber
+      imageFileId
+      name
+      levelSetId
+    }
+    levelSetName
+    edition {
+      editionId
+    }
+  }
+}

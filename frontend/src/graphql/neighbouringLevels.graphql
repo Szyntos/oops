@@ -4,20 +4,11 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
       highest
       levelId
       levelName
-      levelSet
       maximumPoints
       minimumPoints
       ordinalNumber
       grade
       label
-      edition {
-        editionId
-        editionName
-        editionYear
-        endDate
-        label
-        startDate
-      }
       imageFile {
         fileId
         fileName
@@ -32,20 +23,11 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
       highest
       levelId
       levelName
-      levelSet
       maximumPoints
       minimumPoints
       ordinalNumber
       grade
       label
-      edition {
-        editionId
-        editionName
-        editionYear
-        endDate
-        label
-        startDate
-      }
       imageFile {
         fileId
         fileName
@@ -60,20 +42,11 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
       highest
       levelId
       levelName
-      levelSet
       maximumPoints
       minimumPoints
       ordinalNumber
       grade
       label
-      edition {
-        editionId
-        editionName
-        editionYear
-        endDate
-        label
-        startDate
-      }
       imageFile {
         fileId
         fileName

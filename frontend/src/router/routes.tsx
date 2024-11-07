@@ -15,7 +15,7 @@ import { CategoriesSection } from "../components/Edition/Sections/CategoriesSect
 import { FilesSection } from "../components/Edition/Sections/FilesSection/FilesSection";
 import { AwardsSection } from "../components/Edition/Sections/AwardsSection/AwardsSection";
 import { ChestsSection } from "../components/Edition/Sections/ChestsSection/ChestsSection";
-import { LevelsSection } from "../components/Edition/Sections/LevelsSection/LevelsSection";
+import { LevelSetsSection } from "../components/Edition/Sections/LevelsSection/LevelSetsSection";
 import { GroupsSection } from "../components/Edition/Sections/GroupSection/GroupsSection";
 import { UsersSection } from "../components/Edition/Sections/UsersSection/UsersSection";
 
@@ -164,7 +164,7 @@ export const routes = createBrowserRouter([
             path: coordinatorPaths.Edition.children.Levels.path,
             element: (
               <ProtectedRoute
-                element={<LevelsSection />}
+                element={<LevelSetsSection />}
                 allowedRoles={coordinatorPaths.Edition.allowedRoles}
               />
             ),

@@ -5649,64 +5649,10 @@ type Edition {
   label: String!
 
   """
-  An array relationship
+  An object relationship
   """
-  levels(
-    """
-    distinct select on columns
-    """
-    distinctOn: [LevelsSelectColumn!]
-
-    """
-    limit the number of rows returned
-    """
-    limit: Int
-
-    """
-    skip the first n rows. Use only with order_by
-    """
-    offset: Int
-
-    """
-    sort the rows by one or more columns
-    """
-    orderBy: [LevelsOrderBy!]
-
-    """
-    filter the rows returned
-    """
-    where: LevelsBoolExp
-  ): [Levels!]!
-
-  """
-  An aggregate relationship
-  """
-  levelsAggregate(
-    """
-    distinct select on columns
-    """
-    distinctOn: [LevelsSelectColumn!]
-
-    """
-    limit the number of rows returned
-    """
-    limit: Int
-
-    """
-    skip the first n rows. Use only with order_by
-    """
-    offset: Int
-
-    """
-    sort the rows by one or more columns
-    """
-    orderBy: [LevelsOrderBy!]
-
-    """
-    filter the rows returned
-    """
-    where: LevelsBoolExp
-  ): LevelsAggregate!
+  levelSet: LevelSets
+  levelSetId: bigint
   name: String!
   startDate: date!
 
@@ -5839,6 +5785,10 @@ type EditionAggregate {
   nodes: [Edition!]!
 }
 
+input EditionAggregateBoolExp {
+  count: editionAggregateBoolExpCount
+}
+
 """
 aggregate fields of "edition"
 """
@@ -5857,11 +5807,50 @@ type EditionAggregateFields {
 }
 
 """
+order by aggregate values of table "edition"
+"""
+input EditionAggregateOrderBy {
+  avg: EditionAvgOrderBy
+  count: OrderBy
+  max: EditionMaxOrderBy
+  min: EditionMinOrderBy
+  stddev: EditionStddevOrderBy
+  stddevPop: EditionStddevPopOrderBy
+  stddevSamp: EditionStddevSampOrderBy
+  sum: EditionSumOrderBy
+  varPop: EditionVarPopOrderBy
+  varSamp: EditionVarSampOrderBy
+  variance: EditionVarianceOrderBy
+}
+
+"""
+input type for inserting array relation for remote table "edition"
+"""
+input EditionArrRelInsertInput {
+  data: [EditionInsertInput!]!
+
+  """
+  upsert condition
+  """
+  onConflict: EditionOnConflict
+}
+
+"""
 aggregate avg on columns
 """
 type EditionAvgFields {
   editionId: Float
   editionYear: Float
+  levelSetId: Float
+}
+
+"""
+order by avg() on columns of table "edition"
+"""
+input EditionAvgOrderBy {
+  editionId: OrderBy
+  editionYear: OrderBy
+  levelSetId: OrderBy
 }
 
 """
@@ -5885,8 +5874,8 @@ input EditionBoolExp {
   groups: GroupsBoolExp
   groupsAggregate: GroupsAggregateBoolExp
   label: StringComparisonExp
-  levels: LevelsBoolExp
-  levelsAggregate: LevelsAggregateBoolExp
+  levelSet: LevelSetsBoolExp
+  levelSetId: BigintComparisonExp
   name: StringComparisonExp
   startDate: DateComparisonExp
   subcategories: SubcategoriesBoolExp
@@ -5911,6 +5900,7 @@ input type for incrementing numeric columns in table "edition"
 input EditionIncInput {
   editionId: bigint
   editionYear: Int
+  levelSetId: bigint
 }
 
 """
@@ -5926,7 +5916,8 @@ input EditionInsertInput {
   gradingChecks: GradingChecksArrRelInsertInput
   groups: GroupsArrRelInsertInput
   label: String
-  levels: LevelsArrRelInsertInput
+  levelSet: LevelSetsObjRelInsertInput
+  levelSetId: bigint
   name: String
   startDate: date
   subcategories: SubcategoriesArrRelInsertInput
@@ -5941,8 +5932,22 @@ type EditionMaxFields {
   editionYear: Int
   endDate: date
   label: String
+  levelSetId: bigint
   name: String
   startDate: date
+}
+
+"""
+order by max() on columns of table "edition"
+"""
+input EditionMaxOrderBy {
+  editionId: OrderBy
+  editionYear: OrderBy
+  endDate: OrderBy
+  label: OrderBy
+  levelSetId: OrderBy
+  name: OrderBy
+  startDate: OrderBy
 }
 
 """
@@ -5953,8 +5958,22 @@ type EditionMinFields {
   editionYear: Int
   endDate: date
   label: String
+  levelSetId: bigint
   name: String
   startDate: date
+}
+
+"""
+order by min() on columns of table "edition"
+"""
+input EditionMinOrderBy {
+  editionId: OrderBy
+  editionYear: OrderBy
+  endDate: OrderBy
+  label: OrderBy
+  levelSetId: OrderBy
+  name: OrderBy
+  startDate: OrderBy
 }
 
 """
@@ -6006,7 +6025,8 @@ input EditionOrderBy {
   gradingChecksAggregate: GradingChecksAggregateOrderBy
   groupsAggregate: GroupsAggregateOrderBy
   label: OrderBy
-  levelsAggregate: LevelsAggregateOrderBy
+  levelSet: LevelSetsOrderBy
+  levelSetId: OrderBy
   name: OrderBy
   startDate: OrderBy
   subcategoriesAggregate: SubcategoriesAggregateOrderBy
@@ -6047,6 +6067,11 @@ enum EditionSelectColumn {
   """
   column name
   """
+  levelSetId
+
+  """
+  column name
+  """
   name
 
   """
@@ -6063,6 +6088,7 @@ input EditionSetInput {
   editionYear: Int
   endDate: date
   label: String
+  levelSetId: bigint
   name: String
   startDate: date
 }
@@ -6073,6 +6099,16 @@ aggregate stddev on columns
 type EditionStddevFields {
   editionId: Float
   editionYear: Float
+  levelSetId: Float
+}
+
+"""
+order by stddev() on columns of table "edition"
+"""
+input EditionStddevOrderBy {
+  editionId: OrderBy
+  editionYear: OrderBy
+  levelSetId: OrderBy
 }
 
 """
@@ -6081,6 +6117,16 @@ aggregate stddevPop on columns
 type EditionStddevPopFields {
   editionId: Float
   editionYear: Float
+  levelSetId: Float
+}
+
+"""
+order by stddevPop() on columns of table "edition"
+"""
+input EditionStddevPopOrderBy {
+  editionId: OrderBy
+  editionYear: OrderBy
+  levelSetId: OrderBy
 }
 
 """
@@ -6089,6 +6135,16 @@ aggregate stddevSamp on columns
 type EditionStddevSampFields {
   editionId: Float
   editionYear: Float
+  levelSetId: Float
+}
+
+"""
+order by stddevSamp() on columns of table "edition"
+"""
+input EditionStddevSampOrderBy {
+  editionId: OrderBy
+  editionYear: OrderBy
+  levelSetId: OrderBy
 }
 
 """
@@ -6114,6 +6170,7 @@ input EditionStreamCursorValueInput {
   editionYear: Int
   endDate: date
   label: String
+  levelSetId: bigint
   name: String
   startDate: date
 }
@@ -6124,6 +6181,16 @@ aggregate sum on columns
 type EditionSumFields {
   editionId: bigint
   editionYear: Int
+  levelSetId: bigint
+}
+
+"""
+order by sum() on columns of table "edition"
+"""
+input EditionSumOrderBy {
+  editionId: OrderBy
+  editionYear: OrderBy
+  levelSetId: OrderBy
 }
 
 type EditionType {
@@ -6162,6 +6229,11 @@ enum EditionUpdateColumn {
   """
   column name
   """
+  levelSetId
+
+  """
+  column name
+  """
   name
 
   """
@@ -6193,6 +6265,16 @@ aggregate varPop on columns
 type EditionVarPopFields {
   editionId: Float
   editionYear: Float
+  levelSetId: Float
+}
+
+"""
+order by varPop() on columns of table "edition"
+"""
+input EditionVarPopOrderBy {
+  editionId: OrderBy
+  editionYear: OrderBy
+  levelSetId: OrderBy
 }
 
 """
@@ -6201,6 +6283,16 @@ aggregate varSamp on columns
 type EditionVarSampFields {
   editionId: Float
   editionYear: Float
+  levelSetId: Float
+}
+
+"""
+order by varSamp() on columns of table "edition"
+"""
+input EditionVarSampOrderBy {
+  editionId: OrderBy
+  editionYear: OrderBy
+  levelSetId: OrderBy
 }
 
 """
@@ -6209,6 +6301,16 @@ aggregate variance on columns
 type EditionVarianceFields {
   editionId: Float
   editionYear: Float
+  levelSetId: Float
+}
+
+"""
+order by variance() on columns of table "edition"
+"""
+input EditionVarianceOrderBy {
+  editionId: OrderBy
+  editionYear: OrderBy
+  levelSetId: OrderBy
 }
 
 type FileGroupType {
@@ -9071,36 +9173,427 @@ input LevelInputType {
 }
 
 type LevelSetType {
-  editionId: ID
-  levelSetId: Int!
+  edition: [EditionType!]!
+  levelSetId: ID!
+  levelSetName: String!
   levels: [LevelType!]!
 }
 
+"""
+columns and relationships of "level_sets"
+"""
+type LevelSets {
+  """
+  An array relationship
+  """
+  edition(
+    """
+    distinct select on columns
+    """
+    distinctOn: [EditionSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [EditionOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: EditionBoolExp
+  ): [Edition!]!
+
+  """
+  An aggregate relationship
+  """
+  editionAggregate(
+    """
+    distinct select on columns
+    """
+    distinctOn: [EditionSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [EditionOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: EditionBoolExp
+  ): EditionAggregate!
+  levelSetId: bigint!
+  levelSetName: String!
+
+  """
+  An array relationship
+  """
+  levels(
+    """
+    distinct select on columns
+    """
+    distinctOn: [LevelsSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [LevelsOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: LevelsBoolExp
+  ): [Levels!]!
+
+  """
+  An aggregate relationship
+  """
+  levelsAggregate(
+    """
+    distinct select on columns
+    """
+    distinctOn: [LevelsSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [LevelsOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: LevelsBoolExp
+  ): LevelsAggregate!
+}
+
+"""
+aggregated selection of "level_sets"
+"""
+type LevelSetsAggregate {
+  aggregate: LevelSetsAggregateFields
+  nodes: [LevelSets!]!
+}
+
+"""
+aggregate fields of "level_sets"
+"""
+type LevelSetsAggregateFields {
+  avg: LevelSetsAvgFields
+  count(columns: [LevelSetsSelectColumn!], distinct: Boolean): Int!
+  max: LevelSetsMaxFields
+  min: LevelSetsMinFields
+  stddev: LevelSetsStddevFields
+  stddevPop: LevelSetsStddevPopFields
+  stddevSamp: LevelSetsStddevSampFields
+  sum: LevelSetsSumFields
+  varPop: LevelSetsVarPopFields
+  varSamp: LevelSetsVarSampFields
+  variance: LevelSetsVarianceFields
+}
+
+"""
+aggregate avg on columns
+"""
+type LevelSetsAvgFields {
+  levelSetId: Float
+}
+
+"""
+Boolean expression to filter rows from the table "level_sets". All fields are combined with a logical 'AND'.
+"""
+input LevelSetsBoolExp {
+  _and: [LevelSetsBoolExp!]
+  _not: LevelSetsBoolExp
+  _or: [LevelSetsBoolExp!]
+  edition: EditionBoolExp
+  editionAggregate: EditionAggregateBoolExp
+  levelSetId: BigintComparisonExp
+  levelSetName: StringComparisonExp
+  levels: LevelsBoolExp
+  levelsAggregate: LevelsAggregateBoolExp
+}
+
+"""
+unique or primary key constraints on table "level_sets"
+"""
+enum LevelSetsConstraint {
+  """
+  unique or primary key constraint on columns "level_set_id"
+  """
+  level_sets_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "level_sets"
+"""
+input LevelSetsIncInput {
+  levelSetId: bigint
+}
+
+"""
+input type for inserting data into table "level_sets"
+"""
+input LevelSetsInsertInput {
+  edition: EditionArrRelInsertInput
+  levelSetId: bigint
+  levelSetName: String
+  levels: LevelsArrRelInsertInput
+}
+
+"""
+aggregate max on columns
+"""
+type LevelSetsMaxFields {
+  levelSetId: bigint
+  levelSetName: String
+}
+
+"""
+aggregate min on columns
+"""
+type LevelSetsMinFields {
+  levelSetId: bigint
+  levelSetName: String
+}
+
+"""
+response of any mutation on the table "level_sets"
+"""
+type LevelSetsMutationResponse {
+  """
+  number of rows affected by the mutation
+  """
+  affectedRows: Int!
+
+  """
+  data from the rows affected by the mutation
+  """
+  returning: [LevelSets!]!
+}
+
+"""
+input type for inserting object relation for remote table "level_sets"
+"""
+input LevelSetsObjRelInsertInput {
+  data: LevelSetsInsertInput!
+
+  """
+  upsert condition
+  """
+  onConflict: LevelSetsOnConflict
+}
+
+"""
+on_conflict condition type for table "level_sets"
+"""
+input LevelSetsOnConflict {
+  constraint: LevelSetsConstraint!
+  updateColumns: [LevelSetsUpdateColumn!]! = []
+  where: LevelSetsBoolExp
+}
+
+"""
+Ordering options when selecting data from "level_sets".
+"""
+input LevelSetsOrderBy {
+  editionAggregate: EditionAggregateOrderBy
+  levelSetId: OrderBy
+  levelSetName: OrderBy
+  levelsAggregate: LevelsAggregateOrderBy
+}
+
+"""
+primary key columns input for table: level_sets
+"""
+input LevelSetsPkColumnsInput {
+  levelSetId: bigint!
+}
+
+"""
+select columns of table "level_sets"
+"""
+enum LevelSetsSelectColumn {
+  """
+  column name
+  """
+  levelSetId
+
+  """
+  column name
+  """
+  levelSetName
+}
+
+"""
+input type for updating data in table "level_sets"
+"""
+input LevelSetsSetInput {
+  levelSetId: bigint
+  levelSetName: String
+}
+
+"""
+aggregate stddev on columns
+"""
+type LevelSetsStddevFields {
+  levelSetId: Float
+}
+
+"""
+aggregate stddevPop on columns
+"""
+type LevelSetsStddevPopFields {
+  levelSetId: Float
+}
+
+"""
+aggregate stddevSamp on columns
+"""
+type LevelSetsStddevSampFields {
+  levelSetId: Float
+}
+
+"""
+Streaming cursor of the table "level_sets"
+"""
+input LevelSetsStreamCursorInput {
+  """
+  Stream column input with initial value
+  """
+  initialValue: LevelSetsStreamCursorValueInput!
+
+  """
+  cursor ordering
+  """
+  ordering: CursorOrdering
+}
+
+"""
+Initial value of the column from where the streaming should start
+"""
+input LevelSetsStreamCursorValueInput {
+  levelSetId: bigint
+  levelSetName: String
+}
+
+"""
+aggregate sum on columns
+"""
+type LevelSetsSumFields {
+  levelSetId: bigint
+}
+
+"""
+update columns of table "level_sets"
+"""
+enum LevelSetsUpdateColumn {
+  """
+  column name
+  """
+  levelSetId
+
+  """
+  column name
+  """
+  levelSetName
+}
+
+input LevelSetsUpdates {
+  """
+  increments the numeric columns with given value of the filtered values
+  """
+  _inc: LevelSetsIncInput
+
+  """
+  sets the columns of the filtered rows to the given values
+  """
+  _set: LevelSetsSetInput
+
+  """
+  filter the rows which have to be updated
+  """
+  where: LevelSetsBoolExp!
+}
+
+"""
+aggregate varPop on columns
+"""
+type LevelSetsVarPopFields {
+  levelSetId: Float
+}
+
+"""
+aggregate varSamp on columns
+"""
+type LevelSetsVarSampFields {
+  levelSetId: Float
+}
+
+"""
+aggregate variance on columns
+"""
+type LevelSetsVarianceFields {
+  levelSetId: Float
+}
+
 type LevelType {
-  edition: EditionType
   grade: String!
   highest: Boolean!
   imageFile: FileType
   label: String!
   levelId: ID!
   levelName: String!
-  levelSet: Int!
+  levelSet: LevelSetType!
   maximumPoints: String!
   minimumPoints: String!
   ordinalNumber: Int!
-  userLevels: [UserLevelType]
+  userLevels: [UserLevelType!]!
 }
 
 """
 columns and relationships of "levels"
 """
 type Levels {
-  """
-  An object relationship
-  """
-  edition: Edition
-  editionId: bigint
-
   """
   An object relationship
   """
@@ -9170,7 +9663,12 @@ type Levels {
   imageFileId: bigint
   label: String!
   levelId: bigint!
-  levelSet: Int
+
+  """
+  An object relationship
+  """
+  levelSet: LevelSets
+  levelSetId: bigint
   maximumPoints: numeric!
   minimumPoints: numeric!
   name: String!
@@ -9301,11 +9799,10 @@ input LevelsArrRelInsertInput {
 aggregate avg on columns
 """
 type LevelsAvgFields {
-  editionId: Float
   grade: Float
   imageFileId: Float
   levelId: Float
-  levelSet: Float
+  levelSetId: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9315,11 +9812,10 @@ type LevelsAvgFields {
 order by avg() on columns of table "levels"
 """
 input LevelsAvgOrderBy {
-  editionId: OrderBy
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9332,8 +9828,6 @@ input LevelsBoolExp {
   _and: [LevelsBoolExp!]
   _not: LevelsBoolExp
   _or: [LevelsBoolExp!]
-  edition: EditionBoolExp
-  editionId: BigintComparisonExp
   file: FilesBoolExp
   grade: NumericComparisonExp
   gradingChecks: GradingChecksBoolExp
@@ -9342,7 +9836,8 @@ input LevelsBoolExp {
   imageFileId: BigintComparisonExp
   label: StringComparisonExp
   levelId: BigintComparisonExp
-  levelSet: IntComparisonExp
+  levelSet: LevelSetsBoolExp
+  levelSetId: BigintComparisonExp
   maximumPoints: NumericComparisonExp
   minimumPoints: NumericComparisonExp
   name: StringComparisonExp
@@ -9365,11 +9860,10 @@ enum LevelsConstraint {
 input type for incrementing numeric columns in table "levels"
 """
 input LevelsIncInput {
-  editionId: bigint
   grade: numeric
   imageFileId: bigint
   levelId: bigint
-  levelSet: Int
+  levelSetId: bigint
   maximumPoints: numeric
   minimumPoints: numeric
   ordinalNumber: Int
@@ -9379,8 +9873,6 @@ input LevelsIncInput {
 input type for inserting data into table "levels"
 """
 input LevelsInsertInput {
-  edition: EditionObjRelInsertInput
-  editionId: bigint
   file: FilesObjRelInsertInput
   grade: numeric
   gradingChecks: GradingChecksArrRelInsertInput
@@ -9388,7 +9880,8 @@ input LevelsInsertInput {
   imageFileId: bigint
   label: String
   levelId: bigint
-  levelSet: Int
+  levelSet: LevelSetsObjRelInsertInput
+  levelSetId: bigint
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -9400,12 +9893,11 @@ input LevelsInsertInput {
 aggregate max on columns
 """
 type LevelsMaxFields {
-  editionId: bigint
   grade: numeric
   imageFileId: bigint
   label: String
   levelId: bigint
-  levelSet: Int
+  levelSetId: bigint
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -9416,12 +9908,11 @@ type LevelsMaxFields {
 order by max() on columns of table "levels"
 """
 input LevelsMaxOrderBy {
-  editionId: OrderBy
   grade: OrderBy
   imageFileId: OrderBy
   label: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   name: OrderBy
@@ -9432,12 +9923,11 @@ input LevelsMaxOrderBy {
 aggregate min on columns
 """
 type LevelsMinFields {
-  editionId: bigint
   grade: numeric
   imageFileId: bigint
   label: String
   levelId: bigint
-  levelSet: Int
+  levelSetId: bigint
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -9448,12 +9938,11 @@ type LevelsMinFields {
 order by min() on columns of table "levels"
 """
 input LevelsMinOrderBy {
-  editionId: OrderBy
   grade: OrderBy
   imageFileId: OrderBy
   label: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   name: OrderBy
@@ -9500,8 +9989,6 @@ input LevelsOnConflict {
 Ordering options when selecting data from "levels".
 """
 input LevelsOrderBy {
-  edition: EditionOrderBy
-  editionId: OrderBy
   file: FilesOrderBy
   grade: OrderBy
   gradingChecksAggregate: GradingChecksAggregateOrderBy
@@ -9509,7 +9996,8 @@ input LevelsOrderBy {
   imageFileId: OrderBy
   label: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSet: LevelSetsOrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   name: OrderBy
@@ -9528,11 +10016,6 @@ input LevelsPkColumnsInput {
 select columns of table "levels"
 """
 enum LevelsSelectColumn {
-  """
-  column name
-  """
-  editionId
-
   """
   column name
   """
@@ -9561,7 +10044,7 @@ enum LevelsSelectColumn {
   """
   column name
   """
-  levelSet
+  levelSetId
 
   """
   column name
@@ -9608,13 +10091,12 @@ enum LevelsSelectColumnLevelsAggregateBoolExpBool_orArgumentsColumns {
 input type for updating data in table "levels"
 """
 input LevelsSetInput {
-  editionId: bigint
   grade: numeric
   highest: Boolean
   imageFileId: bigint
   label: String
   levelId: bigint
-  levelSet: Int
+  levelSetId: bigint
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -9625,11 +10107,10 @@ input LevelsSetInput {
 aggregate stddev on columns
 """
 type LevelsStddevFields {
-  editionId: Float
   grade: Float
   imageFileId: Float
   levelId: Float
-  levelSet: Float
+  levelSetId: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9639,11 +10120,10 @@ type LevelsStddevFields {
 order by stddev() on columns of table "levels"
 """
 input LevelsStddevOrderBy {
-  editionId: OrderBy
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9653,11 +10133,10 @@ input LevelsStddevOrderBy {
 aggregate stddevPop on columns
 """
 type LevelsStddevPopFields {
-  editionId: Float
   grade: Float
   imageFileId: Float
   levelId: Float
-  levelSet: Float
+  levelSetId: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9667,11 +10146,10 @@ type LevelsStddevPopFields {
 order by stddevPop() on columns of table "levels"
 """
 input LevelsStddevPopOrderBy {
-  editionId: OrderBy
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9681,11 +10159,10 @@ input LevelsStddevPopOrderBy {
 aggregate stddevSamp on columns
 """
 type LevelsStddevSampFields {
-  editionId: Float
   grade: Float
   imageFileId: Float
   levelId: Float
-  levelSet: Float
+  levelSetId: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9695,11 +10172,10 @@ type LevelsStddevSampFields {
 order by stddevSamp() on columns of table "levels"
 """
 input LevelsStddevSampOrderBy {
-  editionId: OrderBy
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9724,13 +10200,12 @@ input LevelsStreamCursorInput {
 Initial value of the column from where the streaming should start
 """
 input LevelsStreamCursorValueInput {
-  editionId: bigint
   grade: numeric
   highest: Boolean
   imageFileId: bigint
   label: String
   levelId: bigint
-  levelSet: Int
+  levelSetId: bigint
   maximumPoints: numeric
   minimumPoints: numeric
   name: String
@@ -9741,11 +10216,10 @@ input LevelsStreamCursorValueInput {
 aggregate sum on columns
 """
 type LevelsSumFields {
-  editionId: bigint
   grade: numeric
   imageFileId: bigint
   levelId: bigint
-  levelSet: Int
+  levelSetId: bigint
   maximumPoints: numeric
   minimumPoints: numeric
   ordinalNumber: Int
@@ -9755,11 +10229,10 @@ type LevelsSumFields {
 order by sum() on columns of table "levels"
 """
 input LevelsSumOrderBy {
-  editionId: OrderBy
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9769,11 +10242,6 @@ input LevelsSumOrderBy {
 update columns of table "levels"
 """
 enum LevelsUpdateColumn {
-  """
-  column name
-  """
-  editionId
-
   """
   column name
   """
@@ -9802,7 +10270,7 @@ enum LevelsUpdateColumn {
   """
   column name
   """
-  levelSet
+  levelSetId
 
   """
   column name
@@ -9846,11 +10314,10 @@ input LevelsUpdates {
 aggregate varPop on columns
 """
 type LevelsVarPopFields {
-  editionId: Float
   grade: Float
   imageFileId: Float
   levelId: Float
-  levelSet: Float
+  levelSetId: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9860,11 +10327,10 @@ type LevelsVarPopFields {
 order by varPop() on columns of table "levels"
 """
 input LevelsVarPopOrderBy {
-  editionId: OrderBy
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9874,11 +10340,10 @@ input LevelsVarPopOrderBy {
 aggregate varSamp on columns
 """
 type LevelsVarSampFields {
-  editionId: Float
   grade: Float
   imageFileId: Float
   levelId: Float
-  levelSet: Float
+  levelSetId: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9888,11 +10353,10 @@ type LevelsVarSampFields {
 order by varSamp() on columns of table "levels"
 """
 input LevelsVarSampOrderBy {
-  editionId: OrderBy
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -9902,11 +10366,10 @@ input LevelsVarSampOrderBy {
 aggregate variance on columns
 """
 type LevelsVarianceFields {
-  editionId: Float
   grade: Float
   imageFileId: Float
   levelId: Float
-  levelSet: Float
+  levelSetId: Float
   maximumPoints: Float
   minimumPoints: Float
   ordinalNumber: Float
@@ -9916,11 +10379,10 @@ type LevelsVarianceFields {
 order by variance() on columns of table "levels"
 """
 input LevelsVarianceOrderBy {
-  editionId: OrderBy
   grade: OrderBy
   imageFileId: OrderBy
   levelId: OrderBy
-  levelSet: OrderBy
+  levelSetId: OrderBy
   maximumPoints: OrderBy
   minimumPoints: OrderBy
   ordinalNumber: OrderBy
@@ -15163,6 +15625,13 @@ input chestsAggregateBoolExpCount {
 
 scalar date
 
+input editionAggregateBoolExpCount {
+  arguments: [EditionSelectColumn!]
+  distinct: Boolean
+  filter: EditionBoolExp
+  predicate: IntComparisonExp!
+}
+
 scalar float8
 
 input gradingChecksAggregateBoolExpAvg {
@@ -15344,8 +15813,8 @@ type mutation_root {
     usosId: Int!
     weekdayId: Int!
   ): GroupType
-  addLevelSet(levels: [LevelInputType!]!): [LevelType!]!
-  addLevelSetToEdition(editionId: Int!, levelSet: Int!): [LevelType!]!
+  addLevelSet(levels: [LevelInputType!]!): LevelSetType!
+  addLevelSetToEdition(editionId: Int!, levelSetID: Int!): LevelSetType!
   addPoints(
     checkDates: Boolean = true
     studentId: Int!
@@ -15382,6 +15851,7 @@ type mutation_root {
   changeStudentGroup(groupId: Int!, userId: Int!): UserGroupType
   copyAward(awardId: Int!): AwardType
   copyChest(chestId: Int!): ChestType
+  copyLevelSet(levelSetId: Int!): LevelSetType!
 
   """
   delete data from the table: "award"
@@ -15597,6 +16067,21 @@ type mutation_root {
   deleteGroupsByPk(groupsId: bigint!): Groups
 
   """
+  delete data from the table: "level_sets"
+  """
+  deleteLevelSets(
+    """
+    filter the rows which have to be deleted
+    """
+    where: LevelSetsBoolExp!
+  ): LevelSetsMutationResponse
+
+  """
+  delete single row from the table: "level_sets"
+  """
+  deleteLevelSetsByPk(levelSetId: bigint!): LevelSets
+
+  """
   delete data from the table: "levels"
   """
   deleteLevels(
@@ -15785,7 +16270,7 @@ type mutation_root {
     usosId: Int
     weekdayId: Int
   ): GroupType
-  editLevelSet(levelSet: Int!, levels: [LevelInputType!]!): [LevelType!]!
+  editLevelSet(levelSetId: Int!, levels: [LevelInputType!]!): LevelSetType!
   editPoints(pointsId: Int!, updatedById: Int!, value: Float): PointType
   editSubcategory(
     label: String
@@ -16232,6 +16717,36 @@ type mutation_root {
   ): Groups
 
   """
+  insert data into the table: "level_sets"
+  """
+  insertLevelSets(
+    """
+    the rows to be inserted
+    """
+    objects: [LevelSetsInsertInput!]!
+
+    """
+    upsert condition
+    """
+    onConflict: LevelSetsOnConflict
+  ): LevelSetsMutationResponse
+
+  """
+  insert a single row into the table: "level_sets"
+  """
+  insertLevelSetsOne(
+    """
+    the row to be inserted
+    """
+    object: LevelSetsInsertInput!
+
+    """
+    upsert condition
+    """
+    onConflict: LevelSetsOnConflict
+  ): LevelSets
+
+  """
   insert data into the table: "levels"
   """
   insertLevels(
@@ -16482,8 +16997,8 @@ type mutation_root {
   removeEdition(editionId: Int!): Boolean
   removeGradingCheck(gradingCheckId: Int!): Boolean
   removeGroup(groupId: Int!): Boolean
-  removeLevelSet(levelSet: Int!): Boolean
-  removeLevelSetFromEdition(editionId: Int!, levelSet: Int!): Boolean
+  removeLevelSet(levelSetId: Int!): Boolean
+  removeLevelSetFromEdition(editionId: Int!, levelSetId: Int!): Boolean
   removePoints(pointsId: Int!): Boolean
   removeSubcategory(subcategoryId: Int!): Boolean
   removeUser(userId: Int!): Boolean
@@ -17133,6 +17648,52 @@ type mutation_root {
     """
     updates: [GroupsUpdates!]!
   ): [GroupsMutationResponse]
+
+  """
+  update data of the table: "level_sets"
+  """
+  updateLevelSets(
+    """
+    increments the numeric columns with given value of the filtered values
+    """
+    _inc: LevelSetsIncInput
+
+    """
+    sets the columns of the filtered rows to the given values
+    """
+    _set: LevelSetsSetInput
+
+    """
+    filter the rows which have to be updated
+    """
+    where: LevelSetsBoolExp!
+  ): LevelSetsMutationResponse
+
+  """
+  update single row of the table: "level_sets"
+  """
+  updateLevelSetsByPk(
+    """
+    increments the numeric columns with given value of the filtered values
+    """
+    _inc: LevelSetsIncInput
+
+    """
+    sets the columns of the filtered rows to the given values
+    """
+    _set: LevelSetsSetInput
+    pkColumns: LevelSetsPkColumnsInput!
+  ): LevelSets
+
+  """
+  update multiples rows of table: "level_sets"
+  """
+  updateLevelSetsMany(
+    """
+    updates to execute, in order
+    """
+    updates: [LevelSetsUpdates!]!
+  ): [LevelSetsMutationResponse]
 
   """
   update data of the table: "levels"
@@ -18108,7 +18669,7 @@ type query_root {
   chestsByPk(chestId: bigint!): Chests
 
   """
-  fetch data from the table: "edition"
+  An array relationship
   """
   edition(
     """
@@ -18138,7 +18699,7 @@ type query_root {
   ): [Edition!]!
 
   """
-  fetch aggregated fields from the table: "edition"
+  An aggregate relationship
   """
   editionAggregate(
     """
@@ -18305,7 +18866,6 @@ type query_root {
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   getGroupsInEdition(editionId: Int!, teacherId: Int!): [GroupTeacherType!]!
-  getLevelSets: [LevelSetType!]!
   getNeighboringLevels(editionId: Int!, studentId: Int!): NeighboringLevelsType!
   getPossibleGroupDates(editionId: Int!): [GroupDateType!]!
   getPossibleGroupsTimeSpans(editionId: Int!): [TimeSpansType!]!
@@ -18506,6 +19066,71 @@ type query_root {
     """
     where: HallOfFameBoolExp
   ): HallOfFameAggregate!
+
+  """
+  fetch data from the table: "level_sets"
+  """
+  levelSets(
+    """
+    distinct select on columns
+    """
+    distinctOn: [LevelSetsSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [LevelSetsOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: LevelSetsBoolExp
+  ): [LevelSets!]!
+
+  """
+  fetch aggregated fields from the table: "level_sets"
+  """
+  levelSetsAggregate(
+    """
+    distinct select on columns
+    """
+    distinctOn: [LevelSetsSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [LevelSetsOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: LevelSetsBoolExp
+  ): LevelSetsAggregate!
+
+  """
+  fetch data from the table: "level_sets" using primary key columns
+  """
+  levelSetsByPk(levelSetId: bigint!): LevelSets
 
   """
   An array relationship
@@ -19806,7 +20431,7 @@ type subscription_root {
   ): [Chests!]!
 
   """
-  fetch data from the table: "edition"
+  An array relationship
   """
   edition(
     """
@@ -19836,7 +20461,7 @@ type subscription_root {
   ): [Edition!]!
 
   """
-  fetch aggregated fields from the table: "edition"
+  An aggregate relationship
   """
   editionAggregate(
     """
@@ -20309,6 +20934,91 @@ type subscription_root {
     """
     where: HallOfFameBoolExp
   ): [HallOfFame!]!
+
+  """
+  fetch data from the table: "level_sets"
+  """
+  levelSets(
+    """
+    distinct select on columns
+    """
+    distinctOn: [LevelSetsSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [LevelSetsOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: LevelSetsBoolExp
+  ): [LevelSets!]!
+
+  """
+  fetch aggregated fields from the table: "level_sets"
+  """
+  levelSetsAggregate(
+    """
+    distinct select on columns
+    """
+    distinctOn: [LevelSetsSelectColumn!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    orderBy: [LevelSetsOrderBy!]
+
+    """
+    filter the rows returned
+    """
+    where: LevelSetsBoolExp
+  ): LevelSetsAggregate!
+
+  """
+  fetch data from the table: "level_sets" using primary key columns
+  """
+  levelSetsByPk(levelSetId: bigint!): LevelSets
+
+  """
+  fetch data from the table in a streaming manner: "level_sets"
+  """
+  levelSetsStream(
+    """
+    maximum number of rows returned in a single batch
+    """
+    batchSize: Int!
+
+    """
+    cursor to stream the results returned by the query
+    """
+    cursor: [LevelSetsStreamCursorInput]!
+
+    """
+    filter the rows returned
+    """
+    where: LevelSetsBoolExp
+  ): [LevelSets!]!
 
   """
   An array relationship

@@ -1,0 +1,5 @@
+mutation AddLevelSet($levels: [LevelInputType!]!) {
+  addLevelSet(levels: $levels) {
+    levelSetId
+  }
+}

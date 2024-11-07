@@ -7,6 +7,7 @@ type SelectImageProps = {
   selectedId: string | undefined;
   onSelectClick: (id: string) => void;
   error: string | undefined;
+  touched?: boolean;
 };
 
 export const SelectImage = ({
@@ -14,6 +15,7 @@ export const SelectImage = ({
   selectedId,
   onSelectClick,
   error,
+  touched,
 }: SelectImageProps) => {
   return (
     <div style={styles.container}>
@@ -24,7 +26,7 @@ export const SelectImage = ({
           </div>
         ))}
       </div>
-      {error && (
+      {error && touched && (
         <FormHelperText style={{ color: "red" }}>{error}</FormHelperText>
       )}
     </div>

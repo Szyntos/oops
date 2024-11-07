@@ -1,0 +1,7 @@
+mutation SetupChestEditionAdd($chestId: Int!, $editionId: Int!) {
+  addChestToEdition(chestId: $chestId, editionId: $editionId) {
+    chest {
+      chestId
+    }
+  }
+}

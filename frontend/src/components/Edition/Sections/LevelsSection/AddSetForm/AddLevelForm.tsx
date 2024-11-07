@@ -61,7 +61,7 @@ export const AddLevelForm = ({
       }
 
       // validate with already added levels
-      const { nameError, maxPointsError, gradeError } =
+      const { nameError, maxPointsError, gradeError, imageError } =
         validateWithAddedLevels(values);
 
       errors = nameError ? { ...errors, name: nameError } : errors;
@@ -69,6 +69,7 @@ export const AddLevelForm = ({
         ? { ...errors, maxPoints: maxPointsError }
         : errors;
       errors = gradeError ? { ...errors, grade: gradeError } : errors;
+      errors = imageError ? { ...errors, imageId: imageError } : errors;
 
       return errors;
     },

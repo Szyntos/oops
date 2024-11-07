@@ -15,6 +15,7 @@ export type WithAddedLevelsValidateErrors = {
   nameError: string | undefined;
   maxPointsError: string | undefined;
   gradeError: string | undefined;
+  imageError: string | undefined;
 };
 
 export const AddSetForm = ({
@@ -111,13 +112,33 @@ export const AddSetForm = ({
       ? "duplicated maxPoints"
       : undefined;
 
-    // TODO: check if grade is consistent
-    let gradeError: string | undefined;
+    const newLevel: AddedLevel = {
+      ...values,
+      ordinal: 0,
+      minPoints: 0,
+    };
+
+    const levelsWithValues = [...levels, newLevel];
+    // check if array sorted by maxpoints has grades sorted as well
+    const levelsSortedByPoints = levelsWithValues.sort(
+      (l1, l2) => l1.maxPoints - l2.maxPoints,
+    );
+    const gradeError = levelsSortedByPoints.every((l1, index, array) => {
+      if (index === 0) return true;
+      return parseFloat(array[index - 1].grade) <= parseFloat(l1.grade);
+    })
+      ? undefined
+      : "grade inconsistency";
+
+    const imageError = levels.find((l) => l.imageId === values.imageId)
+      ? "duplicated image"
+      : undefined;
 
     return {
       nameError,
       maxPointsError,
       gradeError,
+      imageError,
     };
   };
 

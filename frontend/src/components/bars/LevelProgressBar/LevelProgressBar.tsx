@@ -4,7 +4,7 @@ import { ProgressBar } from "../ProgressBar";
 import { LevelMiniature } from "./LevelMiniature";
 
 type LevelProgressBarProps = {
-  totalPoints: number;
+  totalPoints: number | undefined;
   prevLevel: NeighboringLevel | undefined;
   currLevel: NeighboringLevel;
   nextLevel: NeighboringLevel | undefined;
@@ -18,11 +18,15 @@ export const LevelProgressBar = ({
 }: LevelProgressBarProps) => {
   const leftLevel = prevLevel ?? currLevel;
   const rightLevel = nextLevel ?? currLevel;
-
+  console.log(
+    totalPoints ? totalPoints - parseFloat(currLevel.minimumPoints) : 0,
+  );
   return (
     <div style={styles.container}>
       <ProgressBar
-        points={totalPoints - parseFloat(currLevel.minimumPoints)}
+        points={
+          totalPoints ? totalPoints - parseFloat(currLevel.minimumPoints) : 0
+        }
         bounds={{
           lower: 0,
           upper:

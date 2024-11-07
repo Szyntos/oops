@@ -60,6 +60,7 @@ export const useLevelSetsSection = (editionId: number) => {
             grade: l.grade,
             maximumPoints: l.maxPoints.toString(),
             name: l.name,
+            imageFileId: l.imageId,
           })),
         },
       });
@@ -109,6 +110,7 @@ export const useLevelSetsSection = (editionId: number) => {
             grade: l.grade,
             maximumPoints: l.maxPoints.toString(),
             name: l.name,
+            imageFileId: l.imageId,
           })),
         },
       });

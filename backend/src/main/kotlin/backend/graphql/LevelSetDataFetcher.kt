@@ -196,6 +196,7 @@ class LevelSetDataFetcher {
         levelsInSet.forEach { level ->
             levelsRepository.delete(level)
         }
+        levelSet.edition.forEach { it.levelSet = null }
         levelSetRepository.delete(levelSet)
         return true
     }

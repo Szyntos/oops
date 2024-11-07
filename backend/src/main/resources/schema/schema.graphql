@@ -656,6 +656,7 @@ type GroupDateType {
 }
 
 type NeighboringLevelsType {
+  sumOfAllPoints: String!
   prevLevel: LevelType
   currLevel: LevelType!
   nextLevel: LevelType

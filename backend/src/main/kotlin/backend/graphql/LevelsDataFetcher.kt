@@ -7,6 +7,7 @@ import backend.levelSet.LevelSet
 import backend.levelSet.LevelSetRepository
 import backend.levels.Levels
 import backend.levels.LevelsRepository
+import backend.points.PointsRepository
 import backend.users.UsersRepository
 import backend.users.UsersRoles
 import backend.utils.UserMapper
@@ -21,6 +22,9 @@ import java.math.RoundingMode
 
 @DgsComponent
 class LevelsDataFetcher {
+    @Autowired
+    private lateinit var pointsRepository: PointsRepository
+
     @Autowired
     private lateinit var levelSetRepository: LevelSetRepository
 
@@ -99,7 +103,11 @@ class LevelsDataFetcher {
         val nextLevel =
             levelsRepository.findByLevelSet(currentLevel.levelSet)
                 .firstOrNull { it.ordinalNumber == currentLevel.ordinalNumber + 1 }
+        val sumOfAllPoints = pointsRepository.findAllByStudent(student)
+            .filter { it.subcategory.edition == edition }
+            .sumOf { it.value }
         return NeighboringLevelsType(
+            sumOfAllPoints = sumOfAllPoints,
             prevLevel = previousLevel,
             currLevel = currentLevel,
             nextLevel = nextLevel
@@ -108,6 +116,7 @@ class LevelsDataFetcher {
 }
 
 data class NeighboringLevelsType(
+    val sumOfAllPoints: BigDecimal,
     val prevLevel: Levels?,
     val currLevel: Levels,
     val nextLevel: Levels?

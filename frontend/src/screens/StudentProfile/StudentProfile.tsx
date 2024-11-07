@@ -10,6 +10,7 @@ export function StudentProfile() {
     categories,
     studentData,
     points,
+    sumOfAllPoints,
     prevLevel,
     currLevel,
     nextLevel,
@@ -31,6 +32,7 @@ export function StudentProfile() {
       <SideBar
         student={studentData}
         categoriesBarProps={categories}
+        sumOfAllPoints={sumOfAllPoints}
         prevLevel={prevLevel}
         currLevel={currLevel}
         nextLevel={nextLevel}

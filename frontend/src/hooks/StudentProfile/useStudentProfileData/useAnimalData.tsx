@@ -8,6 +8,7 @@ export type NeighboringLevel =
   NeighboringLevelsQuery["getNeighboringLevels"]["currLevel"];
 
 export type AnimalDataResult = {
+  sumOfAllPoints: string | undefined;
   prevLevel: NeighboringLevel | undefined;
   currLevel: NeighboringLevel | undefined;
   nextLevel: NeighboringLevel | undefined;
@@ -28,12 +29,14 @@ export const useAnimalData = (
     },
   });
 
+  const sumOfAllPoints = data?.getNeighboringLevels.sumOfAllPoints ?? undefined;
   const prevLevel = data?.getNeighboringLevels.prevLevel ?? undefined;
   const currLevel = data?.getNeighboringLevels.currLevel ?? undefined;
   const nextLevel = data?.getNeighboringLevels.nextLevel ?? undefined;
 
   if (!currLevel) {
     return {
+      sumOfAllPoints: undefined,
       prevLevel: undefined,
       currLevel: undefined,
       nextLevel: undefined,
@@ -44,6 +47,7 @@ export const useAnimalData = (
   }
 
   return {
+    sumOfAllPoints,
     prevLevel,
     currLevel,
     nextLevel,

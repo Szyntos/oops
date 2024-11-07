@@ -9,42 +9,38 @@ export type LevelsQueryVariables = Types.Exact<{
 
 export type LevelsQuery = {
   __typename?: "query_root";
-  levels: Array<{
-    __typename?: "Levels";
-    grade: string;
-    imageFileId?: string | null;
-    levelId: string;
-    maximumPoints: string;
-    minimumPoints: string;
-    name: string;
-    ordinalNumber: number;
-    label: string;
-    highest: boolean;
-    levelSetId?: string | null;
-    levelSet?: {
-      __typename?: "LevelSets";
-      edition: Array<{ __typename?: "Edition"; editionId: string }>;
-    } | null;
+  levelSets: Array<{
+    __typename?: "LevelSets";
+    levels: Array<{
+      __typename?: "Levels";
+      grade: string;
+      imageFileId?: string | null;
+      levelId: string;
+      maximumPoints: string;
+      minimumPoints: string;
+      name: string;
+      ordinalNumber: number;
+      label: string;
+      highest: boolean;
+      levelSetId?: string | null;
+    }>;
   }>;
 };
 
 export const LevelsDocument = gql`
   query Levels($editionId: bigint!) {
-    levels(orderBy: { ordinalNumber: ASC }) {
-      grade
-      imageFileId
-      levelId
-      maximumPoints
-      minimumPoints
-      name
-      ordinalNumber
-      label
-      highest
-      levelSetId
-      levelSet {
-        edition(where: { editionId: { _eq: $editionId } }) {
-          editionId
-        }
+    levelSets(where: { edition: { editionId: { _eq: $editionId } } }) {
+      levels(orderBy: { ordinalNumber: ASC }) {
+        grade
+        imageFileId
+        levelId
+        maximumPoints
+        minimumPoints
+        name
+        ordinalNumber
+        label
+        highest
+        levelSetId
       }
     }
   }

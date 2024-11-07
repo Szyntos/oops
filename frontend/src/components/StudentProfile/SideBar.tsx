@@ -11,6 +11,7 @@ import { NeighboringLevel } from "../../hooks/StudentProfile/useStudentProfileDa
 type SideBarProps = {
   student: StudentCardData;
   categoriesBarProps: ProgressBarProps[];
+  sumOfAllPoints: string | undefined;
   prevLevel: NeighboringLevel | undefined;
   currLevel: NeighboringLevel;
   nextLevel: NeighboringLevel | undefined;
@@ -20,6 +21,7 @@ type SideBarProps = {
 export const SideBar = ({
   student,
   categoriesBarProps,
+  sumOfAllPoints,
   prevLevel,
   currLevel,
   nextLevel,
@@ -32,7 +34,7 @@ export const SideBar = ({
         prevLevel={prevLevel}
         currLevel={currLevel}
         nextLevel={nextLevel}
-        totalPoints={student.totalPoints}
+        totalPoints={parseFloat(sumOfAllPoints ?? "0")}
       />
       <CategoriesCard categoriesBarProps={categoriesBarProps} />
       <BonusesCard bonuses={bonuses} />

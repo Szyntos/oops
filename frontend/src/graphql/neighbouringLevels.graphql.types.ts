@@ -12,6 +12,7 @@ export type NeighboringLevelsQuery = {
   __typename?: "query_root";
   getNeighboringLevels: {
     __typename?: "NeighboringLevelsType";
+    sumOfAllPoints: string;
     currLevel: {
       __typename?: "LevelType";
       highest: boolean;
@@ -81,6 +82,7 @@ export type NeighboringLevelsQuery = {
 export const NeighboringLevelsDocument = gql`
   query NeighboringLevels($editionId: Int!, $studentId: Int!) {
     getNeighboringLevels(editionId: $editionId, studentId: $studentId) {
+      sumOfAllPoints
       currLevel {
         highest
         levelId

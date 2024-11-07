@@ -10392,6 +10392,7 @@ type NeighboringLevelsType {
   currLevel: LevelType!
   nextLevel: LevelType
   prevLevel: LevelType
+  sumOfAllPoints: String!
 }
 
 type NotValidUserType {

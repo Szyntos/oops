@@ -7355,6 +7355,7 @@ export type NeighboringLevelsType = {
   currLevel: LevelType;
   nextLevel?: Maybe<LevelType>;
   prevLevel?: Maybe<LevelType>;
+  sumOfAllPoints: Scalars["String"]["output"];
 };
 
 export type NotValidUserType = {

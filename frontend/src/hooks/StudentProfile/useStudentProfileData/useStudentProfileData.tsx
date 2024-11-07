@@ -24,6 +24,7 @@ export const useStudentProfileData = (studentId?: string) => {
   } = useStudentData({ editionId, studentId });
 
   const {
+    sumOfAllPoints,
     prevLevel,
     currLevel,
     nextLevel,
@@ -47,6 +48,7 @@ export const useStudentProfileData = (studentId?: string) => {
     studentData,
     points,
     filterHeaderNames,
+    sumOfAllPoints,
     prevLevel,
     currLevel,
     nextLevel,

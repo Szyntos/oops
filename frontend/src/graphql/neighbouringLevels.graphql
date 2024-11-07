@@ -1,5 +1,6 @@
 query NeighboringLevels($editionId: Int!, $studentId: Int!) {
   getNeighboringLevels(editionId: $editionId, studentId: $studentId) {
+    sumOfAllPoints
     currLevel {
       highest
       levelId

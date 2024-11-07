@@ -12,7 +12,7 @@ export const useLevelsData = () => {
   });
 
   const levels: Level[] =
-    data?.levels.map((level) => {
+    data?.levelSets[0].levels.map((level) => {
       return {
         name: level.name as string,
         ordinalNumber: level.ordinalNumber,

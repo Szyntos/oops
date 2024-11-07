@@ -5,10 +5,10 @@ import { LevelProgressBar } from "../../../bars/LevelProgressBar/LevelProgressBa
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
 
 type AnimalCardProps = {
+  totalPoints: number | undefined;
   prevLevel: NeighboringLevel | undefined;
   currLevel: NeighboringLevel;
   nextLevel: NeighboringLevel | undefined;
-  totalPoints: number;
 };
 
 export const AnimalCard = ({
@@ -24,7 +24,7 @@ export const AnimalCard = ({
         obecny level: {currLevel.levelName} - lvl. {currLevel.ordinalNumber + 1}
       </div>
       <LevelProgressBar
-        totalPoints={totalPoints + 10}
+        totalPoints={totalPoints}
         prevLevel={prevLevel}
         currLevel={currLevel}
         nextLevel={nextLevel}

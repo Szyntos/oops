@@ -113,13 +113,21 @@ class GroupsDataFetcher {
     @DgsMutation
     @Transactional
     fun addGroup(@InputArgument editionId: Long, @InputArgument usosId: Int,
-                 @InputArgument weekdayId: Long, @InputArgument startTime: Time,
-                 @InputArgument endTime: Time, @InputArgument teacherId: Long, @InputArgument label: String = "",
+                 @InputArgument weekdayId: Long, @InputArgument startTime: String,
+                 @InputArgument endTime: String, @InputArgument teacherId: Long, @InputArgument label: String = "",
                  @InputArgument groupName: String = ""): Groups {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
             throw IllegalArgumentException("Only coordinators can add groups")
         }
+
+        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
+        if (!hh_mm.matches(startTime) || !hh_mm.matches(endTime)) {
+            throw IllegalArgumentException("Invalid time format")
+        }
+
+        val startTimeWithSeconds = Time.valueOf("$startTime:00")
+        val endTimeWithSeconds = Time.valueOf("$endTime:00")
 
         val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Invalid edition ID") }
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
@@ -134,10 +142,10 @@ class GroupsDataFetcher {
         if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName?.isNotBlank() == true }) {
             throw IllegalArgumentException("Group with name $groupName already exists for edition ${edition.editionId}")
         }
-        if (startTime.after(endTime)) {
+        if (startTimeWithSeconds.after(endTimeWithSeconds)) {
             throw IllegalArgumentException("Start time must be before end time")
         }
-        if (startTime == endTime) {
+        if (startTimeWithSeconds == endTimeWithSeconds) {
             throw IllegalArgumentException("Start time must be different from end time")
         }
         val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Invalid weekday ID") }
@@ -145,10 +153,10 @@ class GroupsDataFetcher {
         if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
             throw IllegalArgumentException("User with ID $teacherId is not a teacher nor a coordinator")
         }
-        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTime, endTime, edition)) {
+        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTimeWithSeconds, endTimeWithSeconds, edition)) {
             throw IllegalArgumentException("Teacher is already teaching a group at this time")
         }
-        val generatedName = generateGroupName(usosId, weekday, startTime, teacher)
+        val generatedName = generateGroupName(usosId, weekday, startTimeWithSeconds, teacher)
         val group = Groups(
             generatedName = generatedName,
             groupName = groupName,
@@ -156,8 +164,8 @@ class GroupsDataFetcher {
             label = label,
             teacher = teacher,
             weekday = weekday,
-            startTime = startTime,
-            endTime = endTime,
+            startTime = startTimeWithSeconds,
+            endTime = endTimeWithSeconds,
             edition = edition
         )
         groupsRepository.save(group)
@@ -172,13 +180,21 @@ class GroupsDataFetcher {
     @DgsMutation
     @Transactional
     fun addGroupWithUsers(@InputArgument editionId: Long, @InputArgument usosId: Int,
-                          @InputArgument weekdayId: Long, @InputArgument startTime: Time,
-                          @InputArgument endTime: Time, @InputArgument teacherId: Long, @InputArgument label: String = "",
+                          @InputArgument weekdayId: Long, @InputArgument startTime: String,
+                          @InputArgument endTime: String, @InputArgument teacherId: Long, @InputArgument label: String = "",
                           @InputArgument groupName: String = "", @InputArgument users: List<UsersInputType>): Groups {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
             throw IllegalArgumentException("Only coordinators can add groups")
         }
+
+        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
+        if (!hh_mm.matches(startTime) || !hh_mm.matches(endTime)) {
+            throw IllegalArgumentException("Invalid time format")
+        }
+
+        val startTimeWithSeconds = Time.valueOf("$startTime:00")
+        val endTimeWithSeconds = Time.valueOf("$endTime:00")
 
         val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Invalid edition ID") }
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
@@ -193,10 +209,10 @@ class GroupsDataFetcher {
         if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName?.isNotBlank() == true }) {
             throw IllegalArgumentException("Group with name $groupName already exists for edition ${edition.editionId}")
         }
-        if (startTime.after(endTime)) {
+        if (startTimeWithSeconds.after(endTimeWithSeconds)) {
             throw IllegalArgumentException("Start time must be before end time")
         }
-        if (startTime == endTime) {
+        if (startTimeWithSeconds == endTimeWithSeconds) {
             throw IllegalArgumentException("Start time must be different from end time")
         }
         val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Invalid weekday ID") }
@@ -204,10 +220,10 @@ class GroupsDataFetcher {
         if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
             throw IllegalArgumentException("User with ID $teacherId is not a teacher nor a coordinator")
         }
-        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTime, endTime, edition)) {
+        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTimeWithSeconds, endTimeWithSeconds, edition)) {
             throw IllegalArgumentException("Teacher is already teaching a group at this time")
         }
-        val generatedName = generateGroupName(usosId, weekday, startTime, teacher)
+        val generatedName = generateGroupName(usosId, weekday, startTimeWithSeconds, teacher)
         val group = Groups(
             generatedName = generatedName,
             groupName = groupName,
@@ -215,8 +231,8 @@ class GroupsDataFetcher {
             label = label,
             teacher = teacher,
             weekday = weekday,
-            startTime = startTime,
-            endTime = endTime,
+            startTime = startTimeWithSeconds,
+            endTime = endTimeWithSeconds,
             edition = edition
         )
         groupsRepository.save(group)
@@ -262,8 +278,8 @@ class GroupsDataFetcher {
         @InputArgument groupName: String?,
         @InputArgument usosId: Int?,
         @InputArgument weekdayId: Long?,
-        @InputArgument startTime: Time?,
-        @InputArgument endTime: Time?,
+        @InputArgument startTime: String?,
+        @InputArgument endTime: String?,
         @InputArgument teacherId: Long?,
         @InputArgument label: String?
     ): Groups {
@@ -271,6 +287,9 @@ class GroupsDataFetcher {
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
             throw IllegalArgumentException("Student cannot edit groups")
         }
+
+        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
+
 
         val group = groupsRepository.findById(groupId)
             .orElseThrow { IllegalArgumentException("Invalid group ID") }
@@ -309,17 +328,31 @@ class GroupsDataFetcher {
         }
 
         startTime?.let {
-            if (endTime != null && it.after(endTime)) {
+
+            if (!hh_mm.matches(startTime)) {
+                throw IllegalArgumentException("Invalid time format")
+            }
+
+            val startTimeWithSeconds = Time.valueOf("$startTime:00")
+
+            if (endTime != null && startTimeWithSeconds.after(group.endTime)) {
                 throw IllegalArgumentException("Start time must be before end time")
             }
-            group.startTime = it
+            group.startTime = startTimeWithSeconds
         }
 
         endTime?.let {
-            if (startTime != null && startTime.after(it)) {
+
+            if (!hh_mm.matches(endTime)) {
+                throw IllegalArgumentException("Invalid time format")
+            }
+
+            val endTimeWithSeconds = Time.valueOf("$endTime:00")
+
+            if (startTime != null && group.startTime.after(endTimeWithSeconds)) {
                 throw IllegalArgumentException("End time must be after start time")
             }
-            group.endTime = it
+            group.endTime = endTimeWithSeconds
         }
 
         teacherId?.let {
@@ -353,8 +386,8 @@ class GroupsDataFetcher {
         @InputArgument groupName: String?,
         @InputArgument usosId: Int?,
         @InputArgument weekdayId: Long?,
-        @InputArgument startTime: Time?,
-        @InputArgument endTime: Time?,
+        @InputArgument startTime: String?,
+        @InputArgument endTime: String?,
         @InputArgument teacherId: Long?,
         @InputArgument label: String?,
         @InputArgument users: UserIdsType
@@ -363,6 +396,9 @@ class GroupsDataFetcher {
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
             throw IllegalArgumentException("Student cannot edit groups")
         }
+
+        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
+
 
         val group = groupsRepository.findById(groupId)
             .orElseThrow { IllegalArgumentException("Invalid group ID") }
@@ -401,17 +437,39 @@ class GroupsDataFetcher {
         }
 
         startTime?.let {
-            if (endTime != null && it.after(endTime)) {
+
+            if (!hh_mm.matches(startTime)) {
+                throw IllegalArgumentException("Invalid time format")
+            }
+
+            val startTimeWithSeconds = Time.valueOf("$startTime:00")
+
+            if (endTime != null && startTimeWithSeconds.after(group.endTime)) {
                 throw IllegalArgumentException("Start time must be before end time")
             }
-            group.startTime = it
+            group.startTime = startTimeWithSeconds
         }
 
         endTime?.let {
-            if (startTime != null && startTime.after(it)) {
+
+            if (!hh_mm.matches(endTime)) {
+                throw IllegalArgumentException("Invalid time format")
+            }
+
+            val endTimeWithSeconds = Time.valueOf("$endTime:00")
+
+
+            if (startTime != null && group.startTime.after(endTimeWithSeconds)) {
                 throw IllegalArgumentException("End time must be after start time")
             }
-            group.endTime = it
+            group.endTime = endTimeWithSeconds
+        }
+
+        if (group.startTime.after(group.endTime)) {
+            throw IllegalArgumentException("Start time must be before end time")
+        }
+        if (group.startTime == group.endTime) {
+            throw IllegalArgumentException("Start time must be different from end time")
         }
 
         teacherId?.let {
@@ -472,22 +530,7 @@ class GroupsDataFetcher {
     @DgsMutation
     @Transactional
     fun removeGroup(@InputArgument groupId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can remove groups")
-        }
-
-        val group = groupsRepository.findById(groupId)
-            .orElseThrow { IllegalArgumentException("Invalid group ID") }
-
-        if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        userGroupsRepository.findByGroup_GroupsId(groupId).forEach(userGroupsRepository::delete)
-
-        groupsRepository.delete(group)
-        return true
+        return removeGroupHelper(groupId)
     }
 
     @DgsQuery
@@ -655,6 +698,26 @@ class GroupsDataFetcher {
                 canEdit = group.teacher == teacher || teacher.role == UsersRoles.COORDINATOR
             )
         }
+    }
+
+    @Transactional
+    fun removeGroupHelper(groupId: Long): Boolean {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can remove groups")
+        }
+
+        val group = groupsRepository.findById(groupId)
+            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+
+        if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
+            throw IllegalArgumentException("Edition has already ended")
+        }
+
+        userGroupsRepository.findByGroup_GroupsId(groupId).forEach(userGroupsRepository::delete)
+
+        groupsRepository.delete(group)
+        return true
     }
 
     private fun getUserCategoriesWithDefaults(categories: List<Categories>, userPoints: List<CategoryPointsType>, subcategories: List<Subcategories>): List<CategoryPointsType> {

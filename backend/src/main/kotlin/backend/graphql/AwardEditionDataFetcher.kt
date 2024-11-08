@@ -42,6 +42,17 @@ class AwardEditionDataFetcher {
     @DgsMutation
     @Transactional
     fun addAwardToEdition(@InputArgument awardId: Long, @InputArgument editionId: Long): AwardEdition {
+        return addAwardToEditionHelper(awardId, editionId)
+    }
+
+    @DgsMutation
+    @Transactional
+    fun removeAwardFromEdition(@InputArgument awardId: Long, @InputArgument editionId: Long): Boolean {
+        return removeAwardFromEditionHelper(awardId, editionId)
+    }
+
+    @Transactional
+    fun addAwardToEditionHelper(awardId: Long, editionId: Long): AwardEdition {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can add awards to editions")
@@ -70,9 +81,8 @@ class AwardEditionDataFetcher {
         return awardEditionRepository.save(awardEdition)
     }
 
-    @DgsMutation
     @Transactional
-    fun removeAwardFromEdition(@InputArgument awardId: Long, @InputArgument editionId: Long): Boolean {
+    fun removeAwardFromEditionHelper(awardId: Long, editionId: Long): Boolean {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can remove awards from editions")

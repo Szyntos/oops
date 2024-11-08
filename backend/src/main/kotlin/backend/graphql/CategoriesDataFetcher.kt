@@ -230,6 +230,42 @@ class CategoriesDataFetcher {
         return categoriesRepository.save(category)
     }
 
+    @DgsMutation
+    @Transactional
+    fun copyCategory(@InputArgument categoryId: Long): Categories {
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            throw IllegalArgumentException("Only coordinators can copy categories")
+        }
+
+        val category = categoriesRepository.findById(categoryId)
+            .orElseThrow { IllegalArgumentException("Invalid category ID") }
+
+        val newCategory = Categories(
+            categoryName = category.categoryName,
+            canAddPoints = category.canAddPoints,
+            lightColor = category.lightColor,
+            darkColor = category.darkColor,
+            label = category.label
+        )
+
+        val resultCategory = categoriesRepository.save(newCategory)
+
+        val subcategories = subcategoriesRepository.findByCategory(category)
+        subcategories.forEach {
+            val subcategoryInput = SubcategoryInput(
+                subcategoryName = it.subcategoryName,
+                maxPoints = it.maxPoints.toFloat(),
+                ordinalNumber = it.ordinalNumber,
+                categoryId = resultCategory.categoryId,
+                label = it.label
+            )
+            subcategoriesDataFetcher.addSubcategoryHelper(subcategoryInput)
+        }
+
+        return resultCategory
+    }
+
     private fun isValidHexColor(color: String): Boolean {
         val hexColorPattern = "^#(?:[0-9a-fA-F]{3}){1,2}$".toRegex()
         return hexColorPattern.matches(color)

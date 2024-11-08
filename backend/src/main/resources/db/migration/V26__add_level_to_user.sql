@@ -4,9 +4,10 @@ CREATE TABLE user_level (
                             level_id BIGINT NOT NULL,
                             edition_id BIGINT NOT NULL,
                             label VARCHAR(256) NOT NULL DEFAULT '',
-                            PRIMARY KEY (user_id, level_id),
+                            PRIMARY KEY (user_id, edition_id),
                             CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(user_id),
-                            CONSTRAINT fk_level FOREIGN KEY (level_id) REFERENCES levels(level_id)
+                            CONSTRAINT fk_level FOREIGN KEY (level_id) REFERENCES levels(level_id),
+                            CONSTRAINT fk_edition FOREIGN KEY (edition_id) REFERENCES edition(edition_id)
 );
 
 -- Add unique constraint on user_id and edition_id

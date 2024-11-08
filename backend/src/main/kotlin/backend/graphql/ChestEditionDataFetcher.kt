@@ -62,6 +62,17 @@ class ChestEditionDataFetcher {
     @DgsMutation
     @Transactional
     fun addChestToEdition(@InputArgument chestId: Long, @InputArgument editionId: Long): ChestEdition {
+        return addChestToEditionHelper(chestId, editionId)
+    }
+
+    @DgsMutation
+    @Transactional
+    fun removeChestFromEdition(@InputArgument chestId: Long, @InputArgument editionId: Long): Boolean {
+        return removeChestFromEditionHelper(chestId, editionId)
+    }
+
+    @Transactional
+    fun addChestToEditionHelper(chestId: Long, editionId: Long): ChestEdition {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can add chests to editions")
@@ -97,9 +108,8 @@ class ChestEditionDataFetcher {
         return resultChestEdition
     }
 
-    @DgsMutation
     @Transactional
-    fun removeChestFromEdition(@InputArgument chestId: Long, @InputArgument editionId: Long): Boolean {
+    fun removeChestFromEditionHelper(chestId: Long, editionId: Long): Boolean {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can remove chests from editions")

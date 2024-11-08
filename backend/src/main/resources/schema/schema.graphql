@@ -361,6 +361,12 @@ type Query {
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
+
+
+  checkFullPermission(input: PermissionInputType!): PermissionType!
+  checkPartialPermission(input: PermissionInputType!): PermissionType!
+
+
 }
 
 type AwardType {
@@ -697,6 +703,15 @@ type ChestEditionType {
   label: String!
 }
 
+scalar JSON
+
+type PermissionType {
+  action: String!
+  arguments: JSON!
+  allow: Boolean!
+  reason: String
+}
+
 input SubcategoryInputType {
   subcategoryId: ID
   subcategoryName: String!
@@ -730,4 +745,9 @@ input LevelInputType {
 
 input UserIdsType {
   userIds: [Int!]!
+}
+
+input PermissionInputType {
+  action: String!
+  arguments: JSON!
 }

@@ -25,6 +25,7 @@ import org.springframework.context.annotation.PropertySource
 		"backend.groups",
 		"backend.levels",
 		"backend.levelSet",
+		"backend.graphql.permissions",
 		"backend.points",
 		"backend.subcategories",
 		"backend.userGroups",

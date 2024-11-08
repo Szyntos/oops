@@ -149,8 +149,9 @@ class PointsDataFetcher {
         return resultedPoints
     }
 
-    private fun addPointsHelper(studentId: Long, teacherId: Long, value: Float,
-                                subcategoryId: Long, checkDates: Boolean = true): Points {
+    @Transactional
+    fun addPointsHelper(studentId: Long, teacherId: Long, value: Float,
+                               subcategoryId: Long, checkDates: Boolean = true): Points {
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
             throw IllegalArgumentException("Only teachers and coordinators can add points")
@@ -247,7 +248,8 @@ class PointsDataFetcher {
         return savedPoints
     }
 
-    private fun editPointsHelper(pointsId: Long, value: Float?) : Points {
+    @Transactional
+    fun editPointsHelper(pointsId: Long, value: Float?) : Points {
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
             throw IllegalArgumentException("Only teachers and coordinators can edit points")
@@ -317,7 +319,8 @@ class PointsDataFetcher {
         return savedPoints
     }
 
-    private fun removePointsHelper(pointsId: Long) : Boolean{
+    @Transactional
+    fun removePointsHelper(pointsId: Long) : Boolean{
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
             throw IllegalArgumentException("Only teachers and coordinators can remove points")

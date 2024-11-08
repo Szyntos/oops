@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 interface ChestsRepository : JpaRepository<Chests, Long> {
     fun findByChestType(chestType:String) : Chests
     fun findByChestEdition_Edition(edition: Edition): List<Chests>
+    fun findAllByChestType(chestType: String): List<Chests>
 }

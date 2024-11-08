@@ -241,8 +241,15 @@ class CategoriesDataFetcher {
         val category = categoriesRepository.findById(categoryId)
             .orElseThrow { IllegalArgumentException("Invalid category ID") }
 
+        val categoryNameRoot = category.categoryName
+        var i = 1
+        while (categoriesRepository.findAllByCategoryName("$categoryNameRoot (Copy $i)").isNotEmpty()) {
+            i++
+        }
+        val categoryName = "$categoryNameRoot (Copy $i)"
+
         val newCategory = Categories(
-            categoryName = category.categoryName,
+            categoryName = categoryName,
             canAddPoints = category.canAddPoints,
             lightColor = category.lightColor,
             darkColor = category.darkColor,
@@ -251,7 +258,7 @@ class CategoriesDataFetcher {
 
         val resultCategory = categoriesRepository.save(newCategory)
 
-        val subcategories = subcategoriesRepository.findByCategory(category)
+        val subcategories = subcategoriesRepository.findByCategory(category).filter { it.edition == null }
         subcategories.forEach {
             val subcategoryInput = SubcategoryInput(
                 subcategoryName = it.subcategoryName,

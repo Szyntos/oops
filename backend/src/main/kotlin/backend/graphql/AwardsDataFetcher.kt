@@ -229,6 +229,16 @@ class AwardsDataFetcher {
     @DgsMutation
     @Transactional
     fun copyAward(@InputArgument awardId: Long): Award {
+        val arguments = mapOf("awardId" to awardId)
+        val permissionInput = PermissionInput(
+            action = "copyAward",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+        }
+
         val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
 
         val awardNameRoot = award.awardName

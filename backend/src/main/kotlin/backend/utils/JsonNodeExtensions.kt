@@ -30,5 +30,10 @@ object JsonNodeExtensions {
         return node.mapNotNull { it.asLongOrNull() }
     }
 
+    fun JsonNode.getBooleanField(fieldName: String): Boolean? {
+        val node = this.get(fieldName)
+        return if (node != null && node.isBoolean) node.asBoolean() else null
+    }
+
     private fun JsonNode.asLongOrNull(): Long? = if (this.isNumber) this.asLong() else null
 }

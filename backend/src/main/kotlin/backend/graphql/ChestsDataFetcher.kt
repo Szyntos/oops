@@ -12,7 +12,6 @@ import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.groups.GroupsRepository
-import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.points.PointsRepository
@@ -20,6 +19,7 @@ import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
 import backend.users.UsersRoles
 import backend.utils.UserMapper
+import com.fasterxml.jackson.databind.JsonNode
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
@@ -84,12 +84,12 @@ class ChestsDataFetcher {
         val arguments = mapOf("chestId" to chestId, "fileId" to fileId)
         val permissionInput = PermissionInput(
             action = "assignPhotoToChest",
-            arguments = objectMapper.valueToTree(arguments)
+            arguments = objectMapper.writeValueAsString(arguments)
         )
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied")
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
 
@@ -112,12 +112,12 @@ class ChestsDataFetcher {
         )
         val permissionInput = PermissionInput(
             action = "addChest",
-            arguments = objectMapper.valueToTree(arguments)
+            arguments = objectMapper.writeValueAsString(arguments)
         )
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied")
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
         val chest = Chests(
@@ -163,12 +163,12 @@ class ChestsDataFetcher {
         )
         val permissionInput = PermissionInput(
             action = "editChest",
-            arguments = objectMapper.valueToTree(arguments)
+            arguments = objectMapper.writeValueAsString(arguments)
         )
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied")
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
         var chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
@@ -275,12 +275,12 @@ class ChestsDataFetcher {
         )
         val permissionInput = PermissionInput(
             action = "removeChest",
-            arguments = objectMapper.valueToTree(arguments)
+            arguments = objectMapper.writeValueAsString(arguments)
         )
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied")
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
@@ -302,12 +302,12 @@ class ChestsDataFetcher {
         )
         val permissionInput = PermissionInput(
             action = "copyChest",
-            arguments = objectMapper.valueToTree(arguments)
+            arguments = objectMapper.writeValueAsString(arguments)
         )
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied")
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }

@@ -5,6 +5,8 @@ import backend.awardEdition.AwardEdition
 import backend.awardEdition.AwardEditionRepository
 import backend.bonuses.BonusesRepository
 import backend.edition.EditionRepository
+import backend.graphql.permissions.PermissionInput
+import backend.graphql.permissions.PermissionService
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRoles
@@ -12,11 +14,15 @@ import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
 @DgsComponent
 class AwardEditionDataFetcher {
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
 
     @Autowired
     private lateinit var userMapper: UserMapper
@@ -42,25 +48,20 @@ class AwardEditionDataFetcher {
     @DgsMutation
     @Transactional
     fun addAwardToEdition(@InputArgument awardId: Long, @InputArgument editionId: Long): AwardEdition {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add awards to editions")
+        val arguments = mapOf("awardId" to awardId, "editionId" to editionId)
+
+        val permissionInput = PermissionInput(
+            action = "addAwardToEdition",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
-
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        if (awardEditionRepository.existsByAward_AwardNameAndEdition(award.awardName, edition)){
-            throw IllegalArgumentException("Award with this name already exists in this edition")
-        }
-
-        if (award.category.categoryEdition.none { it.edition == edition }) {
-            throw IllegalArgumentException("Award's category does not exist in this edition")
-        }
 
         val awardEdition = AwardEdition(
             award = award,
@@ -73,6 +74,18 @@ class AwardEditionDataFetcher {
     @DgsMutation
     @Transactional
     fun removeAwardFromEdition(@InputArgument awardId: Long, @InputArgument editionId: Long): Boolean {
+        val arguments = mapOf("awardId" to awardId, "editionId" to editionId)
+
+        val permissionInput = PermissionInput(
+            action = "removeAwardFromEdition",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+        }
+
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can remove awards from editions")

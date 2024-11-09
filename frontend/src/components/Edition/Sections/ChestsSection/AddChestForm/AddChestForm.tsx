@@ -3,7 +3,7 @@ import { FormikErrors, useFormik } from "formik";
 import { Styles } from "../../../../../utils/Styles";
 import { TextField } from "@mui/material";
 import { SelectImage } from "../../../../inputs/SelectImage";
-import { MultipleImageSelect } from "../../../../inputs/MultipleImageSectec";
+import { MultipleAwardSelect } from "./MultipleAwardSelect";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
 
 const ValidationSchema = z.object({
@@ -114,11 +114,8 @@ export const AddChestForm = ({
             error={formik.errors.fileId}
             touched={formik.touched.fileId}
           />
-          <MultipleImageSelect
-            options={awards.map((award) => ({
-              id: award.awardId,
-              value: award.imageFileId as string,
-            }))}
+          <MultipleAwardSelect
+            awards={awards}
             selectedIds={formik.values.awardIds}
             onSelectClick={(updatedIds: string[]) =>
               formik.setValues({ ...formik.values, awardIds: updatedIds })

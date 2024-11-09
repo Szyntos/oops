@@ -66,12 +66,12 @@ class PhotoAssigner {
                                         fileType: String,
                                         assigneeId: Long?,
                                         fileId: Long?): Permission where T : HasImageFile {
-
+        val action = "assignPhotoToAward"
         val arguments = objectMapper.readTree("""{"fileType": "$fileType", "assigneeId": "$assigneeId", "fileId": "$fileId"}""")
         if (assigneeId != null) {
             val assignee = assigneeRepository.findById(assigneeId).orElse(null)
                 ?: return Permission(
-                    action = "assignPhotoToAward",
+                    action = action,
                     arguments = arguments,
                     allow = false,
                     reason = "Invalid assignee ID"
@@ -86,7 +86,7 @@ class PhotoAssigner {
         if (photo != null) {
             if (photo.fileType != fileType && photo.fileType != "$fileType/sample") {
                 return Permission(
-                    action = "assignPhotoToAward",
+                    action = action,
                     arguments = arguments,
                     allow = false,
                     reason = "Wrong fileType of file $fileId. Please upload a file with fileType = $fileType and try again."
@@ -96,7 +96,7 @@ class PhotoAssigner {
 
         if (photo == null) {
             return Permission(
-                action = "assignPhotoToAward",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Invalid file ID"
@@ -104,7 +104,7 @@ class PhotoAssigner {
         }
 
         return Permission(
-            action = "assignPhotoToAward",
+            action = action,
             arguments = arguments,
             allow = true,
             reason = null

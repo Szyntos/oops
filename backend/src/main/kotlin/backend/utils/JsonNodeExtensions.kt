@@ -13,6 +13,16 @@ object JsonNodeExtensions {
         return if (node != null && node.isTextual) node.asText() else null
     }
 
+    fun JsonNode.getFloatField(fieldName: String): Float? {
+        val node = this.get(fieldName)
+        return if (node != null && node.isNumber) node.asDouble().toFloat() else null
+    }
+
+    fun JsonNode.getIntField(fieldName: String): Int? {
+        val node = this.get(fieldName)
+        return if (node != null && node.isNumber) node.asInt() else null
+    }
+
     fun JsonNode.getLongList(fieldName: String): List<Long>? {
         val node = this.get(fieldName)
         if (node == null || !node.isArray) return null

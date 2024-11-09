@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var awardsPermissions: AwardsPermissions
+
+    @Autowired
     private lateinit var awardEditionPermissions: AwardEditionPermissions
 
     @Autowired
@@ -19,13 +22,23 @@ class PermissionService {
     fun checkFullPermission(input: PermissionInput): Permission {
         val jsonArguments = objectMapper.readTree(input.arguments)
         return when (input.action) {
+            // ChestsPermissions
             "assignPhotoToChest" -> chestsPermissions.checkAssignPhotoToChestPermission(jsonArguments)
             "addChest" -> chestsPermissions.checkAddChestPermission(jsonArguments)
             "editChest" -> chestsPermissions.checkEditChestPermission(jsonArguments)
             "removeChest" -> chestsPermissions.checkRemoveChestPermission(jsonArguments)
             "copyChest" -> chestsPermissions.checkCopyChestPermission(jsonArguments)
+            // AwardEditionPermissions
             "addAwardToEdition" -> awardEditionPermissions.checkAddAwardToEditionPermission(jsonArguments)
             "removeAwardFromEdition" -> awardEditionPermissions.checkRemoveAwardFromEditionPermission(jsonArguments)
+            // AwardsPermissions
+            "assignPhotoToAward" -> awardsPermissions.checkAssignPhotoToAwardPermission(jsonArguments)
+            "addAward" -> awardsPermissions.checkAddAwardPermission(jsonArguments)
+            "editAward" -> awardsPermissions.checkEditAwardPermission(jsonArguments)
+            "removeAward" -> awardsPermissions.checkRemoveAwardPermission(jsonArguments)
+            "copyAward" -> awardsPermissions.checkCopyAwardPermission(jsonArguments)
+
+
             else -> Permission(
                 action = input.action,
                 arguments = jsonArguments,

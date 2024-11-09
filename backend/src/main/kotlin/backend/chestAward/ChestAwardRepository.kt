@@ -12,4 +12,5 @@ interface ChestAwardRepository : JpaRepository<ChestAward, Long> {
     fun deleteByAwardAndChest(award: Award, chest: Chests)
     fun findByChest(chest: Chests): List<ChestAward>
     fun findByChestAndAward(chest: Chests, award: Award): ChestAward?
+    fun findAllByAward(award: Award): List<ChestAward>
 }

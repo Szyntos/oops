@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var gradingChecksPermissions: GradingChecksPermissions
+
+    @Autowired
     private lateinit var filePermissions: FilePermissions
 
     @Autowired
@@ -90,6 +93,10 @@ class PermissionService {
             // FilePermissions
             "getFilesGroupedByType" -> filePermissions.checkGetFilesGroupedByTypePermission(jsonArguments)
             "getFilesGroupedByTypeBySelectedTypes" -> filePermissions.checkGetFilesGroupedByTypeBySelectedTypesPermission(jsonArguments)
+            // GradingChecksPermissions
+            "addGradingCheck" -> gradingChecksPermissions.checkAddGradingCheckPermission(jsonArguments)
+            "editGradingCheck" -> gradingChecksPermissions.checkEditGradingCheckPermission(jsonArguments)
+            "removeGradingCheck" -> gradingChecksPermissions.checkRemoveGradingCheckPermission(jsonArguments)
             // SubcategoriesPermissions
             "addSubcategory" -> subcategoriesPermissions.checkAddSubcategoryPermission(jsonArguments)
             "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)

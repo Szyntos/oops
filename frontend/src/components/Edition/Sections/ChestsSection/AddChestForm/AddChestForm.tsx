@@ -2,13 +2,12 @@ import { z, ZodError } from "zod";
 import { FormikErrors, useFormik } from "formik";
 import { Styles } from "../../../../../utils/Styles";
 import { TextField } from "@mui/material";
-import { SelectImage } from "../../../../inputs/SelectImage";
-import { MultipleAwardSelect } from "./MultipleAwardSelect";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
+import { SelectImage } from "../../../../inputs/SelectImage";
 
 const ValidationSchema = z.object({
   awardBundleCount: z.number().min(0),
-  fileId: z.number(),
+  fileId: z.string(),
   name: z.string().min(1),
   awardIds: z.array(z.string()),
 });
@@ -26,7 +25,7 @@ type AddChestFormProps = {
 
 const defaultInitialValues: ChestFormValues = {
   awardBundleCount: 1,
-  fileId: -1,
+  fileId: "",
   name: "",
   awardIds: [],
 };
@@ -53,7 +52,7 @@ export const AddChestForm = ({
         }
       }
 
-      if (values.fileId === -1) {
+      if (values.fileId === "") {
         errors.fileId = "select file";
       }
 
@@ -105,23 +104,34 @@ export const AddChestForm = ({
             error={Boolean(formik.touched.name && formik.errors.name)}
             helperText={formik.touched.name && formik.errors.name}
           />
+
           <SelectImage
-            ids={imageIds}
-            selectedId={formik.values.fileId.toString()}
-            onSelectClick={(id: string) =>
-              formik.setValues({ ...formik.values, fileId: parseInt(id) })
+            type="withoutTooltip"
+            options={imageIds}
+            selectedIds={[formik.values.fileId.toString()]}
+            onSelectClick={(updatedIds: string[]) =>
+              formik.setValues({
+                ...formik.values,
+                fileId: updatedIds.length > 0 ? updatedIds[0] : "",
+              })
             }
-            error={formik.errors.fileId}
+            error={formik.errors.fileId as string}
             touched={formik.touched.fileId}
+            selectVariant={"single"}
+            title="select image:"
           />
-          <MultipleAwardSelect
-            awards={awards}
+
+          <SelectImage
+            type="award"
+            options={awards}
             selectedIds={formik.values.awardIds}
             onSelectClick={(updatedIds: string[]) =>
               formik.setValues({ ...formik.values, awardIds: updatedIds })
             }
             error={formik.errors.awardIds as string}
             touched={formik.touched.awardIds}
+            selectVariant={"multiple"}
+            title={"select awards:"}
           />
         </div>
         <button type="submit">confirm</button>

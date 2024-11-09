@@ -82,7 +82,7 @@ export const useChestsSection = (editionId: number) => {
         variables: {
           awardIds: values.awardIds.map((id) => parseInt(id)),
           awardBundleCount: values.awardBundleCount,
-          fileId: values.fileId,
+          fileId: parseInt(values.fileId),
           // NOTE: chest type is name xd
           chestType: values.name,
         },
@@ -130,7 +130,7 @@ export const useChestsSection = (editionId: number) => {
           awardIds: values.awardIds.map((id) => parseInt(id)),
           chestId: parseInt(selectedChest?.chestId as string),
           awardBundleCount: values.awardBundleCount,
-          fileId: values.fileId,
+          fileId: parseInt(values.fileId),
           // NOTE: chest type is name xd
           chestType: values.name,
         },

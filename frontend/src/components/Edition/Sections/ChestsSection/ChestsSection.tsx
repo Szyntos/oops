@@ -87,7 +87,7 @@ export const ChestsSection = () => {
             selectedChest
               ? {
                   awardBundleCount: selectedChest.awardBundleCount,
-                  fileId: parseInt(selectedChest.imageFileId ?? "-1"),
+                  fileId: selectedChest.imageFileId as string,
                   name: selectedChest.type,
                   awardIds: selectedChest.chestAwards.map(
                     (award) => award.award.awardId,

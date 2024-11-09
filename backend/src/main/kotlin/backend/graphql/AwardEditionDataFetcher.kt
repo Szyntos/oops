@@ -86,25 +86,8 @@ class AwardEditionDataFetcher {
             throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove awards from editions")
-        }
-
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
-
-        if (!awardEditionRepository.existsByAwardAndEdition(award, edition)){
-            throw IllegalArgumentException("This award does not exist in this edition")
-        }
-
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        if (bonusesRepository.existsByAwardAndPoints_Subcategory_Edition(award, edition)){
-            throw IllegalArgumentException("Award has already been assigned to students in this edition")
-        }
 
         awardEditionRepository.deleteByAwardAndEdition(award, edition)
         return true

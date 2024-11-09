@@ -11,6 +11,15 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var subcategoriesPermissions: SubcategoriesPermissions
+
+    @Autowired
+    private lateinit var categoriesPermissions: CategoriesPermissions
+
+    @Autowired
+    private lateinit var bonusPermissions: BonusPermissions
+
+    @Autowired
     private lateinit var awardsPermissions: AwardsPermissions
 
     @Autowired
@@ -37,7 +46,17 @@ class PermissionService {
             "editAward" -> awardsPermissions.checkEditAwardPermission(jsonArguments)
             "removeAward" -> awardsPermissions.checkRemoveAwardPermission(jsonArguments)
             "copyAward" -> awardsPermissions.checkCopyAwardPermission(jsonArguments)
-
+            // BonusPermissions
+            "addBonus" -> bonusPermissions.checkAddBonusPermission(jsonArguments)
+            // CategoriesPermissions
+            "addCategory" -> categoriesPermissions.checkAddCategoryPermission(jsonArguments)
+            "editCategory" -> categoriesPermissions.checkEditCategoryPermission(jsonArguments)
+            "removeCategory" -> categoriesPermissions.checkRemoveCategoryPermission(jsonArguments)
+            // SubcategoriesPermissions
+            "addSubcategory" -> subcategoriesPermissions.checkAddSubcategoryPermission(jsonArguments)
+            "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)
+            "removeSubcategory" -> subcategoriesPermissions.checkRemoveSubcategoryPermission(jsonArguments)
+            "generateSubcategories" -> subcategoriesPermissions.checkGenerateSubcategoriesPermission(jsonArguments)
 
             else -> Permission(
                 action = input.action,

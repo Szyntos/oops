@@ -19,5 +19,8 @@ query SetupChests {
         maxUsages
       }
     }
+    chestEditions {
+      editionId
+    }
   }
 }

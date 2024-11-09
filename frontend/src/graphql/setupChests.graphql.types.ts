@@ -30,6 +30,7 @@ export type SetupChestsQuery = {
         maxUsages: number;
       };
     }>;
+    chestEditions: Array<{ __typename?: "ChestEdition"; editionId: string }>;
   }>;
 };
 
@@ -54,6 +55,9 @@ export const SetupChestsDocument = gql`
           label
           maxUsages
         }
+      }
+      chestEditions {
+        editionId
       }
     }
   }

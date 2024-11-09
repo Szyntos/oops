@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var chestsAwardPermissions: ChestsAwardPermissions
+
+    @Autowired
     private lateinit var chestHistoryPermissions: ChestHistoryPermissions
 
     @Autowired
@@ -40,12 +43,6 @@ class PermissionService {
     fun checkFullPermission(input: PermissionInput): Permission {
         val jsonArguments = objectMapper.readTree(input.arguments)
         return when (input.action) {
-            // ChestsPermissions
-            "assignPhotoToChest" -> chestsPermissions.checkAssignPhotoToChestPermission(jsonArguments)
-            "addChest" -> chestsPermissions.checkAddChestPermission(jsonArguments)
-            "editChest" -> chestsPermissions.checkEditChestPermission(jsonArguments)
-            "removeChest" -> chestsPermissions.checkRemoveChestPermission(jsonArguments)
-            "copyChest" -> chestsPermissions.checkCopyChestPermission(jsonArguments)
             // AwardEditionPermissions
             "addAwardToEdition" -> awardEditionPermissions.checkAddAwardToEditionPermission(jsonArguments)
             "removeAwardFromEdition" -> awardEditionPermissions.checkRemoveAwardFromEditionPermission(jsonArguments)
@@ -71,7 +68,15 @@ class PermissionService {
             "addChestToUser" -> chestHistoryPermissions.checkAddChestToUserPermission(jsonArguments)
             "editChestHistory" -> chestHistoryPermissions.checkEditChestHistoryPermission(jsonArguments)
             "removeChestFromUser" -> chestHistoryPermissions.checkRemoveChestFromUserPermission(jsonArguments)
-
+            // ChestsAwardPermissions
+            "addAwardToChest" -> chestsAwardPermissions.checkAddAwardToChestPermission(jsonArguments)
+            "removeAwardFromChest" -> chestsAwardPermissions.checkRemoveAwardFromChestPermission(jsonArguments)
+            // ChestsPermissions
+            "assignPhotoToChest" -> chestsPermissions.checkAssignPhotoToChestPermission(jsonArguments)
+            "addChest" -> chestsPermissions.checkAddChestPermission(jsonArguments)
+            "editChest" -> chestsPermissions.checkEditChestPermission(jsonArguments)
+            "removeChest" -> chestsPermissions.checkRemoveChestPermission(jsonArguments)
+            "copyChest" -> chestsPermissions.checkCopyChestPermission(jsonArguments)
             // SubcategoriesPermissions
             "addSubcategory" -> subcategoriesPermissions.checkAddSubcategoryPermission(jsonArguments)
             "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)

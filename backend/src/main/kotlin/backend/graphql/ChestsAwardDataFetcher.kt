@@ -11,6 +11,8 @@ import backend.chests.Chests
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.PermissionInput
+import backend.graphql.permissions.PermissionService
 import backend.groups.GroupsRepository
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
@@ -20,12 +22,16 @@ import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @DgsComponent
 class ChestsAwardDataFetcher {
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -71,31 +77,23 @@ class ChestsAwardDataFetcher {
     @DgsMutation
     @Transactional
     fun addAwardToChest(@InputArgument awardId: Long, @InputArgument chestId: Long): ChestAward {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add awards to chests")
+        val action = "addAwardToChest"
+        val arguments = mapOf(
+            "awardId" to awardId,
+            "chestId" to chestId
+        )
+
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         var chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
-
-        val chestEditions = chest.chestEdition.map { it.edition }
-
-        if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
-            throw IllegalArgumentException("Edition with this chest has already ended")
-        }
-
-        if (!chest.active){
-            throw IllegalArgumentException("Chest is not active")
-        }
-
-        if (award.awardEditions.none { it.edition in chestEditions }){
-            throw IllegalArgumentException("Award does not exist in this edition")
-        }
-
-        if (chestAwardRepository.existsByAwardAndChest(award, chest)){
-            throw IllegalArgumentException("Award already exists in this chest")
-        }
 
         if (chestHistoryRepository.findByChest(chest).any { it.opened }){
             chest.active = false
@@ -135,27 +133,22 @@ class ChestsAwardDataFetcher {
     @DgsMutation
     @Transactional
     fun removeAwardFromChest(@InputArgument awardId: Long, @InputArgument chestId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove awards from chests")
+        val action = "removeAwardFromChest"
+        val arguments = mapOf(
+            "awardId" to awardId,
+            "chestId" to chestId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         var chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
-
-        val chestEditions = chest.chestEdition.map { it.edition }
-
-        if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
-            throw IllegalArgumentException("Edition with this chest has already ended")
-        }
-
-        if (!chest.active){
-            throw IllegalArgumentException("Chest is not active")
-        }
-
-        if (!chestAwardRepository.existsByAwardAndChest(award, chest)){
-            throw IllegalArgumentException("This award does not exist in this chest")
-        }
 
         if (chestHistoryRepository.findByChest(chest).any { it.opened }){
             chest.active = false

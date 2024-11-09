@@ -67,7 +67,7 @@ class PhotoAssigner {
                                         assigneeId: Long?,
                                         fileId: Long?): Permission where T : HasImageFile {
 
-        val arguments = objectMapper.readTree("""{"fileType": "$fileType", "assigneeId": "$assigneeId", "fileId": "$fileId}""")
+        val arguments = objectMapper.readTree("""{"fileType": "$fileType", "assigneeId": "$assigneeId", "fileId": "$fileId"}""")
         if (assigneeId != null) {
             val assignee = assigneeRepository.findById(assigneeId).orElse(null)
                 ?: return Permission(

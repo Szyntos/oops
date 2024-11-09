@@ -17,7 +17,13 @@ class PermissionDataFetcher {
 
     @DgsQuery
     @Transactional
-    fun checkPermission(@InputArgument input: PermissionInput): Permission {
-        return permissionService.checkPermission(input)
+    fun checkFullPermission(@InputArgument input: PermissionInput): Permission {
+        return permissionService.checkFullPermission(input)
+    }
+
+    @DgsQuery
+    @Transactional
+    fun checkPartialPermission(@InputArgument input: PermissionInput): Permission {
+        return permissionService.checkPartialPermission(input)
     }
 }

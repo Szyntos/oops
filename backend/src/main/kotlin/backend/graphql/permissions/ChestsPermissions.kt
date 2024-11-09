@@ -74,7 +74,7 @@ class ChestsPermissions {
 
         val fileId = arguments.getLongField("fileId")
 
-        return photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "chest", chestId, fileId)
+        return photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "image/chest", chestId, fileId)
 
     }
 
@@ -98,7 +98,7 @@ class ChestsPermissions {
 
         val fileId = arguments.getLongField("fileId")
 
-        val photoPermission = photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "chest", null, fileId)
+        val photoPermission = photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "image/chest", null, fileId)
         if (!photoPermission.allow) {
             return photoPermission
         }
@@ -116,6 +116,23 @@ class ChestsPermissions {
             allow = false,
             reason = "Invalid or missing 'awardIds'"
         )
+
+        if (awardBundleCount < 1) {
+            return Permission(
+                action = "addChest",
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid 'awardBundleCount'"
+            )
+        }
+        if (awardBundleCount > awardIds.size) {
+            return Permission(
+                action = "addChest",
+                arguments = arguments,
+                allow = false,
+                reason = "awardBundleCount cannot be greater than the number of awards"
+            )
+        }
 
         awardIds.forEach { awardId ->
             val award = awardRepository.findById(awardId).orElse(null)
@@ -173,7 +190,7 @@ class ChestsPermissions {
         }
 
         val fileId = arguments.getLongField("fileId")
-        val photoPermission = photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "chest", chestId, fileId)
+        val photoPermission = photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "image/chest", chestId, fileId)
         if (!photoPermission.allow) {
             return photoPermission
         }

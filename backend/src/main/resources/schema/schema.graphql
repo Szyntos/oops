@@ -369,6 +369,8 @@ type Query {
 
 }
 
+scalar JSON
+
 type AwardType {
   awardId: ID!
   awardName: String!
@@ -702,8 +704,6 @@ type ChestEditionType {
   edition: EditionType!
   label: String!
 }
-
-scalar JSON
 
 type PermissionType {
   action: String!

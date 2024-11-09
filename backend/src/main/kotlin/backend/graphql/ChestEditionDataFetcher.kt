@@ -13,6 +13,8 @@ import backend.chestHistory.ChestHistoryRepository
 import backend.chests.Chests
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
+import backend.graphql.permissions.PermissionInput
+import backend.graphql.permissions.PermissionService
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRoles
@@ -20,11 +22,15 @@ import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
 @DgsComponent
 class ChestEditionDataFetcher {
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
 
     @Autowired
     private lateinit var awardEditionRepository: AwardEditionRepository
@@ -62,28 +68,22 @@ class ChestEditionDataFetcher {
     @DgsMutation
     @Transactional
     fun addChestToEdition(@InputArgument chestId: Long, @InputArgument editionId: Long): ChestEdition {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add chests to editions")
+        val action = "addChestToEdition"
+        val arguments = mapOf(
+            "chestId" to chestId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason)
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
-
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        if (chestEditionRepository.existsByChest_ChestTypeAndEdition(chest.chestType, edition)){
-            throw IllegalArgumentException("Chest with this type already exists in this edition")
-        }
-
-        val awardsInChest = chestAwardRepository.findByChest(chest).map { it.award }
-
-        if (awardsInChest.any {award -> !awardEditionRepository.existsByAwardAndEdition(award, edition)}){
-            throw IllegalArgumentException("Not all awards in this chest are available in this edition")
-        }
-
 
         val chestEdition = ChestEdition(
             chest = chest,
@@ -100,25 +100,22 @@ class ChestEditionDataFetcher {
     @DgsMutation
     @Transactional
     fun removeChestFromEdition(@InputArgument chestId: Long, @InputArgument editionId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove chests from editions")
+        val action = "removeChestFromEdition"
+        val arguments = mapOf(
+            "chestId" to chestId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason)
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
-
-        if (!chestEditionRepository.existsByChestAndEdition(chest, edition)){
-            throw IllegalArgumentException("This chest does not exist in this edition")
-        }
-
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        if (edition.startDate.isBefore(java.time.LocalDate.now()) && chestHistoryRepository.existsByChestAndSubcategory_Edition(chest, edition)){
-            throw IllegalArgumentException("Users have already been given this chest in this edition")
-        }
 
         chestEditionRepository.deleteByChestAndEdition(chest, edition)
         return true

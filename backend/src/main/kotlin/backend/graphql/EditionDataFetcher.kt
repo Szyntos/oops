@@ -6,6 +6,8 @@ import backend.categories.CategoriesRepository
 import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.PermissionInput
+import backend.graphql.permissions.PermissionService
 import backend.groups.GroupsRepository
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
@@ -15,12 +17,16 @@ import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @DgsComponent
 class EditionDataFetcher {
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -57,22 +63,19 @@ class EditionDataFetcher {
     @DgsMutation
     @Transactional
     fun addEdition(@InputArgument editionName: String, @InputArgument editionYear: Int, @InputArgument label: String = ""): Edition {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add editions")
-        }
-
-        if (editionRepository.existsByEditionName(editionName)) {
-            throw IllegalArgumentException("Edition with name $editionName already exists")
-        }
-        if (editionRepository.existsByEditionYear(editionYear)) {
-            throw IllegalArgumentException("Edition with year $editionYear already exists")
-        }
-
-        val currentYear = LocalDate.now().year
-
-        if (editionYear < currentYear-1 || editionYear > currentYear + 10) {
-            throw IllegalArgumentException("Edition year must be between ${currentYear-1} and ${currentYear + 10}")
+        val action = "addEdition"
+        val arguments = mapOf(
+            "editionName" to editionName,
+            "editionYear" to editionYear,
+            "label" to label
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason)
         }
 
         val startDate = LocalDate.of(editionYear, 10, 1)
@@ -95,36 +98,31 @@ class EditionDataFetcher {
         @InputArgument editionYear: Int?,
         @InputArgument label: String?
     ): Edition {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can edit editions")
+        val action = "editEdition"
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "editionName" to editionName,
+            "editionYear" to editionYear,
+            "label" to label
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason)
         }
 
         val edition = editionRepository.findById(editionId)
             .orElseThrow { IllegalArgumentException("Invalid edition ID") }
 
-        if (edition.endDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (edition.startDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already started")
-        }
 
         editionName?.let {
-            if (editionRepository.existsByEditionName(it) && it != edition.editionName) {
-                throw IllegalArgumentException("Edition with name $it already exists")
-            }
             edition.editionName = it
         }
 
         editionYear?.let {
-            val currentYear = LocalDate.now().year
-            if (it < currentYear || it > currentYear + 10) {
-                throw IllegalArgumentException("Edition year must be between $currentYear and ${currentYear + 10}")
-            }
-            if (editionRepository.existsByEditionYear(it) && it != edition.editionYear) {
-                throw IllegalArgumentException("Edition with year $it already exists")
-            }
             edition.editionYear = it
             edition.startDate = LocalDate.of(it, 10, 1)
             edition.endDate = LocalDate.of(it + 1, 9, 30)
@@ -140,20 +138,21 @@ class EditionDataFetcher {
     @DgsMutation
     @Transactional
     fun removeEdition(@InputArgument editionId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can remove editions")
+        val action = "removeEdition"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason)
         }
 
         val edition = editionRepository.findById(editionId)
             .orElseThrow { IllegalArgumentException("Invalid edition ID") }
-
-        if (edition.endDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (edition.startDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already started")
-        }
 
         editionRepository.delete(edition)
         return true

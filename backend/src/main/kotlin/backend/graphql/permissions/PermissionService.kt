@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var editionPermissions: EditionPermissions
+
+    @Autowired
     private lateinit var chestsAwardPermissions: ChestsAwardPermissions
 
     @Autowired
@@ -77,6 +80,10 @@ class PermissionService {
             "editChest" -> chestsPermissions.checkEditChestPermission(jsonArguments)
             "removeChest" -> chestsPermissions.checkRemoveChestPermission(jsonArguments)
             "copyChest" -> chestsPermissions.checkCopyChestPermission(jsonArguments)
+            // EditionPermissions
+            "addEdition" -> editionPermissions.checkAddEditionPermission(jsonArguments)
+            "editEdition" -> editionPermissions.checkEditEditionPermission(jsonArguments)
+            "removeEdition" -> editionPermissions.checkRemoveEditionPermission(jsonArguments)
             // SubcategoriesPermissions
             "addSubcategory" -> subcategoriesPermissions.checkAddSubcategoryPermission(jsonArguments)
             "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)

@@ -37,10 +37,11 @@ class ChestsPermissions {
     private lateinit var photoAssigner: PhotoAssigner
 
     fun checkAssignPhotoToChestPermission(arguments: JsonNode): Permission {
+        val action = "assignPhotoToChest"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
             return Permission(
-                action = "assignPhotoToChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Only coordinators can assign photos to chests"
@@ -48,7 +49,7 @@ class ChestsPermissions {
         }
 
         val chestId = arguments.getLongField("chestId") ?: return Permission(
-            action = "removeChest",
+            action = action,
             arguments = arguments,
             allow = false,
             reason = "Invalid or missing 'chestId'"
@@ -56,7 +57,7 @@ class ChestsPermissions {
 
         val chest = chestsRepository.findById(chestId).orElse(null)
             ?: return Permission(
-                action = "assignPhotoToChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Invalid chest ID"
@@ -65,7 +66,7 @@ class ChestsPermissions {
         val chestEditions = chest.chestEdition.map { it.edition }
         if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
             return Permission(
-                action = "assignPhotoToChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Edition has already ended"
@@ -74,15 +75,30 @@ class ChestsPermissions {
 
         val fileId = arguments.getLongField("fileId")
 
-        return photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "image/chest", chestId, fileId)
+        val photoPermission = photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "image/chest", null, fileId)
+        if (!photoPermission.allow) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = photoPermission.reason
+            )
+        }
 
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
     }
 
     fun checkAddChestPermission(arguments: JsonNode): Permission {
+        val action = "addChest"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
             return Permission(
-                action = "addChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Only coordinators can add chests"
@@ -90,7 +106,7 @@ class ChestsPermissions {
         }
 
         val chestType = arguments.getStringField("chestType") ?: return Permission(
-            action = "addChest",
+            action = action,
             arguments = arguments,
             allow = false,
             reason = "Invalid or missing 'chestType'"
@@ -104,14 +120,14 @@ class ChestsPermissions {
         }
 
         val awardBundleCount = arguments.getLongField("awardBundleCount") ?: return Permission(
-            action = "addChest",
+            action = action,
             arguments = arguments,
             allow = false,
             reason = "Invalid or missing 'awardBundleCount'"
         )
 
         val awardIds = arguments.getLongList("awardIds") ?: return Permission(
-            action = "addChest",
+            action = action,
             arguments = arguments,
             allow = false,
             reason = "Invalid or missing 'awardIds'"
@@ -119,7 +135,7 @@ class ChestsPermissions {
 
         if (awardBundleCount < 1) {
             return Permission(
-                action = "addChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Invalid 'awardBundleCount'"
@@ -127,7 +143,7 @@ class ChestsPermissions {
         }
         if (awardBundleCount > awardIds.size) {
             return Permission(
-                action = "addChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "awardBundleCount cannot be greater than the number of awards"
@@ -137,7 +153,7 @@ class ChestsPermissions {
         awardIds.forEach { awardId ->
             val award = awardRepository.findById(awardId).orElse(null)
                 ?: return Permission(
-                    action = "addChest",
+                    action = action,
                     arguments = arguments,
                     allow = false,
                     reason = "Invalid award ID"
@@ -145,7 +161,7 @@ class ChestsPermissions {
         }
 
         return Permission(
-            action = "addChest",
+            action = action,
             arguments = arguments,
             allow = true,
             reason = null
@@ -153,10 +169,11 @@ class ChestsPermissions {
     }
 
     fun checkEditChestPermission(arguments: JsonNode): Permission {
+        val action = "editChest"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
             return Permission(
-                action = "addChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Only coordinators can edit chests"
@@ -164,7 +181,7 @@ class ChestsPermissions {
         }
 
         val chestId = arguments.getLongField("chestId") ?: return Permission(
-            action = "editChest",
+            action = action,
             arguments = arguments,
             allow = false,
             reason = "Invalid or missing 'chestId'"
@@ -172,7 +189,7 @@ class ChestsPermissions {
 
         val chest = chestsRepository.findById(chestId).orElse(null)
             ?: return Permission(
-                action = "editChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Invalid chest ID"
@@ -182,7 +199,7 @@ class ChestsPermissions {
 
         if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
             return Permission(
-                action = "editChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Edition has already ended"
@@ -197,7 +214,7 @@ class ChestsPermissions {
 
         val awardIds = arguments.getLongList("awardIds")
             ?: return Permission(
-                action = "editChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Invalid or missing 'awardIds'"
@@ -206,7 +223,7 @@ class ChestsPermissions {
         awardIds.forEach { awardId ->
             val award = awardRepository.findById(awardId).orElse(null)
                 ?: return Permission(
-                    action = "editChest",
+                    action = action,
                     arguments = arguments,
                     allow = false,
                     reason = "Invalid award ID"
@@ -218,7 +235,7 @@ class ChestsPermissions {
         if (awardBundleCount != null) {
             if (awardBundleCount < 1) {
                 return Permission(
-                    action = "editChest",
+                    action = action,
                     arguments = arguments,
                     allow = false,
                     reason = "Invalid 'awardBundleCount'"
@@ -226,7 +243,7 @@ class ChestsPermissions {
             }
             if (awardBundleCount > awardIds.size) {
                 return Permission(
-                    action = "editChest",
+                    action = action,
                     arguments = arguments,
                     allow = false,
                     reason = "awardBundleCount cannot be greater than the number of awards"
@@ -234,7 +251,7 @@ class ChestsPermissions {
             }
             if (chestHistoryRepository.findByChest(chest).any {it.opened}) {
                 return Permission(
-                    action = "editChest",
+                    action = action,
                     arguments = arguments,
                     allow = false,
                     reason = "Users have already opened this chest"
@@ -244,7 +261,7 @@ class ChestsPermissions {
         }
 
         return Permission(
-            action = "editChest",
+            action = action,
             arguments = arguments,
             allow = true,
             reason = null
@@ -252,11 +269,11 @@ class ChestsPermissions {
     }
 
     fun checkRemoveChestPermission(arguments: JsonNode): Permission {
-
+        val action = "removeChest"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
             return Permission(
-                action = "removeChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Only coordinators can remove chests"
@@ -264,7 +281,7 @@ class ChestsPermissions {
         }
 
         val chestId = arguments.getLongField("chestId") ?: return Permission(
-            action = "removeChest",
+            action = action,
             arguments = arguments,
             allow = false,
             reason = "Invalid or missing 'chestId'"
@@ -273,7 +290,7 @@ class ChestsPermissions {
 
         val chest = chestsRepository.findById(chestId).orElse(null)
             ?: return Permission(
-                action = "removeChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Invalid chest ID"
@@ -282,7 +299,7 @@ class ChestsPermissions {
         val chestEditions = chest.chestEdition.map { it.edition }
         if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
             return Permission(
-                action = "removeChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Edition has already ended"
@@ -290,7 +307,7 @@ class ChestsPermissions {
         }
         if (chestEditions.any { it.startDate.isBefore(LocalDate.now()) } && chestHistoryRepository.existsByChest(chest)) {
             return Permission(
-                action = "removeChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Users have already been given this chest"
@@ -298,7 +315,7 @@ class ChestsPermissions {
         }
 
         return Permission(
-            action = "removeChest",
+            action = action,
             arguments = arguments,
             allow = true,
             reason = null
@@ -306,10 +323,11 @@ class ChestsPermissions {
     }
 
     fun checkCopyChestPermission(arguments: JsonNode): Permission {
+        val action = "copyChest"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
             return Permission(
-                action = "copyChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Only coordinators can copy chests"
@@ -317,7 +335,7 @@ class ChestsPermissions {
         }
 
         val chestId = arguments.getLongField("chestId") ?: return Permission(
-            action = "copyChest",
+            action = action,
             arguments = arguments,
             allow = false,
             reason = "Invalid or missing 'chestId'"
@@ -325,14 +343,14 @@ class ChestsPermissions {
 
         val chest = chestsRepository.findById(chestId).orElse(null)
             ?: return Permission(
-                action = "copyChest",
+                action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Invalid chest ID"
             )
 
         return Permission(
-            action = "copyChest",
+            action = action,
             arguments = arguments,
             allow = true,
             reason = null

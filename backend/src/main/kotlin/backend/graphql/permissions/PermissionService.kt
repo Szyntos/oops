@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var awardEditionPermissions: AwardEditionPermissions
+
+    @Autowired
     private lateinit var chestsPermissions: ChestsPermissions
 
     fun checkFullPermission(input: PermissionInput): Permission {
@@ -21,6 +24,8 @@ class PermissionService {
             "editChest" -> chestsPermissions.checkEditChestPermission(jsonArguments)
             "removeChest" -> chestsPermissions.checkRemoveChestPermission(jsonArguments)
             "copyChest" -> chestsPermissions.checkCopyChestPermission(jsonArguments)
+            "addAwardToEdition" -> awardEditionPermissions.checkAddAwardToEditionPermission(jsonArguments)
+            "removeAwardFromEdition" -> awardEditionPermissions.checkRemoveAwardFromEditionPermission(jsonArguments)
             else -> Permission(
                 action = input.action,
                 arguments = jsonArguments,

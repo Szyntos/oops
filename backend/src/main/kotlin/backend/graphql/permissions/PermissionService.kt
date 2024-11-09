@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var categoryEditionPermissions: CategoryEditionPermissions
+
+    @Autowired
     private lateinit var subcategoriesPermissions: SubcategoriesPermissions
 
     @Autowired
@@ -52,6 +55,9 @@ class PermissionService {
             "addCategory" -> categoriesPermissions.checkAddCategoryPermission(jsonArguments)
             "editCategory" -> categoriesPermissions.checkEditCategoryPermission(jsonArguments)
             "removeCategory" -> categoriesPermissions.checkRemoveCategoryPermission(jsonArguments)
+            // CategoryEditionPermissions
+            "addCategoryToEdition" -> categoryEditionPermissions.checkAddCategoryToEditionPermission(jsonArguments)
+            "removeCategoryFromEdition" -> categoryEditionPermissions.checkRemoveCategoryFromEditionPermission(jsonArguments)
             // SubcategoriesPermissions
             "addSubcategory" -> subcategoriesPermissions.checkAddSubcategoryPermission(jsonArguments)
             "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)

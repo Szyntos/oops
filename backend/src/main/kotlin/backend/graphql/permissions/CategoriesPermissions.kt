@@ -316,10 +316,10 @@ class CategoriesPermissions {
                 // Update existing subcategory
                 val existingSubcategory = subcategoriesRepository.findById(subcategoryId).getOrNull()
                     ?: return Permission(
-                                action = action,
-                                arguments = arguments,
-                                allow = false,
-                                reason = "Subcategory with id $subcategoryId not found"
+                        action = action,
+                        arguments = arguments,
+                        allow = false,
+                        reason = "Subcategory with id $subcategoryId not found"
                     )
 
                 if (existingSubcategory.category.categoryId != categoryId) {

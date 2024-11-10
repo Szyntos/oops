@@ -82,8 +82,8 @@ export const useGroupsSection = (editionId: number) => {
         variables: {
           editionId,
           usosId: values.usosId,
-          endTime: values.endTime + ":00",
-          startTime: values.startTime + ":00",
+          endTime: values.endTime,
+          startTime: values.startTime,
           teacherId: parseInt(values.teacherId),
           weekdayId: parseInt(values.weekdayId),
           users: selectedStudents.map((s) => {

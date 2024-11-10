@@ -282,8 +282,17 @@ class ChestsDataFetcher {
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
+
+        val chestTypeRoot = chest.chestType
+        var i = 1
+        while (chestsRepository.findAllByChestType("$chestTypeRoot (Copy $i)").isNotEmpty()) {
+            i++
+        }
+        val chestType = "$chestTypeRoot (Copy $i)"
+
+
         val newChest = Chests(
-            chestType = chest.chestType,
+            chestType = chestType,
             label = chest.label,
             awardBundleCount = chest.awardBundleCount
         )

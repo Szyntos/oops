@@ -41,6 +41,17 @@ class CategoryEditionDataFetcher {
     @DgsMutation
     @Transactional
     fun addCategoryToEdition(@InputArgument categoryId: Long, @InputArgument editionId: Long): CategoryEdition {
+        return addCategoryToEditionHelper(categoryId, editionId)
+    }
+
+    @DgsMutation
+    @Transactional
+    fun removeCategoryFromEdition(@InputArgument categoryId: Long, @InputArgument editionId: Long): Boolean {
+        return removeCategoryFromEditionHelper(categoryId, editionId)
+    }
+
+    @Transactional
+    fun addCategoryToEditionHelper(categoryId: Long, editionId: Long) : CategoryEdition{
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can add categories to editions")
@@ -89,9 +100,8 @@ class CategoryEditionDataFetcher {
         return resultCategoryEdition
     }
 
-    @DgsMutation
     @Transactional
-    fun removeCategoryFromEdition(@InputArgument categoryId: Long, @InputArgument editionId: Long): Boolean {
+    fun removeCategoryFromEditionHelper(categoryId: Long, editionId: Long): Boolean {
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR){
             throw IllegalArgumentException("Only coordinators can remove categories from editions")

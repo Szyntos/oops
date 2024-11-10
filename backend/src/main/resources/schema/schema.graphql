@@ -66,12 +66,24 @@ type Mutation {
     darkColor: String = "#000000"
     label: String = ""
   ): CategoryType
+
+  copyCategory(
+    categoryId: Int!
+  ): CategoryType
+
   addCategoryToEdition(categoryId: Int!, editionId: Int!): CategoryEditionType
   addEdition(
     editionName: String!
     editionYear: Int!
     label: String = ""
   ): EditionType
+
+  copyEdition(
+    editionId: Int!
+    editionYear: Int!
+  ): EditionType
+
+
   addGradingCheck(
     editionId: Int!
     endOfLabsDate: String!

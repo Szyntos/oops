@@ -9,25 +9,20 @@ import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecksRepository
-import backend.graphql.PhotoAssigner
+import backend.graphql.utils.PhotoAssigner
 import backend.groups.GroupsRepository
 import backend.levels.LevelsRepository
-import backend.points.Points
+import backend.graphql.utils.Permission
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.userGroups.UserGroupsRepository
 import backend.users.UsersRepository
 import backend.users.UsersRoles
-import backend.utils.JsonNodeExtensions.getBooleanField
-import backend.utils.JsonNodeExtensions.getFloatField
 import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
-import java.math.RoundingMode
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UserGroupsPermissions {

@@ -1,7 +1,6 @@
-package backend.graphql
+package backend.graphql.utils
 
 import backend.files.FileEntityRepository
-import backend.graphql.permissions.Permission
 import backend.utils.HasImageFile
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired

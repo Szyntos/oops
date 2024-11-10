@@ -1,6 +1,6 @@
 package backend.files
 
-import backend.graphql.permissions.PermissionDeniedException
+import backend.graphql.utils.PermissionDeniedException
 import com.netflix.graphql.dgs.exceptions.DefaultDataFetcherExceptionHandler
 import com.netflix.graphql.types.errors.TypedGraphQLError
 import graphql.GraphQLError

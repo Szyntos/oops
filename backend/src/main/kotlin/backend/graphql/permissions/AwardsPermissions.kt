@@ -10,7 +10,8 @@ import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
-import backend.graphql.PhotoAssigner
+import backend.graphql.utils.PhotoAssigner
+import backend.graphql.utils.Permission
 import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getFloatField
 import backend.utils.JsonNodeExtensions.getIntField

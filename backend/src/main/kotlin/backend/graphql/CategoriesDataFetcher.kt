@@ -5,11 +5,10 @@ import backend.categories.Categories
 import backend.categories.CategoriesRepository
 import backend.categoryEdition.CategoryEditionRepository
 import backend.gradingChecks.GradingChecksRepository
-import backend.graphql.permissions.PermissionDeniedException
-import backend.graphql.permissions.PermissionInput
-import backend.graphql.permissions.PermissionService
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.subcategories.SubcategoriesRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
@@ -18,7 +17,6 @@ import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.math.RoundingMode
-import java.time.LocalDate
 
 @DgsComponent
 class CategoriesDataFetcher {

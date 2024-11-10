@@ -1,9 +1,9 @@
 package backend.graphql
 
-import backend.graphql.permissions.Permission
-import backend.graphql.permissions.PermissionDeniedException
-import backend.graphql.permissions.PermissionInput
-import backend.graphql.permissions.PermissionService
+import backend.graphql.utils.Permission
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument

@@ -12,12 +12,11 @@ import backend.bonuses.BonusesRepository
 import backend.chestAward.ChestAwardRepository
 import backend.chestHistory.ChestHistory
 import backend.edition.Edition
-import backend.graphql.permissions.PermissionDeniedException
-import backend.graphql.permissions.PermissionInput
-import backend.graphql.permissions.PermissionService
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.groups.GroupsRepository
 import backend.subcategories.SubcategoriesRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation

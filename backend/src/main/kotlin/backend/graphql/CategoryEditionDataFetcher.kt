@@ -1,18 +1,13 @@
 package backend.graphql
 
-import backend.award.AwardRepository
-import backend.awardEdition.AwardEdition
-import backend.awardEdition.AwardEditionRepository
 import backend.categories.CategoriesRepository
 import backend.categoryEdition.CategoryEdition
 import backend.categoryEdition.CategoryEditionRepository
 import backend.edition.EditionRepository
-import backend.graphql.permissions.PermissionDeniedException
-import backend.graphql.permissions.PermissionInput
-import backend.graphql.permissions.PermissionService
-import backend.points.PointsRepository
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.subcategories.SubcategoriesRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation

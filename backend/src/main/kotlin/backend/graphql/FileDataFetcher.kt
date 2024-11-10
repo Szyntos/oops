@@ -3,9 +3,10 @@ package backend.graphql
 import backend.categories.CategoriesRepository
 import backend.files.FileEntity
 import backend.files.FileEntityRepository
-import backend.graphql.permissions.PermissionDeniedException
-import backend.graphql.permissions.PermissionInput
-import backend.graphql.permissions.PermissionService
+import backend.graphql.utils.PhotoAssigner
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 
 import backend.points.PointsRepository
 import backend.users.UsersRepository

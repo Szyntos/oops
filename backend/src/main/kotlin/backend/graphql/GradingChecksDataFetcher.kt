@@ -1,36 +1,24 @@
 package backend.graphql
 
-import backend.award.AwardType
-import backend.bonuses.BonusesRepository
-import backend.categories.Categories
 import backend.categories.CategoriesRepository
 import backend.categoryEdition.CategoryEditionRepository
-import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecks
 import backend.gradingChecks.GradingChecksRepository
-import backend.graphql.permissions.PermissionDeniedException
-import backend.graphql.permissions.PermissionInput
-import backend.graphql.permissions.PermissionService
-import backend.levels.Levels
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.levels.LevelsRepository
 import backend.points.PointsRepository
-import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
-import backend.users.Users
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
-import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeParseException
-import kotlin.math.min
 
 @DgsComponent
 class GradingChecksDataFetcher {

@@ -1,11 +1,10 @@
-package backend.graphql.permissions
+package backend.graphql.utils
 
+import backend.graphql.permissions.*
 import com.fasterxml.jackson.databind.JsonNode
-import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PermissionService {
@@ -205,5 +204,5 @@ data class Permission(
     val arguments: JsonNode,
     val allow: Boolean,
     val reason: String?,
-    val stackTrace: String = Thread.currentThread().stackTrace.joinToString("\n")
+    val stackTrace: String = Thread.currentThread().stackTrace.take(15).joinToString("\n")
 )

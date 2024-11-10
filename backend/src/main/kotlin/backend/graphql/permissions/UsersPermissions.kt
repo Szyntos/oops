@@ -2,8 +2,9 @@ package backend.graphql.permissions
 
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
-import backend.graphql.*
+import backend.graphql.utils.PhotoAssigner
 import backend.groups.GroupsRepository
+import backend.graphql.utils.Permission
 import backend.users.UsersRepository
 import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getBooleanField
@@ -472,7 +473,7 @@ class UsersPermissions {
         )
     }
 
-    fun checkRemoveUserPermission(arguments: JsonNode): Permission{
+    fun checkRemoveUserPermission(arguments: JsonNode): Permission {
         val action = "removeUser"
         val currentUser = userMapper.getCurrentUser()
 
@@ -533,7 +534,7 @@ class UsersPermissions {
         )
     }
 
-    fun checkResetPasswordPermission(arguments: JsonNode): Permission{
+    fun checkResetPasswordPermission(arguments: JsonNode): Permission {
         val action = "resetPassword"
         val currentUser = userMapper.getCurrentUser()
 
@@ -568,7 +569,7 @@ class UsersPermissions {
         )
     }
 
-    fun checkGetStudentPointsPermission(arguments: JsonNode): Permission{
+    fun checkGetStudentPointsPermission(arguments: JsonNode): Permission {
         val action = "getStudentPoints"
         val currentUser = userMapper.getCurrentUser()
 
@@ -655,7 +656,7 @@ class UsersPermissions {
         )
     }
 
-    fun checkGetSumOfPointsForStudentByCategoryPermission(arguments: JsonNode): Permission{
+    fun checkGetSumOfPointsForStudentByCategoryPermission(arguments: JsonNode): Permission {
         val action = "getSumOfPointsForStudentByCategory"
         val currentUser = userMapper.getCurrentUser()
 
@@ -734,7 +735,7 @@ class UsersPermissions {
         )
     }
 
-    fun checkGetCurrentUserPermission(arguments: JsonNode): Permission{
+    fun checkGetCurrentUserPermission(arguments: JsonNode): Permission {
         val action = "getCurrentUser"
         return Permission(
             action = action,

@@ -7,17 +7,16 @@ import backend.categories.CategoriesRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.files.FileRetrievalService
-import backend.files.FileUploadService
-import backend.graphql.permissions.PermissionDeniedException
-import backend.graphql.permissions.PermissionInput
-import backend.graphql.permissions.PermissionService
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.graphql.permissions.UsersPermissions
+import backend.graphql.utils.PhotoAssigner
 import backend.groups.Groups
 import backend.groups.GroupsRepository
 import backend.levels.Levels
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
-import backend.userGroups.UserGroups
 import backend.userGroups.UserGroupsRepository
 import backend.userLevel.UserLevelRepository
 import backend.users.FirebaseUserService
@@ -33,14 +32,12 @@ import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
-import org.apache.catalina.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDateTime
-import kotlin.math.exp
 import kotlin.math.min
 
 @DgsComponent

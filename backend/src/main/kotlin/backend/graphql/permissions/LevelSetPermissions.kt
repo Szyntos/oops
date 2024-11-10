@@ -5,11 +5,12 @@ import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
-import backend.graphql.PhotoAssigner
+import backend.graphql.utils.PhotoAssigner
 import backend.groups.GroupsRepository
 import backend.levelSet.LevelSet
 import backend.levelSet.LevelSetRepository
 import backend.levels.LevelsRepository
+import backend.graphql.utils.Permission
 import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getLevelInputList
 import backend.utils.JsonNodeExtensions.getLongField
@@ -182,7 +183,7 @@ class LevelSetPermissions {
         )
     }
 
-    fun checkRemoveLevelSetPermission(arguments: JsonNode): Permission{
+    fun checkRemoveLevelSetPermission(arguments: JsonNode): Permission {
         val action = "removeLevelSet"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
@@ -245,7 +246,7 @@ class LevelSetPermissions {
         )
     }
 
-    fun checkAddLevelSetToEditionPermission(arguments: JsonNode): Permission{
+    fun checkAddLevelSetToEditionPermission(arguments: JsonNode): Permission {
         val action = "addLevelSetToEdition"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
@@ -304,7 +305,7 @@ class LevelSetPermissions {
         )
     }
 
-    fun checkRemoveLevelSetFromEditionPermission(arguments: JsonNode): Permission{
+    fun checkRemoveLevelSetFromEditionPermission(arguments: JsonNode): Permission {
         val action = "removeLevelSetFromEdition"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {

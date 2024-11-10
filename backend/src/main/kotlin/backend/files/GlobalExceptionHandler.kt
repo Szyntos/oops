@@ -1,6 +1,6 @@
 package backend.files
 
-import backend.graphql.permissions.PermissionDeniedException
+import backend.graphql.utils.PermissionDeniedException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

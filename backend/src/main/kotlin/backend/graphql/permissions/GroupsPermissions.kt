@@ -6,8 +6,9 @@ import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
-import backend.graphql.PhotoAssigner
+import backend.graphql.utils.PhotoAssigner
 import backend.groups.GroupsRepository
+import backend.graphql.utils.Permission
 import backend.userGroups.UserGroupsRepository
 import backend.users.UsersRepository
 import backend.users.UsersRoles

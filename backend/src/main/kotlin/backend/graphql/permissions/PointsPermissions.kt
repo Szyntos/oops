@@ -1,7 +1,6 @@
 package backend.graphql.permissions
 
 import backend.award.AwardRepository
-import backend.award.AwardType
 import backend.bonuses.BonusesRepository
 import backend.categories.CategoriesRepository
 import backend.categoryEdition.CategoryEditionRepository
@@ -10,9 +9,9 @@ import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecksRepository
-import backend.graphql.PhotoAssigner
+import backend.graphql.utils.PhotoAssigner
 import backend.levels.LevelsRepository
-import backend.points.Points
+import backend.graphql.utils.Permission
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
@@ -20,17 +19,11 @@ import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getBooleanField
 import backend.utils.JsonNodeExtensions.getFloatField
 import backend.utils.JsonNodeExtensions.getLongField
-import backend.utils.JsonNodeExtensions.getLongList
-import backend.utils.JsonNodeExtensions.getStringField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
-import com.netflix.graphql.dgs.InputArgument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalDate
-import java.time.format.DateTimeParseException
 import kotlin.jvm.optionals.getOrNull
 
 @Service

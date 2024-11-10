@@ -3,15 +3,10 @@ package backend.graphql.permissions
 import backend.award.AwardRepository
 import backend.awardEdition.AwardEditionRepository
 import backend.bonuses.BonusesRepository
-import backend.chestEdition.ChestEditionRepository
-import backend.chestHistory.ChestHistoryRepository
-import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
-import backend.graphql.PhotoAssigner
+import backend.graphql.utils.Permission
 import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getLongField
-import backend.utils.JsonNodeExtensions.getLongList
-import backend.utils.JsonNodeExtensions.getStringField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.beans.factory.annotation.Autowired

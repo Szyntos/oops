@@ -6,10 +6,9 @@ import backend.bonuses.BonusesRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
 import backend.award.AwardType
-import backend.graphql.permissions.PermissionDeniedException
-import backend.graphql.permissions.PermissionInput
-import backend.graphql.permissions.PermissionService
-import backend.users.UsersRoles
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation

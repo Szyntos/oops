@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var pointsPermissions: PointsPermissions
+
+    @Autowired
     private lateinit var permissionPermissions: PermissionPermissions
 
     @Autowired
@@ -137,6 +140,10 @@ class PermissionService {
             // PermissionPermissions
             "checkFullPermission" -> permissionPermissions.checkCheckFullPermissionPermission(jsonArguments)
             "checkPartialPermission" -> permissionPermissions.checkCheckPartialPermissionPermission(jsonArguments)
+            // PointsPermissions
+            "addPoints" -> pointsPermissions.checkAddPointsPermission(jsonArguments)
+            "editPoints" -> pointsPermissions.checkEditPointsPermission(jsonArguments)
+            "removePoints" -> pointsPermissions.checkRemovePointsPermission(jsonArguments)
             // SubcategoriesPermissions
             "addSubcategory" -> subcategoriesPermissions.checkAddSubcategoryPermission(jsonArguments)
             "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)

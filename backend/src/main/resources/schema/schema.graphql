@@ -12,6 +12,16 @@ type Mutation {
     subcategoryId: Int!
     checkDates: Boolean = true
   ): PointType
+
+
+  addPointsToGroup(
+    groupId: Int!,
+    teacherId: Int!,
+    values: [GroupPointsInputType!]!,
+    subcategoryId: Int!,
+    checkDates: Boolean = true
+  ): [GroupPointsType!]!
+
   assignPhotosToGroups(editionId: Int!): Boolean
   assignPhotoToUser(userId: Int!, fileId: Int): Boolean
   assignPhotoToLevel(levelId: Int!, fileId: Int): Boolean
@@ -56,12 +66,24 @@ type Mutation {
     darkColor: String = "#000000"
     label: String = ""
   ): CategoryType
+
+  copyCategory(
+    categoryId: Int!
+  ): CategoryType
+
   addCategoryToEdition(categoryId: Int!, editionId: Int!): CategoryEditionType
   addEdition(
     editionName: String!
     editionYear: Int!
     label: String = ""
   ): EditionType
+
+  copyEdition(
+    editionId: Int!
+    editionYear: Int!
+  ): EditionType
+
+
   addGradingCheck(
     editionId: Int!
     endOfLabsDate: String!
@@ -705,12 +727,18 @@ type ChestEditionType {
   label: String!
 }
 
+
 type PermissionType {
   action: String!
   arguments: JSON!
   allow: Boolean!
   reason: String
   stackTrace: String!
+}
+
+type GroupPointsType{
+  student: UserType!
+  points: PointType
 }
 
 input SubcategoryInputType {
@@ -748,7 +776,13 @@ input UserIdsType {
   userIds: [Int!]!
 }
 
+
 input PermissionInputType {
   action: String!
   arguments: JSON!
+}
+
+input GroupPointsInputType{
+  studentId: Int!,
+  value: Float
 }

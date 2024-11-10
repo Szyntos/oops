@@ -3,6 +3,7 @@ package backend.graphql.permissions
 import backend.award.AwardRepository
 import backend.awardEdition.AwardEditionRepository
 import backend.chestAward.ChestAwardRepository
+import backend.chestEdition.ChestEdition
 import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
@@ -13,8 +14,10 @@ import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ChestEditionPermissions {
@@ -193,6 +196,91 @@ class ChestEditionPermissions {
                 reason = "Users have already been given this chest in this edition"
             )
         }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    @Transactional
+    fun checkAddChestToEditionHelperPermission(chestId: Long, editionId: Long): Permission {
+        val action = "addChestToEditionHelper"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "chestId" to chestId,
+                "editionId" to editionId
+            )
+        )
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can add chests to editions"
+            )
+        }
+
+        val chest = chestsRepository.findById(chestId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid chest ID"
+            )
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    @Transactional
+    fun checkRemoveChestFromEditionHelperPermission(chestId: Long, editionId: Long): Permission {
+        val action = "removeChestFromEditionHelper"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "chestId" to chestId,
+                "editionId" to editionId
+            )
+        )
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can remove chests from editions"
+            )
+        }
+
+        val chest = chestsRepository.findById(chestId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid chest ID"
+            )
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
 
         return Permission(
             action = action,

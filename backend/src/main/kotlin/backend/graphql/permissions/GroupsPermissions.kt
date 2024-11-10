@@ -21,8 +21,11 @@ import backend.utils.JsonNodeExtensions.getUsersInputTypeList
 import backend.utils.UserMapper
 import backend.weekdays.WeekdaysRepository
 import com.fasterxml.jackson.databind.JsonNode
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.sql.Time
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -162,14 +165,14 @@ class GroupsPermissions {
             reason = "Invalid or missing 'weekdayId'"
         )
 
-        val startTime = arguments.getTimeField("startTime") ?: return Permission(
+        val startTime = arguments.getStringField("startTime") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
             reason = "Invalid or missing 'startTime'"
         )
 
-        val endTime = arguments.getTimeField("endTime") ?: return Permission(
+        val endTime = arguments.getStringField("endTime") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
@@ -189,6 +192,19 @@ class GroupsPermissions {
             allow = false,
             reason = "Invalid or missing 'groupName'"
         )
+
+        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
+        if (!hh_mm.matches(startTime) || !hh_mm.matches(endTime)) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid time format, must be HH:MM"
+            )
+        }
+
+        val startTimeWithSeconds = Time.valueOf("$startTime:00")
+        val endTimeWithSeconds = Time.valueOf("$endTime:00")
 
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -230,7 +246,7 @@ class GroupsPermissions {
                 reason = "Group with name $groupName already exists for edition ${edition.editionId}"
             )
         }
-        if (startTime.after(endTime)) {
+        if (startTimeWithSeconds.after(endTimeWithSeconds)) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -238,7 +254,7 @@ class GroupsPermissions {
                 reason = "Start time must be before end time"
             )
         }
-        if (startTime == endTime) {
+        if (startTimeWithSeconds == endTimeWithSeconds) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -268,7 +284,7 @@ class GroupsPermissions {
                 reason = "User with ID $teacherId is not a teacher nor a coordinator"
             )
         }
-        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTime, endTime, edition)) {
+        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTimeWithSeconds, endTimeWithSeconds, edition)) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -323,14 +339,14 @@ class GroupsPermissions {
             reason = "Invalid or missing 'weekdayId'"
         )
 
-        val startTime = arguments.getTimeField("startTime") ?: return Permission(
+        val startTime = arguments.getStringField("startTime") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
             reason = "Invalid or missing 'startTime'"
         )
 
-        val endTime = arguments.getTimeField("endTime") ?: return Permission(
+        val endTime = arguments.getStringField("endTime") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
@@ -357,6 +373,21 @@ class GroupsPermissions {
             allow = false,
             reason = "Invalid or missing 'users'"
         )
+
+        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
+        if (!hh_mm.matches(startTime) || !hh_mm.matches(endTime)) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid time format, must be HH:MM"
+            )
+        }
+
+        val startTimeWithSeconds = Time.valueOf("$startTime:00")
+        val endTimeWithSeconds = Time.valueOf("$endTime:00")
+
+
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
@@ -396,7 +427,7 @@ class GroupsPermissions {
                 reason = "Group with name $groupName already exists for edition ${edition.editionId}"
             )
         }
-        if (startTime.after(endTime)) {
+        if (startTimeWithSeconds.after(endTimeWithSeconds)) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -404,7 +435,7 @@ class GroupsPermissions {
                 reason = "Start time must be before end time"
             )
         }
-        if (startTime == endTime) {
+        if (startTimeWithSeconds == endTimeWithSeconds) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -434,7 +465,7 @@ class GroupsPermissions {
                 reason = "User with ID $teacherId is not a teacher nor a coordinator"
             )
         }
-        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTime, endTime, edition)) {
+        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTimeWithSeconds, endTimeWithSeconds, edition)) {
             throw IllegalArgumentException("Teacher is already teaching a group at this time")
         }
 
@@ -500,11 +531,14 @@ class GroupsPermissions {
 
         val weekdayId = arguments.getLongField("weekdayId")
 
-        val startTime = arguments.getTimeField("startTime")
+        val startTime = arguments.getStringField("startTime")
 
-        val endTime = arguments.getTimeField("endTime")
+        val endTime = arguments.getStringField("endTime")
 
         val teacherId = arguments.getLongField("teacherId")
+
+        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
+
 
         val group = groupsRepository.findById(groupId).orElse(null)
             ?: return Permission(
@@ -578,7 +612,19 @@ class GroupsPermissions {
         }
 
         startTime?.let {
-            if (endTime != null && it.after(endTime)) {
+
+            if (!hh_mm.matches(startTime)) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Invalid time format, must be HH:MM"
+                )
+            }
+
+            val startTimeWithSeconds = Time.valueOf("$startTime:00")
+
+            if (endTime != null && startTimeWithSeconds.after(Time.valueOf("$endTime:00"))) {
                 return Permission(
                     action = action,
                     arguments = arguments,
@@ -586,11 +632,38 @@ class GroupsPermissions {
                     reason = "Start time must be before end time"
                 )
             }
-            group.startTime = it
+            if (endTime != null && startTimeWithSeconds == Time.valueOf("$endTime:00")) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Start time must be different from end time"
+                )
+            }
+            if (endTime == null && startTimeWithSeconds.after(group.endTime)) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Start time must be before end time"
+                )
+            }
+            group.startTime = startTimeWithSeconds
         }
 
         endTime?.let {
-            if (startTime != null && startTime.after(it)) {
+            if (!hh_mm.matches(endTime)) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Invalid time format, must be HH:MM"
+                )
+            }
+
+            val endTimeWithSeconds = Time.valueOf("$endTime:00")
+
+            if (startTime != null && Time.valueOf("$startTime:00").after(endTimeWithSeconds)) {
                 return Permission(
                     action = action,
                     arguments = arguments,
@@ -598,7 +671,23 @@ class GroupsPermissions {
                     reason = "End time must be after start time"
                 )
             }
-            group.endTime = it
+            if (startTime != null && Time.valueOf("$startTime:00") == endTimeWithSeconds) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "End time must be different from start time"
+                )
+            }
+            if (startTime == null && group.startTime.after(endTimeWithSeconds)) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "End time must be after start time"
+                )
+            }
+            group.endTime = endTimeWithSeconds
         }
 
         teacherId?.let {
@@ -666,11 +755,13 @@ class GroupsPermissions {
 
         val weekdayId = arguments.getLongField("weekdayId")
 
-        val startTime = arguments.getTimeField("startTime")
+        val startTime = arguments.getStringField("startTime")
 
-        val endTime = arguments.getTimeField("endTime")
+        val endTime = arguments.getStringField("endTime")
 
         val teacherId = arguments.getLongField("teacherId")
+
+        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
 
         val users = arguments.getUserIdsType("users") ?: return Permission(
             action = action,
@@ -751,7 +842,19 @@ class GroupsPermissions {
         }
 
         startTime?.let {
-            if (endTime != null && it.after(endTime)) {
+
+            if (!hh_mm.matches(startTime)) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Invalid time format, must be HH:MM"
+                )
+            }
+
+            val startTimeWithSeconds = Time.valueOf("$startTime:00")
+
+            if (endTime != null && startTimeWithSeconds.after(Time.valueOf("$endTime:00"))) {
                 return Permission(
                     action = action,
                     arguments = arguments,
@@ -759,11 +862,38 @@ class GroupsPermissions {
                     reason = "Start time must be before end time"
                 )
             }
-            group.startTime = it
+            if (endTime != null && startTimeWithSeconds == Time.valueOf("$endTime:00")) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Start time must be different from end time"
+                )
+            }
+            if (endTime == null && startTimeWithSeconds.after(group.endTime)) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Start time must be before end time"
+                )
+            }
+            group.startTime = startTimeWithSeconds
         }
 
         endTime?.let {
-            if (startTime != null && startTime.after(it)) {
+            if (!hh_mm.matches(endTime)) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Invalid time format, must be HH:MM"
+                )
+            }
+
+            val endTimeWithSeconds = Time.valueOf("$endTime:00")
+
+            if (startTime != null && Time.valueOf("$startTime:00").after(endTimeWithSeconds)) {
                 return Permission(
                     action = action,
                     arguments = arguments,
@@ -771,7 +901,23 @@ class GroupsPermissions {
                     reason = "End time must be after start time"
                 )
             }
-            group.endTime = it
+            if (startTime != null && Time.valueOf("$startTime:00") == endTimeWithSeconds) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "End time must be different from start time"
+                )
+            }
+            if (startTime == null && group.startTime.after(endTimeWithSeconds)) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "End time must be after start time"
+                )
+            }
+            group.endTime = endTimeWithSeconds
         }
 
         teacherId?.let {
@@ -1105,6 +1251,48 @@ class GroupsPermissions {
                 arguments = arguments,
                 allow = false,
                 reason = "User with ID $teacherId is not a teacher nor a coordinator"
+            )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkRemoveGroupHelperPermission(groupId: Long): Permission {
+        val action = "removeGroupHelper"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "groupId" to groupId
+            )
+        )
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can remove groups"
+            )
+        }
+
+        val group = groupsRepository.findById(groupId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid group ID"
+            )
+
+        if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition has already ended"
             )
         }
 

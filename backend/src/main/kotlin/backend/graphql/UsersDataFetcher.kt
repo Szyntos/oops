@@ -496,7 +496,8 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         val emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
         return email.matches(Regex(emailPattern))
     }
-    
+
+    @Transactional
     fun addUserHelper(indexNumber: Int,  nick: String,
                                firstName: String,  secondName: String,
                                role: String,  email: String,

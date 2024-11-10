@@ -9,25 +9,36 @@ import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecksRepository
+import backend.graphql.GroupPoints
+import backend.graphql.GroupPointsInput
 import backend.graphql.utils.PhotoAssigner
 import backend.levels.LevelsRepository
 import backend.graphql.utils.Permission
+import backend.groups.GroupsRepository
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
 import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getBooleanField
 import backend.utils.JsonNodeExtensions.getFloatField
+import backend.utils.JsonNodeExtensions.getGroupPointsInputList
 import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
+import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.math.RoundingMode
 import kotlin.jvm.optionals.getOrNull
 
 @Service
 class PointsPermissions {
+
+    @Autowired
+    private lateinit var groupsRepository: GroupsRepository
 
     @Autowired
     private lateinit var bonusesRepository: BonusesRepository
@@ -76,6 +87,240 @@ class PointsPermissions {
 
     fun checkAddPointsPermission(arguments: JsonNode): Permission {
         val action = "addPoints"
+        val currentUser = userMapper.getCurrentUser()
+        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only teachers and coordinators can add points"
+            )
+        }
+
+        val studentId = arguments.getLongField("studentId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'studentId'"
+        )
+
+        val teacherId = arguments.getLongField("teacherId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'teacherId'"
+        )
+
+        val value = arguments.getFloatField("value") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'value'"
+        )
+
+        val subcategoryId = arguments.getLongField("subcategoryId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'subcategoryId'"
+        )
+
+
+        val checkDates = arguments.getBooleanField("checkDates") ?: true
+
+        val permission = checkAddPointsHelperPermission(studentId, teacherId, value, subcategoryId, checkDates)
+        if (!permission.allow) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = permission.reason
+            )
+        }
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkAddPointsToGroupPermission(arguments: JsonNode): Permission {
+        val action = "addPointsToGroup"
+        val currentUser = userMapper.getCurrentUser()
+        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only teachers and coordinators can add points"
+            )
+        }
+
+        val groupId = arguments.getLongField("groupId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'groupId'"
+        )
+
+        val teacherId = arguments.getLongField("teacherId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'teacherId'"
+        )
+
+        val values = arguments.getGroupPointsInputList("values") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'values'"
+        )
+
+        val subcategoryId = arguments.getLongField("subcategoryId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'subcategoryId'"
+        )
+
+        val checkDates = arguments.getBooleanField("checkDates") ?: true
+
+
+        val group = groupsRepository.findById(groupId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid group ID"
+            )
+
+        val studentsInGroup = group.userGroups.map { it.user }
+            .filter { it.role == UsersRoles.STUDENT }
+
+        val teacher = usersRepository.findByUserId(teacherId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid teacher ID"
+            )
+
+        val subcategory = subcategoriesRepository.findById(subcategoryId).getOrNull()
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid subcategory ID"
+            )
+
+        if (values.map { it.studentId }.toSet() != studentsInGroup.map{it.userId}.toSet()) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Students in the group and in the input do not match"
+            )
+        }
+        
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkEditPointsPermission(arguments: JsonNode): Permission {
+        val action = "editPoints"
+        val currentUser = userMapper.getCurrentUser()
+        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only teachers and coordinators can edit points"
+            )
+        }
+
+        val pointsId = arguments.getLongField("pointsId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'pointsId'"
+        )
+
+        val value = arguments.getFloatField("value")
+
+        val permission = checkEditPointsHelperPermission(pointsId, value)
+        if (!permission.allow) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = permission.reason
+            )
+        }
+
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkRemovePointsPermission(arguments: JsonNode): Permission {
+        val action = "removePoints"
+        val currentUser = userMapper.getCurrentUser()
+        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only teachers and coordinators can remove points"
+            )
+        }
+
+        val pointsId = arguments.getLongField("pointsId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'pointsId'"
+        )
+
+        val permission = checkRemovePointsHelperPermission(pointsId)
+        if (!permission.allow) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = permission.reason
+            )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkAddPointsHelperPermission(studentId: Long, teacherId: Long, value: Float,
+                                       subcategoryId: Long, checkDates: Boolean = true): Permission {
+        val action = "addPointsHelper"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "studentId" to studentId,
+                "teacherId" to teacherId,
+                "value" to value,
+                "subcategoryId" to subcategoryId,
+                "checkDates" to checkDates
+            )
+        )
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
             return Permission(
@@ -266,8 +511,14 @@ class PointsPermissions {
         )
     }
 
-    fun checkEditPointsPermission(arguments: JsonNode): Permission {
-        val action = "editPoints"
+    fun checkEditPointsHelperPermission(pointsId: Long, value: Float?): Permission {
+        val action = "editPointsHelper"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "pointsId" to pointsId,
+                "value" to value
+            )
+        )
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
             return Permission(
@@ -384,9 +635,13 @@ class PointsPermissions {
             reason = null
         )
     }
-
-    fun checkRemovePointsPermission(arguments: JsonNode): Permission {
+    fun checkRemovePointsHelperPermission(pointsId: Long): Permission {
         val action = "removePoints"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "pointsId" to pointsId
+            )
+        )
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
             return Permission(

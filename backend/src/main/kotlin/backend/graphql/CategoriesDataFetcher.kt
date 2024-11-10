@@ -244,5 +244,54 @@ class CategoriesDataFetcher {
         return categoriesRepository.save(category)
     }
 
+    @DgsMutation
+    @Transactional
+    fun copyCategory(@InputArgument categoryId: Long): Categories {
+        val action = "copyCategory"
+        val arguments = mapOf(
+            "categoryId" to categoryId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
 
+        val category = categoriesRepository.findById(categoryId)
+            .orElseThrow { IllegalArgumentException("Invalid category ID") }
+
+        val categoryNameRoot = category.categoryName
+        var i = 1
+        while (categoriesRepository.findAllByCategoryName("$categoryNameRoot (Copy $i)").isNotEmpty()) {
+            i++
+        }
+        val categoryName = "$categoryNameRoot (Copy $i)"
+
+        val newCategory = Categories(
+            categoryName = categoryName,
+            canAddPoints = category.canAddPoints,
+            lightColor = category.lightColor,
+            darkColor = category.darkColor,
+            label = category.label
+        )
+
+        val resultCategory = categoriesRepository.save(newCategory)
+
+        val subcategories = subcategoriesRepository.findByCategory(category).filter { it.edition == null }
+        subcategories.forEach {
+            val subcategoryInput = SubcategoryInput(
+                subcategoryName = it.subcategoryName,
+                maxPoints = it.maxPoints.toFloat(),
+                ordinalNumber = it.ordinalNumber,
+                categoryId = resultCategory.categoryId,
+                label = it.label
+            )
+            subcategoriesDataFetcher.addSubcategoryHelper(subcategoryInput)
+        }
+
+        return resultCategory
+    }
 }

@@ -1,24 +1,64 @@
 package backend.graphql.permissions
 
 import backend.award.AwardRepository
+import backend.categories.CategoriesRepository
 import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
+import backend.edition.Edition
 import backend.edition.EditionRepository
+import backend.graphql.AwardEditionDataFetcher
+import backend.graphql.CategoryEditionDataFetcher
+import backend.graphql.ChestEditionDataFetcher
+import backend.graphql.GroupsDataFetcher
 import backend.graphql.utils.PhotoAssigner
 import backend.graphql.utils.Permission
+import backend.groups.GroupsRepository
 import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getIntField
 import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.JsonNodeExtensions.getStringField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
+import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.InputArgument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
 class EditionPermissions {
+
+    @Autowired
+    private lateinit var groupsPermissions: GroupsPermissions
+
+    @Autowired
+    private lateinit var chestEditionPermissions: ChestEditionPermissions
+
+    @Autowired
+    private lateinit var awardEditionPermissions: AwardEditionPermissions
+
+    @Autowired
+    private lateinit var categoryEditionPermissions: CategoryEditionPermissions
+
+    @Autowired
+    private lateinit var groupsDataFetcher: GroupsDataFetcher
+
+    @Autowired
+    private lateinit var groupsRepository: GroupsRepository
+
+    @Autowired
+    private lateinit var chestEditionDataFetcher: ChestEditionDataFetcher
+
+    @Autowired
+    private lateinit var awardEditionDataFetcher: AwardEditionDataFetcher
+
+    @Autowired
+    private lateinit var categoryEditionDataFetcher: CategoryEditionDataFetcher
+
+    @Autowired
+    private lateinit var categoriesRepository: CategoriesRepository
 
     @Autowired
     private lateinit var editionRepository: EditionRepository
@@ -244,6 +284,91 @@ class EditionPermissions {
                 arguments = arguments,
                 allow = false,
                 reason = "Edition has already started"
+            )
+        }
+
+        val categories = categoriesRepository.findByCategoryEdition_Edition(edition)
+        categories.forEach {
+            categoryEditionPermissions.checkRemoveCategoryFromEditionHelperPermission(it.categoryId, edition.editionId)
+        }
+
+        val awards = awardRepository.findByAwardEditions_Edition(edition)
+
+        awards.forEach {
+            awardEditionPermissions.checkRemoveAwardFromEditionHelperPermission(it.awardId, edition.editionId)
+        }
+
+        val chests = chestsRepository.findByChestEdition_Edition(edition)
+
+        chests.forEach {
+            chestEditionPermissions.checkRemoveChestFromEditionHelperPermission(it.chestId, edition.editionId)
+        }
+
+        val groups = groupsRepository.findByEdition(edition)
+
+        groups.forEach {
+            groupsPermissions.checkRemoveGroupHelperPermission(it.groupsId)
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkCopyEditionPermission(arguments: JsonNode): Permission {
+        val action = "copyEdition"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can copy editions"
+            )
+        }
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+        val editionYear = arguments.getIntField("editionYear") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionYear'"
+        )
+
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+
+        val currentYear = LocalDate.now().year
+
+        if (editionYear < currentYear-1 || editionYear > currentYear + 10) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition year must be between ${currentYear-1} and ${currentYear + 10}"
+            )
+        }
+
+        if (editionRepository.existsByEditionYear(editionYear)) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition with year $editionYear already exists"
             )
         }
 

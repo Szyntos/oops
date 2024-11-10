@@ -2,12 +2,14 @@ package backend.graphql.permissions
 
 import backend.award.AwardRepository
 import backend.categories.CategoriesRepository
+import backend.categoryEdition.CategoryEdition
 import backend.categoryEdition.CategoryEditionRepository
 import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecksRepository
+import backend.graphql.SubcategoryInput
 import backend.graphql.utils.PhotoAssigner
 import backend.graphql.utils.Permission
 import backend.subcategories.SubcategoriesRepository
@@ -15,8 +17,10 @@ import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -203,6 +207,89 @@ class CategoryEditionPermissions {
                 reason = "Edition has already started"
             )
         }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkAddCategoryToEditionHelperPermission(categoryId: Long, editionId: Long): Permission {
+        val action = "addCategoryToEditionHelper"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "categoryId" to categoryId,
+                "editionId" to editionId
+            )
+        )
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can add categories to editions"
+            )
+        }
+
+        val category = categoriesRepository.findById(categoryId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category not found"
+            )
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition not found"
+            )
+
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkRemoveCategoryFromEditionHelperPermission(categoryId: Long, editionId: Long): Permission {
+        val action = "removeCategoryFromEditionHelper"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "categoryId" to categoryId,
+                "editionId" to editionId
+            )
+        )
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can remove categories from editions"
+            )
+        }
+
+        val category = categoriesRepository.findById(categoryId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category not found"
+            )
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition not found"
+            )
 
         return Permission(
             action = action,

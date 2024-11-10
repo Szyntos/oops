@@ -308,6 +308,7 @@ class LevelSetDataFetcher {
         return true
     }
 
+    @Transactional
     fun addLevelHelper(
         levelSet: LevelSet,
         name: String,
@@ -370,7 +371,7 @@ class LevelSetDataFetcher {
         return level
     }
 
-
+    @Transactional
     fun editLevelHelper(
         levelId: Long,
         name: String?,

@@ -87,6 +87,7 @@ class PermissionService {
             "addCategory" -> categoriesPermissions.checkAddCategoryPermission(jsonArguments)
             "editCategory" -> categoriesPermissions.checkEditCategoryPermission(jsonArguments)
             "removeCategory" -> categoriesPermissions.checkRemoveCategoryPermission(jsonArguments)
+            "copyCategory" -> categoriesPermissions.checkCopyCategoryPermission(jsonArguments)
             // CategoryEditionPermissions
             "addCategoryToEdition" -> categoryEditionPermissions.checkAddCategoryToEditionPermission(jsonArguments)
             "removeCategoryFromEdition" -> categoryEditionPermissions.checkRemoveCategoryFromEditionPermission(jsonArguments)
@@ -109,6 +110,7 @@ class PermissionService {
             // EditionPermissions
             "addEdition" -> editionPermissions.checkAddEditionPermission(jsonArguments)
             "editEdition" -> editionPermissions.checkEditEditionPermission(jsonArguments)
+            "copyEdition" -> editionPermissions.checkCopyEditionPermission(jsonArguments)
             "removeEdition" -> editionPermissions.checkRemoveEditionPermission(jsonArguments)
             // FilePermissions
             "getFilesGroupedByType" -> filePermissions.checkGetFilesGroupedByTypePermission(jsonArguments)
@@ -146,6 +148,7 @@ class PermissionService {
             "addPoints" -> pointsPermissions.checkAddPointsPermission(jsonArguments)
             "editPoints" -> pointsPermissions.checkEditPointsPermission(jsonArguments)
             "removePoints" -> pointsPermissions.checkRemovePointsPermission(jsonArguments)
+            "addPointsToGroup" -> pointsPermissions.checkAddPointsToGroupPermission(jsonArguments)
             // SubcategoriesPermissions
             "addSubcategory" -> subcategoriesPermissions.checkAddSubcategoryPermission(jsonArguments)
             "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)

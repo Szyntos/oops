@@ -9,6 +9,7 @@ import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
+import backend.graphql.permissions.ChestEditionPermissions
 import backend.graphql.utils.PermissionDeniedException
 import backend.graphql.utils.PermissionInput
 import backend.graphql.utils.PermissionService
@@ -23,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @DgsComponent
 class ChestEditionDataFetcher {
+
+    @Autowired
+    private lateinit var chestEditionPermissions: ChestEditionPermissions
 
     @Autowired
     private lateinit var permissionService: PermissionService
@@ -76,6 +80,15 @@ class ChestEditionDataFetcher {
         if (!permission.allow) {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
+        return addChestToEditionHelper(chestId, editionId)
+    }
+
+    @Transactional
+    fun addChestToEditionHelper(chestId: Long, editionId: Long): ChestEdition {
+        val permission = chestEditionPermissions.checkAddChestToEditionHelperPermission(chestId, editionId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
@@ -92,7 +105,6 @@ class ChestEditionDataFetcher {
         return resultChestEdition
     }
 
-    @DgsMutation
     @Transactional
     fun removeChestFromEdition(@InputArgument chestId: Long, @InputArgument editionId: Long): Boolean {
         val action = "removeChestFromEdition"
@@ -105,6 +117,15 @@ class ChestEditionDataFetcher {
             arguments = objectMapper.writeValueAsString(arguments)
         )
         val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+        return removeChestFromEditionHelper(chestId, editionId)
+    }
+
+    @Transactional
+    fun removeChestFromEditionHelper(chestId: Long, editionId: Long): Boolean {
+        val permission = chestEditionPermissions.checkRemoveChestFromEditionHelperPermission(chestId, editionId)
         if (!permission.allow) {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }

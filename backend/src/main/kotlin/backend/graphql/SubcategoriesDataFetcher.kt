@@ -197,6 +197,7 @@ class SubcategoriesDataFetcher {
         return true
     }
 
+    @Transactional
     fun addSubcategoryHelper(subcategory: SubcategoryInput): Subcategories {
         val permission = subcategoriesPermissions.checkAddSubcategoryHelperPermission(subcategory)
         if (!permission.allow) {

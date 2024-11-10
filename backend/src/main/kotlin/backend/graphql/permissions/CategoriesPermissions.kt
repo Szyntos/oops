@@ -7,6 +7,7 @@ import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.gradingChecks.GradingChecksRepository
+import backend.graphql.SubcategoryInput
 import backend.graphql.utils.PhotoAssigner
 import backend.graphql.utils.Permission
 import backend.subcategories.SubcategoriesRepository
@@ -17,8 +18,11 @@ import backend.utils.JsonNodeExtensions.getStringField
 import backend.utils.JsonNodeExtensions.getSubcategoryInputList
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
+import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.InputArgument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.math.RoundingMode
 import java.time.LocalDate
 import kotlin.jvm.optionals.getOrNull
@@ -340,6 +344,42 @@ class CategoriesPermissions {
             reason = null
         )
 
+    }
+
+    fun checkCopyCategoryPermission(arguments: JsonNode): Permission {
+        val action = "copyCategory"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can copy categories"
+            )
+        }
+
+        val categoryId = arguments.getLongField("categoryId")
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid or missing 'categoryId'"
+            )
+
+        val category = categoriesRepository.findById(categoryId).getOrNull()
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category with id $categoryId not found"
+            )
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
     }
 
 

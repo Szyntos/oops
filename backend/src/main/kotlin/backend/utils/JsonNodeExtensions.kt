@@ -105,6 +105,23 @@ object JsonNodeExtensions {
         )
     }
 
+    fun JsonNode.getGroupPointsInput(fieldName: String): GroupPointsInput? {
+        val node = this.get(fieldName)
+        if (node == null || !node.isObject) return null
+        return GroupPointsInput(
+            studentId = node.getLongField("studentId") ?: return null,
+            value = node.getFloatField("value")
+        )
+    }
+
+    fun JsonNode.getGroupPointsInputList(fieldName: String): List<GroupPointsInput>? {
+        val node = this.get(fieldName)
+        if (node == null || !node.isArray) return null
+        val groupPointsInputList = node.mapNotNull { it.asGroupPointsInputOrNull() }
+        if (groupPointsInputList.size != node.size()) return null
+        return groupPointsInputList
+    }
+
     fun JsonNode.getLevelInput(fieldName: String): LevelInput? {
         val node = this.get(fieldName)
         if (node == null || !node.isObject) return null
@@ -182,9 +199,22 @@ object JsonNodeExtensions {
         )
     }
 
+    private fun JsonNode.asGroupPointsInputOrNull(): GroupPointsInput? {
+        if (!this.isObject) return null
+        return GroupPointsInput(
+            studentId = this.getLongField("studentId") ?: return null,
+            value = this.getFloatField("value")
+        )
+    }
+
     private fun JsonNode.asDoubleOrNull(): Double? = if (this.isNumber) this.asDouble() else null
 
     private fun JsonNode.asLongOrNull(): Long? = if (this.isNumber) this.asLong() else null
 
     private fun JsonNode.asIntOrNull(): Int? = if (this.isNumber) this.asInt() else null
 }
+
+data class GroupPointsInput(
+    val studentId: Long,
+    val value: Float?
+)

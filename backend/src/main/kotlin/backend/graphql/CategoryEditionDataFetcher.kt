@@ -4,6 +4,7 @@ import backend.categories.CategoriesRepository
 import backend.categoryEdition.CategoryEdition
 import backend.categoryEdition.CategoryEditionRepository
 import backend.edition.EditionRepository
+import backend.graphql.permissions.CategoryEditionPermissions
 import backend.graphql.utils.PermissionDeniedException
 import backend.graphql.utils.PermissionInput
 import backend.graphql.utils.PermissionService
@@ -18,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @DgsComponent
 class CategoryEditionDataFetcher {
+
+    @Autowired
+    private lateinit var categoryEditionPermissions: CategoryEditionPermissions
 
     @Autowired
     private lateinit var permissionService: PermissionService
@@ -56,7 +60,15 @@ class CategoryEditionDataFetcher {
         if (!permission.allow) {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
+        return addCategoryToEditionHelper(categoryId, editionId)
+    }
 
+    @Transactional
+    fun addCategoryToEditionHelper(categoryId: Long, editionId: Long) : CategoryEdition{
+        val permission = categoryEditionPermissions.checkAddCategoryToEditionHelperPermission(categoryId, editionId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
 
         val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Category not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
@@ -102,6 +114,15 @@ class CategoryEditionDataFetcher {
             arguments = objectMapper.writeValueAsString(arguments)
         )
         val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+        return removeCategoryFromEditionHelper(categoryId, editionId)
+    }
+
+    @Transactional
+    fun removeCategoryFromEditionHelper(categoryId: Long, editionId: Long): Boolean {
+        val permission = categoryEditionPermissions.checkRemoveCategoryFromEditionHelperPermission(categoryId, editionId)
         if (!permission.allow) {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }

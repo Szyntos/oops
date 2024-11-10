@@ -1,6 +1,7 @@
 package backend.graphql.permissions
 
 import backend.award.AwardRepository
+import backend.awardEdition.AwardEdition
 import backend.awardEdition.AwardEditionRepository
 import backend.bonuses.BonusesRepository
 import backend.edition.EditionRepository
@@ -9,8 +10,10 @@ import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
@@ -176,6 +179,89 @@ class AwardEditionPermissions {
                 reason = "Award has already been assigned to students in this edition"
             )
         }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+
+    fun checkAddAwardToEditionHelperPermission(awardId: Long, editionId: Long): Permission {
+        val action = "addAwardToEdition"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "awardId" to awardId,
+                "editionId" to editionId
+            )
+        )
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can add awards to editions"
+            )
+        }
+
+        val award = awardRepository.findById(awardId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Award not found"
+            )
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition not found"
+            )
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkRemoveAwardFromEditionHelperPermission(awardId: Long, editionId: Long): Permission {
+        val action = "removeAwardFromEditionHelper"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "awardId" to awardId,
+                "editionId" to editionId
+            )
+        )
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can remove awards from editions"
+            )
+        }
+
+        val award = awardRepository.findById(awardId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Award not found"
+            )
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition not found"
+            )
 
         return Permission(
             action = action,

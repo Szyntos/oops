@@ -5,6 +5,7 @@ import backend.awardEdition.AwardEdition
 import backend.awardEdition.AwardEditionRepository
 import backend.bonuses.BonusesRepository
 import backend.edition.EditionRepository
+import backend.graphql.permissions.AwardEditionPermissions
 import backend.graphql.utils.PermissionDeniedException
 import backend.graphql.utils.PermissionInput
 import backend.graphql.utils.PermissionService
@@ -20,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @DgsComponent
 class AwardEditionDataFetcher {
+
+    @Autowired
+    private lateinit var awardEditionPermissions: AwardEditionPermissions
 
     @Autowired
     private lateinit var permissionService: PermissionService
@@ -59,6 +63,15 @@ class AwardEditionDataFetcher {
         if (!permission.allow) {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
+        return addAwardToEditionHelper(awardId, editionId)
+    }
+
+    @Transactional
+    fun addAwardToEditionHelper(awardId: Long, editionId: Long): AwardEdition {
+        val permission = awardEditionPermissions.checkAddAwardToEditionHelperPermission(awardId, editionId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
@@ -82,6 +95,15 @@ class AwardEditionDataFetcher {
         )
 
         val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+        return removeAwardFromEditionHelper(awardId, editionId)
+    }
+
+    @Transactional
+    fun removeAwardFromEditionHelper(awardId: Long, editionId: Long): Boolean {
+        val permission = awardEditionPermissions.checkRemoveAwardFromEditionHelperPermission(awardId, editionId)
         if (!permission.allow) {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }

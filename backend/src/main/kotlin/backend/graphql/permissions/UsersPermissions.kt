@@ -43,6 +43,39 @@ class UsersPermissions {
     @Value("\${constants.emailDomain}")
     lateinit var emailDomain: String
 
+    fun checkListSetupUsersPermission(arguments: JsonNode): Permission{
+        val action = "listSetupUsers"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only a coordinator can list setup users"
+            )
+        }
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
     fun checkAssignPhotoToUserPermission(arguments: JsonNode): Permission {
         val action = "assignPhotoToUser"
         val currentUser = userMapper.getCurrentUser()

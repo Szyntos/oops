@@ -5,13 +5,13 @@ import backend.bonuses.Bonuses
 import backend.bonuses.BonusesRepository
 import backend.categories.Categories
 import backend.categories.CategoriesRepository
+import backend.categoryEdition.CategoryEdition
+import backend.edition.Edition
 import backend.edition.EditionRepository
+import backend.files.FileEntity
 import backend.files.FileEntityRepository
 import backend.graphql.permissions.GroupsPermissions
-import backend.graphql.utils.PhotoAssigner
-import backend.graphql.utils.PermissionDeniedException
-import backend.graphql.utils.PermissionInput
-import backend.graphql.utils.PermissionService
+import backend.graphql.utils.*
 import backend.groups.Groups
 import backend.groups.GroupsRepository
 import backend.levels.LevelsRepository
@@ -32,6 +32,7 @@ import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
+import jakarta.persistence.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -90,6 +91,73 @@ class GroupsDataFetcher {
 
     @Autowired
     lateinit var usersDataFetcher: UsersDataFetcher
+
+    @DgsQuery
+    @Transactional
+    fun listSetupGroups(@InputArgument editionId: Long): List<GroupWithPermissions> {
+        val action = "listSetupGroups"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+
+        val groups = groupsRepository.findByEdition(edition).map { group ->
+            GroupWithPermissions(
+                group = GroupOutputType(
+                    groupsId = group.groupsId,
+                    groupName = group.groupName,
+                    generatedName = group.generatedName,
+                    usosId = group.usosId,
+                    label = group.label,
+                    teacher = group.teacher,
+                    userGroups = group.userGroups.filter { it.user.role == UsersRoles.STUDENT }.toSet(),
+                    weekday = group.weekday,
+                    startTime = group.startTime,
+                    endTime = group.endTime,
+                    edition = group.edition,
+                    imageFile = group.imageFile
+                ),
+                permissions = ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addGroup",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editGroupWithUsers", objectMapper.writeValueAsString(mapOf("groupsId" to group.groupsId)))),
+                    canCopy =
+                    Permission(
+                        "copyGroup",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeGroup", objectMapper.writeValueAsString(mapOf("groupsId" to group.groupsId)))),
+                    canSelect =
+                    Permission(
+                        "selectGroup",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canUnselect =
+                    Permission(
+                        "unselectGroup",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    additional = emptyList()
+                )
+            )
+        }
+        return groups
+    }
 
     @DgsMutation
     @Transactional
@@ -806,4 +874,24 @@ data class UsersInputType (
 
 data class UserIdsType(
     val userIds: List<Long>
+)
+
+data class GroupWithPermissions(
+    val group: GroupOutputType,
+    val permissions: ListPermissionsOutput
+)
+
+data class GroupOutputType (
+    val groupsId: Long = 0,
+    var groupName: String? = "",
+    var generatedName: String,
+    var usosId: Int,
+    var label: String? = "",
+    var teacher: Users,
+    val userGroups: Set<UserGroups>,
+    var weekday: Weekdays,
+    var startTime: Time,
+    var endTime: Time,
+    var edition: Edition,
+    val imageFile: FileEntity? = null
 )

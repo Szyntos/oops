@@ -4,6 +4,7 @@ import backend.award.AwardRepository
 import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
+import backend.edition.EditionRepository
 import backend.graphql.utils.PhotoAssigner
 import backend.graphql.utils.Permission
 import backend.users.UsersRoles
@@ -18,6 +19,9 @@ import java.time.LocalDate
 
 @Service
 class ChestsPermissions {
+
+    @Autowired
+    private lateinit var editionRepository: EditionRepository
 
     @Autowired
     private lateinit var awardRepository: AwardRepository
@@ -36,6 +40,41 @@ class ChestsPermissions {
 
     @Autowired
     private lateinit var photoAssigner: PhotoAssigner
+
+    fun checkListSetupChestsPermission(arguments: JsonNode): Permission{
+        val action = "listSetupChests"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can list setup chests"
+            )
+        }
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
 
     fun checkAssignPhotoToChestPermission(arguments: JsonNode): Permission {
         val action = "assignPhotoToChest"

@@ -1,5 +1,7 @@
 package backend.points
 
+import backend.bonuses.Bonuses
+import backend.gradingChecks.GradingChecks
 import backend.subcategories.Subcategories
 import backend.users.Users
 import backend.utils.TimestampModel
@@ -34,7 +36,10 @@ class Points(
     var subcategory: Subcategories,
 
     @Column(name = "label", nullable = false, length = 256)
-    var label: String
+    var label: String,
+
+    @OneToMany(mappedBy = "points", fetch = FetchType.LAZY)
+    val bonuses: Set<Bonuses> = HashSet(),
 ) : TimestampModel(){
     constructor() : this(
         student = Users(),

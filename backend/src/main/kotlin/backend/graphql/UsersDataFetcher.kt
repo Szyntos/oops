@@ -7,13 +7,11 @@ import backend.categories.CategoriesRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.files.FileRetrievalService
-import backend.graphql.utils.PermissionDeniedException
-import backend.graphql.utils.PermissionInput
-import backend.graphql.utils.PermissionService
 import backend.graphql.permissions.UsersPermissions
-import backend.graphql.utils.PhotoAssigner
+import backend.graphql.utils.*
 import backend.groups.Groups
 import backend.groups.GroupsRepository
+import backend.levelSet.LevelSet
 import backend.levels.Levels
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
@@ -94,7 +92,59 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @Value("\${constants.emailDomain}")
     lateinit var emailDomain: String
 
-    @DgsMutation
+    @DgsQuery
+    @Transactional
+    fun listSetupUsers(@InputArgument editionId: Long): List<UserWithPermissions> {
+        val action = "listSetupUsers"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val users = usersRepository.findAll().map {
+            UserWithPermissions(
+                user = it,
+                permissions = ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addUser",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
+                    canCopy = Permission(
+                        "copyUser",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
+                    canSelect =
+                    Permission(
+                        "selectUser",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canUnselect =
+                    Permission(
+                        "unselectUser",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    additional = emptyList()
+                )
+            )
+        }.sortedBy { "${it.user.firstName} ${it.user.secondName}" }
+        return users
+    }
+
+
+        @DgsMutation
     @Transactional
     fun assignPhotoToUser(@InputArgument userId: Long, @InputArgument fileId: Long?): Boolean {
         val action = "assignPhotoToUser"
@@ -592,3 +642,9 @@ data class NotValidUser(
     val user: Users,
     val group: Groups
 )
+
+data class UserWithPermissions(
+    val user: Users,
+    val permissions: ListPermissionsOutput
+)
+

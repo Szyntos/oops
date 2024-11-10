@@ -384,9 +384,27 @@ type Query {
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
 
-
   checkFullPermission(input: PermissionInputType!): PermissionType!
   checkPartialPermission(input: PermissionInputType!): PermissionType!
+
+  listSetupUsers(
+    editionId: Int!
+  ): [UserWithPermissionsType!]!
+  listSetupLevelSets(
+      editionId: Int!
+  ): [LevelSetWithPermissionsType!]!
+  listSetupGroups(
+      editionId: Int!
+  ): [GroupWithPermissionsType!]!
+  listSetupChests(
+      editionId: Int!
+  ): [ChestWithPermissionsType!]!
+  listSetupCategories(
+      editionId: Int!
+  ): [CategoryWithPermissionsType!]!
+  listSetupAwards(
+      editionId: Int!
+  ): [AwardWithPermissionsType!]!
 
 
 }
@@ -403,7 +421,9 @@ type AwardType {
   awardValue: String!
   category: CategoryType
   imageFile: FileType
-  awardEditions: [AwardEditionType]
+  chestAward: [ChestAwardType]!
+  bonuses: [BonusType]!
+  awardEditions: [AwardEditionType]!
 }
 
 type AwardEditionType {
@@ -429,7 +449,10 @@ type CategoryType {
   lightColor: String!
   darkColor: String!
   canAddPoints: Boolean!
+  gradingChecks: [GradingChecksType]!
   categoryEdition: [CategoryEditionType]!
+  subcategories: [SubcategoryType]!
+  awards: [AwardType]!
   label: String!
 }
 
@@ -457,13 +480,17 @@ type ChestHistoryType {
   updatedAt: String!
   teacher: UserType!
   opened: Boolean!
+  bonuses: [BonusType]!
 }
 
 type ChestType {
   chestId: ID!
   chestType: String!
   label: String!
+  active: Boolean!
   awardBundleCount: Int!
+  chestHistory: [ChestHistoryType]!
+  chestAward: [ChestAwardType]!
   chestEdition: [ChestEditionType]!
   imageFile: FileType
 }
@@ -475,6 +502,14 @@ type EditionType {
   startDate: String!
   endDate: String!
   label: String!
+  levelSet: LevelSetType!
+  userLevels: [UserLevelType]!
+  categoryEdition: [CategoryEditionType]!
+  chestEdition: [ChestEditionType]!
+  awardEdition: [AwardEditionType]!
+  gradingChecks: [GradingChecksType]!
+  groups: [GroupType]!
+  subcategories: [SubcategoryType]!
 }
 
 type FileType {
@@ -485,6 +520,11 @@ type FileType {
   createdAt: String!
   updatedAt: String!
   label: String!
+  awards: [AwardType]!
+  chests: [ChestType]!
+  groups: [GroupType]!
+  levels: [LevelType]!
+  users: [UserType]!
 }
 
 type GradingChecksType {
@@ -523,6 +563,7 @@ type LevelType {
   highest: Boolean!
   imageFile: FileType
   userLevels: [UserLevelType!]!
+  gradingChecks: [GradingChecksType]!
 }
 
 type PointType {
@@ -532,6 +573,7 @@ type PointType {
   updatedBy: UserType!
   value: String!
   subcategory: SubcategoryType!
+  bonuses: [BonusType]!
   label: String!
   createdAt: String!
   updatedAt: String!
@@ -559,6 +601,9 @@ type SubcategoryType {
   edition: EditionType
   maxPoints: String!
   ordinalNumber: Int!
+  chestHistory: [ChestHistoryType]!
+  points: [PointType]!
+  pointsHistory: [PointsHistoryType]!
 }
 
 type UserGroupType {
@@ -591,6 +636,14 @@ type UserType {
   imageFile: FileType
   userGroups: [UserGroupType]!
   userLevels: [UserLevelType]!
+  points: [PointType]!
+  pointsByTeacher: [PointType]!
+  pointsByUpdatedBy: [PointType]!
+  pointsHistory: [PointsHistoryType]!
+  pointsHistoryByTeacher: [PointsHistoryType]!
+  groups: [GroupType]!
+  chestHistory: [ChestHistoryType]!
+  chestHistoryByTeacher: [ChestHistoryType]!
 }
 
 type WeekdayType {
@@ -599,6 +652,7 @@ type WeekdayType {
   weekdayAbbr: String!
   ordinalNumber: Int!
   label: String!
+  groups: [GroupType]!
 }
 
 enum UsersRolesType {
@@ -739,6 +793,45 @@ type PermissionType {
 type GroupPointsType{
   student: UserType!
   points: PointType
+}
+
+type UserWithPermissionsType{
+  user: UserType!,
+  permissions: ListPermissionsOutputType!
+}
+
+type LevelSetWithPermissionsType{
+  levelSet: LevelSetType!,
+  permissions: ListPermissionsOutputType!
+}
+type GroupWithPermissionsType{
+  group: GroupType!,
+  permissions: ListPermissionsOutputType!
+}
+type ChestWithPermissionsType{
+  chest: ChestType,
+  permissions: ListPermissionsOutputType!
+}
+
+type CategoryWithPermissionsType{
+  category: CategoryType,
+  permissions: ListPermissionsOutputType!
+}
+
+type AwardWithPermissionsType{
+  award: AwardType,
+  permissions: ListPermissionsOutputType!
+}
+
+
+type ListPermissionsOutputType{
+  canAdd: PermissionType!
+  canEdit: PermissionType!
+  canCopy: PermissionType!
+  canRemove: PermissionType!
+  canSelect: PermissionType!
+  canUnselect: PermissionType!
+  additional: [PermissionType!]!
 }
 
 input SubcategoryInputType {

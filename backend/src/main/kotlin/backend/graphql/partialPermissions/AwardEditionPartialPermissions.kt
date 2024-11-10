@@ -1,4 +1,4 @@
-package backend.graphql.permissions
+package backend.graphql.partialPermissions
 
 import backend.award.AwardRepository
 import backend.awardEdition.AwardEdition
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
-class AwardEditionPermissions {
+class AwardEditionPartialPermissions {
 
     @Autowired
     private lateinit var editionRepository: EditionRepository
@@ -153,132 +153,6 @@ class AwardEditionPermissions {
                 reason = "Invalid edition ID"
             )
 
-        if (!awardEditionRepository.existsByAwardAndEdition(award, edition)) {
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "This award does not exist in this edition"
-            )
-        }
-
-        if (edition.endDate.isBefore(LocalDate.now())) {
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Edition has already ended"
-            )
-        }
-
-        if (bonusesRepository.existsByAwardAndPoints_Subcategory_Edition(award, edition)) {
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Award has already been assigned to students in this edition"
-            )
-        }
-
-        return Permission(
-            action = action,
-            arguments = arguments,
-            allow = true,
-            reason = null
-        )
-    }
-
-
-    fun checkAddAwardToEditionHelperPermission(awardId: Long, editionId: Long): Permission {
-        val action = "addAwardToEdition"
-        val arguments = objectMapper.valueToTree<JsonNode>(
-            mapOf(
-                "awardId" to awardId,
-                "editionId" to editionId
-            )
-        )
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Only coordinators can add awards to editions"
-            )
-        }
-
-        val award = awardRepository.findById(awardId).orElse(null)
-            ?: return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Award not found"
-            )
-        val edition = editionRepository.findById(editionId).orElse(null)
-            ?: return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Edition not found"
-            )
-        if (awardEditionRepository.existsByAward_AwardNameAndEdition(award.awardName, edition)) {
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Award with this name already exists in this edition"
-            )
-        }
-
-        if (award.category.categoryEdition.none { it.edition == edition }) {
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Award's category does not exist in this edition"
-            )
-        }
-
-        return Permission(
-            action = action,
-            arguments = arguments,
-            allow = true,
-            reason = null
-        )
-    }
-
-    fun checkRemoveAwardFromEditionHelperPermission(awardId: Long, editionId: Long): Permission {
-        val action = "removeAwardFromEditionHelper"
-        val arguments = objectMapper.valueToTree<JsonNode>(
-            mapOf(
-                "awardId" to awardId,
-                "editionId" to editionId
-            )
-        )
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Only coordinators can remove awards from editions"
-            )
-        }
-
-        val award = awardRepository.findById(awardId).orElse(null)
-            ?: return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Award not found"
-            )
-        val edition = editionRepository.findById(editionId).orElse(null)
-            ?: return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Edition not found"
-            )
         if (!awardEditionRepository.existsByAwardAndEdition(award, edition)) {
             return Permission(
                 action = action,

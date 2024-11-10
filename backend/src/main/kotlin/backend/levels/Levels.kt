@@ -2,6 +2,7 @@ package backend.levels
 
 import backend.edition.Edition
 import backend.files.FileEntity
+import backend.gradingChecks.GradingChecks
 import backend.levelSet.LevelSet
 import backend.userLevel.UserLevel
 import backend.utils.HasImageFile
@@ -47,6 +48,9 @@ class Levels(
 
     @OneToMany(mappedBy = "level", fetch = FetchType.LAZY)
     val userLevels: Set<UserLevel> = HashSet(),
+
+    @OneToMany(mappedBy = "endOfLabsLevelsThreshold", fetch = FetchType.LAZY)
+    val gradingChecks: Set<GradingChecks> = HashSet(),
 ) : HasImageFile {
     constructor() : this(
         levelName = "",

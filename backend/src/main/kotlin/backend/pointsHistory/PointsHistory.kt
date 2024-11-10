@@ -1,4 +1,4 @@
-package backend.pointHistory
+package backend.pointsHistory
 
 import backend.subcategories.Subcategories
 import backend.users.Users

@@ -70,6 +70,40 @@ class GroupsPermissions {
     @Autowired
     private lateinit var photoAssigner: PhotoAssigner
 
+    fun checkListSetupGroupsPermission(arguments: JsonNode): Permission{
+        val action = "listSetupGroups"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can list setup groups"
+            )
+        }
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
     fun checkAssignPhotosToGroupsPermission(arguments: JsonNode): Permission {
         val action = "assignPhotosToGroups"
         val currentUser = userMapper.getCurrentUser()

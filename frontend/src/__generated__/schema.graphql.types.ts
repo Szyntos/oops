@@ -25,6 +25,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  JSON: { input: string; output: string };
   bigint: { input: string; output: string };
   date: { input: string; output: string };
   float8: { input: number; output: number };
@@ -7405,6 +7406,19 @@ export type PartialBonusType = {
   partialValue: Scalars["Float"]["output"];
 };
 
+export type PermissionInputType = {
+  action: Scalars["String"]["input"];
+  arguments: Scalars["JSON"]["input"];
+};
+
+export type PermissionType = {
+  __typename?: "PermissionType";
+  action: Scalars["String"]["output"];
+  allow: Scalars["Boolean"]["output"];
+  arguments: Scalars["JSON"]["output"];
+  reason?: Maybe<Scalars["String"]["output"]>;
+};
+
 export type PointType = {
   __typename?: "PointType";
   createdAt: Scalars["String"]["output"];
@@ -11642,7 +11656,7 @@ export type Mutation_RootAddLevelSetArgs = {
 /** mutation root */
 export type Mutation_RootAddLevelSetToEditionArgs = {
   editionId: Scalars["Int"]["input"];
-  levelSetID: Scalars["Int"]["input"];
+  levelSetId: Scalars["Int"]["input"];
 };
 
 /** mutation root */
@@ -12963,6 +12977,8 @@ export type Query_Root = {
   categoryEditionAggregate: CategoryEditionAggregate;
   /** fetch data from the table: "category_edition" using primary key columns */
   categoryEditionByPk?: Maybe<CategoryEdition>;
+  checkFullPermission: PermissionType;
+  checkPartialPermission: PermissionType;
   /** fetch data from the table: "chest_award" */
   chestAward: Array<ChestAward>;
   /** fetch aggregated fields from the table: "chest_award" */
@@ -13189,6 +13205,14 @@ export type Query_RootCategoryEditionAggregateArgs = {
 export type Query_RootCategoryEditionByPkArgs = {
   categoryId: Scalars["bigint"]["input"];
   editionId: Scalars["bigint"]["input"];
+};
+
+export type Query_RootCheckFullPermissionArgs = {
+  input: PermissionInputType;
+};
+
+export type Query_RootCheckPartialPermissionArgs = {
+  input: PermissionInputType;
 };
 
 export type Query_RootChestAwardArgs = {

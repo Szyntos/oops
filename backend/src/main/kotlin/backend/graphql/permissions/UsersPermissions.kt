@@ -45,27 +45,8 @@ import kotlin.math.min
 
 @Service
 class UsersPermissions {
-
-    @Autowired
-    private lateinit var bonusesRepository: BonusesRepository
-
-    @Autowired
-    private lateinit var pointsRepository: PointsRepository
-
-    @Autowired
-    private lateinit var firebaseUserService: FirebaseUserService
-
-    @Autowired
-    private lateinit var usersDataFetcher: UsersDataFetcher
-
-    @Autowired
-    private lateinit var userGroupsRepository: UserGroupsRepository
-
     @Autowired
     private lateinit var usersRepository: UsersRepository
-
-    @Autowired
-    private lateinit var weekdaysRepository: WeekdaysRepository
 
     @Autowired
     private lateinit var fileEntityRepository: FileEntityRepository
@@ -77,19 +58,7 @@ class UsersPermissions {
     private lateinit var editionRepository: EditionRepository
 
     @Autowired
-    private lateinit var awardRepository: AwardRepository
-
-    @Autowired
     private lateinit var userMapper: UserMapper
-
-    @Autowired
-    private lateinit var chestsRepository: ChestsRepository
-
-    @Autowired
-    private lateinit var chestEditionRepository: ChestEditionRepository
-
-    @Autowired
-    private lateinit var chestHistoryRepository: ChestHistoryRepository
 
     @Autowired
     private lateinit var photoAssigner: PhotoAssigner

@@ -9164,6 +9164,11 @@ input IntComparisonExp {
   _nin: [Int!]
 }
 
+"""
+A JSON scalar
+"""
+scalar JSON
+
 input LevelInputType {
   grade: String!
   imageFileId: ID
@@ -10458,6 +10463,18 @@ type ParsedUsersTypeType {
 type PartialBonusType {
   bonuses: BonusType!
   partialValue: Float!
+}
+
+input PermissionInputType {
+  action: String!
+  arguments: JSON!
+}
+
+type PermissionType {
+  action: String!
+  allow: Boolean!
+  arguments: JSON!
+  reason: String
 }
 
 type PointType {
@@ -15815,7 +15832,7 @@ type mutation_root {
     weekdayId: Int!
   ): GroupType
   addLevelSet(levels: [LevelInputType!]!): LevelSetType!
-  addLevelSetToEdition(editionId: Int!, levelSetID: Int!): LevelSetType!
+  addLevelSetToEdition(editionId: Int!, levelSetId: Int!): LevelSetType!
   addPoints(
     checkDates: Boolean = true
     studentId: Int!
@@ -18408,6 +18425,8 @@ type query_root {
   fetch data from the table: "category_edition" using primary key columns
   """
   categoryEditionByPk(categoryId: bigint!, editionId: bigint!): CategoryEdition
+  checkFullPermission(input: PermissionInputType!): PermissionType!
+  checkPartialPermission(input: PermissionInputType!): PermissionType!
 
   """
   fetch data from the table: "chest_award"

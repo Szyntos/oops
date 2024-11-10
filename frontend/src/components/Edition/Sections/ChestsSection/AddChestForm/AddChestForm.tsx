@@ -10,7 +10,7 @@ const ValidationSchema = z.object({
   fileId: z.string(),
   name: z.string().min(1),
   awardThisEditionIds: z.array(z.string()),
-  awardsNotThisEdition: z.array(z.string()),
+  awardNotThisEditionIds: z.array(z.string()),
 });
 
 export type ChestFormValues = z.infer<typeof ValidationSchema>;
@@ -30,7 +30,7 @@ const defaultInitialValues: ChestFormValues = {
   fileId: "",
   name: "",
   awardThisEditionIds: [],
-  awardsNotThisEdition: [],
+  awardNotThisEditionIds: [],
 };
 
 export const AddChestForm = ({
@@ -142,11 +142,11 @@ export const AddChestForm = ({
           <SelectImage
             type="award"
             options={awardsNotThisEdition}
-            selectedIds={formik.values.awardsNotThisEdition}
+            selectedIds={formik.values.awardNotThisEditionIds}
             onSelectClick={(updatedIds: string[]) =>
               formik.setValues({
                 ...formik.values,
-                awardsNotThisEdition: updatedIds,
+                awardNotThisEditionIds: updatedIds,
               })
             }
             error={undefined}

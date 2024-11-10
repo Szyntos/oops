@@ -122,7 +122,7 @@ export const useChestsSection = (editionId: number) => {
         variables: {
           awardIds: [
             ...values.awardThisEditionIds.map((id) => parseInt(id)),
-            ...values.awardsNotThisEdition.map((id) => parseInt(id)),
+            ...values.awardNotThisEditionIds.map((id) => parseInt(id)),
           ],
           chestId: parseInt(selectedChest?.chestId as string),
           awardBundleCount: values.awardBundleCount,

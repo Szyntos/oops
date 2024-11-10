@@ -96,12 +96,19 @@ export const ChestsSection = () => {
                   awardBundleCount: selectedChest.awardBundleCount,
                   fileId: selectedChest.imageFileId as string,
                   name: selectedChest.type,
-                  awardIds: selectedChest.chestAwards.map(
-                    (award) => award.award.awardId,
-                  ),
-                  awardsNotFormThisEdition: selectedChest.chestAwards.map(
-                    (award) => award.award.awardId,
-                  ),
+                  awardIds: selectedChest.chestAwards
+                    .filter((a) =>
+                      selectedAwards.some((e) => e.awardId === a.award.awardId),
+                    )
+                    .map((award) => award.award.awardId),
+                  awardsNotFormThisEdition: selectedChest.chestAwards
+                    .filter(
+                      (a) =>
+                        !selectedAwards.some(
+                          (e) => e.awardId === a.award.awardId,
+                        ),
+                    )
+                    .map((award) => award.award.awardId),
                 }
               : undefined
           }

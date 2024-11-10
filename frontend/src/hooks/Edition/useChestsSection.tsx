@@ -122,7 +122,10 @@ export const useChestsSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await editChest({
         variables: {
-          awardIds: values.awardIds.map((id) => parseInt(id)),
+          awardIds: [
+            ...values.awardIds.map((id) => parseInt(id)),
+            ...values.awardsNotFormThisEdition.map((id) => parseInt(id)),
+          ],
           chestId: parseInt(selectedChest?.chestId as string),
           awardBundleCount: values.awardBundleCount,
           fileId: parseInt(values.fileId),

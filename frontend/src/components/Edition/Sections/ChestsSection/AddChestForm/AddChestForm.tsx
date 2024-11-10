@@ -64,7 +64,7 @@ export const AddChestForm = ({
 
       if (values.awardIds.length < values.awardBundleCount) {
         errors.awardIds =
-          "number of selected awards cannot be smaller than awardBundleCount";
+          "number of selected awards in this edition cannot be smaller than awardBundleCount";
       }
 
       return errors;
@@ -146,8 +146,8 @@ export const AddChestForm = ({
                 awardsNotFormThisEdition: updatedIds,
               })
             }
-            error={formik.errors.awardsNotFormThisEdition as string}
-            touched={formik.touched.awardsNotFormThisEdition}
+            error={undefined}
+            touched={undefined}
             selectVariant={"multiple"}
             title={"select awards not from edition:"}
           />

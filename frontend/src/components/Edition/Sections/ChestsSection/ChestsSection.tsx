@@ -103,7 +103,7 @@ export const ChestsSection = () => {
                       ),
                     )
                     .map((award) => award.award.awardId),
-                  awardsNotThisEdition: selectedChest.chestAwards
+                  awardNotThisEditionIds: selectedChest.chestAwards
                     .filter(
                       (a) =>
                         !selectedAwards.some(

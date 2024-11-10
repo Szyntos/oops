@@ -37,7 +37,7 @@ class CustomDataFetchingExceptionHandler : DataFetcherExceptionHandler {
             CompletableFuture.completedFuture(result)
         } else {
             // Log other exceptions if needed
-            logger.error("Exception in data fetcher: ${exception.message}", exception)
+//            logger.error("Exception in data fetcher: ${exception.message}", exception)
             // Delegate to the default handler for other exceptions
             defaultHandler.handleException(handlerParameters)
         }

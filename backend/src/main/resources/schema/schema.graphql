@@ -384,9 +384,27 @@ type Query {
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
 
-
   checkFullPermission(input: PermissionInputType!): PermissionType!
   checkPartialPermission(input: PermissionInputType!): PermissionType!
+
+  listSetupUsers(
+    editionId: Int!
+  ): [UserWithPermissionsType!]!
+  listSetupLevelSets(
+      editionId: Int!
+  ): [LevelSetWithPermissionsType!]!
+  listSetupGroups(
+      editionId: Int!
+  ): [GroupWithPermissionsType!]!
+  listSetupChests(
+      editionId: Int!
+  ): [ChestWithPermissionsType!]!
+  listSetupCategories(
+      editionId: Int!
+  ): [CategoryWithPermissionsType!]!
+  listSetupAwards(
+      editionId: Int!
+  ): [AwardWithPermissionsType!]!
 
 
 }
@@ -430,6 +448,7 @@ type CategoryType {
   darkColor: String!
   canAddPoints: Boolean!
   categoryEdition: [CategoryEditionType]!
+  subcategories: [SubcategoryType]!
   label: String!
 }
 
@@ -739,6 +758,45 @@ type PermissionType {
 type GroupPointsType{
   student: UserType!
   points: PointType
+}
+
+type UserWithPermissionsType{
+  user: UserType!,
+  permissions: ListPermissionsOutputType!
+}
+
+type LevelSetWithPermissionsType{
+  levelSet: LevelSetType!,
+  permissions: ListPermissionsOutputType!
+}
+type GroupWithPermissionsType{
+  group: GroupType!,
+  permissions: ListPermissionsOutputType!
+}
+type ChestWithPermissionsType{
+  chest: ChestType,
+  permissions: ListPermissionsOutputType!
+}
+
+type CategoryWithPermissionsType{
+  category: CategoryType,
+  permissions: ListPermissionsOutputType!
+}
+
+type AwardWithPermissionsType{
+  award: AwardType,
+  permissions: ListPermissionsOutputType!
+}
+
+
+type ListPermissionsOutputType{
+  canAdd: PermissionType!
+  canEdit: PermissionType!
+  canCopy: PermissionType!
+  canRemove: PermissionType!
+  canSelect: PermissionType!
+  canUnselect: PermissionType!
+  additional: [PermissionType!]!
 }
 
 input SubcategoryInputType {

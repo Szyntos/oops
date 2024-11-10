@@ -3,15 +3,17 @@ package backend.graphql
 import backend.award.AwardRepository
 import backend.categories.Categories
 import backend.categories.CategoriesRepository
+import backend.categoryEdition.CategoryEdition
 import backend.categoryEdition.CategoryEditionRepository
+import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecksRepository
-import backend.graphql.utils.PermissionDeniedException
-import backend.graphql.utils.PermissionInput
-import backend.graphql.utils.PermissionService
+import backend.graphql.utils.*
+import backend.subcategories.Subcategories
 import backend.subcategories.SubcategoriesRepository
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +22,9 @@ import java.math.RoundingMode
 
 @DgsComponent
 class CategoriesDataFetcher {
+    @Autowired
+    private lateinit var editionRepository: EditionRepository
+
     @Autowired
     private lateinit var permissionService: PermissionService
 
@@ -43,6 +48,55 @@ class CategoriesDataFetcher {
 
     @Autowired
     lateinit var subcategoriesDataFetcher: SubcategoriesDataFetcher
+
+    @DgsQuery
+    @Transactional
+    fun listSetupCategories(@InputArgument editionId: Long): List<CategoryWithPermissions> {
+        val action = "listSetupCategories"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val categoriesList = categoriesRepository.findAll().map { category ->
+            CategoryWithPermissions(
+                category = CategoryOutputType(
+                    categoryId = category.categoryId,
+                    categoryName = category.categoryName,
+                    lightColor = category.lightColor,
+                    darkColor = category.darkColor,
+                    canAddPoints = category.canAddPoints,
+                    categoryEdition = category.categoryEdition.toList(),
+                    subcategories = category.subcategories
+                        .filter { it.edition == null }
+                        .sortedBy { it.ordinalNumber }.toList(),
+                    label = category.label
+                ),
+                permissions = ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addCategory",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editCategory", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId)))),
+                    canCopy = permissionService.checkPartialPermission(PermissionInput("copyCategory", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeCategory", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId)))),
+                    canSelect = permissionService.checkPartialPermission(PermissionInput("addCategoryToEdition", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId, "editionId" to editionId)))),
+                    canUnselect = permissionService.checkPartialPermission(PermissionInput("removeCategoryFromEdition", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId, "editionId" to editionId)))),
+                    additional = emptyList()
+                )
+            )
+
+        }.sortedBy { it.category.categoryName }
+        return categoriesList
+    }
 
     @DgsMutation
     @Transactional
@@ -295,3 +349,20 @@ class CategoriesDataFetcher {
         return resultCategory
     }
 }
+
+data class CategoryWithPermissions(
+    val category: CategoryOutputType,
+    val permissions: ListPermissionsOutput
+)
+
+data class CategoryOutputType (
+    val categoryId: Long,
+    val categoryName: String,
+    val lightColor: String,
+    val darkColor: String,
+    val canAddPoints: Boolean,
+    val categoryEdition: List<CategoryEdition>,
+    val subcategories: List<Subcategories>,
+    val label: String
+)
+

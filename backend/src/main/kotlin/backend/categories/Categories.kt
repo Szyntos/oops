@@ -1,6 +1,7 @@
 package backend.categories
 
 import backend.categoryEdition.CategoryEdition
+import backend.subcategories.Subcategories
 import backend.userLevel.UserLevel
 import jakarta.persistence.*
 
@@ -29,6 +30,9 @@ class Categories(
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     val categoryEdition: Set<CategoryEdition> = HashSet(),
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    val subcategories: Set<Subcategories> = HashSet(),
 ) {
     constructor() : this(
         categoryName = "LABORATORY",

@@ -1,5 +1,6 @@
 package backend.graphql
 
+import backend.award.Award
 import backend.award.AwardRepository
 import backend.awardEdition.AwardEditionRepository
 import backend.categories.CategoriesRepository
@@ -11,17 +12,15 @@ import backend.chests.Chests
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
-import backend.graphql.utils.PhotoAssigner
-import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.*
 import backend.groups.GroupsRepository
-import backend.graphql.utils.PermissionInput
-import backend.graphql.utils.PermissionService
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -76,6 +75,42 @@ class ChestsDataFetcher {
 
     @Autowired
     lateinit var photoAssigner: PhotoAssigner
+
+    @DgsQuery
+    @Transactional
+    fun listSetupChests(@InputArgument editionId: Long): List<ChestWithPermissions>{
+        val arguments = mapOf("editionId" to editionId)
+        val permissionInput = PermissionInput(
+            action = "listSetupChests",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val chests = chestsRepository.findAll().map {
+            ChestWithPermissions(
+                chest = it,
+                permissions = ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addChest",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
+                    canCopy = permissionService.checkPartialPermission(PermissionInput("copyChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
+                    canSelect = permissionService.checkPartialPermission(PermissionInput("addChestToEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
+                    canUnselect = permissionService.checkPartialPermission(PermissionInput("removeChestFromEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
+                    additional = emptyList()
+                )
+            )
+        }
+
+        return chests
+    }
 
     @DgsMutation
     @Transactional
@@ -337,3 +372,8 @@ class ChestsDataFetcher {
         return chestsRepository.save(newChest)
     }
 }
+
+data class ChestWithPermissions(
+    val chest: Chests,
+    val permissions: ListPermissionsOutput
+)

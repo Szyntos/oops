@@ -60,6 +60,40 @@ class AwardsPermissions {
     @Autowired
     private lateinit var photoAssigner: PhotoAssigner
 
+    fun checkListSetupAwardsPermission(arguments: JsonNode): Permission{
+        val action = "listSetupAwards"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can list setup awards"
+            )
+        }
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
     fun checkAssignPhotoToAwardPermission(arguments: JsonNode): Permission {
         val action = "assignPhotoToAward"
         val currentUser = userMapper.getCurrentUser()

@@ -1,15 +1,18 @@
-package backend.graphql.permissions
+package backend.graphql.partialPermissions
 
 import backend.award.AwardRepository
-import backend.awardEdition.AwardEditionRepository
-import backend.chestAward.ChestAwardRepository
-import backend.chestEdition.ChestEdition
+import backend.categories.CategoriesRepository
+import backend.categoryEdition.CategoryEdition
+import backend.categoryEdition.CategoryEditionRepository
 import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
+import backend.gradingChecks.GradingChecksRepository
+import backend.graphql.SubcategoryInput
 import backend.graphql.utils.PhotoAssigner
 import backend.graphql.utils.Permission
+import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.UserMapper
@@ -18,18 +21,25 @@ import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.jvm.optionals.getOrNull
 
 @Service
-class ChestEditionPermissions {
+class CategoryEditionPartialPermissions {
 
     @Autowired
-    private lateinit var awardEditionRepository: AwardEditionRepository
-
-    @Autowired
-    private lateinit var chestAwardRepository: ChestAwardRepository
+    private lateinit var categoryEditionRepository: CategoryEditionRepository
 
     @Autowired
     private lateinit var editionRepository: EditionRepository
+
+    @Autowired
+    private lateinit var subcategoriesRepository: SubcategoriesRepository
+
+    @Autowired
+    private lateinit var gradingChecksRepository: GradingChecksRepository
+
+    @Autowired
+    private lateinit var categoriesRepository: CategoriesRepository
 
     @Autowired
     private lateinit var awardRepository: AwardRepository
@@ -49,47 +59,47 @@ class ChestEditionPermissions {
     @Autowired
     private lateinit var photoAssigner: PhotoAssigner
 
-    fun checkAddChestToEditionPermission(arguments: JsonNode): Permission {
-        val action = "addChestToEdition"
+    fun checkAddCategoryToEditionPermission(arguments: JsonNode): Permission {
+        val action = "addCategoryToEdition"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add chests to editions"
+                reason = "Only coordinators can add categories to editions"
             )
         }
 
-        val chestId = arguments.getLongField("chestId") ?: return Permission(
-            action = action,
-            arguments = arguments,
-            allow = false,
-            reason = "Invalid or missing 'chestId'"
-        )
-
-        val editionId = arguments.getLongField("editionId") ?: return Permission(
-            action = action,
-            arguments = arguments,
-            allow = false,
-            reason = "Invalid or missing 'editionId'"
-        )
-
-        val chest = chestsRepository.findById(chestId).orElse(null)
+        val categoryId = arguments.getLongField("categoryId")
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Invalid or missing 'categoryId'"
             )
 
-        val edition = editionRepository.findById(editionId).orElse(null)
+        val editionId = arguments.getLongField("editionId")
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Invalid or missing 'editionId'"
             )
+
+        val category = categoriesRepository.findById(categoryId).getOrNull() ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Category not found"
+        )
+
+        val edition = editionRepository.findById(editionId).getOrNull() ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Edition not found"
+        )
 
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
             return Permission(
@@ -99,24 +109,22 @@ class ChestEditionPermissions {
                 reason = "Edition has already ended"
             )
         }
-
-        if (chestEditionRepository.existsByChest_ChestTypeAndEdition(chest.chestType, edition)){
+        // TODO: Delete userId check
+        if (edition.startDate.isBefore(java.time.LocalDate.now()) && currentUser.userId != 0L){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Chest with this type already exists in this edition"
+                reason = "Edition has already started"
             )
         }
 
-        val awardsInChest = chestAwardRepository.findByChest(chest).map { it.award }
-
-        if (awardsInChest.any {award -> !awardEditionRepository.existsByAwardAndEdition(award, edition)}){
+        if (categoryEditionRepository.existsByCategory_CategoryNameAndEdition(category.categoryName, edition)){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Not all awards in this chest are available in this edition"
+                reason = "Category with this name already exists in this edition"
             )
         }
 
@@ -128,54 +136,54 @@ class ChestEditionPermissions {
         )
     }
 
-    fun checkRemoveChestFromEditionPermission(arguments: JsonNode): Permission {
-        val action = "removeChestFromEdition"
+    fun checkRemoveCategoryFromEditionPermission(arguments: JsonNode): Permission {
+        val action = "removeCategoryFromEdition"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove chests from editions"
+                reason = "Only coordinators can remove categories from editions"
             )
         }
 
-        val chestId = arguments.getLongField("chestId") ?: return Permission(
-            action = action,
-            arguments = arguments,
-            allow = false,
-            reason = "Invalid or missing 'chestId'"
-        )
-
-        val editionId = arguments.getLongField("editionId") ?: return Permission(
-            action = action,
-            arguments = arguments,
-            allow = false,
-            reason = "Invalid or missing 'editionId'"
-        )
-
-        val chest = chestsRepository.findById(chestId).orElse(null)
+        val categoryId = arguments.getLongField("categoryId")
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Invalid or missing 'categoryId'"
             )
 
-        val edition = editionRepository.findById(editionId).orElse(null)
+        val editionId = arguments.getLongField("editionId")
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Invalid or missing 'editionId'"
             )
 
-        if (!chestEditionRepository.existsByChestAndEdition(chest, edition)){
+        val category = categoriesRepository.findById(categoryId).getOrNull() ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Category not found"
+        )
+
+        val edition = editionRepository.findById(editionId).getOrNull() ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Edition not found"
+        )
+
+        if (!categoryEditionRepository.existsByCategoryAndEdition(category, edition)){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This chest does not exist in this edition"
+                reason = "This category does not exist in this edition"
             )
         }
 
@@ -188,12 +196,12 @@ class ChestEditionPermissions {
             )
         }
 
-        if (edition.startDate.isBefore(java.time.LocalDate.now()) && chestHistoryRepository.existsByChestAndSubcategory_Edition(chest, edition)){
+        if (edition.startDate.isBefore(java.time.LocalDate.now())){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Users have already been given this chest in this edition"
+                reason = "Edition has already started"
             )
         }
 
@@ -205,12 +213,53 @@ class ChestEditionPermissions {
         )
     }
 
-    @Transactional
-    fun checkAddChestToEditionHelperPermission(chestId: Long, editionId: Long): Permission {
-        val action = "addChestToEditionHelper"
+    fun checkAddCategoryToEditionHelperPermission(categoryId: Long, editionId: Long): Permission {
+        val action = "addCategoryToEditionHelper"
         val arguments = objectMapper.valueToTree<JsonNode>(
             mapOf(
-                "chestId" to chestId,
+                "categoryId" to categoryId,
+                "editionId" to editionId
+            )
+        )
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can add categories to editions"
+            )
+        }
+
+        val category = categoriesRepository.findById(categoryId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category not found"
+            )
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition not found"
+            )
+
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkRemoveCategoryFromEditionHelperPermission(categoryId: Long, editionId: Long): Permission {
+        val action = "removeCategoryFromEditionHelper"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "categoryId" to categoryId,
                 "editionId" to editionId
             )
         )
@@ -220,112 +269,24 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add chests to editions"
+                reason = "Only coordinators can remove categories from editions"
             )
         }
 
-        val chest = chestsRepository.findById(chestId).orElse(null)
+        val category = categoriesRepository.findById(categoryId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Category not found"
             )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Edition not found"
             )
-        if (chestEditionRepository.existsByChest_ChestTypeAndEdition(chest.chestType, edition)){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Chest with this type already exists in this edition"
-            )
-        }
-
-        val awardsInChest = chestAwardRepository.findByChest(chest).map { it.award }
-
-        if (awardsInChest.any {award -> !awardEditionRepository.existsByAwardAndEdition(award, edition)}){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Not all awards in this chest are available in this edition"
-            )
-        }
-
-
-        return Permission(
-            action = action,
-            arguments = arguments,
-            allow = true,
-            reason = null
-        )
-    }
-
-    @Transactional
-    fun checkRemoveChestFromEditionHelperPermission(chestId: Long, editionId: Long): Permission {
-        val action = "removeChestFromEditionHelper"
-        val arguments = objectMapper.valueToTree<JsonNode>(
-            mapOf(
-                "chestId" to chestId,
-                "editionId" to editionId
-            )
-        )
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Only coordinators can remove chests from editions"
-            )
-        }
-
-        val chest = chestsRepository.findById(chestId).orElse(null)
-            ?: return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Invalid chest ID"
-            )
-        val edition = editionRepository.findById(editionId).orElse(null)
-            ?: return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Invalid edition ID"
-            )
-        if (!chestEditionRepository.existsByChestAndEdition(chest, edition)){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "This chest does not exist in this edition"
-            )
-        }
-
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Edition has already ended"
-            )
-        }
-
-        if (edition.startDate.isBefore(java.time.LocalDate.now()) && chestHistoryRepository.existsByChestAndSubcategory_Edition(chest, edition)){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Users have already been given this chest in this edition"
-            )
-        }
 
         return Permission(
             action = action,

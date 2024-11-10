@@ -3,10 +3,7 @@ package backend.graphql
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.graphql.permissions.LevelSetPermissions
-import backend.graphql.utils.PhotoAssigner
-import backend.graphql.utils.PermissionDeniedException
-import backend.graphql.utils.PermissionInput
-import backend.graphql.utils.PermissionService
+import backend.graphql.utils.*
 import backend.groups.GroupsRepository
 import backend.levelSet.LevelSet
 import backend.levelSet.LevelSetRepository
@@ -16,8 +13,10 @@ import backend.users.UsersRepository
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
+import org.slf4j.event.Level
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -54,6 +53,43 @@ class LevelSetDataFetcher {
 
     @Autowired
     lateinit var usersRepository: UsersRepository
+
+    @DgsQuery
+    @Transactional
+    fun listSetupLevelSets(@InputArgument editionId: Long): List<LevelSetWithPermissions> {
+        val action = "listSetupLevelSets"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val input = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(input)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+        val levelSets = levelSetRepository.findAll().map {
+            LevelSetWithPermissions(
+                levelSet = it,
+                permissions = ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addLevelSet",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to it.levelSetId)))),
+                    canCopy = permissionService.checkPartialPermission(PermissionInput("copyLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to it.levelSetId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to it.levelSetId)))),
+                    canSelect = permissionService.checkPartialPermission(PermissionInput("addLevelSetToEdition", objectMapper.writeValueAsString(mapOf("levelSetId" to it.levelSetId, "editionId" to editionId)))),
+                    canUnselect = permissionService.checkPartialPermission(PermissionInput("removeLevelSetFromEdition", objectMapper.writeValueAsString(mapOf("levelSetId" to it.levelSetId, "editionId" to editionId)))),
+                    additional = emptyList()
+                )
+            )
+        }.sortedBy { it.levelSet.levelSetId }
+
+        return levelSets
+    }
 
 
     @DgsMutation
@@ -449,4 +485,9 @@ data class LevelInput(
     val maximumPoints: Double,
     val grade: Double,
     val imageFileId: Long? = null
+)
+
+data class LevelSetWithPermissions(
+    val levelSet: LevelSet,
+    val permissions: ListPermissionsOutput
 )

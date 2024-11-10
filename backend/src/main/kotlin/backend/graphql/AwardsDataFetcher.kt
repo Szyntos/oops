@@ -8,16 +8,15 @@ import backend.categories.CategoriesRepository
 import backend.chestAward.ChestAwardRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
-import backend.graphql.utils.PhotoAssigner
-import backend.graphql.utils.PermissionDeniedException
-import backend.graphql.utils.PermissionInput
-import backend.graphql.utils.PermissionService
+import backend.graphql.utils.*
 import backend.groups.GroupsRepository
+import backend.levelSet.LevelSet
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -62,6 +61,42 @@ class AwardsDataFetcher {
 
     @Autowired
     lateinit var photoAssigner: PhotoAssigner
+
+    @DgsQuery
+    @Transactional
+    fun listSetupAwards(@InputArgument editionId: Long): List<AwardWithPermissions> {
+        val arguments = mapOf("editionId" to editionId)
+        val permissionInput = PermissionInput(
+            action = "listSetupAwards",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val awards = awardRepository.findAll().map {
+            AwardWithPermissions(
+                award = it,
+                permissions = ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addAward",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editAward", objectMapper.writeValueAsString(mapOf("awardId" to it.awardId)))),
+                    canCopy = permissionService.checkPartialPermission(PermissionInput("copyAward", objectMapper.writeValueAsString(mapOf("awardId" to it.awardId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeAward", objectMapper.writeValueAsString(mapOf("awardId" to it.awardId)))),
+                    canSelect = permissionService.checkPartialPermission(PermissionInput("addAwardToEdition", objectMapper.writeValueAsString(mapOf("awardId" to it.awardId, "editionId" to editionId)))),
+                    canUnselect = permissionService.checkPartialPermission(PermissionInput("removeAwardFromEdition", objectMapper.writeValueAsString(mapOf("awardId" to it.awardId, "editionId" to editionId)))),
+                    additional = emptyList()
+                )
+            )
+        }.sortedBy { it.award.awardName }
+
+        return awards
+    }
 
     @DgsMutation
     @Transactional
@@ -262,3 +297,8 @@ class AwardsDataFetcher {
         return savedAward
     }
 }
+
+data class AwardWithPermissions(
+    val award: Award,
+    val permissions: ListPermissionsOutput
+)

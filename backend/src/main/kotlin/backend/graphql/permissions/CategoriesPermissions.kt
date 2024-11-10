@@ -6,7 +6,9 @@ import backend.categories.CategoriesRepository
 import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
+import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecksRepository
+import backend.graphql.CategoryWithPermissions
 import backend.graphql.SubcategoryInput
 import backend.graphql.utils.PhotoAssigner
 import backend.graphql.utils.Permission
@@ -29,6 +31,9 @@ import kotlin.jvm.optionals.getOrNull
 
 @Service
 class CategoriesPermissions {
+
+    @Autowired
+    private lateinit var editionRepository: EditionRepository
 
     @Autowired
     private lateinit var subcategoriesRepository: SubcategoriesRepository
@@ -59,6 +64,41 @@ class CategoriesPermissions {
 
     @Autowired
     private lateinit var photoAssigner: PhotoAssigner
+
+    fun checkListSetupCategoriesPermission(arguments: JsonNode): Permission {
+        val action = "listSetupCategories"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can list setup categories"
+            )
+        }
+        val editionId = arguments.getLongField("editionId")
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid or missing 'editionId'"
+            )
+
+        val edition = editionRepository.findById(editionId).getOrNull()
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition with id $editionId not found"
+            )
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
 
     fun checkAddCategoryPermission(arguments: JsonNode): Permission {
         val action = "addCategory"

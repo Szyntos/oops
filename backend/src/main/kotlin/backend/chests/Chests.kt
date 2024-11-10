@@ -1,6 +1,7 @@
 package backend.chests
 
 import backend.categoryEdition.CategoryEdition
+import backend.chestAward.ChestAward
 import backend.chestEdition.ChestEdition
 import backend.edition.Edition
 import backend.files.FileEntity
@@ -29,6 +30,9 @@ class Chests(
 
     @OneToMany(mappedBy = "chest", fetch = FetchType.LAZY)
     val chestEdition: Set<ChestEdition> = HashSet(),
+
+    @OneToMany(mappedBy = "chest", fetch = FetchType.LAZY)
+    val chestAwards: Set<ChestAward> = HashSet(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_file_id")

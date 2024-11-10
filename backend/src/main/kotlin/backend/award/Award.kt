@@ -2,6 +2,7 @@ package backend.award
 
 import backend.awardEdition.AwardEdition
 import backend.categories.Categories
+import backend.chestEdition.ChestEdition
 import backend.files.FileEntity
 import backend.utils.HasImageFile
 import jakarta.persistence.*

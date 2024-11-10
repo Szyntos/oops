@@ -58,9 +58,9 @@ export const AddChestForm = ({
         errors.awardIds = "select at least one award";
       }
 
-      if (values.awardIds.length > values.awardBundleCount) {
+      if (values.awardIds.length < values.awardBundleCount) {
         errors.awardIds =
-          "number of selected awards have to be smaller than awardBundleCount";
+          "number of selected awards cannot be smaller than awardBundleCount";
       }
 
       return errors;

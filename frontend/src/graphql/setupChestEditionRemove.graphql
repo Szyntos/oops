@@ -1,0 +1,3 @@
+mutation SetupChestEditionRemove($chestId: Int!, $editionId: Int!) {
+  removeChestFromEdition(chestId: $chestId, editionId: $editionId)
+}

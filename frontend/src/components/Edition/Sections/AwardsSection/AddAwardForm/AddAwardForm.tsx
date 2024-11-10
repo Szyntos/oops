@@ -170,13 +170,19 @@ export const AddAwardForm = ({
           />
 
           <SelectImage
-            ids={imageIds}
-            selectedId={formik.values.imageId}
-            onSelectClick={(id: string) =>
-              formik.setValues({ ...formik.values, imageId: id })
+            type="withoutTooltip"
+            options={imageIds}
+            selectedIds={[formik.values.imageId.toString()]}
+            onSelectClick={(updatedIds: string[]) =>
+              formik.setValues({
+                ...formik.values,
+                imageId: updatedIds.length > 0 ? updatedIds[0] : "",
+              })
             }
             error={formik.errors.imageId}
             touched={formik.touched.imageId}
+            selectVariant={"single"}
+            title="select image:"
           />
         </div>
         <button type="submit">confirm</button>

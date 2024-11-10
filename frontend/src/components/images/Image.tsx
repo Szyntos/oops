@@ -2,7 +2,7 @@ import { FETCH_FILES_URL } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
 
 type ImageProps = {
-  id?: string;
+  id: string | undefined;
   size: number;
   disabled: boolean;
 };

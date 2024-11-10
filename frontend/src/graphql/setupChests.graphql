@@ -1,0 +1,26 @@
+query SetupChests {
+  chests {
+    active
+    awardBundleCount
+    chestId
+    imageFileId
+    label
+    type
+    chestAwards {
+      award {
+        awardId
+        awardName
+        awardType
+        awardValue
+        categoryId
+        description
+        imageFileId
+        label
+        maxUsages
+      }
+    }
+    chestEditions {
+      editionId
+    }
+  }
+}

@@ -1,0 +1,17 @@
+mutation SetupChestEdit(
+  $awardIds: [Int!]!
+  $chestId: Int!
+  $awardBundleCount: Int!
+  $fileId: Int!
+  $chestType: String!
+) {
+  editChest(
+    awardIds: $awardIds
+    chestId: $chestId
+    awardBundleCount: $awardBundleCount
+    fileId: $fileId
+    chestType: $chestType
+  ) {
+    chestId
+  }
+}

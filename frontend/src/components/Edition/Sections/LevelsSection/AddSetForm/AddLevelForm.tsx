@@ -8,8 +8,8 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
-import { SelectImage } from "../../../../inputs/SelectImage";
 import { WithAddedLevelsValidateErrors } from "./AddSetForm";
+import { SelectImage } from "../../../../inputs/SelectImage";
 
 const ValidationSchema = z.object({
   name: z.string().min(1),
@@ -148,13 +148,20 @@ export const AddLevelForm = ({
           </div>
 
           <SelectImage
-            ids={imageIds}
-            selectedId={formik.values.imageId}
-            onSelectClick={(id: string) =>
-              formik.setValues({ ...formik.values, imageId: id })
+            type="withoutTooltip"
+            options={imageIds}
+            selectedIds={[formik.values.imageId]}
+            // TODO when check validation remember about ""
+            onSelectClick={(updatedIds: string[]) =>
+              formik.setValues({
+                ...formik.values,
+                imageId: updatedIds.length > 0 ? updatedIds[0] : "",
+              })
             }
             error={formik.errors.imageId}
             touched={formik.touched.imageId}
+            selectVariant={"single"}
+            title={"select image:"}
           />
         </div>
         <button type="submit">attach level</button>

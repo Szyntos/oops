@@ -1,0 +1,15 @@
+mutation SetupChestCreate(
+  $awardIds: [Int!]!
+  $awardBundleCount: Int!
+  $fileId: Int!
+  $chestType: String!
+) {
+  addChest(
+    awardIds: $awardIds
+    awardBundleCount: $awardBundleCount
+    fileId: $fileId
+    chestType: $chestType
+  ) {
+    chestId
+  }
+}

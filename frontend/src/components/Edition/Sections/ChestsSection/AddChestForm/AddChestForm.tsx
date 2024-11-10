@@ -10,6 +10,7 @@ const ValidationSchema = z.object({
   fileId: z.string(),
   name: z.string().min(1),
   awardIds: z.array(z.string()),
+  awardsNotFormThisEdition: z.array(z.string()),
 });
 
 export type ChestFormValues = z.infer<typeof ValidationSchema>;
@@ -18,7 +19,8 @@ type AddChestFormProps = {
   handleConfirm: (values: ChestFormValues) => void;
   formError?: string;
   initialValues?: ChestFormValues;
-  awards: Award[];
+  awardsInThisEdition: Award[];
+  awardsNotInThisEdition: Award[];
   title: string;
   imageIds: string[];
 };
@@ -28,13 +30,15 @@ const defaultInitialValues: ChestFormValues = {
   fileId: "",
   name: "",
   awardIds: [],
+  awardsNotFormThisEdition: [],
 };
 
 export const AddChestForm = ({
   handleConfirm,
   imageIds,
   formError,
-  awards = [],
+  awardsInThisEdition = [],
+  awardsNotInThisEdition = [],
   initialValues = defaultInitialValues,
   title,
 }: AddChestFormProps) => {
@@ -121,7 +125,7 @@ export const AddChestForm = ({
 
           <SelectImage
             type="award"
-            options={awards}
+            options={awardsInThisEdition}
             selectedIds={formik.values.awardIds}
             onSelectClick={(updatedIds: string[]) =>
               formik.setValues({ ...formik.values, awardIds: updatedIds })
@@ -130,6 +134,22 @@ export const AddChestForm = ({
             touched={formik.touched.awardIds}
             selectVariant={"multiple"}
             title={"select awards:"}
+          />
+
+          <SelectImage
+            type="award"
+            options={awardsNotInThisEdition}
+            selectedIds={formik.values.awardsNotFormThisEdition}
+            onSelectClick={(updatedIds: string[]) =>
+              formik.setValues({
+                ...formik.values,
+                awardsNotFormThisEdition: updatedIds,
+              })
+            }
+            error={formik.errors.awardsNotFormThisEdition as string}
+            touched={formik.touched.awardsNotFormThisEdition}
+            selectVariant={"multiple"}
+            title={"select awards not from edition:"}
           />
         </div>
         <button type="submit">confirm</button>

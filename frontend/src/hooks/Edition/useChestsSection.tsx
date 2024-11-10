@@ -21,12 +21,6 @@ export type Chest = SetupChestsQuery["chests"][number];
 export const useChestsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();
 
-  // const {
-  //   selectedCategories,
-  //   loading: categoriesLoading,
-  //   error: categoriesError,
-  // } = useCategoriesSection(editionId);
-
   const {
     data,
     loading: chestsLoading,
@@ -46,7 +40,8 @@ export const useChestsSection = (editionId: number) => {
     ) ?? [];
 
   const {
-    selectedAwards: awards,
+    awards,
+    selectedAwards,
     loading: awardsLoading,
     error: awardsError,
   } = useAwardsSection(editionId);
@@ -167,9 +162,10 @@ export const useChestsSection = (editionId: number) => {
   };
 
   return {
+    awards,
     chests,
     selectedChests,
-    awards,
+    selectedAwards,
     imageIds,
     loading: chestsLoading || imageLoading || awardsLoading,
     error: chestsError || imageError || awardsError,

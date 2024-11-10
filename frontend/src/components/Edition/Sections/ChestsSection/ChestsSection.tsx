@@ -12,9 +12,10 @@ export const ChestsSection = () => {
   const editionId = params.id ? parseInt(params.id) : -1;
 
   const {
+    awards,
     chests,
     selectedChests,
-    awards,
+    selectedAwards,
 
     imageIds,
     loading,
@@ -72,7 +73,10 @@ export const ChestsSection = () => {
           handleConfirm={handleAddChest}
           title="Add Chest"
           imageIds={imageIds}
-          awards={awards}
+          awardsInThisEdition={selectedAwards}
+          awardsNotInThisEdition={awards.filter(
+            (a) => !selectedAwards.some((aw) => aw.awardId === a.awardId),
+          )}
         />
       </Dialog>
 
@@ -82,7 +86,10 @@ export const ChestsSection = () => {
           formError={formError}
           handleConfirm={handleEditChest}
           imageIds={imageIds}
-          awards={awards}
+          awardsInThisEdition={selectedAwards}
+          awardsNotInThisEdition={awards.filter(
+            (a) => !selectedAwards.some((aw) => aw.awardId === a.awardId),
+          )}
           initialValues={
             selectedChest
               ? {
@@ -90,6 +97,9 @@ export const ChestsSection = () => {
                   fileId: selectedChest.imageFileId as string,
                   name: selectedChest.type,
                   awardIds: selectedChest.chestAwards.map(
+                    (award) => award.award.awardId,
+                  ),
+                  awardsNotFormThisEdition: selectedChest.chestAwards.map(
                     (award) => award.award.awardId,
                   ),
                 }

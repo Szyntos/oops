@@ -9,24 +9,16 @@ import backend.graphql.PhotoAssigner
 import backend.groups.GroupsRepository
 import backend.levelSet.LevelSet
 import backend.levelSet.LevelSetRepository
-import backend.levels.Levels
 import backend.levels.LevelsRepository
 import backend.users.UsersRoles
-import backend.utils.JsonNodeExtensions.getIntField
 import backend.utils.JsonNodeExtensions.getLevelInputList
 import backend.utils.JsonNodeExtensions.getLongField
-import backend.utils.JsonNodeExtensions.getLongList
-import backend.utils.JsonNodeExtensions.getStringField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
-import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
-import org.slf4j.event.Level
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalDate
 
 @Service
 class LevelSetPermissions {
@@ -398,9 +390,15 @@ class LevelSetPermissions {
         ordinalNumber: Int? = null
     ): Permission {
         val action = "addLevelHelper"
+        val levelSetMap = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "levelSetId" to levelSet.levelSetId,
+                "levelSetName" to levelSet.levelSetName
+            )
+        )
         val arguments = objectMapper.valueToTree<JsonNode>(
             mapOf(
-                "levelSet" to levelSet,
+                "levelSet" to levelSetMap,
                 "name" to name,
                 "maximumPoints" to maximumPoints,
                 "grade" to grade,
@@ -417,80 +415,14 @@ class LevelSetPermissions {
                 reason = "Only coordinators can add levels"
             )
         }
+        // Not validating further, as the levels are validated in addLevelHelper
 
-        val levelsInSet = levelSet.levels
-
-        val highestLevel = levelsInSet.maxByOrNull { it.ordinalNumber }
-
-        if (highestLevel == null){
-            val level = Levels(
-                levelName = name,
-                minimumPoints = BigDecimal.ZERO,
-                maximumPoints = maximumPoints.toBigDecimal().setScale(2, RoundingMode.HALF_UP),
-                grade = grade.toBigDecimal().setScale(2, RoundingMode.HALF_UP),
-                label = "",
-                levelSet = levelSet
-            )
-            level.ordinalNumber = ordinalNumber ?: 0
-            level.highest = true
-            val permission = photoAssigner.checkAssignPhotoToAwardPermission(levelsRepository, "image/level", null, imageFileId)
-            if (!permission.allow){
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = permission.reason
-                )
-            }
-            levelSet.levels += level
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = true,
-                reason = null
-            )
-        }
-
-        if (highestLevel.maximumPoints >= maximumPoints.toBigDecimal()){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Maximum points must be higher than the highest level in the edition"
-            )
-        }
-        if (highestLevel.grade > grade.toBigDecimal()){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Grade must be higher or equal to the highest level in the edition"
-            )
-        }
-        if (levelsInSet.any { it.levelName == name }){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Level with the same name already exists in the edition"
-            )
-        }
-
-        val permission = photoAssigner.checkAssignPhotoToAwardPermission(levelsRepository, "image/level", null, imageFileId)
-        if (!permission.allow){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = permission.reason
-            )
-        }
-       return Permission(
-           action = action,
-           arguments = arguments,
-           allow = true,
-           reason = null
-       )
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
     }
 
     fun checkEditLevelHelperPermission(
@@ -628,7 +560,7 @@ class LevelSetPermissions {
         }
 
         imageFileId?.let {
-            val permission = photoAssigner.checkAssignPhotoToAwardPermission(levelsRepository, "image/level", levelId, imageFileId)
+            val permission = photoAssigner.checkAssignPhotoToAssigneePermission(levelsRepository, "image/level", levelId, imageFileId)
             if (!permission.allow){
                 return Permission(
                     action = action,
@@ -662,10 +594,6 @@ class LevelSetPermissions {
                     reason = "Ordinal number must be lower than the number of levels in the set"
                 )
             }
-            val newOrdinalNumber = ordinalNumber.coerceAtMost(levelsInSet.size - 1)
-            val levelsToShift = levelsInSet.filter { it.ordinalNumber in newOrdinalNumber..level.ordinalNumber }
-            levelsToShift.forEach { it.ordinalNumber += 1 }
-            level.ordinalNumber = newOrdinalNumber
         }
         return Permission(
             action = action,

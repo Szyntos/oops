@@ -9,6 +9,7 @@ import backend.categories.CategoriesRepository
 import backend.chestAward.ChestAwardRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.groups.GroupsRepository
@@ -75,7 +76,7 @@ class AwardsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
         return photoAssigner.assignPhotoToAssignee(awardRepository, "image/award", awardId, fileId)
     }
@@ -104,7 +105,7 @@ class AwardsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val awardType1 = AwardType.valueOf(awardType.uppercase())
@@ -160,7 +161,7 @@ class AwardsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
@@ -215,7 +216,7 @@ class AwardsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
@@ -236,7 +237,7 @@ class AwardsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }

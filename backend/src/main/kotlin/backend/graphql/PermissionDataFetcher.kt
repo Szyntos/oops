@@ -1,6 +1,7 @@
 package backend.graphql
 
 import backend.graphql.permissions.Permission
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import com.netflix.graphql.dgs.DgsComponent
@@ -32,7 +33,7 @@ class PermissionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         return permissionService.checkFullPermission(input)
@@ -54,7 +55,7 @@ class PermissionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         return permissionService.checkPartialPermission(input)

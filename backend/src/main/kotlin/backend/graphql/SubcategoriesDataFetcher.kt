@@ -3,6 +3,7 @@ package backend.graphql
 import backend.categories.CategoriesRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.graphql.permissions.SubcategoriesPermissions
@@ -70,7 +71,7 @@ class SubcategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId).orElseThrow { throw Exception("Edition not found") }
@@ -115,7 +116,7 @@ class SubcategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         return addSubcategoryHelper(subcategory)
@@ -144,7 +145,7 @@ class SubcategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 
@@ -189,7 +190,7 @@ class SubcategoriesDataFetcher {
         val permission = permissionService.checkFullPermission(permissionInput)
 
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val subcategory = subcategoriesRepository.findById(subcategoryId)
@@ -200,9 +201,9 @@ class SubcategoriesDataFetcher {
     }
 
     fun addSubcategoryHelper(subcategory: SubcategoryInput): Subcategories {
-        val permission = subcategoriesPermissions.checkAddSubcategoryHelperPermission(subcategory, null)
+        val permission = subcategoriesPermissions.checkAddSubcategoryHelperPermission(subcategory)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val category = categoriesRepository.findById(subcategory.categoryId!!).orElseThrow { throw Exception("Category not found") }

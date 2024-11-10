@@ -136,31 +136,6 @@ class CategoryEditionPermissions {
             )
         }
 
-        val subcategoriesFromOneEdition = subcategoriesRepository.findByCategory(category)
-        if (subcategoriesFromOneEdition.isNotEmpty()){
-            val sampleEdition = subcategoriesFromOneEdition[0].edition
-            subcategoriesFromOneEdition.filter { it.edition == sampleEdition }
-                .forEach {
-                    val input = SubcategoryInput(
-                        subcategoryName = it.subcategoryName,
-                        maxPoints = it.maxPoints.toFloat(),
-                        ordinalNumber = it.ordinalNumber,
-                        categoryId = it.category.categoryId,
-                        editionId = editionId,
-                        label = it.label
-                    )
-                    val permission = subcategoriesPermissions.checkAddSubcategoryHelperPermission(input, category)
-                    if (!permission.allow) {
-                        return Permission(
-                            action = action,
-                            arguments = arguments,
-                            allow = false,
-                            reason = permission.reason
-                        )
-                    }
-                }
-        }
-
         return Permission(
             action = action,
             arguments = arguments,

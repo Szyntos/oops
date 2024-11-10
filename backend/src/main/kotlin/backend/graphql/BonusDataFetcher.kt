@@ -12,6 +12,7 @@ import backend.bonuses.BonusesRepository
 import backend.chestAward.ChestAwardRepository
 import backend.chestHistory.ChestHistory
 import backend.edition.Edition
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.groups.GroupsRepository
@@ -77,7 +78,7 @@ class BonusDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val chestHistory = chestHistoryRepository.findById(chestHistoryId)

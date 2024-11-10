@@ -8,6 +8,7 @@ import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.groups.GroupsRepository
@@ -85,7 +86,7 @@ class ChestHistoryDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val user = usersRepository.findById(userId)
@@ -140,7 +141,7 @@ class ChestHistoryDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val chestHistory = chestHistoryRepository.findById(chestHistoryId)
@@ -194,7 +195,7 @@ class ChestHistoryDataFetcher {
         val permission = permissionService.checkFullPermission(permissionInput)
 
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val chestHistory = chestHistoryRepository.findById(chestHistoryId)

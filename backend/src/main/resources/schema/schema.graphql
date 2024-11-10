@@ -710,6 +710,7 @@ type PermissionType {
   arguments: JSON!
   allow: Boolean!
   reason: String
+  stackTrace: String!
 }
 
 input SubcategoryInputType {

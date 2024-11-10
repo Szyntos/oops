@@ -9,16 +9,11 @@ import backend.graphql.PhotoAssigner
 import backend.levels.LevelsRepository
 import backend.users.UsersRepository
 import backend.users.UsersRoles
-import backend.utils.JsonNodeExtensions.getIntField
 import backend.utils.JsonNodeExtensions.getLongField
-import backend.utils.JsonNodeExtensions.getLongList
-import backend.utils.JsonNodeExtensions.getStringField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
-import com.netflix.graphql.dgs.InputArgument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 
 @Service
 class LevelsPermissions {
@@ -90,7 +85,7 @@ class LevelsPermissions {
             }
         }
 
-        val permission = photoAssigner.checkAssignPhotoToAwardPermission(levelsRepository, "image/level", levelId, fileId)
+        val permission = photoAssigner.checkAssignPhotoToAssigneePermission(levelsRepository, "image/level", levelId, fileId)
         if (!permission.allow) {
             return permission
         }

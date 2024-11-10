@@ -36,18 +36,6 @@ class AwardEditionPermissions {
     @Autowired
     private lateinit var userMapper: UserMapper
 
-    @Autowired
-    private lateinit var chestsRepository: ChestsRepository
-
-    @Autowired
-    private lateinit var chestEditionRepository: ChestEditionRepository
-
-    @Autowired
-    private lateinit var chestHistoryRepository: ChestHistoryRepository
-
-    @Autowired
-    private lateinit var photoAssigner: PhotoAssigner
-
     fun checkAddAwardToEditionPermission(arguments: JsonNode): Permission {
         val action = "addAwardToEdition"
         val currentUser = userMapper.getCurrentUser()
@@ -82,7 +70,7 @@ class AwardEditionPermissions {
             reason = "Invalid or missing 'editionId'"
         )
 
-        val edition = chestEditionRepository.findById(editionId).orElse(null)
+        val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
@@ -90,7 +78,7 @@ class AwardEditionPermissions {
                 reason = "Invalid edition ID"
             )
 
-        if (edition.edition.endDate.isBefore(LocalDate.now())) {
+        if (edition.endDate.isBefore(LocalDate.now())) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -99,7 +87,7 @@ class AwardEditionPermissions {
             )
         }
 
-        if (awardEditionRepository.existsByAward_AwardNameAndEdition(award.awardName, edition.edition)) {
+        if (awardEditionRepository.existsByAward_AwardNameAndEdition(award.awardName, edition)) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -108,7 +96,7 @@ class AwardEditionPermissions {
             )
         }
 
-        if (award.category.categoryEdition.none { it.edition == edition.edition }) {
+        if (award.category.categoryEdition.none { it.edition == edition }) {
             return Permission(
                 action = action,
                 arguments = arguments,

@@ -8,7 +8,6 @@ import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.graphql.PhotoAssigner
 import backend.groups.GroupsRepository
-import backend.userGroups.UserGroups
 import backend.userGroups.UserGroupsRepository
 import backend.users.UsersRepository
 import backend.users.UsersRoles
@@ -21,10 +20,8 @@ import backend.utils.JsonNodeExtensions.getUsersInputTypeList
 import backend.utils.UserMapper
 import backend.weekdays.WeekdaysRepository
 import com.fasterxml.jackson.databind.JsonNode
-import com.netflix.graphql.dgs.InputArgument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -440,7 +437,7 @@ class GroupsPermissions {
             throw IllegalArgumentException("Teacher is already teaching a group at this time")
         }
 
-        photoAssigner.checkAssignPhotoToAwardPermission(groupsRepository, "image/group", null, null)
+        photoAssigner.checkAssignPhotoToAssigneePermission(groupsRepository, "image/group", null, null)
 
         users.forEach {
             if (!usersRepository.existsByIndexNumber(it.indexNumber)) {

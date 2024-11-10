@@ -2,6 +2,7 @@ package backend.graphql
 
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.groups.GroupsRepository
@@ -69,7 +70,7 @@ class LevelsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason)
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val level = levelsRepository.findById(levelId).orElseThrow { IllegalArgumentException("Invalid level ID") }
@@ -91,7 +92,7 @@ class LevelsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason)
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)

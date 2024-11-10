@@ -201,7 +201,15 @@ class SubcategoriesPermissions {
             )
         }
 
-        val permission = checkAddSubcategoryHelperPermission(subcategory, null)
+        val permission = checkAddSubcategoryHelperPermission(subcategory)
+        if (!permission.allow) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = permission.reason
+            )
+        }
         return Permission(
             action = action,
             arguments = arguments,
@@ -406,7 +414,7 @@ class SubcategoriesPermissions {
         )
     }
 
-    fun checkAddSubcategoryHelperPermission(subcategory: SubcategoryInput, categoryInput: Categories?): Permission {
+    fun checkAddSubcategoryHelperPermission(subcategory: SubcategoryInput): Permission {
         val action = "addSubcategoryHelper"
         val arguments = objectMapper.valueToTree<JsonNode>(mapOf(
             "subcategory" to mapOf(
@@ -437,35 +445,21 @@ class SubcategoriesPermissions {
                 reason = "You cannot specify subcategoryId when adding a new subcategory"
             )
         }
-        val category = if (categoryInput == null){
-            if (subcategory.categoryId == -1L || subcategory.categoryId == null) {
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "Category ID must be specified"
-                )
-            }
-
-            categoriesRepository.findById(subcategory.categoryId!!).getOrNull()
-                ?: return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "Category with id ${subcategory.categoryId} not found"
-                )
-        } else {
-            if (subcategory.editionId != null && subcategory.editionId != -1L) {
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "You cannot specify editionId when adding a new subcategory to a category"
-                )
-            }
-            categoryInput
+        if (subcategory.categoryId == -1L || subcategory.categoryId == null) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category ID must be specified"
+            )
         }
-
+        val category = categoriesRepository.findById(subcategory.categoryId!!).getOrNull()
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category with id ${subcategory.categoryId} not found"
+            )
 
         val edition = if (!(subcategory.editionId == -1L || subcategory.editionId == null)) {
             val edition = editionRepository.findById(subcategory.editionId).getOrNull()

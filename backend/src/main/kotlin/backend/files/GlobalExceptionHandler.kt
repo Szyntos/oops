@@ -1,16 +1,14 @@
 package backend.files
 
+import backend.graphql.permissions.PermissionDeniedException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ControllerAdvice
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.context.request.WebRequest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @ControllerAdvice
-@RestController
 class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException::class)
@@ -23,6 +21,17 @@ class GlobalExceptionHandler {
     fun handleIllegalArgumentException(ex: IllegalArgumentException, request: WebRequest): ResponseEntity<Map<String, Any>> {
         val responseBody = createErrorResponse(ex.message ?: "Bad Request", HttpStatus.BAD_REQUEST, request)
         return ResponseEntity(responseBody, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(PermissionDeniedException::class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    fun handlePermissionDenied(exception: PermissionDeniedException): Map<String, Any> {
+        // Structure the response as needed for GraphQL
+        return mapOf(
+            "message" to (exception.message ?: "Permission denied"),
+            "customStackTrace" to exception.stackTraceInfo
+        )
     }
 
     private fun createErrorResponse(message: String, status: HttpStatus, request: WebRequest): Map<String, Any> {

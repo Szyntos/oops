@@ -44,10 +44,10 @@ class PhotoAssigner {
     }
 
     @Transactional
-    fun <T> checkAssignPhotoToAwardPermission(assigneeRepository: JpaRepository<T, Long>,
-                                              fileType: String,
-                                              assigneeId: Long?,
-                                              fileId: Long?): Permission where T : HasImageFile {
+    fun <T> checkAssignPhotoToAssigneePermission(assigneeRepository: JpaRepository<T, Long>,
+                                                 fileType: String,
+                                                 assigneeId: Long?,
+                                                 fileId: Long?): Permission where T : HasImageFile {
         val action = "assignPhotoToAward"
         val arguments = objectMapper.readTree("""{"fileType": "$fileType", "assigneeId": "$assigneeId", "fileId": "$fileId"}""")
         if (assigneeId != null) {

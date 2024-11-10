@@ -4,7 +4,6 @@ import backend.graphql.LevelInput
 import backend.graphql.SubcategoryInput
 import backend.graphql.UserIdsType
 import backend.graphql.UsersInputType
-import backend.utils.JsonNodeExtensions.getLongList
 import com.fasterxml.jackson.databind.JsonNode
 import java.sql.Time
 
@@ -44,15 +43,17 @@ object JsonNodeExtensions {
     fun JsonNode.getIntList(fieldName: String): List<Int>? {
         val node = this.get(fieldName)
         if (node == null || !node.isArray) return null
-        if (node.any { !it.isNumber }) return null
-        return node.mapNotNull { it.asIntOrNull() }
+        val intList = node.mapNotNull { it.asIntOrNull() }
+        if (intList.size != node.size()) return null
+        return intList
     }
 
     fun JsonNode.getLongList(fieldName: String): List<Long>? {
         val node = this.get(fieldName)
         if (node == null || !node.isArray) return null
-        if (node.any { !it.isNumber }) return null
-        return node.mapNotNull { it.asLongOrNull() }
+        val longList = node.mapNotNull { it.asLongOrNull() }
+        if (longList.size != node.size()) return null
+        return longList
     }
 
     fun JsonNode.getBooleanField(fieldName: String): Boolean? {
@@ -77,8 +78,9 @@ object JsonNodeExtensions {
     fun JsonNode.getSubcategoryInputList(fieldName: String): List<SubcategoryInput>? {
         val node = this.get(fieldName)
         if (node == null || !node.isArray) return null
-        if (node.any { !it.isNumber }) return null
-        return node.mapNotNull { it.asSubcategoryInputOrNull() }
+        val subcategoryInputList = node.mapNotNull { it.asSubcategoryInputOrNull() }
+        if (subcategoryInputList.size != node.size()) return null
+        return subcategoryInputList
     }
 
     fun JsonNode.getTimeField(fieldName: String): Time? {
@@ -118,15 +120,17 @@ object JsonNodeExtensions {
     fun JsonNode.getLevelInputList(fieldName: String): List<LevelInput>? {
         val node = this.get(fieldName)
         if (node == null || !node.isArray) return null
-        if (node.any { !it.isNumber }) return null
-        return node.mapNotNull { it.asLevelInputOrNull() }
+        val levelInputList = node.mapNotNull { it.asLevelInputOrNull() }
+        if (levelInputList.size != node.size()) return null
+        return levelInputList
     }
 
     fun JsonNode.getUsersInputTypeList(fieldName: String): List<UsersInputType>? {
         val node = this.get(fieldName)
         if (node == null || !node.isArray) return null
-        if (node.any { !it.isNumber }) return null
-        return node.mapNotNull { it.asUsersInputTypeOrNull() }
+        val usersInputTypeList = node.mapNotNull { it.asUsersInputTypeOrNull() }
+        if (usersInputTypeList.size != node.size()) return null
+        return usersInputTypeList
     }
 
     fun JsonNode.getUserIdsType(fieldName: String): UserIdsType? {

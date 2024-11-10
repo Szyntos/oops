@@ -3,6 +3,7 @@ package backend.graphql
 import backend.categories.CategoriesRepository
 import backend.files.FileEntity
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 
@@ -50,7 +51,7 @@ class FileDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
         val files = fileEntityRepository.findAll()
         return files.groupBy { it.fileType }
@@ -72,7 +73,7 @@ class FileDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
         val selectedFiles = fileEntityRepository.findAllByFileTypeIn(fileTypes)
         return selectedFiles.groupBy { it.fileType }

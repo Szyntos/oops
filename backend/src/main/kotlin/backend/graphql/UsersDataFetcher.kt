@@ -8,6 +8,7 @@ import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.files.FileRetrievalService
 import backend.files.FileUploadService
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.graphql.permissions.UsersPermissions
@@ -110,7 +111,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
@@ -143,7 +144,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         return addUserHelper(indexNumber, nick, firstName, secondName, role, email, label, createFirebaseUser, sendEmail)
@@ -170,7 +171,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         return addUserHelper(-1, "", firstName, secondName, "teacher", email, label, createFirebaseUser, sendEmail)
@@ -190,7 +191,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 
@@ -217,7 +218,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
@@ -256,7 +257,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val user = usersRepository.findById(userId)
@@ -303,7 +304,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 
@@ -338,7 +339,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val user = usersRepository.findByUserId(userId)
@@ -361,7 +362,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 
@@ -447,7 +448,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val user = usersRepository.findById(studentId).orElseThrow { IllegalArgumentException("Invalid student ID") }
@@ -488,7 +489,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         return userMapper.getCurrentUser()
@@ -507,7 +508,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                                imageFileId: Long? = null): Users {
         val permission = usersPermissions.checkAddUserHelperPermission(indexNumber, nick, firstName, secondName, role, email, label, createFirebaseUser, sendEmail, imageFileId)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 

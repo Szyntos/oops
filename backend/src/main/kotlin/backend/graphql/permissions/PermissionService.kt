@@ -189,7 +189,11 @@ class PermissionService {
     }
 }
 
-class PermissionDeniedException(message: String) : Exception(message)
+class PermissionDeniedException(
+    message: String,
+    val stackTraceInfo: String
+) : IllegalArgumentException(message)
+
 
 data class PermissionInput(
     val action: String,
@@ -200,6 +204,6 @@ data class Permission(
     val action: String,
     val arguments: JsonNode,
     val allow: Boolean,
-    val reason: String?
+    val reason: String?,
+    val stackTrace: String = Thread.currentThread().stackTrace.joinToString("\n")
 )
-

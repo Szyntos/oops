@@ -75,7 +75,7 @@ class ChestsPermissions {
 
         val fileId = arguments.getLongField("fileId")
 
-        val photoPermission = photoAssigner.checkAssignPhotoToAwardPermission(chestsRepository, "image/chest", chest.chestId, fileId)
+        val photoPermission = photoAssigner.checkAssignPhotoToAssigneePermission(chestsRepository, "image/chest", chest.chestId, fileId)
         if (!photoPermission.allow) {
             return Permission(
                 action = action,
@@ -114,7 +114,7 @@ class ChestsPermissions {
 
         val fileId = arguments.getLongField("fileId")
 
-        val photoPermission = photoAssigner.checkAssignPhotoToAwardPermission(chestsRepository, "image/chest", null, fileId)
+        val photoPermission = photoAssigner.checkAssignPhotoToAssigneePermission(chestsRepository, "image/chest", null, fileId)
         if (!photoPermission.allow) {
             return Permission(
                 action = action,
@@ -212,7 +212,7 @@ class ChestsPermissions {
         }
 
         val fileId = arguments.getLongField("fileId")
-        val photoPermission = photoAssigner.checkAssignPhotoToAwardPermission(chestsRepository, "image/chest", chestId, fileId)
+        val photoPermission = photoAssigner.checkAssignPhotoToAssigneePermission(chestsRepository, "image/chest", chestId, fileId)
         if (!photoPermission.allow) {
             return Permission(
                 action = action,

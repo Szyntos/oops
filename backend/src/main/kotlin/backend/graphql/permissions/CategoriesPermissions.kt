@@ -119,18 +119,6 @@ class CategoriesPermissions {
             label = ""
         )
 
-        subcategories.forEach {
-            val permission = subcategoriesPermissions.checkAddSubcategoryHelperPermission(it, category)
-            if (!permission.allow) {
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = permission.reason
-                )
-            }
-        }
-
         return Permission(
             action = action,
             arguments = arguments,
@@ -344,40 +332,6 @@ class CategoriesPermissions {
                 existingSubcategory.ordinalNumber = subcategoryInput.ordinalNumber
                 existingSubcategory.label = subcategoryInput.label
 
-            } else {
-                subcategoryInput.categoryId = categoryId
-                val permission = subcategoriesPermissions.checkAddSubcategoryHelperPermission(subcategoryInput, category)
-                if (!permission.allow) {
-                    return Permission(
-                        action = action,
-                        arguments = arguments,
-                        allow = false,
-                        reason = permission.reason
-                    )
-                }
-            }
-        }
-        val subcategoriesFromOneEdition = subcategoriesRepository.findByCategory(category).filter {it.edition == null}
-
-        editions.forEach { edition ->
-            subcategoriesFromOneEdition.forEach {
-                val input = SubcategoryInput(
-                    subcategoryName = it.subcategoryName,
-                    maxPoints = it.maxPoints.toFloat(),
-                    ordinalNumber = it.ordinalNumber,
-                    categoryId = it.category.categoryId,
-                    editionId = edition.editionId,
-                    label = it.label
-                )
-                val permission = subcategoriesPermissions.checkAddSubcategoryHelperPermission(input, category)
-                if (!permission.allow) {
-                    return Permission(
-                        action = action,
-                        arguments = arguments,
-                        allow = false,
-                        reason = permission.reason
-                    )
-                }
             }
         }
 

@@ -1,20 +1,9 @@
 package backend.graphql.permissions
 
-import backend.award.AwardRepository
-import backend.award.AwardType
-import backend.bonuses.BonusesRepository
-import backend.chestEdition.ChestEditionRepository
-import backend.chestHistory.ChestHistoryRepository
-import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.graphql.*
 import backend.groups.GroupsRepository
-import backend.points.PointsRepository
-import backend.userGroups.UserGroups
-import backend.userGroups.UserGroupsRepository
-import backend.users.FirebaseUserService
-import backend.users.Users
 import backend.users.UsersRepository
 import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getBooleanField
@@ -22,26 +11,13 @@ import backend.utils.JsonNodeExtensions.getIntField
 import backend.utils.JsonNodeExtensions.getIntList
 import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.JsonNodeExtensions.getStringField
-import backend.utils.JsonNodeExtensions.getTimeField
-import backend.utils.JsonNodeExtensions.getUserIdsType
-import backend.utils.JsonNodeExtensions.getUsersInputTypeList
 import backend.utils.UserMapper
-import backend.weekdays.WeekdaysRepository
 import com.fasterxml.jackson.databind.JsonNode
-import com.google.firebase.ErrorCode
-import com.google.firebase.auth.FirebaseAuthException
-import com.netflix.graphql.dgs.InputArgument
-import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.time.LocalDate
-import java.time.LocalDateTime
 import kotlin.jvm.optionals.getOrNull
-import kotlin.math.min
 
 @Service
 class UsersPermissions {
@@ -103,7 +79,7 @@ class UsersPermissions {
             )
         }
 
-        val permission = photoAssigner.checkAssignPhotoToAwardPermission(usersRepository, "image/user", userId, null)
+        val permission = photoAssigner.checkAssignPhotoToAssigneePermission(usersRepository, "image/user", userId, null)
         if (!permission.allow) {
             return Permission(
                 action = action,
@@ -933,7 +909,7 @@ class UsersPermissions {
             )
         }
 
-        val permission = photoAssigner.checkAssignPhotoToAwardPermission(usersRepository, "image/user", null, imageFileId)
+        val permission = photoAssigner.checkAssignPhotoToAssigneePermission(usersRepository, "image/user", null, imageFileId)
         if (!permission.allow) {
             return Permission(
                 action = action,

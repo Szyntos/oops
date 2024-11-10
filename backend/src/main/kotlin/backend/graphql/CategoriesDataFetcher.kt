@@ -5,6 +5,7 @@ import backend.categories.Categories
 import backend.categories.CategoriesRepository
 import backend.categoryEdition.CategoryEditionRepository
 import backend.gradingChecks.GradingChecksRepository
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.subcategories.SubcategoriesRepository
@@ -80,7 +81,7 @@ class CategoriesDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 
@@ -115,7 +116,7 @@ class CategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val category = categoriesRepository.findById(categoryId)
@@ -173,7 +174,7 @@ class CategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
         val category = categoriesRepository.findById(categoryId)
             .orElseThrow { IllegalArgumentException("Invalid category ID") }

@@ -3,6 +3,7 @@ package backend.graphql
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.graphql.permissions.LevelSetPermissions
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.groups.GroupsRepository
@@ -78,7 +79,7 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw IllegalArgumentException("Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val levelSet = levelSetRepository.save(LevelSet(levelSetName = ""))
@@ -112,7 +113,7 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw IllegalArgumentException("Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 
@@ -161,7 +162,7 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw IllegalArgumentException("Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 
@@ -228,7 +229,7 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw IllegalArgumentException("Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val levelSet = levelSetRepository.findById(levelSetId)
@@ -259,7 +260,7 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw IllegalArgumentException("Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 
@@ -292,7 +293,7 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw IllegalArgumentException("Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val levelSet = levelSetRepository.findById(levelSetId)
@@ -319,7 +320,7 @@ class LevelSetDataFetcher {
         val permission = levelSetPermissions.checkAddLevelHelperPermission(levelSet, name, maximumPoints, grade, imageFileId, ordinalNumber)
 
         if (!permission.allow) {
-            throw IllegalArgumentException("Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val levelsInSet = levelSet.levels
@@ -382,7 +383,7 @@ class LevelSetDataFetcher {
     ): Levels {
         val permission = levelSetPermissions.checkEditLevelHelperPermission(levelId, name, maximumPoints, grade, imageFileId, ordinalNumber, label)
         if (!permission.allow) {
-            throw IllegalArgumentException("Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 

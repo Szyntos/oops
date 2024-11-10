@@ -9,6 +9,7 @@ import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecks
 import backend.gradingChecks.GradingChecksRepository
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.levels.Levels
@@ -81,7 +82,7 @@ class GradingChecksDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason)
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)
@@ -129,7 +130,7 @@ class GradingChecksDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason)
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
@@ -171,7 +172,7 @@ class GradingChecksDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason)
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)

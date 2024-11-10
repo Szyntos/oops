@@ -6,6 +6,7 @@ import backend.bonuses.BonusesRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
 import backend.award.AwardType
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.users.UsersRoles
@@ -58,7 +59,7 @@ class PointsDataFetcher {
         val permission = permissionService.checkFullPermission(permissionInput)
 
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val student = usersRepository.findByUserId(studentId)
@@ -115,7 +116,7 @@ class PointsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val currentUser = userMapper.getCurrentUser()
@@ -172,7 +173,7 @@ class PointsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val points = pointsRepository.findById(pointsId)

@@ -88,7 +88,7 @@ class AwardsPermissions {
 
         val fileId = arguments.getLongField("fileId")
 
-        val photoPermission = photoAssigner.checkAssignPhotoToAwardPermission(chestsRepository, "image/award", award.awardId, fileId)
+        val photoPermission = photoAssigner.checkAssignPhotoToAssigneePermission(awardRepository, "image/award", award.awardId, fileId)
         if (!photoPermission.allow) {
             return Permission(
                 action = action,
@@ -222,7 +222,7 @@ class AwardsPermissions {
             )
         }
 
-        val photoPermission = photoAssigner.checkAssignPhotoToAwardPermission(chestsRepository, "image/award", null, fileId)
+        val photoPermission = photoAssigner.checkAssignPhotoToAssigneePermission(awardRepository, "image/award", null, fileId)
         if (!photoPermission.allow) {
             return Permission(
                 action = action,
@@ -432,7 +432,7 @@ class AwardsPermissions {
 
         if (fileId != null) {
             val photoPermission =
-                photoAssigner.checkAssignPhotoToAwardPermission(chestsRepository, "image/award", null, fileId)
+                photoAssigner.checkAssignPhotoToAssigneePermission(awardRepository, "image/award", null, fileId)
             if (!photoPermission.allow) {
                 return Permission(
                     action = action,

@@ -5,6 +5,7 @@ import backend.awardEdition.AwardEdition
 import backend.awardEdition.AwardEditionRepository
 import backend.bonuses.BonusesRepository
 import backend.edition.EditionRepository
+import backend.graphql.permissions.PermissionDeniedException
 import backend.graphql.permissions.PermissionInput
 import backend.graphql.permissions.PermissionService
 import backend.points.PointsRepository
@@ -57,7 +58,7 @@ class AwardEditionDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
@@ -83,7 +84,7 @@ class AwardEditionDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }

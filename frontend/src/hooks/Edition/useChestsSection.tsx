@@ -46,8 +46,6 @@ export const useChestsSection = (editionId: number) => {
     error: awardsError,
   } = useAwardsSection(editionId);
 
-  // TODO fetch Chests form edition
-
   const chests: Chest[] = data?.chests ?? [];
 
   const selectedChests: Chest[] = chests.filter((c) =>
@@ -75,7 +73,7 @@ export const useChestsSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await createChest({
         variables: {
-          awardIds: values.awardIds.map((id) => parseInt(id)),
+          awardIds: values.awardThisEditionIds.map((id) => parseInt(id)),
           awardBundleCount: values.awardBundleCount,
           fileId: parseInt(values.fileId),
           // NOTE: chest type is name xd
@@ -123,8 +121,8 @@ export const useChestsSection = (editionId: number) => {
       await editChest({
         variables: {
           awardIds: [
-            ...values.awardIds.map((id) => parseInt(id)),
-            ...values.awardsNotFormThisEdition.map((id) => parseInt(id)),
+            ...values.awardThisEditionIds.map((id) => parseInt(id)),
+            ...values.awardsNotThisEdition.map((id) => parseInt(id)),
           ],
           chestId: parseInt(selectedChest?.chestId as string),
           awardBundleCount: values.awardBundleCount,

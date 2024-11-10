@@ -9,8 +9,8 @@ const ValidationSchema = z.object({
   awardBundleCount: z.number().min(0),
   fileId: z.string(),
   name: z.string().min(1),
-  awardIds: z.array(z.string()),
-  awardsNotFormThisEdition: z.array(z.string()),
+  awardThisEditionIds: z.array(z.string()),
+  awardsNotThisEdition: z.array(z.string()),
 });
 
 export type ChestFormValues = z.infer<typeof ValidationSchema>;
@@ -19,8 +19,8 @@ type AddChestFormProps = {
   handleConfirm: (values: ChestFormValues) => void;
   formError?: string;
   initialValues?: ChestFormValues;
-  awardsInThisEdition: Award[];
-  awardsNotInThisEdition: Award[];
+  awardsThisEdition: Award[];
+  awardsNotThisEdition: Award[];
   title: string;
   imageIds: string[];
 };
@@ -29,16 +29,16 @@ const defaultInitialValues: ChestFormValues = {
   awardBundleCount: 1,
   fileId: "",
   name: "",
-  awardIds: [],
-  awardsNotFormThisEdition: [],
+  awardThisEditionIds: [],
+  awardsNotThisEdition: [],
 };
 
 export const AddChestForm = ({
   handleConfirm,
   imageIds,
   formError,
-  awardsInThisEdition = [],
-  awardsNotInThisEdition = [],
+  awardsThisEdition = [],
+  awardsNotThisEdition = [],
   initialValues = defaultInitialValues,
   title,
 }: AddChestFormProps) => {
@@ -58,12 +58,12 @@ export const AddChestForm = ({
         errors.fileId = "select file";
       }
 
-      if (values.awardIds.length === 0) {
-        errors.awardIds = "select at least one award";
+      if (values.awardThisEditionIds.length === 0) {
+        errors.awardThisEditionIds = "select at least one award";
       }
 
-      if (values.awardIds.length < values.awardBundleCount) {
-        errors.awardIds =
+      if (values.awardThisEditionIds.length < values.awardBundleCount) {
+        errors.awardThisEditionIds =
           "number of selected awards in this edition cannot be smaller than awardBundleCount";
       }
 
@@ -125,31 +125,34 @@ export const AddChestForm = ({
 
           <SelectImage
             type="award"
-            options={awardsInThisEdition}
-            selectedIds={formik.values.awardIds}
+            options={awardsThisEdition}
+            selectedIds={formik.values.awardThisEditionIds}
             onSelectClick={(updatedIds: string[]) =>
-              formik.setValues({ ...formik.values, awardIds: updatedIds })
+              formik.setValues({
+                ...formik.values,
+                awardThisEditionIds: updatedIds,
+              })
             }
-            error={formik.errors.awardIds as string}
-            touched={formik.touched.awardIds}
+            error={formik.errors.awardThisEditionIds as string}
+            touched={formik.touched.awardThisEditionIds}
             selectVariant={"multiple"}
-            title={"select awards:"}
+            title={"selected awards from this edition:"}
           />
 
           <SelectImage
             type="award"
-            options={awardsNotInThisEdition}
-            selectedIds={formik.values.awardsNotFormThisEdition}
+            options={awardsNotThisEdition}
+            selectedIds={formik.values.awardsNotThisEdition}
             onSelectClick={(updatedIds: string[]) =>
               formik.setValues({
                 ...formik.values,
-                awardsNotFormThisEdition: updatedIds,
+                awardsNotThisEdition: updatedIds,
               })
             }
             error={undefined}
             touched={undefined}
             selectVariant={"multiple"}
-            title={"select awards not from edition:"}
+            title={"selected awards form other editions:"}
           />
         </div>
         <button type="submit">confirm</button>

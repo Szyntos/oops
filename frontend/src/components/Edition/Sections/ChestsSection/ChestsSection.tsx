@@ -73,8 +73,8 @@ export const ChestsSection = () => {
           handleConfirm={handleAddChest}
           title="Add Chest"
           imageIds={imageIds}
-          awardsInThisEdition={selectedAwards}
-          awardsNotInThisEdition={awards.filter(
+          awardsThisEdition={selectedAwards}
+          awardsNotThisEdition={awards.filter(
             (a) => !selectedAwards.some((aw) => aw.awardId === a.awardId),
           )}
         />
@@ -86,8 +86,8 @@ export const ChestsSection = () => {
           formError={formError}
           handleConfirm={handleEditChest}
           imageIds={imageIds}
-          awardsInThisEdition={selectedAwards}
-          awardsNotInThisEdition={awards.filter(
+          awardsThisEdition={selectedAwards}
+          awardsNotThisEdition={awards.filter(
             (a) => !selectedAwards.some((aw) => aw.awardId === a.awardId),
           )}
           initialValues={
@@ -96,16 +96,18 @@ export const ChestsSection = () => {
                   awardBundleCount: selectedChest.awardBundleCount,
                   fileId: selectedChest.imageFileId as string,
                   name: selectedChest.type,
-                  awardIds: selectedChest.chestAwards
+                  awardThisEditionIds: selectedChest.chestAwards
                     .filter((a) =>
-                      selectedAwards.some((e) => e.awardId === a.award.awardId),
+                      selectedAwards.some(
+                        (aw) => aw.awardId === a.award.awardId,
+                      ),
                     )
                     .map((award) => award.award.awardId),
-                  awardsNotFormThisEdition: selectedChest.chestAwards
+                  awardsNotThisEdition: selectedChest.chestAwards
                     .filter(
                       (a) =>
                         !selectedAwards.some(
-                          (e) => e.awardId === a.award.awardId,
+                          (aw) => aw.awardId === a.award.awardId,
                         ),
                     )
                     .map((award) => award.award.awardId),

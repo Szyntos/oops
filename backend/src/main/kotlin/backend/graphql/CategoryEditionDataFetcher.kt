@@ -1,24 +1,30 @@
 package backend.graphql
 
-import backend.award.AwardRepository
-import backend.awardEdition.AwardEdition
-import backend.awardEdition.AwardEditionRepository
 import backend.categories.CategoriesRepository
 import backend.categoryEdition.CategoryEdition
 import backend.categoryEdition.CategoryEditionRepository
 import backend.edition.EditionRepository
-import backend.points.PointsRepository
+import backend.graphql.permissions.CategoryEditionPermissions
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.subcategories.SubcategoriesRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
 @DgsComponent
 class CategoryEditionDataFetcher {
+
+    @Autowired
+    private lateinit var categoryEditionPermissions: CategoryEditionPermissions
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
 
     @Autowired
     private lateinit var subcategoriesRepository: SubcategoriesRepository
@@ -41,36 +47,31 @@ class CategoryEditionDataFetcher {
     @DgsMutation
     @Transactional
     fun addCategoryToEdition(@InputArgument categoryId: Long, @InputArgument editionId: Long): CategoryEdition {
+        val action = "addCategoryToEdition"
+        val arguments = mapOf(
+            "categoryId" to categoryId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
         return addCategoryToEditionHelper(categoryId, editionId)
-    }
-
-    @DgsMutation
-    @Transactional
-    fun removeCategoryFromEdition(@InputArgument categoryId: Long, @InputArgument editionId: Long): Boolean {
-        return removeCategoryFromEditionHelper(categoryId, editionId)
     }
 
     @Transactional
     fun addCategoryToEditionHelper(categoryId: Long, editionId: Long) : CategoryEdition{
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add categories to editions")
+        val permission = categoryEditionPermissions.checkAddCategoryToEditionHelperPermission(categoryId, editionId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Category not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
-
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        // TODO: Delete userId check
-        if (edition.startDate.isBefore(java.time.LocalDate.now()) && currentUser.userId != 0L){
-            throw IllegalArgumentException("Edition has already started")
-        }
-
-        if (categoryEditionRepository.existsByCategory_CategoryNameAndEdition(category.categoryName, edition)){
-            throw IllegalArgumentException("Category with this name already exists in this edition")
-        }
 
         val categoryEdition = CategoryEdition(
             category = category,
@@ -100,27 +101,34 @@ class CategoryEditionDataFetcher {
         return resultCategoryEdition
     }
 
+    @DgsMutation
+    @Transactional
+    fun removeCategoryFromEdition(@InputArgument categoryId: Long, @InputArgument editionId: Long): Boolean {
+        val action = "removeCategoryFromEdition"
+        val arguments = mapOf(
+            "categoryId" to categoryId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+        return removeCategoryFromEditionHelper(categoryId, editionId)
+    }
+
     @Transactional
     fun removeCategoryFromEditionHelper(categoryId: Long, editionId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove categories from editions")
+        val permission = categoryEditionPermissions.checkRemoveCategoryFromEditionHelperPermission(categoryId, editionId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Category not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
-
-        if (!categoryEditionRepository.existsByCategoryAndEdition(category, edition)){
-            throw IllegalArgumentException("This category does not exist in this edition")
-        }
-
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        if (edition.startDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already started")
-        }
 
         val subcategoriesFromEdition = subcategoriesRepository.findByCategoryAndEdition(category, edition)
         val subcategoriesFromOtherEditions = subcategoriesRepository.findByCategory(category)

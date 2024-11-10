@@ -290,7 +290,7 @@ type Mutation {
   ): Boolean
 
   addLevelSetToEdition(
-    levelSetID: Int!
+    levelSetId: Int!
     editionId: Int!
   ): LevelSetType!
 
@@ -383,7 +383,15 @@ type Query {
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
+
+
+  checkFullPermission(input: PermissionInputType!): PermissionType!
+  checkPartialPermission(input: PermissionInputType!): PermissionType!
+
+
 }
+
+scalar JSON
 
 type AwardType {
   awardId: ID!
@@ -719,6 +727,15 @@ type ChestEditionType {
   label: String!
 }
 
+
+type PermissionType {
+  action: String!
+  arguments: JSON!
+  allow: Boolean!
+  reason: String
+  stackTrace: String!
+}
+
 type GroupPointsType{
   student: UserType!
   points: PointType
@@ -757,6 +774,12 @@ input LevelInputType {
 
 input UserIdsType {
   userIds: [Int!]!
+}
+
+
+input PermissionInputType {
+  action: String!
+  arguments: JSON!
 }
 
 input GroupPointsInputType{

@@ -19,7 +19,7 @@ export type SetupLevelSetEditionAddMutation = {
 
 export const SetupLevelSetEditionAddDocument = gql`
   mutation SetupLevelSetEditionAdd($levelSetId: Int!, $editionId: Int!) {
-    addLevelSetToEdition(levelSetID: $levelSetId, editionId: $editionId) {
+    addLevelSetToEdition(levelSetId: $levelSetId, editionId: $editionId) {
       levelSetId
       levelSetName
     }

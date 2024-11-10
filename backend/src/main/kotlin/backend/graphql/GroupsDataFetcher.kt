@@ -7,6 +7,11 @@ import backend.categories.Categories
 import backend.categories.CategoriesRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.GroupsPermissions
+import backend.graphql.utils.PhotoAssigner
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.groups.Groups
 import backend.groups.GroupsRepository
 import backend.levels.LevelsRepository
@@ -26,6 +31,7 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -36,7 +42,13 @@ import kotlin.math.min
 
 @DgsComponent
 class GroupsDataFetcher {
-  
+
+    @Autowired
+    private lateinit var groupsPermissions: GroupsPermissions
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
     @Autowired
     private lateinit var photoAssigner: PhotoAssigner
 
@@ -82,23 +94,23 @@ class GroupsDataFetcher {
     @DgsMutation
     @Transactional
     fun assignPhotosToGroups(@InputArgument editionId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can assign photos to groups")
+        val action = "assignPhotosToGroups"
+        val arguments = mapOf("editionId" to editionId)
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
+
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
+
         val groups = groupsRepository.findByEdition(edition)
 
         val photosForGroups = fileRepository.findAllByFileType("image/group")
-
-        if (groups.size > photosForGroups.size) {
-            throw IllegalArgumentException("Not enough photos to assign to all groups. Missing ${groups.size - photosForGroups.size} photos." +
-                    " Please upload more photos with fileType = image/group and try again.")
-        }
 
         val shuffledPhotos = photosForGroups.shuffled()
 
@@ -116,46 +128,34 @@ class GroupsDataFetcher {
                  @InputArgument weekdayId: Long, @InputArgument startTime: String,
                  @InputArgument endTime: String, @InputArgument teacherId: Long, @InputArgument label: String = "",
                  @InputArgument groupName: String = ""): Groups {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can add groups")
+        val action = "addGroup"
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "usosId" to usosId,
+            "weekdayId" to weekdayId,
+            "startTime" to startTime,
+            "endTime" to endTime,
+            "teacherId" to teacherId,
+            "label" to label,
+            "groupName" to groupName
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
-        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
-        if (!hh_mm.matches(startTime) || !hh_mm.matches(endTime)) {
-            throw IllegalArgumentException("Invalid time format")
-        }
 
         val startTimeWithSeconds = Time.valueOf("$startTime:00")
         val endTimeWithSeconds = Time.valueOf("$endTime:00")
 
         val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Invalid edition ID") }
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (edition.levelSet == null) {
-            throw IllegalArgumentException("Cannot add a group to an edition without levels")
-        }
-        if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {
-            throw IllegalArgumentException("Group with USOS ID $usosId already exists for edition ${edition.editionId}")
-        }
-        if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName?.isNotBlank() == true }) {
-            throw IllegalArgumentException("Group with name $groupName already exists for edition ${edition.editionId}")
-        }
-        if (startTimeWithSeconds.after(endTimeWithSeconds)) {
-            throw IllegalArgumentException("Start time must be before end time")
-        }
-        if (startTimeWithSeconds == endTimeWithSeconds) {
-            throw IllegalArgumentException("Start time must be different from end time")
-        }
+
         val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Invalid weekday ID") }
         val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Invalid teacher ID") }
-        if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("User with ID $teacherId is not a teacher nor a coordinator")
-        }
-        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTimeWithSeconds, endTimeWithSeconds, edition)) {
-            throw IllegalArgumentException("Teacher is already teaching a group at this time")
-        }
         val generatedName = generateGroupName(usosId, weekday, startTimeWithSeconds, teacher)
         val group = Groups(
             generatedName = generatedName,
@@ -183,9 +183,39 @@ class GroupsDataFetcher {
                           @InputArgument weekdayId: Long, @InputArgument startTime: String,
                           @InputArgument endTime: String, @InputArgument teacherId: Long, @InputArgument label: String = "",
                           @InputArgument groupName: String = "", @InputArgument users: List<UsersInputType>): Groups {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can add groups")
+        val action = "addGroupWithUsers"
+        val usersMap = users.map { user ->
+            mapOf(
+                "indexNumber" to user.indexNumber,
+                "nick" to user.nick,
+                "firstName" to user.firstName,
+                "secondName" to user.secondName,
+                "role" to user.role,
+                "email" to user.email,
+                "label" to user.label,
+                "createFirebaseUser" to user.createFirebaseUser,
+                "sendEmail" to user.sendEmail,
+                "imageFileId" to user.imageFileId
+            )
+        }
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "usosId" to usosId,
+            "weekdayId" to weekdayId,
+            "startTime" to startTime,
+            "endTime" to endTime,
+            "teacherId" to teacherId,
+            "label" to label,
+            "groupName" to groupName,
+            "users" to usersMap
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
@@ -197,32 +227,8 @@ class GroupsDataFetcher {
         val endTimeWithSeconds = Time.valueOf("$endTime:00")
 
         val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Invalid edition ID") }
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (edition.levelSet == null) {
-            throw IllegalArgumentException("Cannot add a group to an edition without levels")
-        }
-        if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {
-            throw IllegalArgumentException("Group with USOS ID $usosId already exists for edition ${edition.editionId}")
-        }
-        if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName?.isNotBlank() == true }) {
-            throw IllegalArgumentException("Group with name $groupName already exists for edition ${edition.editionId}")
-        }
-        if (startTimeWithSeconds.after(endTimeWithSeconds)) {
-            throw IllegalArgumentException("Start time must be before end time")
-        }
-        if (startTimeWithSeconds == endTimeWithSeconds) {
-            throw IllegalArgumentException("Start time must be different from end time")
-        }
         val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Invalid weekday ID") }
         val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Invalid teacher ID") }
-        if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("User with ID $teacherId is not a teacher nor a coordinator")
-        }
-        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTimeWithSeconds, endTimeWithSeconds, edition)) {
-            throw IllegalArgumentException("Teacher is already teaching a group at this time")
-        }
         val generatedName = generateGroupName(usosId, weekday, startTimeWithSeconds, teacher)
         val group = Groups(
             generatedName = generatedName,
@@ -283,41 +289,35 @@ class GroupsDataFetcher {
         @InputArgument teacherId: Long?,
         @InputArgument label: String?
     ): Groups {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            throw IllegalArgumentException("Student cannot edit groups")
+        val action = "editGroup"
+        val arguments = mapOf(
+            "groupId" to groupId,
+            "groupName" to groupName,
+            "usosId" to usosId,
+            "weekdayId" to weekdayId,
+            "startTime" to startTime,
+            "endTime" to endTime,
+            "teacherId" to teacherId,
+            "label" to label
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
-
-        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
-
 
         val group = groupsRepository.findById(groupId)
             .orElseThrow { IllegalArgumentException("Invalid group ID") }
 
-        if (currentUser.role == UsersRoles.TEACHER){
-            if (group.teacher.userId != currentUser.userId){
-                throw IllegalArgumentException("Teacher can only edit their groups")
-            }
-            if (usosId != null || weekdayId != null || startTime != null || endTime != null || teacherId != null){
-                throw IllegalArgumentException("Teacher can only edit groupName and label")
-            }
-        }
-
-        if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
 
         groupName?.let {
-            if (it != "" && groupsRepository.existsByGroupNameAndEdition(it, group.edition) && it != group.groupName) {
-                throw IllegalArgumentException("Group with name $it already exists for edition ${group.edition.editionId}")
-            }
             group.groupName = it
         }
 
         usosId?.let {
-            if (groupsRepository.existsByUsosIdAndEdition(it.toLong(), group.edition) && it != group.usosId) {
-                throw IllegalArgumentException("Group with USOS ID $it already exists for edition ${group.edition.editionId}")
-            }
             group.usosId = it
         }
 
@@ -328,45 +328,16 @@ class GroupsDataFetcher {
         }
 
         startTime?.let {
-
-            if (!hh_mm.matches(startTime)) {
-                throw IllegalArgumentException("Invalid time format")
-            }
-
-            val startTimeWithSeconds = Time.valueOf("$startTime:00")
-
-            if (endTime != null && startTimeWithSeconds.after(group.endTime)) {
-                throw IllegalArgumentException("Start time must be before end time")
-            }
-            group.startTime = startTimeWithSeconds
+            group.startTime = Time.valueOf("$startTime:00")
         }
 
         endTime?.let {
-
-            if (!hh_mm.matches(endTime)) {
-                throw IllegalArgumentException("Invalid time format")
-            }
-
-            val endTimeWithSeconds = Time.valueOf("$endTime:00")
-
-            if (startTime != null && group.startTime.after(endTimeWithSeconds)) {
-                throw IllegalArgumentException("End time must be after start time")
-            }
-            group.endTime = endTimeWithSeconds
+            group.endTime = Time.valueOf("$endTime:00")
         }
 
         teacherId?.let {
             val teacher = usersRepository.findById(it)
                 .orElseThrow { IllegalArgumentException("Invalid teacher ID") }
-            if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
-                throw IllegalArgumentException("User with ID $it is not a teacher nor a coordinator")
-            }
-            if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(
-                    teacher, group.weekday, group.startTime, group.endTime, group.edition
-                ) && it != group.teacher.userId
-            ) {
-                throw IllegalArgumentException("Teacher is already teaching a group at this time")
-            }
             group.teacher = teacher
         }
 
@@ -392,41 +363,37 @@ class GroupsDataFetcher {
         @InputArgument label: String?,
         @InputArgument users: UserIdsType
     ): Groups {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            throw IllegalArgumentException("Student cannot edit groups")
+        val action = "editGroupWithUsers"
+        val arguments = mapOf(
+            "groupId" to groupId,
+            "groupName" to groupName,
+            "usosId" to usosId,
+            "weekdayId" to weekdayId,
+            "startTime" to startTime,
+            "endTime" to endTime,
+            "teacherId" to teacherId,
+            "label" to label,
+            "users" to mapOf(
+                "userIds" to users.userIds
+            )
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
-
-        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
-
 
         val group = groupsRepository.findById(groupId)
             .orElseThrow { IllegalArgumentException("Invalid group ID") }
 
-        if (currentUser.role == UsersRoles.TEACHER){
-            if (group.teacher.userId != currentUser.userId){
-                throw IllegalArgumentException("Teacher can only edit their groups")
-            }
-            if (usosId != null || weekdayId != null || startTime != null || endTime != null || teacherId != null){
-                throw IllegalArgumentException("Teacher can only edit groupName and label")
-            }
-        }
-
-        if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
         groupName?.let {
-            if (it != "" && groupsRepository.existsByGroupNameAndEdition(it, group.edition) && it != group.groupName) {
-                throw IllegalArgumentException("Group with name $it already exists for edition ${group.edition.editionId}")
-            }
             group.groupName = it
         }
 
         usosId?.let {
-            if (groupsRepository.existsByUsosIdAndEdition(it.toLong(), group.edition) && it != group.usosId) {
-                throw IllegalArgumentException("Group with USOS ID $it already exists for edition ${group.edition.editionId}")
-            }
             group.usosId = it
         }
 
@@ -437,53 +404,16 @@ class GroupsDataFetcher {
         }
 
         startTime?.let {
-
-            if (!hh_mm.matches(startTime)) {
-                throw IllegalArgumentException("Invalid time format")
-            }
-
-            val startTimeWithSeconds = Time.valueOf("$startTime:00")
-
-            if (endTime != null && startTimeWithSeconds.after(group.endTime)) {
-                throw IllegalArgumentException("Start time must be before end time")
-            }
-            group.startTime = startTimeWithSeconds
+            group.startTime = Time.valueOf("$startTime:00")
         }
 
         endTime?.let {
-
-            if (!hh_mm.matches(endTime)) {
-                throw IllegalArgumentException("Invalid time format")
-            }
-
-            val endTimeWithSeconds = Time.valueOf("$endTime:00")
-
-
-            if (startTime != null && group.startTime.after(endTimeWithSeconds)) {
-                throw IllegalArgumentException("End time must be after start time")
-            }
-            group.endTime = endTimeWithSeconds
-        }
-
-        if (group.startTime.after(group.endTime)) {
-            throw IllegalArgumentException("Start time must be before end time")
-        }
-        if (group.startTime == group.endTime) {
-            throw IllegalArgumentException("Start time must be different from end time")
+            group.endTime = Time.valueOf("$endTime:00")
         }
 
         teacherId?.let {
             val teacher = usersRepository.findById(it)
                 .orElseThrow { IllegalArgumentException("Invalid teacher ID") }
-            if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
-                throw IllegalArgumentException("User with ID $it is not a teacher nor a coordinator")
-            }
-            if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(
-                    teacher, group.weekday, group.startTime, group.endTime, group.edition
-                ) && it != group.teacher.userId
-            ) {
-                throw IllegalArgumentException("Teacher is already teaching a group at this time")
-            }
             group.teacher = teacher
         }
 
@@ -505,17 +435,6 @@ class GroupsDataFetcher {
             .forEach { userId ->
                 val user = usersRepository.findById(userId)
                     .orElseThrow { IllegalArgumentException("Invalid User ID: $userId") }
-                if (user.role != UsersRoles.STUDENT) {
-                    throw IllegalArgumentException("User with ID $userId is not a student")
-                }
-
-                if (userGroupsRepository.existsByUserAndGroup(user, group)){
-                    throw IllegalArgumentException("This User already exists in this Group")
-                }
-
-                if (userGroupsRepository.existsByUserAndGroup_Edition(user, group.edition)){
-                    throw IllegalArgumentException("This User already exists in a group in this Edition")
-                }
 
                 val userGroup = UserGroups(
                     user = user,
@@ -530,18 +449,43 @@ class GroupsDataFetcher {
     @DgsMutation
     @Transactional
     fun removeGroup(@InputArgument groupId: Long): Boolean {
+        val action = "removeGroup"
+        val arguments = mapOf(
+            "groupId" to groupId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+
+        val group = groupsRepository.findById(groupId)
+            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+
+        userGroupsRepository.findByGroup_GroupsId(groupId).forEach(userGroupsRepository::delete)
+
+        groupsRepository.delete(group)
         return removeGroupHelper(groupId)
     }
 
     @DgsQuery
     @Transactional
     fun getPossibleGroupsWeekdays(@InputArgument editionId: Long): List<Weekdays> {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
-            if (userEditions.none { it.editionId == editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID $editionId")
-            }
+        val action = "getPossibleGroupsWeekdays"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason)
         }
 
         val edition = editionRepository
@@ -555,12 +499,17 @@ class GroupsDataFetcher {
     @DgsQuery
     @Transactional
     fun getPossibleGroupsTimeSpans(@InputArgument editionId: Long): List<TimeSpansType> {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
-            if (userEditions.none { it.editionId == editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID $editionId")
-            }
+        val action = "getPossibleGroupsTimeSpans"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository
@@ -575,12 +524,17 @@ class GroupsDataFetcher {
     @DgsQuery
     @Transactional
     fun getPossibleGroupDates(@InputArgument editionId: Long): List<GroupDateType> {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
-            if (userEditions.none { it.editionId == editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID $editionId")
-            }
+        val action = "getPossibleGroupDates"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository
@@ -593,16 +547,17 @@ class GroupsDataFetcher {
     @DgsQuery
     @Transactional
     fun getUsersInGroupWithPoints(@InputArgument groupId: Long): List<UserPointsType> {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            throw IllegalArgumentException("Student cannot view users in groups")
-        }
-        if (currentUser.role == UsersRoles.TEACHER){
-            val groupEdition = groupsRepository.findById(groupId).orElseThrow { IllegalArgumentException("Invalid group ID") }.edition
-            val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
-            if (userEditions.none { it.editionId == groupEdition.editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID ${groupEdition.editionId}")
-            }
+        val action = "getUsersInGroupWithPoints"
+        val arguments = mapOf(
+            "groupId" to groupId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val group = groupsRepository.findById(groupId).orElseThrow { IllegalArgumentException("Invalid group ID") }
@@ -674,22 +629,22 @@ class GroupsDataFetcher {
     @DgsQuery
     @Transactional
     fun getGroupsInEdition(@InputArgument editionId: Long, @InputArgument teacherId: Long): List<GroupTeacherType> {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            throw IllegalArgumentException("Student cannot view groups")
-        }
-        if (currentUser.role == UsersRoles.TEACHER){
-            val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
-            if (userEditions.none { it.editionId == editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID $editionId")
-            }
+        val action = "getGroupsInEdition"
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "teacherId" to teacherId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
         val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Invalid teacher ID") }
-        if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("User with ID $teacherId is not a teacher nor a coordinator")
-        }
         val groups = groupsRepository.findByEdition(edition)
         return groups.map { group ->
             GroupTeacherType(
@@ -702,17 +657,13 @@ class GroupsDataFetcher {
 
     @Transactional
     fun removeGroupHelper(groupId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can remove groups")
+        val permission = groupsPermissions.checkRemoveGroupHelperPermission(groupId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val group = groupsRepository.findById(groupId)
             .orElseThrow { IllegalArgumentException("Invalid group ID") }
-
-        if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
 
         userGroupsRepository.findByGroup_GroupsId(groupId).forEach(userGroupsRepository::delete)
 

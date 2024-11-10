@@ -73,7 +73,6 @@ export const useLevelSetsSection = (editionId: number) => {
   const [addSet] = useSetupLevelSetEditionAddMutation();
   const [removeSet] = useSetupLevelSetEditionRemoveMutation();
   const handleSelectSet = (set: LevelSet) => {
-    console.log(set);
     const isLevelSetSelected = activeSet?.levelSetId === set.levelSetId;
 
     const variables = {

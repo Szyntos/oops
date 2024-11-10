@@ -1,7 +1,6 @@
 package backend.graphql
 
 import backend.award.AwardRepository
-import backend.awardEdition.AwardEdition
 import backend.awardEdition.AwardEditionRepository
 import backend.categories.CategoriesRepository
 import backend.chestAward.ChestAward
@@ -12,21 +11,27 @@ import backend.chests.Chests
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.utils.PhotoAssigner
+import backend.graphql.utils.PermissionDeniedException
 import backend.groups.GroupsRepository
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 
 @DgsComponent
 class ChestsDataFetcher {
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
     @Autowired
     private lateinit var chestEditionRepository: ChestEditionRepository
 
@@ -75,18 +80,17 @@ class ChestsDataFetcher {
     @DgsMutation
     @Transactional
     fun assignPhotoToChest(@InputArgument chestId: Long, @InputArgument fileId: Long?): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can assign photos to chests")
+        val arguments = mapOf("chestId" to chestId, "fileId" to fileId)
+        val permissionInput = PermissionInput(
+            action = "assignPhotoToChest",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
-        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
-
-        val chestEditions = chest.chestEdition.map { it.edition }
-
-        if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
 
         return photoAssigner.assignPhotoToAssignee(chestsRepository, "image/chest", chestId, fileId)
     }
@@ -98,9 +102,21 @@ class ChestsDataFetcher {
                  @InputArgument awardBundleCount: Int,
                  @InputArgument label: String = "",
                  @InputArgument awardIds: List<Long>): Chests {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add chests")
+        val arguments = mapOf(
+            "chestType" to chestType,
+            "fileId" to fileId,
+            "awardBundleCount" to awardBundleCount,
+            "label" to label,
+            "awardIds" to awardIds
+        )
+        val permissionInput = PermissionInput(
+            action = "addChest",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val chest = Chests(
@@ -136,18 +152,26 @@ class ChestsDataFetcher {
         @InputArgument label: String?,
         @InputArgument awardIds: List<Long>
     ): Chests {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can edit chests")
+        val arguments = mapOf(
+            "chestId" to chestId,
+            "chestType" to chestType,
+            "fileId" to fileId,
+            "awardBundleCount" to awardBundleCount,
+            "label" to label,
+            "awardIds" to awardIds
+        )
+        val permissionInput = PermissionInput(
+            action = "editChest",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         var chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
 
-        val chestEditions = chest.chestEdition.map { it.edition }
-
-        if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
         chestType?.let {
             chest.chestType = it
         }
@@ -160,11 +184,8 @@ class ChestsDataFetcher {
             chest.label = it
         }
 
-        awardBundleCount?.let { newCount ->
-            if (chestHistoryRepository.findByChest(chest).any { it.opened }) {
-                throw IllegalArgumentException("Users have already opened this chest")
-            }
-            chest.awardBundleCount = newCount
+        awardBundleCount?.let {
+            chest.awardBundleCount = it
         }
 
         val newAwardIds = awardIds.toSet()
@@ -248,21 +269,20 @@ class ChestsDataFetcher {
     @DgsMutation
     @Transactional
     fun removeChest(@InputArgument chestId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove chests")
+        val arguments = mapOf(
+            "chestId" to chestId
+        )
+        val permissionInput = PermissionInput(
+            action = "removeChest",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
-
-        val chestEditions = chest.chestEdition.map { it.edition }
-
-        if (chestEditions.any { it.endDate.isBefore(LocalDate.now()) }) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (chestEditions.any { it.startDate.isBefore(LocalDate.now()) } && chestHistoryRepository.existsByChest(chest)) {
-            throw IllegalArgumentException("Users have already been given this chest")
-        }
 
         chestEditionRepository.deleteByChest(chest)
         chestAwardRepository.findByChest(chest).forEach {
@@ -276,9 +296,17 @@ class ChestsDataFetcher {
     @DgsMutation
     @Transactional
     fun copyChest(@InputArgument chestId: Long): Chests {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can copy chests")
+        val arguments = mapOf(
+            "chestId" to chestId
+        )
+        val permissionInput = PermissionInput(
+            action = "copyChest",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }

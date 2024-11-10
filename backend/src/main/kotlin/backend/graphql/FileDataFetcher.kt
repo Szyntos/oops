@@ -3,6 +3,10 @@ package backend.graphql
 import backend.categories.CategoriesRepository
 import backend.files.FileEntity
 import backend.files.FileEntityRepository
+import backend.graphql.utils.PhotoAssigner
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 
 import backend.points.PointsRepository
 import backend.users.UsersRepository
@@ -10,11 +14,15 @@ import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
 @DgsComponent
 class FileDataFetcher {
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
     @Autowired
     lateinit var usersRepository: UsersRepository
 
@@ -36,6 +44,16 @@ class FileDataFetcher {
     @DgsQuery
     @Transactional
     fun getFilesGroupedByType(): List<FileGroup> {
+        val action = "getFilesGroupedByType"
+        val arguments = mapOf<String, Any>()
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
         val files = fileEntityRepository.findAll()
         return files.groupBy { it.fileType }
             .map { (fileType, files) ->
@@ -46,6 +64,18 @@ class FileDataFetcher {
     @DgsQuery
     @Transactional
     fun getFilesGroupedByTypeBySelectedTypes(@InputArgument fileTypes: List<String>): List<FileGroup> {
+        val action = "getFilesGroupedByTypeBySelectedTypes"
+        val arguments = mapOf(
+            "fileTypes" to fileTypes
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
         val selectedFiles = fileEntityRepository.findAllByFileTypeIn(fileTypes)
         return selectedFiles.groupBy { it.fileType }
             .map { (fileType, files) ->

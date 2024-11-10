@@ -5,18 +5,28 @@ import backend.awardEdition.AwardEdition
 import backend.awardEdition.AwardEditionRepository
 import backend.bonuses.BonusesRepository
 import backend.edition.EditionRepository
+import backend.graphql.permissions.AwardEditionPermissions
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
 @DgsComponent
 class AwardEditionDataFetcher {
+
+    @Autowired
+    private lateinit var awardEditionPermissions: AwardEditionPermissions
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
 
     @Autowired
     private lateinit var userMapper: UserMapper
@@ -42,36 +52,29 @@ class AwardEditionDataFetcher {
     @DgsMutation
     @Transactional
     fun addAwardToEdition(@InputArgument awardId: Long, @InputArgument editionId: Long): AwardEdition {
-        return addAwardToEditionHelper(awardId, editionId)
-    }
+        val arguments = mapOf("awardId" to awardId, "editionId" to editionId)
 
-    @DgsMutation
-    @Transactional
-    fun removeAwardFromEdition(@InputArgument awardId: Long, @InputArgument editionId: Long): Boolean {
-        return removeAwardFromEditionHelper(awardId, editionId)
+        val permissionInput = PermissionInput(
+            action = "addAwardToEdition",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+        return addAwardToEditionHelper(awardId, editionId)
     }
 
     @Transactional
     fun addAwardToEditionHelper(awardId: Long, editionId: Long): AwardEdition {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add awards to editions")
+        val permission = awardEditionPermissions.checkAddAwardToEditionHelperPermission(awardId, editionId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
-
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        if (awardEditionRepository.existsByAward_AwardNameAndEdition(award.awardName, edition)){
-            throw IllegalArgumentException("Award with this name already exists in this edition")
-        }
-
-        if (award.category.categoryEdition.none { it.edition == edition }) {
-            throw IllegalArgumentException("Award's category does not exist in this edition")
-        }
 
         val awardEdition = AwardEdition(
             award = award,
@@ -81,27 +84,32 @@ class AwardEditionDataFetcher {
         return awardEditionRepository.save(awardEdition)
     }
 
+    @DgsMutation
+    @Transactional
+    fun removeAwardFromEdition(@InputArgument awardId: Long, @InputArgument editionId: Long): Boolean {
+        val arguments = mapOf("awardId" to awardId, "editionId" to editionId)
+
+        val permissionInput = PermissionInput(
+            action = "removeAwardFromEdition",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+        return removeAwardFromEditionHelper(awardId, editionId)
+    }
+
     @Transactional
     fun removeAwardFromEditionHelper(awardId: Long, editionId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove awards from editions")
+        val permission = awardEditionPermissions.checkRemoveAwardFromEditionHelperPermission(awardId, editionId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
-
-        if (!awardEditionRepository.existsByAwardAndEdition(award, edition)){
-            throw IllegalArgumentException("This award does not exist in this edition")
-        }
-
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        if (bonusesRepository.existsByAwardAndPoints_Subcategory_Edition(award, edition)){
-            throw IllegalArgumentException("Award has already been assigned to students in this edition")
-        }
 
         awardEditionRepository.deleteByAwardAndEdition(award, edition)
         return true

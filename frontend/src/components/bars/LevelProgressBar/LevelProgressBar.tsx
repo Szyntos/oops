@@ -18,9 +18,6 @@ export const LevelProgressBar = ({
 }: LevelProgressBarProps) => {
   const leftLevel = prevLevel ?? currLevel;
   const rightLevel = nextLevel ?? currLevel;
-  console.log(
-    totalPoints ? totalPoints - parseFloat(currLevel.minimumPoints) : 0,
-  );
   return (
     <div style={styles.container}>
       <ProgressBar

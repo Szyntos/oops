@@ -1,4 +1,4 @@
-package backend.graphql
+package backend.graphql.utils
 
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration
 import org.springframework.context.annotation.Configuration

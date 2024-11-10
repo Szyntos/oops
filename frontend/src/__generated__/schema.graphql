@@ -1142,12 +1142,14 @@ input AwardSumOrderBy {
 }
 
 type AwardType {
-  awardEditions: [AwardEditionType]
+  awardEditions: [AwardEditionType]!
   awardId: ID!
   awardName: String!
   awardType: AwardTypeType!
   awardValue: String!
+  bonuses: [BonusType]!
   category: CategoryType
+  chestAward: [ChestAwardType]!
   description: String!
   imageFile: FileType
   label: String!
@@ -1292,6 +1294,11 @@ input AwardVarianceOrderBy {
   categoryId: OrderBy
   imageFileId: OrderBy
   maxUsages: OrderBy
+}
+
+type AwardWithPermissionsType {
+  award: AwardType
+  permissions: ListPermissionsOutputType!
 }
 
 """
@@ -2953,13 +2960,21 @@ type CategoryPointsType {
 }
 
 type CategoryType {
+  awards: [AwardType]!
   canAddPoints: Boolean!
   categoryEdition: [CategoryEditionType]!
   categoryId: ID!
   categoryName: String!
   darkColor: String!
+  gradingChecks: [GradingChecksType]!
   label: String!
   lightColor: String!
+  subcategories: [SubcategoryType]!
+}
+
+type CategoryWithPermissionsType {
+  category: CategoryType
+  permissions: ListPermissionsOutputType!
 }
 
 """
@@ -4450,6 +4465,7 @@ input ChestHistorySumOrderBy {
 }
 
 type ChestHistoryType {
+  bonuses: [BonusType]!
   chest: ChestType!
   chestHistoryId: ID!
   createdAt: String!
@@ -4595,12 +4611,20 @@ input ChestHistoryVarianceOrderBy {
 }
 
 type ChestType {
+  active: Boolean!
   awardBundleCount: Int!
+  chestAward: [ChestAwardType]!
   chestEdition: [ChestEditionType]!
+  chestHistory: [ChestHistoryType]!
   chestId: ID!
   chestType: String!
   imageFile: FileType
   label: String!
+}
+
+type ChestWithPermissionsType {
+  chest: ChestType
+  permissions: ListPermissionsOutputType!
 }
 
 """
@@ -6194,12 +6218,20 @@ input EditionSumOrderBy {
 }
 
 type EditionType {
+  awardEdition: [AwardEditionType]!
+  categoryEdition: [CategoryEditionType]!
+  chestEdition: [ChestEditionType]!
   editionId: ID!
   editionName: String!
   editionYear: Int!
   endDate: String!
+  gradingChecks: [GradingChecksType]!
+  groups: [GroupType]!
   label: String!
+  levelSet: LevelSetType!
   startDate: String!
+  subcategories: [SubcategoryType]!
+  userLevels: [UserLevelType]!
 }
 
 """
@@ -6319,13 +6351,18 @@ type FileGroupType {
 }
 
 type FileType {
+  awards: [AwardType]!
+  chests: [ChestType]!
   createdAt: String!
   fileId: ID!
   fileName: String!
   fileType: String!
+  groups: [GroupType]!
   label: String!
+  levels: [LevelType]!
   pathToFile: String!
   updatedAt: String!
+  users: [UserType]!
 }
 
 """
@@ -8123,6 +8160,11 @@ type GroupType {
   weekday: WeekdayType!
 }
 
+type GroupWithPermissionsType {
+  group: GroupType!
+  permissions: ListPermissionsOutputType!
+}
+
 """
 columns and relationships of "groups"
 """
@@ -9194,6 +9236,11 @@ type LevelSetType {
   levels: [LevelType!]!
 }
 
+type LevelSetWithPermissionsType {
+  levelSet: LevelSetType!
+  permissions: ListPermissionsOutputType!
+}
+
 """
 columns and relationships of "level_sets"
 """
@@ -9593,6 +9640,7 @@ type LevelSetsVarianceFields {
 
 type LevelType {
   grade: String!
+  gradingChecks: [GradingChecksType]!
   highest: Boolean!
   imageFile: FileType
   label: String!
@@ -10403,6 +10451,16 @@ input LevelsVarianceOrderBy {
   ordinalNumber: OrderBy
 }
 
+type ListPermissionsOutputType {
+  additional: [PermissionType!]!
+  canAdd: PermissionType!
+  canCopy: PermissionType!
+  canEdit: PermissionType!
+  canRemove: PermissionType!
+  canSelect: PermissionType!
+  canUnselect: PermissionType!
+}
+
 type NeighboringLevelsType {
   currLevel: LevelType!
   nextLevel: LevelType
@@ -10489,6 +10547,7 @@ type PermissionType {
 }
 
 type PointType {
+  bonuses: [BonusType]!
   createdAt: String!
   label: String!
   pointsId: ID!
@@ -10744,6 +10803,11 @@ type PointsHistory {
   An object relationship
   """
   userByTeacherId: Users!
+
+  """
+  An object relationship
+  """
+  userByUpdatedBy: Users
   value: Float!
 }
 
@@ -10852,6 +10916,7 @@ input PointsHistoryBoolExp {
   updatedBy: BigintComparisonExp
   user: UsersBoolExp
   userByTeacherId: UsersBoolExp
+  userByUpdatedBy: UsersBoolExp
   value: FloatComparisonExp
 }
 
@@ -10896,6 +10961,7 @@ input PointsHistoryInsertInput {
   updatedBy: bigint
   user: UsersObjRelInsertInput
   userByTeacherId: UsersObjRelInsertInput
+  userByUpdatedBy: UsersObjRelInsertInput
   value: Float
 }
 
@@ -11009,6 +11075,7 @@ input PointsHistoryOrderBy {
   updatedBy: OrderBy
   user: UsersOrderBy
   userByTeacherId: UsersOrderBy
+  userByUpdatedBy: UsersOrderBy
   value: OrderBy
 }
 
@@ -11230,6 +11297,20 @@ input PointsHistorySumOrderBy {
   teacherId: OrderBy
   updatedBy: OrderBy
   value: OrderBy
+}
+
+type PointsHistoryType {
+  copiedAt: String!
+  createdAt: String!
+  label: String!
+  pointsHistoryId: ID!
+  pointsId: ID!
+  student: UserType!
+  subcategory: SubcategoryType!
+  teacher: UserType!
+  updatedAt: String!
+  updatedBy: UserType!
+  value: String!
 }
 
 """
@@ -12722,10 +12803,13 @@ type SubcategoryPointsType {
 
 type SubcategoryType {
   category: CategoryType!
+  chestHistory: [ChestHistoryType]!
   edition: EditionType
   label: String!
   maxPoints: String!
   ordinalNumber: Int!
+  points: [PointType]!
+  pointsHistory: [PointsHistoryType]!
   subcategoryId: ID!
   subcategoryName: String!
 }
@@ -13881,18 +13965,31 @@ type UserPointsType {
 }
 
 type UserType {
+  chestHistory: [ChestHistoryType]!
+  chestHistoryByTeacher: [ChestHistoryType]!
   email: String!
   firebaseUid: String
   firstName: String!
+  groups: [GroupType]!
   imageFile: FileType
   indexNumber: Int!
   label: String!
   nick: String!
+  points: [PointType]!
+  pointsByTeacher: [PointType]!
+  pointsByUpdatedBy: [PointType]!
+  pointsHistory: [PointsHistoryType]!
+  pointsHistoryByTeacher: [PointsHistoryType]!
   role: UsersRolesType!
   secondName: String!
   userGroups: [UserGroupType]!
   userId: ID!
   userLevels: [UserLevelType]!
+}
+
+type UserWithPermissionsType {
+  permissions: ListPermissionsOutputType!
+  user: UserType!
 }
 
 """
@@ -15159,6 +15256,7 @@ input UsersVarianceOrderBy {
 }
 
 type WeekdayType {
+  groups: [GroupType]!
   label: String!
   ordinalNumber: Int!
   weekdayAbbr: String!
@@ -19236,6 +19334,12 @@ type query_root {
   fetch data from the table: "levels" using primary key columns
   """
   levelsByPk(levelId: bigint!): Levels
+  listSetupAwards(editionId: Int!): [AwardWithPermissionsType!]!
+  listSetupCategories(editionId: Int!): [CategoryWithPermissionsType!]!
+  listSetupChests(editionId: Int!): [ChestWithPermissionsType!]!
+  listSetupGroups(editionId: Int!): [GroupWithPermissionsType!]!
+  listSetupLevelSets(editionId: Int!): [LevelSetWithPermissionsType!]!
+  listSetupUsers(editionId: Int!): [UserWithPermissionsType!]!
 
   """
   An array relationship

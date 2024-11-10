@@ -8,6 +8,7 @@ type CategoryCardProps = {
   handleSelectClick: () => void;
   handleEditClick: () => void;
   handleDeleteClick: () => void;
+  handleCopyClick: () => void;
 };
 
 export const CategoryCard = ({
@@ -16,6 +17,7 @@ export const CategoryCard = ({
   handleSelectClick,
   handleEditClick,
   handleDeleteClick,
+  handleCopyClick,
 }: CategoryCardProps) => {
   const getSubcategoriesString = (category: Category) => {
     const subcategoryNames = category.subcategories.map(
@@ -40,7 +42,7 @@ export const CategoryCard = ({
         handleSelect={handleSelectClick}
         handleEdit={handleEditClick}
         handleDelete={handleDeleteClick}
-        disableCopy={true}
+        handleCopy={handleCopyClick}
       />
     </div>
   );

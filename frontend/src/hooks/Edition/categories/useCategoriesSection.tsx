@@ -12,6 +12,7 @@ import { useSetupCategoryCreateMutation } from "../../../graphql/setupCategoryCr
 import { useError } from "../../common/useGlobalError";
 import { useSetupCategoryEditMutation } from "../../../graphql/setupCategoryEdit.graphql.types";
 import { useDeleteCategoryMutation } from "../../../graphql/deleteCategory.graphql.types";
+import { useCopyCategoryMutation } from "../../../graphql/copyCategory.graphql.types";
 
 export type Category = SetupCategoriesQuery["categories"][number];
 
@@ -132,6 +133,17 @@ export const useCategoriesSection = (editionId: number) => {
     });
   };
 
+  // COPY
+  const [copyCategory] = useCopyCategoryMutation();
+  const handleCopyCategory = (category: Category) => {
+    globalErrorWrapper(async () => {
+      await copyCategory({
+        variables: { categoryId: parseInt(category.categoryId) },
+      });
+      refetch();
+    });
+  };
+
   return {
     categories,
     selectedCategories,
@@ -149,5 +161,6 @@ export const useCategoriesSection = (editionId: number) => {
     closeEditCategory,
     handleEditCategory,
     handleDeleteCategory,
+    handleCopyCategory,
   };
 };

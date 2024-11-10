@@ -1,7 +1,9 @@
 package backend.award
 
 import backend.awardEdition.AwardEdition
+import backend.bonuses.Bonuses
 import backend.categories.Categories
+import backend.chestAward.ChestAward
 import backend.chestEdition.ChestEdition
 import backend.files.FileEntity
 import backend.utils.HasImageFile
@@ -41,6 +43,12 @@ class Award (
 
         @Column(name = "label", nullable = false, length = 256)
         var label: String,
+
+        @OneToMany(mappedBy = "award", fetch = FetchType.LAZY)
+        val chestAward: Set<ChestAward> = HashSet(),
+
+        @OneToMany(mappedBy = "award", fetch = FetchType.LAZY)
+        val bonuses: Set<Bonuses> = HashSet(),
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "image_file_id")

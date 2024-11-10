@@ -1,8 +1,12 @@
 package backend.edition
 
+import backend.awardEdition.AwardEdition
 import backend.categoryEdition.CategoryEdition
 import backend.chestEdition.ChestEdition
+import backend.gradingChecks.GradingChecks
+import backend.groups.Groups
 import backend.levelSet.LevelSet
+import backend.subcategories.Subcategories
 import backend.userLevel.UserLevel
 import jakarta.persistence.*
 import java.time.LocalDate
@@ -42,6 +46,18 @@ class Edition(
 
     @OneToMany(mappedBy = "edition", fetch = FetchType.LAZY)
     val chestEdition: Set<ChestEdition> = HashSet(),
+
+    @OneToMany(mappedBy = "edition", fetch = FetchType.LAZY)
+    val awardEdition: Set<AwardEdition> = HashSet(),
+
+    @OneToMany(mappedBy = "edition", fetch = FetchType.LAZY)
+    val gradingChecks: Set<GradingChecks> = HashSet(),
+
+    @OneToMany(mappedBy = "edition", fetch = FetchType.LAZY)
+    val groups: Set<Groups> = HashSet(),
+
+    @OneToMany(mappedBy = "edition", fetch = FetchType.LAZY)
+    val subcategories: Set<Subcategories> = HashSet(),
 ) {
     constructor() : this(
         editionName = "",

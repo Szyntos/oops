@@ -1,11 +1,13 @@
 package backend.graphql
 
+import backend.award.Award
 import backend.award.AwardRepository
 import backend.categories.Categories
 import backend.categories.CategoriesRepository
 import backend.categoryEdition.CategoryEdition
 import backend.categoryEdition.CategoryEditionRepository
 import backend.edition.EditionRepository
+import backend.gradingChecks.GradingChecks
 import backend.gradingChecks.GradingChecksRepository
 import backend.graphql.utils.*
 import backend.subcategories.Subcategories
@@ -73,10 +75,12 @@ class CategoriesDataFetcher {
                     lightColor = category.lightColor,
                     darkColor = category.darkColor,
                     canAddPoints = category.canAddPoints,
-                    categoryEdition = category.categoryEdition.toList(),
+                    gradingChecks = category.gradingChecks,
+                    categoryEdition = category.categoryEdition,
                     subcategories = category.subcategories
                         .filter { it.edition == null }
-                        .sortedBy { it.ordinalNumber }.toList(),
+                        .sortedBy { it.ordinalNumber }.toSet(),
+                    awards = category.awards,
                     label = category.label
                 ),
                 permissions = ListPermissionsOutput(
@@ -361,8 +365,10 @@ data class CategoryOutputType (
     val lightColor: String,
     val darkColor: String,
     val canAddPoints: Boolean,
-    val categoryEdition: List<CategoryEdition>,
-    val subcategories: List<Subcategories>,
+    val gradingChecks: Set<GradingChecks>,
+    val categoryEdition: Set<CategoryEdition>,
+    val subcategories: Set<Subcategories>,
+    val awards: Set<Award>,
     val label: String
 )
 

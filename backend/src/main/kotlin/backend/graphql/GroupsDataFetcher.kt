@@ -110,21 +110,21 @@ class GroupsDataFetcher {
 
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
 
-        val groups = groupsRepository.findByEdition(edition).map {
+        val groups = groupsRepository.findByEdition(edition).map { group ->
             GroupWithPermissions(
                 group = GroupOutputType(
-                    groupsId = it.groupsId,
-                    groupName = it.groupName,
-                    generatedName = it.generatedName,
-                    usosId = it.usosId,
-                    label = it.label,
-                    teacher = it.teacher,
-                    userGroups = it.userGroups.filter { it.user.role == UsersRoles.STUDENT },
-                    weekday = it.weekday,
-                    startTime = it.startTime,
-                    endTime = it.endTime,
-                    edition = it.edition,
-                    imageFile = it.imageFile
+                    groupsId = group.groupsId,
+                    groupName = group.groupName,
+                    generatedName = group.generatedName,
+                    usosId = group.usosId,
+                    label = group.label,
+                    teacher = group.teacher,
+                    userGroups = group.userGroups.filter { it.user.role == UsersRoles.STUDENT }.toSet(),
+                    weekday = group.weekday,
+                    startTime = group.startTime,
+                    endTime = group.endTime,
+                    edition = group.edition,
+                    imageFile = group.imageFile
                 ),
                 permissions = ListPermissionsOutput(
                     canAdd = Permission(
@@ -132,14 +132,14 @@ class GroupsDataFetcher {
                         objectMapper.createObjectNode(),
                         false,
                         "Not applicable"),
-                    canEdit = permissionService.checkPartialPermission(PermissionInput("editGroupWithUsers", objectMapper.writeValueAsString(mapOf("groupsId" to it.groupsId)))),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editGroupWithUsers", objectMapper.writeValueAsString(mapOf("groupsId" to group.groupsId)))),
                     canCopy =
                     Permission(
                         "copyGroup",
                         objectMapper.createObjectNode(),
                         false,
                         "Not applicable"),
-                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeGroup", objectMapper.writeValueAsString(mapOf("groupsId" to it.groupsId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeGroup", objectMapper.writeValueAsString(mapOf("groupsId" to group.groupsId)))),
                     canSelect =
                     Permission(
                         "selectGroup",
@@ -888,7 +888,7 @@ data class GroupOutputType (
     var usosId: Int,
     var label: String? = "",
     var teacher: Users,
-    val userGroups: List<UserGroups>,
+    val userGroups: Set<UserGroups>,
     var weekday: Weekdays,
     var startTime: Time,
     var endTime: Time,

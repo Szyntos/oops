@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var levelsPermissions: LevelsPermissions
+
+    @Autowired
     private lateinit var usersPermissions: UsersPermissions
 
     @Autowired
@@ -115,6 +118,9 @@ class PermissionService {
             "getPossibleGroupDates" -> groupsPermissions.checkGetPossibleGroupDatesPermission(jsonArguments)
             "getUsersInGroupWithPoints" -> groupsPermissions.checkGetUsersInGroupWithPointsPermission(jsonArguments)
             "getGroupsInEdition" -> groupsPermissions.checkGetGroupsInEditionPermission(jsonArguments)
+            // LevelsPermissions
+            "assignPhotoToLevel" -> levelsPermissions.checkAssignPhotoToLevelPermission(jsonArguments)
+            "getNeighboringLevels" -> levelsPermissions.checkGetNeighboringLevelsPermission(jsonArguments)
             // SubcategoriesPermissions
             "addSubcategory" -> subcategoriesPermissions.checkAddSubcategoryPermission(jsonArguments)
             "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)

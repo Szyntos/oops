@@ -43,19 +43,7 @@ class EditionPermissions {
     private lateinit var categoryEditionPermissions: CategoryEditionPermissions
 
     @Autowired
-    private lateinit var groupsDataFetcher: GroupsDataFetcher
-
-    @Autowired
     private lateinit var groupsRepository: GroupsRepository
-
-    @Autowired
-    private lateinit var chestEditionDataFetcher: ChestEditionDataFetcher
-
-    @Autowired
-    private lateinit var awardEditionDataFetcher: AwardEditionDataFetcher
-
-    @Autowired
-    private lateinit var categoryEditionDataFetcher: CategoryEditionDataFetcher
 
     @Autowired
     private lateinit var categoriesRepository: CategoriesRepository

@@ -105,6 +105,7 @@ class ChestEditionDataFetcher {
         return resultChestEdition
     }
 
+    @DgsMutation
     @Transactional
     fun removeChestFromEdition(@InputArgument chestId: Long, @InputArgument editionId: Long): Boolean {
         val action = "removeChestFromEdition"

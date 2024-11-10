@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var permissionPermissions: PermissionPermissions
+
+    @Autowired
     private lateinit var levelSetPermissions: LevelSetPermissions
 
     @Autowired
@@ -131,6 +134,9 @@ class PermissionService {
             "copyLevelSet" -> levelSetPermissions.checkCopyLevelSetPermission(jsonArguments)
             "addLevelSetToEdition" -> levelSetPermissions.checkAddLevelSetToEditionPermission(jsonArguments)
             "removeLevelSetFromEdition" -> levelSetPermissions.checkRemoveLevelSetFromEditionPermission(jsonArguments)
+            // PermissionPermissions
+            "checkFullPermission" -> permissionPermissions.checkCheckFullPermissionPermission(jsonArguments)
+            "checkPartialPermission" -> permissionPermissions.checkCheckPartialPermissionPermission(jsonArguments)
             // SubcategoriesPermissions
             "addSubcategory" -> subcategoriesPermissions.checkAddSubcategoryPermission(jsonArguments)
             "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)

@@ -9,6 +9,7 @@ type SelectedSetCardProps = {
   onSelectClick: () => void;
   onEditClick: () => void;
   onDeleteClick: () => void;
+  onCopyClick: () => void;
 };
 
 export const SelectedSetCard = ({
@@ -16,6 +17,7 @@ export const SelectedSetCard = ({
   onSelectClick,
   onEditClick,
   onDeleteClick,
+  onCopyClick,
 }: SelectedSetCardProps) => {
   return (
     <div style={styles.card}>
@@ -48,7 +50,7 @@ export const SelectedSetCard = ({
         handleSelect={onSelectClick}
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
-        disableCopy={true}
+        handleCopy={onCopyClick}
       />
     </div>
   );

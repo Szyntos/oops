@@ -11,6 +11,7 @@ import { useAddLevelSetMutation } from "../../graphql/addLevelSet.graphql.types"
 import { useDeleteLevelSetMutation } from "../../graphql/deleteLevelSet.graphql.types";
 import { useFilesQuery } from "../../graphql/files.graphql.types";
 import { AddedLevel } from "../../components/Edition/Sections/LevelsSection/AddSetForm/LevelRow";
+import { useCopyLevelSetMutation } from "../../graphql/copyLevelSet.graphql.types";
 
 export type LevelSet = SetupLevelSetsQuery["levelSets"][number];
 
@@ -127,6 +128,15 @@ export const useLevelSetsSection = (editionId: number) => {
     });
   };
 
+  // COPY
+  const [copySet] = useCopyLevelSetMutation();
+  const handleCopySet = (set: LevelSet) => {
+    globalErrorWrapper(async () => {
+      await copySet({ variables: { levelSetId: parseInt(set.levelSetId) } });
+      refetch();
+    });
+  };
+
   return {
     levelSets,
     activeSet,
@@ -150,5 +160,7 @@ export const useLevelSetsSection = (editionId: number) => {
     selectedToEditSet,
 
     handleDeleteSet,
+
+    handleCopySet,
   };
 };

@@ -9,6 +9,7 @@ type LevelSetCardProps = {
   onSelectClick: () => void;
   onEditClick: () => void;
   onDeleteClick: () => void;
+  onCopyClick: () => void;
 };
 
 export const LevelSetCard = ({
@@ -17,6 +18,7 @@ export const LevelSetCard = ({
   onSelectClick,
   onEditClick,
   onDeleteClick,
+  onCopyClick,
 }: LevelSetCardProps) => {
   return (
     <div
@@ -43,7 +45,7 @@ export const LevelSetCard = ({
         handleSelect={onSelectClick}
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
-        disableCopy={true}
+        handleCopy={onCopyClick}
       />
     </div>
   );

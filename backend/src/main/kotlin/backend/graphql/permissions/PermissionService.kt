@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var userGroupsPermissions: UserGroupsPermissions
+
+    @Autowired
     private lateinit var pointsPermissions: PointsPermissions
 
     @Autowired
@@ -149,6 +152,10 @@ class PermissionService {
             "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)
             "removeSubcategory" -> subcategoriesPermissions.checkRemoveSubcategoryPermission(jsonArguments)
             "generateSubcategories" -> subcategoriesPermissions.checkGenerateSubcategoriesPermission(jsonArguments)
+            // UserGroupsPermissions
+            "addUserToGroup" -> userGroupsPermissions.checkAddUserToGroupPermission(jsonArguments)
+            "removeUserFromGroup" -> userGroupsPermissions.checkRemoveUserFromGroupPermission(jsonArguments)
+            "changeStudentGroup" -> userGroupsPermissions.checkChangeStudentGroupPermission(jsonArguments)
             // UsersPermissions
             "assignPhotoToUser" -> usersPermissions.checkAssignPhotoToUserPermission(jsonArguments)
             "addUser" -> usersPermissions.checkAddUserPermission(jsonArguments)

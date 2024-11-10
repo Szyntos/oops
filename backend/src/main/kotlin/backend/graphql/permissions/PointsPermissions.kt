@@ -265,15 +265,6 @@ class PointsPermissions {
                 reason = "This student already has points in this subcategory"
             )
         }
-
-        val points = Points(
-            student = student,
-            teacher = teacher,
-            updatedBy = teacher,
-            value = BigDecimal(value.toString()).setScale(2, RoundingMode.HALF_UP),
-            subcategory = subcategory,
-            label = ""
-        )
         return Permission(
             action = action,
             arguments = arguments,

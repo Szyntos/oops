@@ -153,7 +153,6 @@ class CategoriesPartialPermissions {
             reason = "Category with id $categoryId not found"
         )
 
-//        if (categoryName != null || canAddPoints != null || subcategories.isNotEmpty()) {
         if (category.categoryEdition.any { it.edition.endDate.isBefore(LocalDate.now()) }) {
             return Permission(
                 action = action,
@@ -170,7 +169,6 @@ class CategoriesPartialPermissions {
                 reason = "Category is already in an edition that has started"
             )
         }
-//        }
 
         return Permission(
             action = action,

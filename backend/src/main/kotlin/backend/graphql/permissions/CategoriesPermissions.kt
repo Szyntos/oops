@@ -279,24 +279,23 @@ class CategoriesPermissions {
             reason = "Category with id $categoryId not found"
         )
 
-        if (categoryName != null || canAddPoints != null || subcategories.isNotEmpty()) {
-            if (category.categoryEdition.any { it.edition.endDate.isBefore(LocalDate.now()) }) {
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "Category is already in an edition that has ended"
-                )
-            }
-            if (category.categoryEdition.any { it.edition.startDate.isBefore(LocalDate.now()) }) {
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "Category is already in an edition that has started"
-                )
-            }
+        if (category.categoryEdition.any { it.edition.endDate.isBefore(LocalDate.now()) }) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category is already in an edition that has ended"
+            )
         }
+        if (category.categoryEdition.any { it.edition.startDate.isBefore(LocalDate.now()) }) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category is already in an edition that has started"
+            )
+        }
+
 
         lightColor?.let {
             if (!isValidHexColor(it)) {

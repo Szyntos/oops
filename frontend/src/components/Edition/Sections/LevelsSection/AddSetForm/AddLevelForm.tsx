@@ -151,13 +151,14 @@ export const AddLevelForm = ({
             type="withoutTooltip"
             options={imageIds}
             selectedIds={[formik.values.imageId]}
+            // TODO when check validation remember about ""
             onSelectClick={(updatedIds: string[]) =>
               formik.setValues({
                 ...formik.values,
                 imageId: updatedIds.length > 0 ? updatedIds[0] : "",
               })
             }
-            error={formik.errors.imageId as string}
+            error={formik.errors.imageId}
             touched={formik.touched.imageId}
             selectVariant={"single"}
             title={"select image:"}

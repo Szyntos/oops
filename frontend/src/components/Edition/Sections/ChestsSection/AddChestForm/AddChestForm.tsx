@@ -38,8 +38,6 @@ export const AddChestForm = ({
   initialValues = defaultInitialValues,
   title,
 }: AddChestFormProps) => {
-  // const [awardIds, setAwardIds] = useState<number[]>(awardIds);
-
   const formik = useFormik({
     initialValues,
     validate: (values: ChestFormValues) => {

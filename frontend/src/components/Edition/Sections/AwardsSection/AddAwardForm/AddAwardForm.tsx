@@ -179,7 +179,7 @@ export const AddAwardForm = ({
                 imageId: updatedIds.length > 0 ? updatedIds[0] : "",
               })
             }
-            error={formik.errors.imageId as string}
+            error={formik.errors.imageId}
             touched={formik.touched.imageId}
             selectVariant={"single"}
             title="select image:"

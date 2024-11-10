@@ -8092,6 +8092,16 @@ type GroupDateType {
   weekday: WeekdayType!
 }
 
+input GroupPointsInputType {
+  studentId: Int!
+  value: Float
+}
+
+type GroupPointsType {
+  points: PointType
+  student: UserType!
+}
+
 type GroupTeacherType {
   canEdit: Boolean!
   group: GroupType!
@@ -10475,6 +10485,7 @@ type PermissionType {
   allow: Boolean!
   arguments: JSON!
   reason: String
+  stackTrace: String!
 }
 
 type PointType {
@@ -13309,7 +13320,7 @@ enum UserLevelConstraint {
   unique_user_edition
 
   """
-  unique or primary key constraint on columns "user_id", "level_id"
+  unique or primary key constraint on columns "user_id", "edition_id"
   """
   user_level_pkey
 }
@@ -13435,7 +13446,7 @@ input UserLevelOrderBy {
 primary key columns input for table: user_level
 """
 input UserLevelPkColumnsInput {
-  levelId: bigint!
+  editionId: bigint!
   userId: bigint!
 }
 
@@ -15840,6 +15851,13 @@ type mutation_root {
     teacherId: Int!
     value: Float!
   ): PointType
+  addPointsToGroup(
+    checkDates: Boolean = true
+    groupId: Int!
+    subcategoryId: Int!
+    teacherId: Int!
+    values: [GroupPointsInputType!]!
+  ): [GroupPointsType!]!
   addSubcategory(subcategory: SubcategoryInputType!): SubcategoryType
   addTeacher(
     createFirebaseUser: Boolean = false
@@ -15868,7 +15886,9 @@ type mutation_root {
   assignPhotosToGroups(editionId: Int!): Boolean
   changeStudentGroup(groupId: Int!, userId: Int!): UserGroupType
   copyAward(awardId: Int!): AwardType
+  copyCategory(categoryId: Int!): CategoryType
   copyChest(chestId: Int!): ChestType
+  copyEdition(editionId: Int!, editionYear: Int!): EditionType
   copyLevelSet(levelSetId: Int!): LevelSetType!
 
   """
@@ -16187,7 +16207,7 @@ type mutation_root {
   """
   delete single row from the table: "user_level"
   """
-  deleteUserLevelByPk(levelId: bigint!, userId: bigint!): UserLevel
+  deleteUserLevelByPk(editionId: bigint!, userId: bigint!): UserLevel
 
   """
   delete data from the table: "users"
@@ -19540,7 +19560,7 @@ type query_root {
   """
   fetch data from the table: "user_level" using primary key columns
   """
-  userLevelByPk(levelId: bigint!, userId: bigint!): UserLevel
+  userLevelByPk(editionId: bigint!, userId: bigint!): UserLevel
 
   """
   An array relationship
@@ -21528,7 +21548,7 @@ type subscription_root {
   """
   fetch data from the table: "user_level" using primary key columns
   """
-  userLevelByPk(levelId: bigint!, userId: bigint!): UserLevel
+  userLevelByPk(editionId: bigint!, userId: bigint!): UserLevel
 
   """
   fetch data from the table in a streaming manner: "user_level"

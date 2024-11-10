@@ -5677,6 +5677,17 @@ export type GroupDateType = {
   weekday: WeekdayType;
 };
 
+export type GroupPointsInputType = {
+  studentId: Scalars["Int"]["input"];
+  value?: InputMaybe<Scalars["Float"]["input"]>;
+};
+
+export type GroupPointsType = {
+  __typename?: "GroupPointsType";
+  points?: Maybe<PointType>;
+  student: UserType;
+};
+
 export type GroupTeacherType = {
   __typename?: "GroupTeacherType";
   canEdit: Scalars["Boolean"]["output"];
@@ -7417,6 +7428,7 @@ export type PermissionType = {
   allow: Scalars["Boolean"]["output"];
   arguments: Scalars["JSON"]["output"];
   reason?: Maybe<Scalars["String"]["output"]>;
+  stackTrace: Scalars["String"]["output"];
 };
 
 export type PointType = {
@@ -9521,7 +9533,7 @@ export type UserLevelBoolExp = {
 export enum UserLevelConstraint {
   /** unique or primary key constraint on columns "user_id", "edition_id" */
   UniqueUserEdition = "unique_user_edition",
-  /** unique or primary key constraint on columns "user_id", "level_id" */
+  /** unique or primary key constraint on columns "user_id", "edition_id" */
   UserLevelPkey = "user_level_pkey",
 }
 
@@ -9624,7 +9636,7 @@ export type UserLevelOrderBy = {
 
 /** primary key columns input for table: user_level */
 export type UserLevelPkColumnsInput = {
-  levelId: Scalars["bigint"]["input"];
+  editionId: Scalars["bigint"]["input"];
   userId: Scalars["bigint"]["input"];
 };
 
@@ -11163,6 +11175,7 @@ export type Mutation_Root = {
   addLevelSet: LevelSetType;
   addLevelSetToEdition: LevelSetType;
   addPoints?: Maybe<PointType>;
+  addPointsToGroup: Array<GroupPointsType>;
   addSubcategory?: Maybe<SubcategoryType>;
   addTeacher?: Maybe<UserType>;
   addUser?: Maybe<UserType>;
@@ -11174,7 +11187,9 @@ export type Mutation_Root = {
   assignPhotosToGroups?: Maybe<Scalars["Boolean"]["output"]>;
   changeStudentGroup?: Maybe<UserGroupType>;
   copyAward?: Maybe<AwardType>;
+  copyCategory?: Maybe<CategoryType>;
   copyChest?: Maybe<ChestType>;
+  copyEdition?: Maybe<EditionType>;
   copyLevelSet: LevelSetType;
   /** delete data from the table: "award" */
   deleteAward?: Maybe<AwardMutationResponse>;
@@ -11669,6 +11684,15 @@ export type Mutation_RootAddPointsArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootAddPointsToGroupArgs = {
+  checkDates?: InputMaybe<Scalars["Boolean"]["input"]>;
+  groupId: Scalars["Int"]["input"];
+  subcategoryId: Scalars["Int"]["input"];
+  teacherId: Scalars["Int"]["input"];
+  values: Array<GroupPointsInputType>;
+};
+
+/** mutation root */
 export type Mutation_RootAddSubcategoryArgs = {
   subcategory: SubcategoryInputType;
 };
@@ -11743,8 +11767,19 @@ export type Mutation_RootCopyAwardArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootCopyCategoryArgs = {
+  categoryId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
 export type Mutation_RootCopyChestArgs = {
   chestId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootCopyEditionArgs = {
+  editionId: Scalars["Int"]["input"];
+  editionYear: Scalars["Int"]["input"];
 };
 
 /** mutation root */
@@ -11963,7 +11998,7 @@ export type Mutation_RootDeleteUserLevelArgs = {
 
 /** mutation root */
 export type Mutation_RootDeleteUserLevelByPkArgs = {
-  levelId: Scalars["bigint"]["input"];
+  editionId: Scalars["bigint"]["input"];
   userId: Scalars["bigint"]["input"];
 };
 
@@ -13590,7 +13625,7 @@ export type Query_RootUserLevelAggregateArgs = {
 };
 
 export type Query_RootUserLevelByPkArgs = {
-  levelId: Scalars["bigint"]["input"];
+  editionId: Scalars["bigint"]["input"];
   userId: Scalars["bigint"]["input"];
 };
 
@@ -14403,7 +14438,7 @@ export type Subscription_RootUserLevelAggregateArgs = {
 };
 
 export type Subscription_RootUserLevelByPkArgs = {
-  levelId: Scalars["bigint"]["input"];
+  editionId: Scalars["bigint"]["input"];
   userId: Scalars["bigint"]["input"];
 };
 

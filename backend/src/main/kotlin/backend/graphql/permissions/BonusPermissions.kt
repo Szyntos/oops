@@ -224,7 +224,12 @@ class BonusPermissions {
                 AwardType.MULTIPLICATIVE -> createMultiplicativePoints(chestHistory, award, edition)
             }
             if (!permission.allow) {
-                return permission
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = permission.reason
+                )
             }
         }
 

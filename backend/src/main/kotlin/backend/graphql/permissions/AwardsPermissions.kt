@@ -15,11 +15,9 @@ import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getFloatField
 import backend.utils.JsonNodeExtensions.getIntField
 import backend.utils.JsonNodeExtensions.getLongField
-import backend.utils.JsonNodeExtensions.getLongList
 import backend.utils.JsonNodeExtensions.getStringField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
-import com.netflix.graphql.dgs.InputArgument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.RoundingMode
@@ -90,7 +88,7 @@ class AwardsPermissions {
 
         val fileId = arguments.getLongField("fileId")
 
-        val photoPermission = photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "image/award", award.awardId, fileId)
+        val photoPermission = photoAssigner.checkAssignPhotoToAwardPermission(chestsRepository, "image/award", award.awardId, fileId)
         if (!photoPermission.allow) {
             return Permission(
                 action = action,
@@ -224,7 +222,7 @@ class AwardsPermissions {
             )
         }
 
-        val photoPermission = photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "image/award", null, fileId)
+        val photoPermission = photoAssigner.checkAssignPhotoToAwardPermission(chestsRepository, "image/award", null, fileId)
         if (!photoPermission.allow) {
             return Permission(
                 action = action,
@@ -434,7 +432,7 @@ class AwardsPermissions {
 
         if (fileId != null) {
             val photoPermission =
-                photoAssigner.getAssignPhotoToAwardPermission(chestsRepository, "image/award", null, fileId)
+                photoAssigner.checkAssignPhotoToAwardPermission(chestsRepository, "image/award", null, fileId)
             if (!photoPermission.allow) {
                 return Permission(
                     action = action,

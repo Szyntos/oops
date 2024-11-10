@@ -1,31 +1,13 @@
 package backend.graphql
 
-import backend.award.Award
-import backend.points.Points
-import backend.points.PointsRepository
-import backend.chestHistory.ChestHistoryRepository
-import backend.award.AwardRepository
-import backend.award.AwardType
-import backend.awardEdition.AwardEditionRepository
-import backend.bonuses.Bonuses
-import backend.bonuses.BonusesRepository
-import backend.chestHistory.ChestHistory
-import backend.edition.Edition
 import backend.files.FileEntityRepository
 import backend.graphql.permissions.Permission
-import backend.groups.GroupsRepository
-import backend.subcategories.SubcategoriesRepository
 import backend.utils.HasImageFile
-import com.fasterxml.jackson.databind.JsonNode
-import com.netflix.graphql.dgs.DgsComponent
-import com.netflix.graphql.dgs.DgsMutation
-import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import kotlin.math.min
 
 @Component
 class PhotoAssigner {
@@ -62,10 +44,10 @@ class PhotoAssigner {
     }
 
     @Transactional
-    fun <T> getAssignPhotoToAwardPermission(assigneeRepository: JpaRepository<T, Long>,
-                                        fileType: String,
-                                        assigneeId: Long?,
-                                        fileId: Long?): Permission where T : HasImageFile {
+    fun <T> checkAssignPhotoToAwardPermission(assigneeRepository: JpaRepository<T, Long>,
+                                              fileType: String,
+                                              assigneeId: Long?,
+                                              fileId: Long?): Permission where T : HasImageFile {
         val action = "assignPhotoToAward"
         val arguments = objectMapper.readTree("""{"fileType": "$fileType", "assigneeId": "$assigneeId", "fileId": "$fileId"}""")
         if (assigneeId != null) {

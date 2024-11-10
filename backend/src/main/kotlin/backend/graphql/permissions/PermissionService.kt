@@ -11,6 +11,12 @@ import org.springframework.transaction.annotation.Transactional
 class PermissionService {
 
     @Autowired
+    private lateinit var usersPermissions: UsersPermissions
+
+    @Autowired
+    private lateinit var groupsPermissions: GroupsPermissions
+
+    @Autowired
     private lateinit var gradingChecksPermissions: GradingChecksPermissions
 
     @Autowired
@@ -97,11 +103,35 @@ class PermissionService {
             "addGradingCheck" -> gradingChecksPermissions.checkAddGradingCheckPermission(jsonArguments)
             "editGradingCheck" -> gradingChecksPermissions.checkEditGradingCheckPermission(jsonArguments)
             "removeGradingCheck" -> gradingChecksPermissions.checkRemoveGradingCheckPermission(jsonArguments)
+            // GroupsPermissions
+            "assignPhotosToGroups" -> groupsPermissions.checkAssignPhotosToGroupsPermission(jsonArguments)
+            "addGroup" -> groupsPermissions.checkAddGroupPermission(jsonArguments)
+            "addGroupWithUsers" -> groupsPermissions.checkAddGroupWithUsersPermission(jsonArguments)
+            "editGroup" -> groupsPermissions.checkEditGroupPermission(jsonArguments)
+            "editGroupWithUsers" -> groupsPermissions.checkEditGroupWithUsersPermission(jsonArguments)
+            "removeGroup" -> groupsPermissions.checkRemoveGroupPermission(jsonArguments)
+            "getPossibleGroupsWeekdays" -> groupsPermissions.checkGetPossibleGroupsWeekdaysPermission(jsonArguments)
+            "getPossibleGroupsTimeSpans" -> groupsPermissions.checkGetPossibleGroupsTimeSpansPermission(jsonArguments)
+            "getPossibleGroupDates" -> groupsPermissions.checkGetPossibleGroupDatesPermission(jsonArguments)
+            "getUsersInGroupWithPoints" -> groupsPermissions.checkGetUsersInGroupWithPointsPermission(jsonArguments)
+            "getGroupsInEdition" -> groupsPermissions.checkGetGroupsInEditionPermission(jsonArguments)
             // SubcategoriesPermissions
             "addSubcategory" -> subcategoriesPermissions.checkAddSubcategoryPermission(jsonArguments)
             "editSubcategory" -> subcategoriesPermissions.checkEditSubcategoryPermission(jsonArguments)
             "removeSubcategory" -> subcategoriesPermissions.checkRemoveSubcategoryPermission(jsonArguments)
             "generateSubcategories" -> subcategoriesPermissions.checkGenerateSubcategoriesPermission(jsonArguments)
+            // UsersPermissions
+            "assignPhotoToUser" -> usersPermissions.checkAssignPhotoToUserPermission(jsonArguments)
+            "addUser" -> usersPermissions.checkAddUserPermission(jsonArguments)
+            "addTeacher" -> usersPermissions.checkAddTeacherPermission(jsonArguments)
+            "parseUsersFromCsv" -> usersPermissions.checkParseUsersFromCsvPermission(jsonArguments)
+            "validateUsersToBeAdded" -> usersPermissions.checkValidateUsersToBeAddedPermission(jsonArguments)
+            "editUser" -> usersPermissions.checkEditUserPermission(jsonArguments)
+            "removeUser" -> usersPermissions.checkRemoveUserPermission(jsonArguments)
+            "resetPassword" -> usersPermissions.checkResetPasswordPermission(jsonArguments)
+            "getStudentPoints" -> usersPermissions.checkGetStudentPointsPermission(jsonArguments)
+            "getSumOfPointsForStudentByCategory" -> usersPermissions.checkGetSumOfPointsForStudentByCategoryPermission(jsonArguments)
+            "getCurrentUser" -> usersPermissions.checkGetCurrentUserPermission(jsonArguments)
 
             else -> Permission(
                 action = input.action,

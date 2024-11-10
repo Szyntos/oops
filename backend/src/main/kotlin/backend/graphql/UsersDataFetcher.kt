@@ -8,6 +8,9 @@ import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.files.FileRetrievalService
 import backend.files.FileUploadService
+import backend.graphql.permissions.PermissionInput
+import backend.graphql.permissions.PermissionService
+import backend.graphql.permissions.UsersPermissions
 import backend.groups.Groups
 import backend.groups.GroupsRepository
 import backend.levels.Levels
@@ -28,6 +31,7 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.apache.catalina.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -40,6 +44,12 @@ import kotlin.math.min
 
 @DgsComponent
 class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
+
+    @Autowired
+    private lateinit var usersPermissions: UsersPermissions
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
 
     @Autowired
     private lateinit var userLevelRepository: UserLevelRepository
@@ -89,16 +99,21 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @DgsMutation
     @Transactional
     fun assignPhotoToUser(@InputArgument userId: Long, @InputArgument fileId: Long?): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != userId) {
-            throw IllegalArgumentException("Student can only assign a photo to themselves")
+        val action = "assignPhotoToUser"
+        val arguments = mapOf(
+            "userId" to userId,
+            "fileId" to fileId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
         val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
-
-        if (currentUser.role == UsersRoles.TEACHER && user.role == UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Teacher cannot assign a photo to a coordinator")
-        }
 
         return photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", userId, fileId)
     }
@@ -110,6 +125,27 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                 @InputArgument role: String, @InputArgument email: String = "",
                 @InputArgument label: String = "", @InputArgument createFirebaseUser: Boolean = false,
                 @InputArgument sendEmail: Boolean = false): Users {
+        val action = "addUser"
+        val arguments = mapOf(
+            "indexNumber" to indexNumber,
+            "nick" to nick,
+            "firstName" to firstName,
+            "secondName" to secondName,
+            "role" to role,
+            "email" to email,
+            "label" to label,
+            "createFirebaseUser" to createFirebaseUser,
+            "sendEmail" to sendEmail
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+        }
+
         return addUserHelper(indexNumber, nick, firstName, secondName, role, email, label, createFirebaseUser, sendEmail)
     }
 
@@ -119,22 +155,46 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                 @InputArgument email: String = "",
                 @InputArgument label: String = "", @InputArgument createFirebaseUser: Boolean = false,
                 @InputArgument sendEmail: Boolean = false): Users {
+        val action = "addTeacher"
+        val arguments = mapOf(
+            "firstName" to firstName,
+            "secondName" to secondName,
+            "email" to email,
+            "label" to label,
+            "createFirebaseUser" to createFirebaseUser,
+            "sendEmail" to sendEmail
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+        }
+
         return addUserHelper(-1, "", firstName, secondName, "teacher", email, label, createFirebaseUser, sendEmail)
     }
 
     @DgsMutation
     @Transactional
     fun parseUsersFromCsv(@InputArgument fileId: Long, @InputArgument editionId: Long): ParsedUsersType {
-        val currentUser = userMapper.getCurrentUser()
-
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only a coordinator can parse users from a CSV file")
+        val action = "parseUsersFromCsv"
+        val arguments = mapOf(
+            "fileId" to fileId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
+
 
         val file = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("File not found") }
-        if (file.fileType != "text/csv") {
-            throw IllegalArgumentException("Invalid file type")
-        }
         val usosId = csvReader.extractGroupNumber(file.fileName).toLong()
         val users = csvReader.getUsersFromCsv(file)
         val parsedUsers = ParsedUsersType(users, usosId)
@@ -146,10 +206,18 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @DgsQuery
     @Transactional
     fun validateUsersToBeAdded(@InputArgument userIndexes: List<Int>, @InputArgument editionId: Long): List<NotValidUser> {
-        val currentUser = userMapper.getCurrentUser()
-
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only a coordinator can validate users to be added")
+        val action = "validateUsersToBeAdded"
+        val arguments = mapOf(
+            "userIndexes" to userIndexes,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
@@ -172,55 +240,34 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         @InputArgument role: String?,
         @InputArgument label: String?
     ): Users {
-        val currentUser = userMapper.getCurrentUser()
+        val action = "editUser"
+        val arguments = mapOf(
+            "userId" to userId,
+            "indexNumber" to indexNumber,
+            "nick" to nick,
+            "firstName" to firstName,
+            "secondName" to secondName,
+            "role" to role,
+            "label" to label
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+        }
 
         val user = usersRepository.findById(userId)
             .orElseThrow { IllegalArgumentException("User not found") }
 
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            if (currentUser.userId != userId){
-                throw IllegalArgumentException("Student can only edit themselves")
-            }
-            if (indexNumber != null || firstName != null || secondName != null || role != null || label != null){
-                throw IllegalArgumentException("Student can only edit their own nick")
-            }
-        }
-        if (currentUser.role == UsersRoles.TEACHER){
-            if (currentUser.userId != userId && user.role != UsersRoles.STUDENT){
-                throw IllegalArgumentException("Teacher can only edit students or themselves")
-            }
-            if (currentUser.userId == userId){
-                if (role != null){
-                    throw IllegalArgumentException("Teacher cannot change their own role")
-                }
-            }
-
-            val activeUserEditions = user.userGroups.map { it.group.edition }.filter { it.endDate.isAfter(java.time.LocalDate.now()) }
-            if (activeUserEditions.isEmpty()){
-                throw IllegalArgumentException("Teacher can only edit students that are in an active edition")
-            }
-
-            val userGroups = groupsRepository.findByUserGroups_User_UserId(userId)
-            if (userGroups.none { it.teacher == currentUser }){
-                throw IllegalArgumentException("Teacher can only edit students that are in their groups")
-            }
-            if (role != null){
-                throw IllegalArgumentException("Teacher cannot edit role of a student")
-            }
-        }
-
 
         indexNumber?.let {
-            if (usersRepository.existsByIndexNumber(it) && it != user.indexNumber) {
-                throw IllegalArgumentException("User with index number $it already exists")
-            }
             user.indexNumber = it
         }
 
         nick?.let {
-            if (usersRepository.findByNick(it) != null && it != user.nick) {
-                throw IllegalArgumentException("User with nick $it already exists")
-            }
             user.nick = it
         }
 
@@ -233,12 +280,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         }
 
         role?.let {
-            val userRole = try {
-                UsersRoles.valueOf(it.uppercase())
-            } catch (e: IllegalArgumentException) {
-                throw IllegalArgumentException("Invalid role")
-            }
-            user.role = userRole
+            user.role = UsersRoles.valueOf(it.uppercase())
         }
 
         label?.let {
@@ -251,24 +293,23 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @DgsMutation
     @Transactional
     fun removeUser(@InputArgument userId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only a coordinator can remove a user")
+        val action = "removeUser"
+        val arguments = mapOf(
+            "userId" to userId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
-        if (currentUser.userId == userId){
-            throw IllegalArgumentException("Cannot remove yourself")
-        }
+
+
 
         val user = usersRepository.findById(userId)
             .orElseThrow { IllegalArgumentException("User not found") }
-
-        if (user.role == UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Cannot remove coordinator")
-        }
-
-        if (user.userGroups.isNotEmpty()){
-            throw IllegalArgumentException("Cannot remove user that is in a group")
-        }
 
         userLevelRepository.deleteAllByUser_UserId(userId)
         try {
@@ -287,9 +328,17 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @DgsMutation
     @Transactional
     fun resetPassword(@InputArgument userId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != userId) {
-            throw IllegalArgumentException("Student can only reset their own password")
+        val action = "resetPassword"
+        val arguments = mapOf(
+            "userId" to userId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
         val user = usersRepository.findByUserId(userId)
@@ -301,29 +350,27 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @DgsQuery
     @Transactional
     fun getStudentPoints(@InputArgument studentId: Long, @InputArgument editionId: Long): StudentPointsType {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != studentId) {
-            throw IllegalArgumentException("Student can only view their own points")
+        val action = "getStudentPoints"
+        val arguments = mapOf(
+            "studentId" to studentId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
+
 
         val user = usersRepository.findById(studentId).orElseThrow { IllegalArgumentException("Invalid student ID") }
-        if (user.role != UsersRoles.STUDENT) {
-            throw IllegalArgumentException("User is not a student")
-        }
 
-        if (currentUser.role == UsersRoles.TEACHER){
-            val userGroupsEditions = groupsRepository.findByUserGroups_User_UserId(studentId).map { it.edition }
-            val teacherGroupsEditions = groupsRepository.findByTeacher_UserId(currentUser.userId).map { it.edition }
-            if (userGroupsEditions.intersect(teacherGroupsEditions).isEmpty()){
-                throw IllegalArgumentException("Teacher can only view points of students that are in their editions")
-            }
-        }
+
 
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (user.userGroups.none { it.group.edition == edition }) {
-            throw IllegalArgumentException("Student is not participating in this edition")
-        }
-        val teacher = user.userGroups.filter { it.group.edition == edition }.firstOrNull()?.group?.teacher
+        val teacher = user.userGroups.firstOrNull { it.group.edition == edition }?.group?.teacher
             ?: throw IllegalArgumentException("Student is not in any group")
         val points = pointsRepository.findAllByStudentAndSubcategory_Edition(user, edition)
         val bonuses = bonusesRepository.findByChestHistory_User_UserId(studentId)
@@ -334,7 +381,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
         val subcategoryPoints = points.sortedByDescending { it.subcategory.ordinalNumber }.groupBy { it.subcategory }
             .map { (subcategory, points) ->
-                val purePoints = points.filter { bonusesRepository.findByPoints(it).isEmpty() }.firstOrNull()
+                val purePoints = points.firstOrNull { bonusesRepository.findByPoints(it).isEmpty() }
                 val allBonuses = bonuses.filter { (it.award.awardType != AwardType.MULTIPLICATIVE && it.award.awardType != AwardType.ADDITIVE_PREV && it.points.subcategory == subcategory)  ||
                         ((it.award.awardType == AwardType.MULTIPLICATIVE || it.award.awardType == AwardType.ADDITIVE_PREV) && it.points.subcategory.category == subcategory.category) }
                 val partialBonusType = allBonuses.map { bonus ->
@@ -389,28 +436,23 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @DgsQuery
     @Transactional
     fun getSumOfPointsForStudentByCategory(@InputArgument studentId: Long, @InputArgument editionId: Long): List<CategoryPointsSumType> {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != studentId) {
-            throw IllegalArgumentException("Student can only view their own points")
+        val action = "getSumOfPointsForStudentByCategory"
+        val arguments = mapOf(
+            "studentId" to studentId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
         val user = usersRepository.findById(studentId).orElseThrow { IllegalArgumentException("Invalid student ID") }
-        if (user.role != UsersRoles.STUDENT) {
-            throw IllegalArgumentException("User is not a student")
-        }
-
-        if (currentUser.role == UsersRoles.TEACHER){
-            val userGroupsEditions = groupsRepository.findByUserGroups_User_UserId(studentId).map { it.edition }
-            val teacherGroupsEditions = groupsRepository.findByTeacher_UserId(currentUser.userId).map { it.edition }
-            if (userGroupsEditions.intersect(teacherGroupsEditions).isEmpty()){
-                throw IllegalArgumentException("Teacher can only view points of students that are in their editions")
-            }
-        }
 
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (user.userGroups.none { it.group.edition == edition }) {
-            throw IllegalArgumentException("Student is not participating in this edition")
-        }
         val points = pointsRepository.findAllByStudentAndSubcategory_Edition(user, edition)
         val bonuses = bonusesRepository.findByChestHistory_User_UserId(studentId).filter { it.points.subcategory.edition == edition }
         val categories = categoriesRepository.findByCategoryEdition_Edition(edition)
@@ -438,6 +480,17 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @DgsQuery
     @Transactional
     fun getCurrentUser(): Users {
+        val action = "getCurrentUser"
+        val arguments = mapOf<String, Any>()
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
+        }
+
         return userMapper.getCurrentUser()
     }
 
@@ -452,80 +505,31 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                                label: String = "",  createFirebaseUser: Boolean = false,
                                sendEmail: Boolean = false,
                                imageFileId: Long? = null): Users {
-        val currentUser = userMapper.getCurrentUser()
-
-        if (currentUser.userId != 0L && (currentUser.role != UsersRoles.COORDINATOR && currentUser.role != UsersRoles.TEACHER)) {
-            throw IllegalArgumentException("Only a coordinator or a teacher can add a user")
+        val permission = usersPermissions.checkAddUserHelperPermission(indexNumber, nick, firstName, secondName, role, email, label, createFirebaseUser, sendEmail, imageFileId)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason ?: "Permission denied")
         }
 
+
         val indexNumberToSet = if (indexNumber == -1) {
-            if (currentUser.role != UsersRoles.COORDINATOR) {
-                throw IllegalArgumentException("Only a coordinator can add a teacher")
-            }
-            if (UsersRoles.valueOf(role.uppercase()) != UsersRoles.TEACHER) {
-                throw IllegalArgumentException("Only a teacher can be added with this mutation")
-            }
-            if (email.isEmpty()) {
-                throw IllegalArgumentException("Email is required for a teacher")
-            }
             getNegativeUniqueIndexNumber()
         } else {
             indexNumber
         }
 
         val nickToBeSet = if (indexNumber == -1) {
-            if (nick.isNotBlank()){
-                throw IllegalArgumentException("Nick is not required for a teacher")
-            }
             "$firstName.$secondName.$indexNumberToSet"
         } else {
-            if (nick.isEmpty()) {
-                throw IllegalArgumentException("Nick is required")
-            }
             nick
         }
 
-        // TODO: Find a better way to handle adding a first coordinator
-        if (currentUser.userId == 0L ) {
-            if (UsersRoles.valueOf(role.uppercase()) != UsersRoles.COORDINATOR) {
-                throw IllegalArgumentException("Only a coordinator can be added with this bypass")
-            }
-        }
+        val userRole1 = UsersRoles.valueOf(role.uppercase())
 
-        if (UsersRoles.valueOf(role.uppercase()) == UsersRoles.COORDINATOR) {
-            if (currentUser.role != UsersRoles.COORDINATOR || currentUser.userId != 0L) {
-                throw IllegalArgumentException("Only a coordinator can add a coordinator")
-            }
-        }
-
-        if (UsersRoles.valueOf(role.uppercase()) == UsersRoles.TEACHER) {
-            if (currentUser.role != UsersRoles.COORDINATOR) {
-                throw IllegalArgumentException("Only a coordinator can add a teacher")
-            }
-        }
-
-
-        if (usersRepository.existsByIndexNumber(indexNumberToSet)) {
-            throw IllegalArgumentException("User with index number $indexNumberToSet already exists")
-        }
-        if (usersRepository.findByNick(nickToBeSet) != null) {
-            throw IllegalArgumentException("User with nick $nickToBeSet already exists")
-        }
-        val userRole1 = try {
-            UsersRoles.valueOf(role.uppercase())
-        } catch (e: IllegalArgumentException) {
-            throw IllegalArgumentException("Invalid role")
-        }
         var userEmail = email
         if (email.isEmpty()) {
             userEmail = "$indexNumberToSet@$emailDomain"
-        } else if (!isValidEmail(userEmail)) {
-            throw IllegalArgumentException("Invalid email")
         }
 
-        if (usersRepository.existsByEmail(userEmail)) {
-            throw IllegalArgumentException("User with email $userEmail already exists")
-        }
         val user = Users(
             indexNumber = indexNumberToSet,
             nick = nickToBeSet,

@@ -268,7 +268,7 @@ type Mutation {
   ): Boolean
 
   addLevelSetToEdition(
-    levelSetID: Int!
+    levelSetId: Int!
     editionId: Int!
   ): LevelSetType!
 

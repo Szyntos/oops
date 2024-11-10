@@ -118,8 +118,8 @@ def insert_levels(hasura_url, headers, editions, random_gen, max_points_in_level
 
         # Mutation to assign the level set to the edition
         mutation_assign_level_set = """
-        mutation AddLevelSetToEdition($levelSetID: Int!, $editionId: Int!) {
-            addLevelSetToEdition(levelSetID: $levelSetID, editionId: $editionId) {
+        mutation AddLevelSetToEdition($levelSetId: Int!, $editionId: Int!) {
+            addLevelSetToEdition(levelSetId: $levelSetId, editionId: $editionId) {
                 levelSetId
                 levelSetName
                 edition {
@@ -133,7 +133,7 @@ def insert_levels(hasura_url, headers, editions, random_gen, max_points_in_level
         }
         """
         variables_assign_level_set = {
-            "levelSetID": level_set_id,
+            "levelSetId": level_set_id,
             "editionId": edition_id
         }
 

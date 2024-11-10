@@ -1,5 +1,6 @@
 package backend.utils
 
+import backend.graphql.LevelInput
 import backend.graphql.SubcategoryInput
 import backend.graphql.UserIdsType
 import backend.graphql.UsersInputType
@@ -11,6 +12,11 @@ object JsonNodeExtensions {
     fun JsonNode.getLongField(fieldName: String): Long? {
         val node = this.get(fieldName)
         return if (node != null && node.isNumber) node.asLong() else null
+    }
+
+    fun JsonNode.getDoubleField(fieldName: String): Double? {
+        val node = this.get(fieldName)
+        return if (node != null && node.isNumber) node.asDouble() else null
     }
 
     fun JsonNode.getStringField(fieldName: String): String? {
@@ -97,6 +103,25 @@ object JsonNodeExtensions {
         )
     }
 
+    fun JsonNode.getLevelInput(fieldName: String): LevelInput? {
+        val node = this.get(fieldName)
+        if (node == null || !node.isObject) return null
+        return LevelInput(
+            levelId = node.getLongField("levelId"),
+            name = node.getStringField("name") ?: return null,
+            maximumPoints = node.getDoubleField("maximumPoints") ?: return null,
+            grade = node.getDoubleField("grade") ?: return null,
+            imageFileId = node.getLongField("imageFileId")
+        )
+    }
+
+    fun JsonNode.getLevelInputList(fieldName: String): List<LevelInput>? {
+        val node = this.get(fieldName)
+        if (node == null || !node.isArray) return null
+        if (node.any { !it.isNumber }) return null
+        return node.mapNotNull { it.asLevelInputOrNull() }
+    }
+
     fun JsonNode.getUsersInputTypeList(fieldName: String): List<UsersInputType>? {
         val node = this.get(fieldName)
         if (node == null || !node.isArray) return null
@@ -141,6 +166,19 @@ object JsonNodeExtensions {
             sendEmail = this.getBooleanField("sendEmail") ?: return null
         )
     }
+
+    private fun JsonNode.asLevelInputOrNull(): LevelInput? {
+        if (!this.isObject) return null
+        return LevelInput(
+            levelId = this.getLongField("levelId"),
+            name = this.getStringField("name") ?: return null,
+            maximumPoints = this.getDoubleField("maximumPoints") ?: return null,
+            grade = this.getDoubleField("grade") ?: return null,
+            imageFileId = this.getLongField("imageFileId")
+        )
+    }
+
+    private fun JsonNode.asDoubleOrNull(): Double? = if (this.isNumber) this.asDouble() else null
 
     private fun JsonNode.asLongOrNull(): Long? = if (this.isNumber) this.asLong() else null
 

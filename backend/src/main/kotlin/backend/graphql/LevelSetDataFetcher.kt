@@ -2,6 +2,9 @@ package backend.graphql
 
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.LevelSetPermissions
+import backend.graphql.permissions.PermissionInput
+import backend.graphql.permissions.PermissionService
 import backend.groups.GroupsRepository
 import backend.levelSet.LevelSet
 import backend.levelSet.LevelSetRepository
@@ -14,6 +17,7 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -21,6 +25,12 @@ import java.math.RoundingMode
 
 @DgsComponent
 class LevelSetDataFetcher {
+    @Autowired
+    private lateinit var levelSetPermissions: LevelSetPermissions
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
     @Autowired
     private lateinit var levelSetRepository: LevelSetRepository
 
@@ -49,9 +59,26 @@ class LevelSetDataFetcher {
     @DgsMutation
     @Transactional
     fun addLevelSet(@InputArgument levels: List<LevelInput>): LevelSet{
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can add level sets")
+        val action = "addLevelSet"
+        val levelsMap = levels.map { level ->
+            mapOf(
+                "levelId" to level.levelId,
+                "name" to level.name,
+                "maximumPoints" to level.maximumPoints,
+                "grade" to level.grade,
+                "imageFileId" to level.imageFileId
+            )
+        }
+        val arguments = mapOf(
+            "levels" to levelsMap
+        )
+        val input = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(input)
+        if (!permission.allow) {
+            throw IllegalArgumentException("Permission denied")
         }
 
         val levelSet = levelSetRepository.save(LevelSet(levelSetName = ""))
@@ -74,10 +101,20 @@ class LevelSetDataFetcher {
     @DgsMutation
     @Transactional
     fun copyLevelSet(@InputArgument levelSetId: Long): LevelSet {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can copy level sets")
+
+        val action = "copyLevelSet"
+        val arguments = mapOf(
+            "levelSetId" to levelSetId
+        )
+        val input = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(input)
+        if (!permission.allow) {
+            throw IllegalArgumentException("Permission denied")
         }
+
 
         val levelSet = levelSetRepository.findById(levelSetId)
             .orElseThrow { IllegalArgumentException("Invalid level set ID") }
@@ -104,23 +141,32 @@ class LevelSetDataFetcher {
     @DgsMutation
     @Transactional
     fun editLevelSet(@InputArgument levelSetId: Long, @InputArgument levels: List<LevelInput>): LevelSet {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can edit level sets")
+        val action = "editLevelSet"
+        val levelsMap = levels.map { level ->
+            mapOf(
+                "levelId" to level.levelId,
+                "name" to level.name,
+                "maximumPoints" to level.maximumPoints,
+                "grade" to level.grade,
+                "imageFileId" to level.imageFileId
+            )
         }
+        val arguments = mapOf(
+            "levelSetId" to levelSetId,
+            "levels" to levelsMap
+        )
+        val input = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(input)
+        if (!permission.allow) {
+            throw IllegalArgumentException("Permission denied")
+        }
+
 
         val levelSet = levelSetRepository.findById(levelSetId)
             .orElseThrow { IllegalArgumentException("Invalid level set ID") }
-
-        if (levelSet.edition.isNotEmpty()) {
-            if (levelSet.edition.any { it.endDate.isBefore(java.time.LocalDate.now()) }) {
-                throw IllegalArgumentException("Edition has already ended")
-            }
-            if (levelSet.edition.any { it.startDate.isBefore(java.time.LocalDate.now()) }) {
-                throw IllegalArgumentException("Edition has already started")
-            }
-        }
-
 
         val levelsInSet = levelSet.levels.sortedBy { it.ordinalNumber }
         val inputLevelIds = levels.mapNotNull { it.levelId }.toSet()
@@ -172,9 +218,17 @@ class LevelSetDataFetcher {
     @DgsMutation
     @Transactional
     fun removeLevelSet(@InputArgument levelSetId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can remove level sets")
+        val action = "removeLevelSet"
+        val arguments = mapOf(
+            "levelSetId" to levelSetId
+        )
+        val input = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(input)
+        if (!permission.allow) {
+            throw IllegalArgumentException("Permission denied")
         }
 
         val levelSet = levelSetRepository.findById(levelSetId)
@@ -182,17 +236,6 @@ class LevelSetDataFetcher {
 
         val levelsInSet = levelSet.levels.sortedBy { it.ordinalNumber }
 
-        if (levelSet.edition.isNotEmpty()) {
-            if (levelSet.edition.any { it.endDate.isBefore(java.time.LocalDate.now()) }) {
-                throw IllegalArgumentException("Edition has already ended")
-            }
-            if (levelSet.edition.any { it.startDate.isBefore(java.time.LocalDate.now()) }) {
-                throw IllegalArgumentException("Edition has already started")
-            }
-            if (groupsRepository.findAll().any { it.edition.levelSet == levelSet }) {
-                throw IllegalArgumentException("There are groups using the level set")
-            }
-        }
         levelsInSet.forEach { level ->
             levelsRepository.delete(level)
         }
@@ -203,21 +246,29 @@ class LevelSetDataFetcher {
 
     @DgsMutation
     @Transactional
-    fun addLevelSetToEdition(@InputArgument levelSetID: Long, @InputArgument editionId: Long): LevelSet {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can add level sets to edition")
+    fun addLevelSetToEdition(@InputArgument levelSetId: Long, @InputArgument editionId: Long): LevelSet {
+        val action = "addLevelSetToEdition"
+
+        val arguments = mapOf(
+            "levelSetId" to levelSetId,
+            "editionId" to editionId
+        )
+        val input = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(input)
+        if (!permission.allow) {
+            throw IllegalArgumentException("Permission denied")
         }
 
-        val levelSet = levelSetRepository.findById(levelSetID)
+
+        val levelSet = levelSetRepository.findById(levelSetId)
             .orElseThrow { IllegalArgumentException("Invalid level set ID") }
 
         val edition = editionRepository.findById(editionId)
             .orElseThrow { IllegalArgumentException("Invalid edition ID") }
 
-        if (edition.endDate.isBefore(java.time.LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
         levelSet.levelSetName = edition.editionName
         levelSetRepository.save(levelSet)
         edition.levelSet = levelSet
@@ -229,9 +280,19 @@ class LevelSetDataFetcher {
     @DgsMutation
     @Transactional
     fun removeLevelSetFromEdition(@InputArgument levelSetId: Long, @InputArgument editionId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can remove level sets from edition")
+        val action = "removeLevelSetFromEdition"
+
+        val arguments = mapOf(
+            "levelSetId" to levelSetId,
+            "editionId" to editionId
+        )
+        val input = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(input)
+        if (!permission.allow) {
+            throw IllegalArgumentException("Permission denied")
         }
 
         val levelSet = levelSetRepository.findById(levelSetId)
@@ -240,17 +301,6 @@ class LevelSetDataFetcher {
         val edition = editionRepository.findById(editionId)
             .orElseThrow { IllegalArgumentException("Invalid edition ID") }
 
-        if (edition.endDate.isBefore(java.time.LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        if (edition.startDate.isBefore(java.time.LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already started")
-        }
-
-        if (edition.levelSet?.levelSetId != levelSetId) {
-            throw IllegalArgumentException("Edition does not have the level set")
-        }
         levelSet.levelSetName = ""
         levelSetRepository.save(levelSet)
         edition.levelSet = null
@@ -266,9 +316,10 @@ class LevelSetDataFetcher {
         imageFileId: Long? = null,
         ordinalNumber: Int? = null
     ): Levels {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add levels")
+        val permission = levelSetPermissions.checkAddLevelHelperPermission(levelSet, name, maximumPoints, grade, imageFileId, ordinalNumber)
+
+        if (!permission.allow) {
+            throw IllegalArgumentException("Permission denied")
         }
 
         val levelsInSet = levelSet.levels
@@ -329,27 +380,17 @@ class LevelSetDataFetcher {
         ordinalNumber: Int?,
         label: String?
     ): Levels {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can edit levels")
+        val permission = levelSetPermissions.checkEditLevelHelperPermission(levelId, name, maximumPoints, grade, imageFileId, ordinalNumber, label)
+        if (!permission.allow) {
+            throw IllegalArgumentException("Permission denied")
         }
+
 
         val level = levelsRepository.findById(levelId)
             .orElseThrow { IllegalArgumentException("Invalid level ID") }
 
-        if (level.levelSet.edition.isNotEmpty()) {
-            if (level.levelSet.edition.any { it.endDate.isBefore(java.time.LocalDate.now()) }) {
-                throw IllegalArgumentException("Edition has already ended")
-            }
-            if (level.levelSet.edition.any { it.startDate.isBefore(java.time.LocalDate.now()) }) {
-                throw IllegalArgumentException("Edition has already started")
-            }
-        }
 
         name?.let { newName ->
-            if (levelsRepository.findByLevelSet(level.levelSet).any { level -> level.levelName == newName && level.levelId != levelId }) {
-                throw IllegalArgumentException("Level with the same name already exists in the edition")
-            }
             level.levelName = newName
         }
 
@@ -362,28 +403,10 @@ class LevelSetDataFetcher {
                 .firstOrNull { it.ordinalNumber == level.ordinalNumber + 1 }
 
         maximumPoints?.let {
-            if (it <= 0) {
-                throw IllegalArgumentException("Maximum points must be a positive value")
-            }
-            if (previousLevel != null && previousLevel.maximumPoints >= it.toBigDecimal()){
-                throw IllegalArgumentException("Maximum points must be higher than the previous level")
-            }
-            if (nextLevel != null && nextLevel.maximumPoints <= it.toBigDecimal()){
-                throw IllegalArgumentException("Maximum points must be lower than the next level")
-            }
             level.maximumPoints = it.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         }
 
         grade?.let {
-            if (it < 0) {
-                throw IllegalArgumentException("Grade must be a non-negative value")
-            }
-            if (previousLevel != null && previousLevel.grade > it.toBigDecimal()){
-                throw IllegalArgumentException("Grade must be higher or equal to the previous level")
-            }
-            if (nextLevel != null && nextLevel.grade < it.toBigDecimal()){
-                throw IllegalArgumentException("Grade must be lower or equal to the next level")
-            }
             level.grade = it.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         }
 
@@ -412,6 +435,7 @@ class LevelSetDataFetcher {
             val levelsToShift = levelsInSet.filter { it.ordinalNumber in newOrdinalNumber..level.ordinalNumber }
             levelsToShift.forEach { it.ordinalNumber += 1 }
             level.ordinalNumber = newOrdinalNumber
+            levelsToShift.forEach { levelsRepository.save(it) }
         }
 
         return levelsRepository.save(level)

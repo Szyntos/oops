@@ -6,7 +6,7 @@ import { TooltipWrapper } from "../../TooltipWrapper";
 type Permissions = Category["permissions"];
 
 type SetupButtonsProps = {
-  permissions?: Permissions;
+  permissions: Permissions;
   handleSelect?: () => void;
   handleEdit?: () => void;
   handleDelete?: () => void;
@@ -67,12 +67,10 @@ export const SetupButtons = ({
 
   return (
     <div style={styles.buttonsContainer}>
-      {select && (
-        <SetupButton {...select} title={isSelected ? "unselect" : "select"} />
-      )}
-      {copy && <SetupButton {...copy} title="copy" />}
-      {edit && <SetupButton {...edit} title="edit" />}
-      {remove && <SetupButton {...remove} title="remove" />}
+      {select && <SetupButton {...select} />}
+      {copy && <SetupButton {...copy} />}
+      {edit && <SetupButton {...edit} />}
+      {remove && <SetupButton {...remove} />}
     </div>
   );
 };

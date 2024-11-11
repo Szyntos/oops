@@ -1,5 +1,6 @@
+import { Group } from "../../../../../hooks/Edition/useGroupsSection";
 import { Styles } from "../../../../../utils/Styles";
-import { Group } from "../GroupsSection";
+import { SetupButtons } from "../../SetupButtons";
 
 type GroupCardProps = {
   group: Group;
@@ -14,16 +15,20 @@ export const GroupCard = ({
 }: GroupCardProps) => {
   return (
     <div style={styles.card}>
-      <div>{group.generatedName}</div>
+      <div>{group.group.generatedName}</div>
       <div>
-        {group.userGroups.map((student, index) => (
+        {group.group.userGroups.map((student, index) => (
           <div>
-            {index + 1}. {student.user.fullName}
+            {index + 1}. {student.user.firstName} {student.user.secondName}
           </div>
         ))}
       </div>
-      <button onClick={editClick}>edit</button>
-      <button onClick={deleteClick}>delete</button>
+      <SetupButtons
+        permissions={group.permissions}
+        isSelected={false}
+        handleEdit={editClick}
+        handleDelete={deleteClick}
+      />
     </div>
   );
 };

@@ -47,6 +47,7 @@ export const SelectedSetCard = ({
       </div>
 
       <SetupButtons
+        permissions={levelSet.permissions}
         isSelected={true}
         handleSelect={onSelectClick}
         handleEdit={onEditClick}

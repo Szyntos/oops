@@ -12,21 +12,23 @@ import { useSEtupUserEditMutation } from "../../../graphql/setupUserEdit.graphql
 import { useDeleteUserMutation } from "../../../graphql/deleteUser.graphql.types";
 import { useError } from "../../common/useGlobalError";
 
-export type User = SetupUsersQuery["users"][number];
+export type User = SetupUsersQuery["listSetupUsers"][number];
 
-export const useUsersSection = () => {
+export const useUsersSection = (editionId: number) => {
   const { localErrorWrapper, globalErrorWrapper } = useError();
 
-  const { data, loading, error, refetch } = useSetupUsersQuery();
+  const { data, loading, error, refetch } = useSetupUsersQuery({
+    variables: { editionId },
+  });
   const [formError, setFormError] = useState<undefined | string>(undefined);
 
   const teachers: User[] =
-    data?.users.filter(
-      (u) => u.role.toUpperCase() === UsersRolesType.Teacher,
+    data?.listSetupUsers.filter(
+      (u) => u.user.role.toUpperCase() === UsersRolesType.Teacher,
     ) ?? [];
   const students: User[] =
-    data?.users.filter(
-      (u) => u.role.toUpperCase() === UsersRolesType.Student,
+    data?.listSetupUsers.filter(
+      (u) => u.user.role.toUpperCase() === UsersRolesType.Student,
     ) ?? [];
 
   const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
@@ -113,7 +115,7 @@ export const useUsersSection = () => {
   ) => {
     localErrorWrapper(setFormError, async () => {
       const variables = {
-        userId: parseInt(selectedUser?.userId as string),
+        userId: parseInt(selectedUser?.user.userId as string),
         firstName: props.formValues.firstName,
         secondName: props.formValues.secondName,
       };
@@ -138,7 +140,7 @@ export const useUsersSection = () => {
   const handleDeleteConfirm = (u: User) => {
     globalErrorWrapper(async () => {
       await deleteUser({
-        variables: { userId: parseInt(u.userId) },
+        variables: { userId: parseInt(u.user.userId) },
       });
       refetch();
     });

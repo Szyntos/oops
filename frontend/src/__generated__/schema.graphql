@@ -8155,7 +8155,7 @@ type GroupType {
   label: String
   startTime: String!
   teacher: UserType!
-  userGroups: [UserGroupType]!
+  userGroups: [UserGroupType!]!
   usosId: Int!
   weekday: WeekdayType!
 }

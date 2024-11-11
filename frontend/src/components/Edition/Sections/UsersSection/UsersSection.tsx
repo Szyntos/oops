@@ -5,8 +5,12 @@ import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddStudentForm } from "./StudentAddForm";
 import { UsersList } from "./UsersList/UsersList";
 import { AddTeacherForm } from "./TeacherAddForm";
+import { useParams } from "react-router-dom";
 
 export const UsersSection = () => {
+  const params = useParams();
+  const editionId = params.id ? parseInt(params.id) : -1;
+
   const {
     teachers,
     students,
@@ -33,7 +37,7 @@ export const UsersSection = () => {
     closeEditTeacher,
     openEditTeacher,
     handleEditTeacherConfirm,
-  } = useUsersSection();
+  } = useUsersSection(editionId);
 
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
@@ -71,7 +75,7 @@ export const UsersSection = () => {
         <AddStudentForm
           formError={formError}
           handleConfirm={handleEditStudentConfirm}
-          initialValues={selectedUser}
+          initialValues={selectedUser?.user}
           title={"Edit student"}
         />
       </Dialog>
@@ -81,7 +85,7 @@ export const UsersSection = () => {
         <AddTeacherForm
           formError={formError}
           handleConfirm={handleEditTeacherConfirm}
-          initialValues={selectedUser}
+          initialValues={selectedUser?.user}
           title={"Add teacher"}
         />
       </Dialog>

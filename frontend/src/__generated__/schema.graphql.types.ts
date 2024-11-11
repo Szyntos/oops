@@ -5746,7 +5746,7 @@ export type GroupType = {
   label?: Maybe<Scalars["String"]["output"]>;
   startTime: Scalars["String"]["output"];
   teacher: UserType;
-  userGroups: Array<Maybe<UserGroupType>>;
+  userGroups: Array<UserGroupType>;
   usosId: Scalars["Int"]["output"];
   weekday: WeekdayType;
 };

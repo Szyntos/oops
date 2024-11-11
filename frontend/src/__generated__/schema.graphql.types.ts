@@ -3392,7 +3392,7 @@ export type ChestType = {
   __typename?: "ChestType";
   active: Scalars["Boolean"]["output"];
   awardBundleCount: Scalars["Int"]["output"];
-  chestAward: Array<Maybe<ChestAwardType>>;
+  chestAward: Array<ChestAwardType>;
   chestEdition: Array<Maybe<ChestEditionType>>;
   chestHistory: Array<Maybe<ChestHistoryType>>;
   chestId: Scalars["ID"]["output"];

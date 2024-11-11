@@ -4613,7 +4613,7 @@ input ChestHistoryVarianceOrderBy {
 type ChestType {
   active: Boolean!
   awardBundleCount: Int!
-  chestAward: [ChestAwardType]!
+  chestAward: [ChestAwardType!]!
   chestEdition: [ChestEditionType]!
   chestHistory: [ChestHistoryType]!
   chestId: ID!

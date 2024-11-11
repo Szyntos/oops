@@ -490,7 +490,7 @@ type ChestType {
   active: Boolean!
   awardBundleCount: Int!
   chestHistory: [ChestHistoryType]!
-  chestAward: [ChestAwardType]!
+  chestAward: [ChestAwardType!]!
   chestEdition: [ChestEditionType]!
   imageFile: FileType
 }

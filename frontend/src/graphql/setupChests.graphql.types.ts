@@ -3,61 +3,136 @@ import * as Types from "../__generated__/schema.graphql.types";
 import { gql } from "@apollo/client";
 import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
-export type SetupChestsQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type SetupChestsQueryVariables = Types.Exact<{
+  editionId: Types.Scalars["Int"]["input"];
+}>;
 
 export type SetupChestsQuery = {
   __typename?: "query_root";
-  chests: Array<{
-    __typename?: "Chests";
-    active: boolean;
-    awardBundleCount: number;
-    chestId: string;
-    imageFileId?: string | null;
-    label: string;
-    type: string;
-    chestAwards: Array<{
-      __typename?: "ChestAward";
-      award: {
-        __typename?: "Award";
-        awardId: string;
-        awardName: string;
-        awardType: string;
-        awardValue: string;
-        categoryId: string;
-        description: string;
-        imageFileId?: string | null;
-        label: string;
-        maxUsages: number;
+  listSetupChests: Array<{
+    __typename?: "ChestWithPermissionsType";
+    chest: {
+      __typename?: "ChestType";
+      active: boolean;
+      awardBundleCount: number;
+      chestId: string;
+      label: string;
+      chestType: string;
+      imageFile?: { __typename?: "FileType"; fileId: string } | null;
+      chestEdition: Array<{
+        __typename?: "ChestEditionType";
+        chestEditionId: string;
+      } | null>;
+      chestAward: Array<{
+        __typename?: "ChestAwardType";
+        award: {
+          __typename?: "AwardType";
+          awardId: string;
+          awardName: string;
+          awardType: Types.AwardTypeType;
+          awardValue: string;
+          description: string;
+          label: string;
+          maxUsages: number;
+          category: { __typename?: "CategoryType"; categoryId: string };
+          imageFile?: { __typename?: "FileType"; fileId: string } | null;
+        };
+      }>;
+    };
+    permissions: {
+      __typename?: "ListPermissionsOutputType";
+      canAdd: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
       };
-    }>;
-    chestEditions: Array<{ __typename?: "ChestEdition"; editionId: string }>;
+      canCopy: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canEdit: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canRemove: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canSelect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canUnselect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+    };
   }>;
 };
 
 export const SetupChestsDocument = gql`
-  query SetupChests {
-    chests {
-      active
-      awardBundleCount
-      chestId
-      imageFileId
-      label
-      type
-      chestAwards {
-        award {
-          awardId
-          awardName
-          awardType
-          awardValue
-          categoryId
-          description
-          imageFileId
-          label
-          maxUsages
+  query SetupChests($editionId: Int!) {
+    listSetupChests(editionId: $editionId) {
+      chest {
+        active
+        awardBundleCount
+        chestId
+        imageFile {
+          fileId
+        }
+        label
+        chestType
+        chestEdition {
+          chestEditionId
+        }
+        chestAward {
+          award {
+            awardId
+            awardName
+            awardType
+            awardValue
+            category {
+              categoryId
+            }
+            description
+            imageFile {
+              fileId
+            }
+            label
+            maxUsages
+          }
         }
       }
-      chestEditions {
-        editionId
+      permissions {
+        canAdd {
+          allow
+          reason
+        }
+        canCopy {
+          allow
+          reason
+        }
+        canEdit {
+          allow
+          reason
+        }
+        canRemove {
+          allow
+          reason
+        }
+        canSelect {
+          allow
+          reason
+        }
+        canUnselect {
+          allow
+          reason
+        }
       }
     }
   }
@@ -75,14 +150,19 @@ export const SetupChestsDocument = gql`
  * @example
  * const { data, loading, error } = useSetupChestsQuery({
  *   variables: {
+ *      editionId: // value for 'editionId'
  *   },
  * });
  */
 export function useSetupChestsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SetupChestsQuery,
     SetupChestsQueryVariables
-  >,
+  > &
+    (
+      | { variables: SetupChestsQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SetupChestsQuery, SetupChestsQueryVariables>(

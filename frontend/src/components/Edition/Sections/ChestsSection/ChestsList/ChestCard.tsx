@@ -27,12 +27,17 @@ export const ChestCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <Image id={chest.imageFileId ?? undefined} size={32} disabled={false} />
-      <div>[{chest.chestId}]</div>
-      <div style={styles.subtitle}>{chest.type}</div>
+      <Image
+        id={chest.chest.imageFile?.fileId ?? undefined}
+        size={32}
+        disabled={false}
+      />
+      <div>[{chest.chest.chestId}]</div>
+      <div style={styles.subtitle}>{chest.chest.chestType}</div>
 
       <SetupButtons
         isSelected={isSelected}
+        permissions={chest.permissions}
         handleSelect={onSelectClick}
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}

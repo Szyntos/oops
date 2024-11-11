@@ -208,6 +208,15 @@ class CategoryEditionPermissions {
             )
         }
 
+        if (category.subcategories.filter { it.edition == edition }.any { it.points.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category has points assigned in this edition"
+            )
+        }
+
         return Permission(
             action = action,
             arguments = arguments,

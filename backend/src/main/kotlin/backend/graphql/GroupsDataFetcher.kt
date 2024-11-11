@@ -1,15 +1,16 @@
 package backend.graphql
 
-import backend.award.AwardType
+import backend.award.Award
+import backend.award.AwardRepository
 import backend.bonuses.Bonuses
 import backend.bonuses.BonusesRepository
 import backend.categories.Categories
 import backend.categories.CategoriesRepository
-import backend.categoryEdition.CategoryEdition
 import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.files.FileEntity
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.AwardsPermissions
 import backend.graphql.permissions.GroupsPermissions
 import backend.graphql.utils.*
 import backend.groups.Groups
@@ -32,17 +33,19 @@ import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
-import jakarta.persistence.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.sql.Time
 import java.time.LocalDateTime
-import kotlin.math.min
 
 @DgsComponent
 class GroupsDataFetcher {
+
+    @Autowired
+    private lateinit var awardRepository: AwardRepository
+
+    @Autowired
+    private lateinit var awardsPermissions: AwardsPermissions
 
     @Autowired
     private lateinit var groupsPermissions: GroupsPermissions
@@ -628,71 +631,64 @@ class GroupsDataFetcher {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
-        val group = groupsRepository.findById(groupId).orElseThrow { IllegalArgumentException("Invalid group ID") }
-        val users = usersRepository.findByUserGroups_Group_GroupsId(groupId).filter { it.role == UsersRoles.STUDENT }
+        val group = groupsRepository.findById(groupId)
+            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+
+        val users = usersRepository.findByUserGroups_Group_GroupsIdAndRole(groupId, UsersRoles.STUDENT)
         val userIds = users.map { it.userId }
-        val points = pointsRepository.findByStudent_UserIdIn(userIds).filter { it.subcategory.edition == group.edition }
-        val bonuses = bonusesRepository.findByChestHistory_User_UserIdIn(userIds).filter { it.points.subcategory.edition == group.edition }
+
+        val points = pointsRepository.findByStudent_UserIdInAndSubcategory_Edition(userIds, group.edition)
+        val bonuses = bonusesRepository.findByChestHistory_User_UserIdInAndPoints_Subcategory_Edition(userIds, group.edition)
         val categories = categoriesRepository.findByCategoryEdition_Edition(group.edition)
         val subcategories = subcategoriesRepository.findByEdition_EditionId(group.edition.editionId)
+        val allAvailableAwards = awardRepository.findByAwardEditions_Edition(group.edition).distinctBy { it.awardId }
+
+        // Pre-process data into maps
+        val purePointsByUserAndCategory = points.filter { it.bonuses.isEmpty() }.groupBy { it.student.userId }
+            .mapValues { it.value.groupBy { it.subcategory.category.categoryId } }
+        val bonusesByUserAndCategory = bonuses.groupBy { it.points.student.userId }
+            .mapValues { it.value.groupBy { it.points.subcategory.category.categoryId } }
 
         return users.map { user ->
-            val userBonuses = bonuses.filter { it.chestHistory.user.userId == user.userId }
+            UserPointsType(
+                user = user,
+                categoriesPoints = categories.map { category ->
+                    val categoryPurePoints = purePointsByUserAndCategory[user.userId]?.get(category.categoryId) ?: emptyList()
+                    val categoryBonuses = bonusesByUserAndCategory[user.userId]?.get(category.categoryId) ?: emptyList()
+                    val awardTypes = allAvailableAwards.filter { it.category == category }
 
-            val additivePrevBonuses = userBonuses.filter { it.award.awardType == AwardType.ADDITIVE_PREV }
-
-            val additivePrevBonusesMap = additivePrevBonuses.associateWith { it.points.value }.toMutableMap()
-
-            val userPoints = points.filter { it.student.userId == user.userId }
-                .groupBy { it.subcategory }
-                .mapNotNull { (subcategory, points) ->
-
-                    val purePoints = points.filter { bonusesRepository.findByPoints(it).isEmpty() }.firstOrNull()
-                    val allBonuses = bonuses.filter { (it.award.awardType != AwardType.MULTIPLICATIVE && it.award.awardType != AwardType.ADDITIVE_PREV && it.points.subcategory == subcategory)  ||
-                            ((it.award.awardType == AwardType.MULTIPLICATIVE || it.award.awardType == AwardType.ADDITIVE_PREV) && it.points.subcategory.category == subcategory.category) }
-                    val partialBonusType = allBonuses.map { bonus ->
-                        PartialBonusType(
-                            bonuses = bonus,
-                            partialValue = if (bonus.award.awardType == AwardType.MULTIPLICATIVE) {
-                                purePoints?.value?.times(bonus.award.awardValue)?.toFloat() ?: 0f
-                            } else if (bonus.award.awardType == AwardType.ADDITIVE_PREV) {
-                                val contribution = min(
-                                    additivePrevBonusesMap[bonus]?.toFloat() ?: 0f,
-                                    purePoints?.value?.let { (purePoints.subcategory.maxPoints.toFloat()).minus(it.toFloat()) } ?: 0f
-                                )
-                                additivePrevBonusesMap[bonus] = BigDecimal(((additivePrevBonusesMap[bonus]?.toFloat() ?: 0f) - contribution).toString()).setScale(2, RoundingMode.HALF_UP)
-                                contribution
-                            } else {
-                                bonus.points.value.toFloat()
-                            }
-                        )
-                    }
-                    val teacherToPoints = purePoints?.teacher ?: allBonuses.maxByOrNull { it.updatedAt }?.points?.teacher ?: Users()
-                    val createdAt = purePoints?.createdAt ?: allBonuses.minOfOrNull { it.points.createdAt } ?: LocalDateTime.now()
-                    val updatedAt = purePoints?.updatedAt ?: allBonuses.maxOfOrNull { it.points.updatedAt } ?: LocalDateTime.now()
-                    SubcategoryPointsType(
-                        subcategory = subcategory,
-                        points = PurePointsType(
-                            purePoints = purePoints,
-                            partialBonusType = partialBonusType
+                    CategoryPointsType(
+                        category = category,
+                        subcategoryPoints = subcategories.filter { it.category == category }.map { subcategory ->
+                            val subcategoryPurePoints = categoryPurePoints.firstOrNull { it.subcategory == subcategory }
+                            SubcategoryPointsGroupType(
+                                subcategory = subcategory,
+                                points = subcategoryPurePoints,
+                                teacher = subcategoryPurePoints?.teacher ?: Users(),
+                                createdAt = subcategoryPurePoints?.createdAt ?: LocalDateTime.now(),
+                                updatedAt = subcategoryPurePoints?.updatedAt ?: LocalDateTime.now()
+                            )
+                        },
+                        categoryAggregate = CategoryAggregate(
+                            category = category,
+                            sumOfPurePoints = categoryPurePoints.sumOf { it.value }.toFloat(),
+                            sumOfBonuses = categoryBonuses.sumOf { it.points.value }.toFloat(),
+                            sumOfAll = categoryPurePoints.sumOf { it.value }.toFloat() +
+                                    categoryBonuses.sumOf { it.points.value }.toFloat()
                         ),
-                        teacher = teacherToPoints,
-                        createdAt = createdAt,
-                        updatedAt = updatedAt
+                        awardAggregate = awardTypes.map { awardType ->
+                            val awardPoints = categoryBonuses.filter { it.award == awardType }.map { it.points }
+                            AwardAggregate(
+                                award = awardType,
+                                sumOfAll = awardPoints.sumOf { it.value }.toFloat()
+                            )
+                        }
                     )
-
                 }
-                .groupBy { it.subcategory.category } // Grouping by category
-                .map { (category, subcategoryPoints) ->
-                    createCategoryPointsType(category, subcategoryPoints.sortedBy { it.subcategory.ordinalNumber }, subcategories)
-                }
-
-            // Ensure all categories are included
-            val userCategoriesWithDefaults = getUserCategoriesWithDefaults(categories, userPoints, subcategories)
-
-            UserPointsType(user, userCategoriesWithDefaults)
+            )
         }
     }
+
 
     @DgsQuery
     @Transactional
@@ -739,68 +735,68 @@ class GroupsDataFetcher {
         return true
     }
 
-    private fun getUserCategoriesWithDefaults(categories: List<Categories>, userPoints: List<CategoryPointsType>, subcategories: List<Subcategories>): List<CategoryPointsType> {
-        return categories.filter{it.canAddPoints}.map { category ->
-            userPoints.find { it.category == category } ?: CategoryPointsType(
-                category = category,
-                subcategoryPoints = subcategories.filter { it.category == category }.map { subcat ->
-                    SubcategoryPointsType(
-                        subcategory = subcat,
-                        points = PurePointsType(
-                            purePoints = null,
-                            partialBonusType = emptyList()
-                        ),
-                        teacher = Users(),
-                        createdAt = LocalDateTime.now(),
-                        updatedAt = LocalDateTime.now()
-                    )
-                },
-                aggregate = CategoryAggregate(
-                    category = category,
-                    sumOfPurePoints = 0f,
-                    sumOfBonuses = 0f,
-                    sumOfAll = 0f
-                )
-            )
-        }
-    }
-
-    private fun getSubcategoryPointsWithDefaults(subcategoryPoints: List<SubcategoryPointsType>, subcategories: List<Subcategories>, category: Categories): List<SubcategoryPointsType> {
-        val allSubcategoriesForCategory = subcategories.filter { it.category == category }
-        return allSubcategoriesForCategory.map { subcat ->
-            subcategoryPoints.find { it.subcategory == subcat } ?: SubcategoryPointsType(
-                subcategory = subcat,
-                points = PurePointsType(
-                    purePoints = null,
-                    partialBonusType = emptyList()
-                ),
-                teacher = Users(),
-                createdAt = LocalDateTime.now(),
-                updatedAt = LocalDateTime.now()
-            )
-        }
-    }
-
-    private fun createCategoryPointsType(category: Categories, subcategoryPoints: List<SubcategoryPointsType>, subcategories: List<Subcategories>): CategoryPointsType{
-        val subcategoryPointsWithDefaults = getSubcategoryPointsWithDefaults(subcategoryPoints, subcategories, category)
-
-        val sumOfPurePoints = BigDecimal(subcategoryPointsWithDefaults.sumOf { it.points.purePoints?.value?.toDouble() ?: 0.0 }.toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
-        val sumOfBonuses = BigDecimal(subcategoryPointsWithDefaults.sumOf { subcategory ->
-            subcategory.points.partialBonusType.sumOf { it.partialValue.toDouble() }
-        }.toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
-        val sumOfAll = BigDecimal((sumOfPurePoints + sumOfBonuses).toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
-
-        return CategoryPointsType(
-            category = category,
-            subcategoryPoints = subcategoryPointsWithDefaults,
-            aggregate = CategoryAggregate(
-                category = category,
-                sumOfPurePoints = sumOfPurePoints,
-                sumOfBonuses = sumOfBonuses,
-                sumOfAll = sumOfAll
-            )
-        )
-    }
+//    private fun getUserCategoriesWithDefaults(categories: List<Categories>, userPoints: List<CategoryPointsType>, subcategories: List<Subcategories>): List<CategoryPointsType> {
+//        return categories.filter{it.canAddPoints}.map { category ->
+//            userPoints.find { it.category == category } ?: CategoryPointsType(
+//                category = category,
+//                subcategoryPoints = subcategories.filter { it.category == category }.map { subcat ->
+//                    SubcategoryPointsType(
+//                        subcategory = subcat,
+//                        points = PurePointsType(
+//                            purePoints = null,
+//                            partialBonusType = emptyList()
+//                        ),
+//                        teacher = Users(),
+//                        createdAt = LocalDateTime.now(),
+//                        updatedAt = LocalDateTime.now()
+//                    )
+//                },
+//                categoryAggregate = CategoryAggregate(
+//                    category = category,
+//                    sumOfPurePoints = 0f,
+//                    sumOfBonuses = 0f,
+//                    sumOfAll = 0f
+//                )
+//            )
+//        }
+//    }
+//
+//    private fun getSubcategoryPointsWithDefaults(subcategoryPoints: List<SubcategoryPointsType>, subcategories: List<Subcategories>, category: Categories): List<SubcategoryPointsType> {
+//        val allSubcategoriesForCategory = subcategories.filter { it.category == category }
+//        return allSubcategoriesForCategory.map { subcat ->
+//            subcategoryPoints.find { it.subcategory == subcat } ?: SubcategoryPointsType(
+//                subcategory = subcat,
+//                points = PurePointsType(
+//                    purePoints = null,
+//                    partialBonusType = emptyList()
+//                ),
+//                teacher = Users(),
+//                createdAt = LocalDateTime.now(),
+//                updatedAt = LocalDateTime.now()
+//            )
+//        }
+//    }
+//
+//    private fun createCategoryPointsType(category: Categories, subcategoryPoints: List<SubcategoryPointsType>, subcategories: List<Subcategories>): CategoryPointsType{
+//        val subcategoryPointsWithDefaults = getSubcategoryPointsWithDefaults(subcategoryPoints, subcategories, category)
+//
+//        val sumOfPurePoints = BigDecimal(subcategoryPointsWithDefaults.sumOf { it.points.purePoints?.value?.toDouble() ?: 0.0 }.toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
+//        val sumOfBonuses = BigDecimal(subcategoryPointsWithDefaults.sumOf { subcategory ->
+//            subcategory.points.partialBonusType.sumOf { it.partialValue.toDouble() }
+//        }.toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
+//        val sumOfAll = BigDecimal((sumOfPurePoints + sumOfBonuses).toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
+//
+//        return CategoryPointsType(
+//            category = category,
+//            subcategoryPoints = subcategoryPointsWithDefaults,
+//            categoryAggregate = CategoryAggregate(
+//                category = category,
+//                sumOfPurePoints = sumOfPurePoints,
+//                sumOfBonuses = sumOfBonuses,
+//                sumOfAll = sumOfAll
+//            )
+//        )
+//    }
     private fun generateGroupName(usosId: Int, weekday: Weekdays, startTime: Time, teacher: Users): String {
         return "${weekday.weekdayAbbr}-${startTime.toString().replace(":", "").subSequence(0, 4)}-${teacher.firstName.subSequence(0, 3)}-${teacher.secondName.subSequence(0, 3)}-${usosId}"
     }
@@ -813,8 +809,14 @@ data class UserPointsType(
 
 data class CategoryPointsType(
     val category: Categories,
-    val subcategoryPoints: List<SubcategoryPointsType>,
-    val aggregate: CategoryAggregate
+    val subcategoryPoints: List<SubcategoryPointsGroupType>,
+    val awardAggregate: List<AwardAggregate>,
+    val categoryAggregate: CategoryAggregate
+)
+
+data class AwardAggregate(
+    val award: Award,
+    val sumOfAll: Float
 )
 
 data class CategoryAggregate(
@@ -827,6 +829,14 @@ data class CategoryAggregate(
 data class SubcategoryPointsType(
     val subcategory: Subcategories,
     val points: PurePointsType,
+    val teacher: Users,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
+)
+
+data class SubcategoryPointsGroupType(
+    val subcategory: Subcategories,
+    val points: Points?,
     val teacher: Users,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime

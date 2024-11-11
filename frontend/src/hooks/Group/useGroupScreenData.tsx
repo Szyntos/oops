@@ -55,8 +55,8 @@ export const useGroupScreenData = (groupId: number | undefined) => {
           userPoints?.categoriesPoints.flatMap((catPoints) =>
             catPoints.subcategoryPoints.map((subPoints) => {
               return {
-                pure: subPoints.points.purePoints?.value
-                  ? parseFloat(subPoints.points.purePoints?.value)
+                pure: subPoints.points?.value
+                  ? parseFloat(subPoints.points?.value)
                   : undefined,
                 subcategoryId: subPoints.subcategory.subcategoryId,
                 categoryId: catPoints.category.categoryId,

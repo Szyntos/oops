@@ -871,15 +871,23 @@ class UsersPermissions {
                     reason = "Only a coordinator can be added with this bypass"
                 )
             }
-        }
-
-        if (UsersRoles.valueOf(role.uppercase()) == UsersRoles.COORDINATOR) {
-            if (currentUser.role != UsersRoles.COORDINATOR || currentUser.userId != 0L) {
+            if (usersRepository.existsByRole(UsersRoles.COORDINATOR)) {
                 return Permission(
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Only a coordinator can add a coordinator"
+                    reason = "Coordinator already exists"
+                )
+            }
+        }
+
+        if (UsersRoles.valueOf(role.uppercase()) == UsersRoles.COORDINATOR) {
+            if (currentUser.userId != 0L) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Current user is not allowed to add a coordinator"
                 )
             }
         }

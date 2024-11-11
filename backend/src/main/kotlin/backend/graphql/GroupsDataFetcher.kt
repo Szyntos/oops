@@ -237,6 +237,10 @@ class GroupsDataFetcher {
             edition = edition
         )
         groupsRepository.save(group)
+        val filesFromGroupInEdition = groupsRepository.findByEdition(edition).mapNotNull { it.imageFile }
+        val file = fileRepository.findAllByFileType("image/group").filter { it !in filesFromGroupInEdition }.shuffled().firstOrNull()
+        val fileId = file?.fileId ?: fileRepository.findAllByFileType("image/group").shuffled().firstOrNull()?.fileId
+        photoAssigner.assignPhotoToAssignee(groupsRepository, "image/group", group.groupsId, fileId)
         val userGroups = UserGroups(
             user = teacher,
             group = group
@@ -310,7 +314,12 @@ class GroupsDataFetcher {
             edition = edition
         )
         groupsRepository.save(group)
-        photoAssigner.assignPhotoToAssignee(groupsRepository, "image/group", group.groupsId, null)
+
+        val filesFromGroupInEdition = groupsRepository.findByEdition(edition).mapNotNull { it.imageFile }
+        val file = fileRepository.findAllByFileType("image/group").filter { it !in filesFromGroupInEdition }.shuffled().firstOrNull()
+        val fileId = file?.fileId ?: fileRepository.findAllByFileType("image/group").shuffled().firstOrNull()?.fileId
+        photoAssigner.assignPhotoToAssignee(groupsRepository, "image/group", group.groupsId, fileId)
+
         val userGroups = UserGroups(
             user = teacher,
             group = group

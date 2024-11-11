@@ -1142,13 +1142,13 @@ input AwardSumOrderBy {
 }
 
 type AwardType {
-  awardEditions: [AwardEditionType]!
+  awardEditions: [AwardEditionType!]!
   awardId: ID!
   awardName: String!
   awardType: AwardTypeType!
   awardValue: String!
   bonuses: [BonusType]!
-  category: CategoryType
+  category: CategoryType!
   chestAward: [ChestAwardType]!
   description: String!
   imageFile: FileType

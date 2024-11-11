@@ -85,10 +85,11 @@ export const AwardsSection = () => {
           initialValues={
             selectedAward
               ? {
-                  ...selectedAward,
-                  awardType: selectedAward.awardType.toUpperCase(),
-                  awardValue: parseInt(selectedAward.awardValue),
-                  imageId: selectedAward.imageFileId ?? "-1",
+                  ...selectedAward.award,
+                  awardType: selectedAward.award.awardType.toUpperCase(),
+                  awardValue: parseInt(selectedAward.award.awardValue),
+                  imageId: selectedAward.award.imageFile?.fileId ?? "-1",
+                  categoryId: selectedAward.award.category.categoryId,
                 }
               : undefined
           }

@@ -419,11 +419,11 @@ type AwardType {
   label: String!
   maxUsages: Int!
   awardValue: String!
-  category: CategoryType
+  category: CategoryType!
   imageFile: FileType
   chestAward: [ChestAwardType]!
   bonuses: [BonusType]!
-  awardEditions: [AwardEditionType]!
+  awardEditions: [AwardEditionType!]!
 }
 
 type AwardEditionType {

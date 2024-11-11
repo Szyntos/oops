@@ -75,7 +75,10 @@ export const ChestsSection = () => {
           imageIds={imageIds}
           awardsThisEdition={selectedAwards}
           awardsNotThisEdition={awards.filter(
-            (a) => !selectedAwards.some((aw) => aw.awardId === a.awardId),
+            (a) =>
+              !selectedAwards.some(
+                (aw) => aw.award.awardId === a.award.awardId,
+              ),
           )}
         />
       </Dialog>
@@ -88,7 +91,10 @@ export const ChestsSection = () => {
           imageIds={imageIds}
           awardsThisEdition={selectedAwards}
           awardsNotThisEdition={awards.filter(
-            (a) => !selectedAwards.some((aw) => aw.awardId === a.awardId),
+            (a) =>
+              !selectedAwards.some(
+                (aw) => aw.award.awardId === a.award.awardId,
+              ),
           )}
           initialValues={
             selectedChest
@@ -99,7 +105,7 @@ export const ChestsSection = () => {
                   awardThisEditionIds: selectedChest.chestAwards
                     .filter((a) =>
                       selectedAwards.some(
-                        (aw) => aw.awardId === a.award.awardId,
+                        (aw) => aw.award.awardId === a.award.awardId,
                       ),
                     )
                     .map((award) => award.award.awardId),
@@ -107,7 +113,7 @@ export const ChestsSection = () => {
                     .filter(
                       (a) =>
                         !selectedAwards.some(
-                          (aw) => aw.awardId === a.award.awardId,
+                          (aw) => aw.award.awardId === a.award.awardId,
                         ),
                     )
                     .map((award) => award.award.awardId),

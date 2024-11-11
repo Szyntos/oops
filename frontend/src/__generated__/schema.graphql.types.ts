@@ -844,13 +844,13 @@ export type AwardSumOrderBy = {
 
 export type AwardType = {
   __typename?: "AwardType";
-  awardEditions: Array<Maybe<AwardEditionType>>;
+  awardEditions: Array<AwardEditionType>;
   awardId: Scalars["ID"]["output"];
   awardName: Scalars["String"]["output"];
   awardType: AwardTypeType;
   awardValue: Scalars["String"]["output"];
   bonuses: Array<Maybe<BonusType>>;
-  category?: Maybe<CategoryType>;
+  category: CategoryType;
   chestAward: Array<Maybe<ChestAwardType>>;
   description: Scalars["String"]["output"];
   imageFile?: Maybe<FileType>;

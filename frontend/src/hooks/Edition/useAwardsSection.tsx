@@ -15,7 +15,7 @@ import { useFilesQuery } from "../../graphql/files.graphql.types";
 import { useDeleteAwardMutation } from "../../graphql/deleteAward.graphql.types";
 import { useCopyAwardMutation } from "../../graphql/copyAward.graphql.types";
 
-export type Award = SetupAwardsQuery["award"][number];
+export type Award = SetupAwardsQuery["listSetupAwards"][number];
 
 export const useAwardsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();
@@ -31,7 +31,7 @@ export const useAwardsSection = (editionId: number) => {
     loading: awardsLoading,
     error: awardsError,
     refetch,
-  } = useSetupAwardsQuery();
+  } = useSetupAwardsQuery({ variables: { editionId } });
 
   const {
     data: imageData,
@@ -44,11 +44,11 @@ export const useAwardsSection = (editionId: number) => {
       i.files.map((f) => f.fileId),
     ) ?? [];
 
-  const awards: Award[] = data?.award ?? [];
+  const awards: Award[] = data?.listSetupAwards ?? [];
 
   const selectedAwards: Award[] = awards.filter((a) =>
-    a.awardEditions.some(
-      (edition) => edition.editionId === editionId.toString(),
+    a.award.awardEditions.some(
+      (e) => e.edition.editionId === editionId.toString(),
     ),
   );
 
@@ -58,7 +58,6 @@ export const useAwardsSection = (editionId: number) => {
   );
 
   // ADD AWARD
-
   const [isAddAward, setIsAddAward] = useState(false);
   const openAddAward = () => {
     setIsAddAward(true);
@@ -88,11 +87,11 @@ export const useAwardsSection = (editionId: number) => {
   const [removeAward] = useSetupAwardEditionRemoveMutation();
   const handleSelectAward = async (award: Award) => {
     const isAwardSelected = selectedAwards.some(
-      (a) => a.awardId === award.awardId,
+      (a) => a.award.awardId === award.award.awardId,
     );
     const variables = {
       editionId,
-      awardId: parseInt(award.awardId),
+      awardId: parseInt(award.award.awardId),
     };
     globalErrorWrapper(async () => {
       isAwardSelected
@@ -103,7 +102,6 @@ export const useAwardsSection = (editionId: number) => {
   };
 
   // EDIT AWARD
-
   const [isEditAward, setIsEditAward] = useState(false);
   const openEditAward = (award: Award) => {
     setSelectedAward(award);
@@ -121,7 +119,7 @@ export const useAwardsSection = (editionId: number) => {
       await editAward({
         variables: {
           ...values,
-          awardId: parseInt(selectedAward?.awardId ?? "-1"),
+          awardId: parseInt(selectedAward?.award.awardId ?? "-1"),
           categoryId: parseInt(values.categoryId),
           fileId: parseInt(values.imageId ?? "-1"),
         },
@@ -137,7 +135,7 @@ export const useAwardsSection = (editionId: number) => {
     globalErrorWrapper(async () => {
       await deleteAward({
         variables: {
-          awardId: parseInt(award.awardId),
+          awardId: parseInt(award.award.awardId),
         },
       });
       refetch();
@@ -150,7 +148,7 @@ export const useAwardsSection = (editionId: number) => {
     globalErrorWrapper(async () => {
       await copyAward({
         variables: {
-          awardId: parseInt(award.awardId),
+          awardId: parseInt(award.award.awardId),
         },
       });
       refetch();

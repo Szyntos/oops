@@ -706,13 +706,28 @@ type CategoryAggregate {
 
 type CategoryPointsType {
   category: CategoryType!
-  subcategoryPoints: [SubcategoryPointsType!]!
-  aggregate: CategoryAggregate!
+  subcategoryPoints: [SubcategoryPointsGroupType!]!
+  awardAggregate: [AwardAggregateType!]!,
+  categoryAggregate: CategoryAggregate!
 }
+
+type AwardAggregateType{
+  award: AwardType!,
+  sumOfAll: Float!
+}
+
 
 type SubcategoryPointsType {
   subcategory: SubcategoryType!
   points: PurePointsType!
+  teacher: UserType!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type SubcategoryPointsGroupType {
+  subcategory: SubcategoryType!
+  points: PointType
   teacher: UserType!
   createdAt: String!
   updatedAt: String!

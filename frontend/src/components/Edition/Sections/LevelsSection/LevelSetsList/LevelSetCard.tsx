@@ -27,13 +27,13 @@ export const LevelSetCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <div>[{levelSet.levelSetId}]</div>
+      <div>[{levelSet.levelSet.levelSetId}]</div>
 
       <div>
-        {levelSet.levels.length > 0
-          ? levelSet.levels.map((l) => (
+        {levelSet.levelSet.levels.length > 0
+          ? levelSet.levelSet.levels.map((l) => (
               <div>
-                {l.ordinalNumber + 1}. {l.name}, {l.minimumPoints}-
+                {l.ordinalNumber + 1}. {l.levelName}, {l.minimumPoints}-
                 {l.maximumPoints}
               </div>
             ))
@@ -42,6 +42,7 @@ export const LevelSetCard = ({
 
       <SetupButtons
         isSelected={isSelected}
+        permissions={levelSet.permissions}
         handleSelect={onSelectClick}
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}

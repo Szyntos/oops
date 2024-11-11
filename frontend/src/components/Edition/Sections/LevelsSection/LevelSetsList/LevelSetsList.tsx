@@ -29,10 +29,11 @@ export const LevelSetsList = ({
         {levelSets.length !== 0
           ? levelSets.map((levelSet) => (
               <LevelSetCard
-                key={levelSet.levelSetId}
+                key={levelSet.levelSet.levelSetId}
                 levelSet={levelSet}
                 isSelected={
-                  selectedLevelSet?.levelSetId === levelSet.levelSetId
+                  selectedLevelSet?.levelSet.levelSetId ===
+                  levelSet.levelSet.levelSetId
                 }
                 onSelectClick={() => handleSelect(levelSet)}
                 onEditClick={() => handleEdit(levelSet)}

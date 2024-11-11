@@ -88,12 +88,13 @@ export const LevelSetsSection = () => {
         <CloseHeader onCloseClick={closeEditSet} />
         <AddSetForm
           initLevels={
-            selectedToEditSet?.levels?.map((l, index) => ({
+            selectedToEditSet?.levelSet.levels?.map((l, index) => ({
               ...l,
               ordinal: index,
               minPoints: parseFloat(l.minimumPoints),
               maxPoints: parseFloat(l.maximumPoints),
-              imageId: l.imageFileId ?? "-1",
+              imageId: l.imageFile?.fileId ?? "-1",
+              name: l.levelName,
             })) ?? []
           }
           formError={formError}

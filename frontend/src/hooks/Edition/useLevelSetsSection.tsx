@@ -13,17 +13,19 @@ import { useFilesQuery } from "../../graphql/files.graphql.types";
 import { AddedLevel } from "../../components/Edition/Sections/LevelsSection/AddSetForm/LevelRow";
 import { useCopyLevelSetMutation } from "../../graphql/copyLevelSet.graphql.types";
 
-export type LevelSet = SetupLevelSetsQuery["levelSets"][number];
+export type LevelSet = SetupLevelSetsQuery["listSetupLevelSets"][number];
 
 export const useLevelSetsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();
 
-  const { data, loading, error, refetch } = useSetupLevelSetsQuery();
+  const { data, loading, error, refetch } = useSetupLevelSetsQuery({
+    variables: { editionId },
+  });
 
-  const levelSets: LevelSet[] = data?.levelSets ?? [];
+  const levelSets: LevelSet[] = data?.listSetupLevelSets ?? [];
 
   const activeSet: LevelSet = levelSets.filter((s) =>
-    s.edition.some((e) => parseInt(e.editionId) === editionId),
+    s.levelSet.edition.some((e) => parseInt(e.editionId) === editionId),
   )[0];
 
   const {
@@ -74,11 +76,12 @@ export const useLevelSetsSection = (editionId: number) => {
   const [addSet] = useSetupLevelSetEditionAddMutation();
   const [removeSet] = useSetupLevelSetEditionRemoveMutation();
   const handleSelectSet = (set: LevelSet) => {
-    const isLevelSetSelected = activeSet?.levelSetId === set.levelSetId;
+    const isLevelSetSelected =
+      activeSet?.levelSet.levelSetId === set.levelSet.levelSetId;
 
     const variables = {
       editionId,
-      levelSetId: parseInt(set.levelSetId),
+      levelSetId: parseInt(set.levelSet.levelSetId),
     };
     globalErrorWrapper(async () => {
       isLevelSetSelected
@@ -105,7 +108,7 @@ export const useLevelSetsSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await editSet({
         variables: {
-          levelSetId: parseInt(selectedToEditSet?.levelSetId ?? "-1"),
+          levelSetId: parseInt(selectedToEditSet?.levelSet.levelSetId ?? "-1"),
           levels: levels.map((l) => ({
             grade: l.grade,
             maximumPoints: l.maxPoints.toString(),
@@ -123,7 +126,9 @@ export const useLevelSetsSection = (editionId: number) => {
   const [deleteSet] = useDeleteLevelSetMutation();
   const handleDeleteSet = (set: LevelSet) => {
     globalErrorWrapper(async () => {
-      await deleteSet({ variables: { levelSetId: parseInt(set.levelSetId) } });
+      await deleteSet({
+        variables: { levelSetId: parseInt(set.levelSet.levelSetId) },
+      });
       refetch();
     });
   };
@@ -132,7 +137,9 @@ export const useLevelSetsSection = (editionId: number) => {
   const [copySet] = useCopyLevelSetMutation();
   const handleCopySet = (set: LevelSet) => {
     globalErrorWrapper(async () => {
-      await copySet({ variables: { levelSetId: parseInt(set.levelSetId) } });
+      await copySet({
+        variables: { levelSetId: parseInt(set.levelSet.levelSetId) },
+      });
       refetch();
     });
   };

@@ -4,51 +4,115 @@ import { gql } from "@apollo/client";
 import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
 export type SetupLevelSetsQueryVariables = Types.Exact<{
-  [key: string]: never;
+  editionId: Types.Scalars["Int"]["input"];
 }>;
 
 export type SetupLevelSetsQuery = {
   __typename?: "query_root";
-  levelSets: Array<{
-    __typename?: "LevelSets";
-    levelSetId: string;
-    levelSetName: string;
-    levels: Array<{
-      __typename?: "Levels";
-      grade: string;
-      highest: boolean;
-      label: string;
-      levelId: string;
-      maximumPoints: string;
-      minimumPoints: string;
-      ordinalNumber: number;
-      imageFileId?: string | null;
-      name: string;
-      levelSetId?: string | null;
-    }>;
-    edition: Array<{ __typename?: "Edition"; editionId: string }>;
+  listSetupLevelSets: Array<{
+    __typename?: "LevelSetWithPermissionsType";
+    levelSet: {
+      __typename?: "LevelSetType";
+      levelSetId: string;
+      levelSetName: string;
+      levels: Array<{
+        __typename?: "LevelType";
+        grade: string;
+        highest: boolean;
+        label: string;
+        levelId: string;
+        maximumPoints: string;
+        minimumPoints: string;
+        ordinalNumber: number;
+        levelName: string;
+        imageFile?: { __typename?: "FileType"; fileId: string } | null;
+      }>;
+      edition: Array<{ __typename?: "EditionType"; editionId: string }>;
+    };
+    permissions: {
+      __typename?: "ListPermissionsOutputType";
+      canAdd: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canCopy: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canEdit: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canRemove: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canSelect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canUnselect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+    };
   }>;
 };
 
 export const SetupLevelSetsDocument = gql`
-  query SetupLevelSets {
-    levelSets(orderBy: { levelSetId: ASC }) {
-      levelSetId
-      levels {
-        grade
-        highest
-        label
-        levelId
-        maximumPoints
-        minimumPoints
-        ordinalNumber
-        imageFileId
-        name
+  query SetupLevelSets($editionId: Int!) {
+    listSetupLevelSets(editionId: $editionId) {
+      levelSet {
         levelSetId
+        levels {
+          grade
+          highest
+          label
+          levelId
+          maximumPoints
+          minimumPoints
+          ordinalNumber
+          levelName
+          imageFile {
+            fileId
+          }
+        }
+        levelSetName
+        edition {
+          editionId
+        }
       }
-      levelSetName
-      edition {
-        editionId
+      permissions {
+        canAdd {
+          allow
+          reason
+        }
+        canCopy {
+          allow
+          reason
+        }
+        canEdit {
+          allow
+          reason
+        }
+        canRemove {
+          allow
+          reason
+        }
+        canSelect {
+          allow
+          reason
+        }
+        canUnselect {
+          allow
+          reason
+        }
       }
     }
   }
@@ -66,14 +130,19 @@ export const SetupLevelSetsDocument = gql`
  * @example
  * const { data, loading, error } = useSetupLevelSetsQuery({
  *   variables: {
+ *      editionId: // value for 'editionId'
  *   },
  * });
  */
 export function useSetupLevelSetsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SetupLevelSetsQuery,
     SetupLevelSetsQueryVariables
-  >,
+  > &
+    (
+      | { variables: SetupLevelSetsQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SetupLevelSetsQuery, SetupLevelSetsQueryVariables>(

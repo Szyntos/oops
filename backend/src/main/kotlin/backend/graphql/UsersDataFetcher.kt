@@ -312,6 +312,9 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
 
         indexNumber?.let {
+            if (user.role == UsersRoles.STUDENT) {
+                user.email = "$it@$emailDomain"
+            }
             user.indexNumber = it
         }
 

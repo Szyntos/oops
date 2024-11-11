@@ -49,6 +49,9 @@ class Users(
     @Column(name = "firebase_uid", nullable = true, length = 256)
     var firebaseUid: String? = "",
 
+    @Column(name = "active", nullable = false, length = 256)
+    var active: Boolean = true,
+
     @Column(name = "label", nullable = false, length = 256)
     var label: String,
 

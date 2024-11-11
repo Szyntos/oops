@@ -394,6 +394,74 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         return firebaseUserService.resetPassword(user.email)
     }
 
+    @DgsMutation
+    @Transactional
+    fun markPassingStudentsFromEditionAsInactive(@InputArgument editionId: Long): Boolean{
+        val action = "markPassingStudentsFromEditionAsInactive"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val passingStudents = usersRepository.findByUserGroups_Group_Edition(edition).filter { it.role == UsersRoles.STUDENT }
+            .filter { user -> user.userLevels.any { it.computedGrade >= 3.0 }}
+        passingStudents.forEach { it.active = false }
+        usersRepository.saveAll(passingStudents)
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
+    fun markStudentAsInactive(@InputArgument userId: Long): Boolean{
+        val action = "markStudentAsInactive"
+        val arguments = mapOf(
+            "userId" to userId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        user.active = false
+        usersRepository.save(user)
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
+    fun markStudentAsActive(@InputArgument userId: Long): Boolean{
+        val action = "markStudentAsActive"
+        val arguments = mapOf(
+            "userId" to userId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        user.active = true
+        usersRepository.save(user)
+        return true
+    }
+
 
     @DgsQuery
     @Transactional

@@ -364,6 +364,16 @@ type Mutation {
     editionId: Int!
   ): Boolean
 
+  markPassingStudentsFromEditionAsInactive(
+    editionId: Int!
+  ): Boolean
+
+  markStudentAsInactive(
+    userId: Int!
+  ): Boolean
+  markStudentAsActive(
+    userId: Int!
+  ): Boolean
 
 }
 
@@ -631,6 +641,7 @@ type UserType {
   firstName: String!
   secondName: String!
   email: String!
+  active: Boolean!
   label: String!
   firebaseUid: String
   imageFile: FileType

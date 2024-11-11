@@ -172,6 +172,12 @@ export type AwardAggregateOrderBy = {
   variance?: InputMaybe<AwardVarianceOrderBy>;
 };
 
+export type AwardAggregateType = {
+  __typename?: "AwardAggregateType";
+  award: AwardType;
+  sumOfAll: Scalars["Float"]["output"];
+};
+
 /** input type for inserting array relation for remote table "award" */
 export type AwardArrRelInsertInput = {
   data: Array<AwardInsertInput>;
@@ -844,12 +850,14 @@ export type AwardSumOrderBy = {
 
 export type AwardType = {
   __typename?: "AwardType";
-  awardEditions?: Maybe<Array<Maybe<AwardEditionType>>>;
+  awardEditions: Array<Maybe<AwardEditionType>>;
   awardId: Scalars["ID"]["output"];
   awardName: Scalars["String"]["output"];
   awardType: AwardTypeType;
   awardValue: Scalars["String"]["output"];
+  bonuses: Array<Maybe<BonusType>>;
   category?: Maybe<CategoryType>;
+  chestAward: Array<Maybe<ChestAwardType>>;
   description: Scalars["String"]["output"];
   imageFile?: Maybe<FileType>;
   label: Scalars["String"]["output"];
@@ -949,6 +957,12 @@ export type AwardVarianceOrderBy = {
   categoryId?: InputMaybe<OrderBy>;
   imageFileId?: InputMaybe<OrderBy>;
   maxUsages?: InputMaybe<OrderBy>;
+};
+
+export type AwardWithPermissionsType = {
+  __typename?: "AwardWithPermissionsType";
+  award?: Maybe<AwardType>;
+  permissions: ListPermissionsOutputType;
 };
 
 /** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
@@ -2127,20 +2141,30 @@ export type CategoryPointsSumType = {
 
 export type CategoryPointsType = {
   __typename?: "CategoryPointsType";
-  aggregate: CategoryAggregate;
+  awardAggregate: Array<AwardAggregateType>;
   category: CategoryType;
-  subcategoryPoints: Array<SubcategoryPointsType>;
+  categoryAggregate: CategoryAggregate;
+  subcategoryPoints: Array<SubcategoryPointsGroupType>;
 };
 
 export type CategoryType = {
   __typename?: "CategoryType";
+  awards: Array<Maybe<AwardType>>;
   canAddPoints: Scalars["Boolean"]["output"];
   categoryEdition: Array<Maybe<CategoryEditionType>>;
   categoryId: Scalars["ID"]["output"];
   categoryName: Scalars["String"]["output"];
   darkColor: Scalars["String"]["output"];
+  gradingChecks: Array<Maybe<GradingChecksType>>;
   label: Scalars["String"]["output"];
   lightColor: Scalars["String"]["output"];
+  subcategories: Array<Maybe<SubcategoryType>>;
+};
+
+export type CategoryWithPermissionsType = {
+  __typename?: "CategoryWithPermissionsType";
+  category?: Maybe<CategoryType>;
+  permissions: ListPermissionsOutputType;
 };
 
 /** columns and relationships of "chest_award" */
@@ -3271,6 +3295,7 @@ export type ChestHistorySumOrderBy = {
 
 export type ChestHistoryType = {
   __typename?: "ChestHistoryType";
+  bonuses: Array<Maybe<BonusType>>;
   chest: ChestType;
   chestHistoryId: Scalars["ID"]["output"];
   createdAt: Scalars["String"]["output"];
@@ -3372,12 +3397,21 @@ export type ChestHistoryVarianceOrderBy = {
 
 export type ChestType = {
   __typename?: "ChestType";
+  active: Scalars["Boolean"]["output"];
   awardBundleCount: Scalars["Int"]["output"];
+  chestAward: Array<Maybe<ChestAwardType>>;
   chestEdition: Array<Maybe<ChestEditionType>>;
+  chestHistory: Array<Maybe<ChestHistoryType>>;
   chestId: Scalars["ID"]["output"];
   chestType: Scalars["String"]["output"];
   imageFile?: Maybe<FileType>;
   label: Scalars["String"]["output"];
+};
+
+export type ChestWithPermissionsType = {
+  __typename?: "ChestWithPermissionsType";
+  chest?: Maybe<ChestType>;
+  permissions: ListPermissionsOutputType;
 };
 
 /** columns and relationships of "chests" */
@@ -4367,12 +4401,20 @@ export type EditionSumOrderBy = {
 
 export type EditionType = {
   __typename?: "EditionType";
+  awardEdition: Array<Maybe<AwardEditionType>>;
+  categoryEdition: Array<Maybe<CategoryEditionType>>;
+  chestEdition: Array<Maybe<ChestEditionType>>;
   editionId: Scalars["ID"]["output"];
   editionName: Scalars["String"]["output"];
   editionYear: Scalars["Int"]["output"];
   endDate: Scalars["String"]["output"];
+  gradingChecks: Array<Maybe<GradingChecksType>>;
+  groups: Array<Maybe<GroupType>>;
   label: Scalars["String"]["output"];
+  levelSet: LevelSetType;
   startDate: Scalars["String"]["output"];
+  subcategories: Array<Maybe<SubcategoryType>>;
+  userLevels: Array<Maybe<UserLevelType>>;
 };
 
 /** update columns of table "edition" */
@@ -4455,13 +4497,18 @@ export type FileGroupType = {
 
 export type FileType = {
   __typename?: "FileType";
+  awards: Array<Maybe<AwardType>>;
+  chests: Array<Maybe<ChestType>>;
   createdAt: Scalars["String"]["output"];
   fileId: Scalars["ID"]["output"];
   fileName: Scalars["String"]["output"];
   fileType: Scalars["String"]["output"];
+  groups: Array<Maybe<GroupType>>;
   label: Scalars["String"]["output"];
+  levels: Array<Maybe<LevelType>>;
   pathToFile: Scalars["String"]["output"];
   updatedAt: Scalars["String"]["output"];
+  users: Array<Maybe<UserType>>;
 };
 
 /** columns and relationships of "files" */
@@ -5711,6 +5758,12 @@ export type GroupType = {
   weekday: WeekdayType;
 };
 
+export type GroupWithPermissionsType = {
+  __typename?: "GroupWithPermissionsType";
+  group: GroupType;
+  permissions: ListPermissionsOutputType;
+};
+
 /** columns and relationships of "groups" */
 export type Groups = {
   __typename?: "Groups";
@@ -6525,6 +6578,12 @@ export type LevelSetType = {
   levels: Array<LevelType>;
 };
 
+export type LevelSetWithPermissionsType = {
+  __typename?: "LevelSetWithPermissionsType";
+  levelSet: LevelSetType;
+  permissions: ListPermissionsOutputType;
+};
+
 /** columns and relationships of "level_sets" */
 export type LevelSets = {
   __typename?: "LevelSets";
@@ -6783,6 +6842,7 @@ export type LevelSetsVarianceFields = {
 export type LevelType = {
   __typename?: "LevelType";
   grade: Scalars["String"]["output"];
+  gradingChecks: Array<Maybe<GradingChecksType>>;
   highest: Scalars["Boolean"]["output"];
   imageFile?: Maybe<FileType>;
   label: Scalars["String"]["output"];
@@ -7362,6 +7422,17 @@ export type LevelsVarianceOrderBy = {
   ordinalNumber?: InputMaybe<OrderBy>;
 };
 
+export type ListPermissionsOutputType = {
+  __typename?: "ListPermissionsOutputType";
+  additional: Array<PermissionType>;
+  canAdd: PermissionType;
+  canCopy: PermissionType;
+  canEdit: PermissionType;
+  canRemove: PermissionType;
+  canSelect: PermissionType;
+  canUnselect: PermissionType;
+};
+
 export type NeighboringLevelsType = {
   __typename?: "NeighboringLevelsType";
   currLevel: LevelType;
@@ -7433,6 +7504,7 @@ export type PermissionType = {
 
 export type PointType = {
   __typename?: "PointType";
+  bonuses: Array<Maybe<BonusType>>;
   createdAt: Scalars["String"]["output"];
   label: Scalars["String"]["output"];
   pointsId: Scalars["ID"]["output"];
@@ -7613,6 +7685,8 @@ export type PointsHistory = {
   user: Users;
   /** An object relationship */
   userByTeacherId: Users;
+  /** An object relationship */
+  userByUpdatedBy?: Maybe<Users>;
   value: Scalars["Float"]["output"];
 };
 
@@ -7713,6 +7787,7 @@ export type PointsHistoryBoolExp = {
   updatedBy?: InputMaybe<BigintComparisonExp>;
   user?: InputMaybe<UsersBoolExp>;
   userByTeacherId?: InputMaybe<UsersBoolExp>;
+  userByUpdatedBy?: InputMaybe<UsersBoolExp>;
   value?: InputMaybe<FloatComparisonExp>;
 };
 
@@ -7749,6 +7824,7 @@ export type PointsHistoryInsertInput = {
   updatedBy?: InputMaybe<Scalars["bigint"]["input"]>;
   user?: InputMaybe<UsersObjRelInsertInput>;
   userByTeacherId?: InputMaybe<UsersObjRelInsertInput>;
+  userByUpdatedBy?: InputMaybe<UsersObjRelInsertInput>;
   value?: InputMaybe<Scalars["Float"]["input"]>;
 };
 
@@ -7846,6 +7922,7 @@ export type PointsHistoryOrderBy = {
   updatedBy?: InputMaybe<OrderBy>;
   user?: InputMaybe<UsersOrderBy>;
   userByTeacherId?: InputMaybe<UsersOrderBy>;
+  userByUpdatedBy?: InputMaybe<UsersOrderBy>;
   value?: InputMaybe<OrderBy>;
 };
 
@@ -8008,6 +8085,21 @@ export type PointsHistorySumOrderBy = {
   teacherId?: InputMaybe<OrderBy>;
   updatedBy?: InputMaybe<OrderBy>;
   value?: InputMaybe<OrderBy>;
+};
+
+export type PointsHistoryType = {
+  __typename?: "PointsHistoryType";
+  copiedAt: Scalars["String"]["output"];
+  createdAt: Scalars["String"]["output"];
+  label: Scalars["String"]["output"];
+  pointsHistoryId: Scalars["ID"]["output"];
+  pointsId: Scalars["ID"]["output"];
+  student: UserType;
+  subcategory: SubcategoryType;
+  teacher: UserType;
+  updatedAt: Scalars["String"]["output"];
+  updatedBy: UserType;
+  value: Scalars["String"]["output"];
 };
 
 /** update columns of table "points_history" */
@@ -9043,6 +9135,15 @@ export type SubcategoryInputType = {
   subcategoryName: Scalars["String"]["input"];
 };
 
+export type SubcategoryPointsGroupType = {
+  __typename?: "SubcategoryPointsGroupType";
+  createdAt: Scalars["String"]["output"];
+  points?: Maybe<PointType>;
+  subcategory: SubcategoryType;
+  teacher: UserType;
+  updatedAt: Scalars["String"]["output"];
+};
+
 export type SubcategoryPointsType = {
   __typename?: "SubcategoryPointsType";
   createdAt: Scalars["String"]["output"];
@@ -9055,10 +9156,13 @@ export type SubcategoryPointsType = {
 export type SubcategoryType = {
   __typename?: "SubcategoryType";
   category: CategoryType;
+  chestHistory: Array<Maybe<ChestHistoryType>>;
   edition?: Maybe<EditionType>;
   label: Scalars["String"]["output"];
   maxPoints: Scalars["String"]["output"];
   ordinalNumber: Scalars["Int"]["output"];
+  points: Array<Maybe<PointType>>;
+  pointsHistory: Array<Maybe<PointsHistoryType>>;
   subcategoryId: Scalars["ID"]["output"];
   subcategoryName: Scalars["String"]["output"];
 };
@@ -9938,18 +10042,32 @@ export type UserPointsType = {
 
 export type UserType = {
   __typename?: "UserType";
+  chestHistory: Array<Maybe<ChestHistoryType>>;
+  chestHistoryByTeacher: Array<Maybe<ChestHistoryType>>;
   email: Scalars["String"]["output"];
   firebaseUid?: Maybe<Scalars["String"]["output"]>;
   firstName: Scalars["String"]["output"];
+  groups: Array<Maybe<GroupType>>;
   imageFile?: Maybe<FileType>;
   indexNumber: Scalars["Int"]["output"];
   label: Scalars["String"]["output"];
   nick: Scalars["String"]["output"];
+  points: Array<Maybe<PointType>>;
+  pointsByTeacher: Array<Maybe<PointType>>;
+  pointsByUpdatedBy: Array<Maybe<PointType>>;
+  pointsHistory: Array<Maybe<PointsHistoryType>>;
+  pointsHistoryByTeacher: Array<Maybe<PointsHistoryType>>;
   role: UsersRolesType;
   secondName: Scalars["String"]["output"];
   userGroups: Array<Maybe<UserGroupType>>;
   userId: Scalars["ID"]["output"];
   userLevels: Array<Maybe<UserLevelType>>;
+};
+
+export type UserWithPermissionsType = {
+  __typename?: "UserWithPermissionsType";
+  permissions: ListPermissionsOutputType;
+  user: UserType;
 };
 
 /** columns and relationships of "users" */
@@ -10678,6 +10796,7 @@ export type UsersVarianceOrderBy = {
 
 export type WeekdayType = {
   __typename?: "WeekdayType";
+  groups: Array<Maybe<GroupType>>;
   label: Scalars["String"]["output"];
   ordinalNumber: Scalars["Int"]["output"];
   weekdayAbbr: Scalars["String"]["output"];
@@ -13095,6 +13214,12 @@ export type Query_Root = {
   levelsAggregate: LevelsAggregate;
   /** fetch data from the table: "levels" using primary key columns */
   levelsByPk?: Maybe<Levels>;
+  listSetupAwards: Array<AwardWithPermissionsType>;
+  listSetupCategories: Array<CategoryWithPermissionsType>;
+  listSetupChests: Array<ChestWithPermissionsType>;
+  listSetupGroups: Array<GroupWithPermissionsType>;
+  listSetupLevelSets: Array<LevelSetWithPermissionsType>;
+  listSetupUsers: Array<UserWithPermissionsType>;
   /** An array relationship */
   points: Array<Points>;
   /** An aggregate relationship */
@@ -13525,6 +13650,30 @@ export type Query_RootLevelsAggregateArgs = {
 
 export type Query_RootLevelsByPkArgs = {
   levelId: Scalars["bigint"]["input"];
+};
+
+export type Query_RootListSetupAwardsArgs = {
+  editionId: Scalars["Int"]["input"];
+};
+
+export type Query_RootListSetupCategoriesArgs = {
+  editionId: Scalars["Int"]["input"];
+};
+
+export type Query_RootListSetupChestsArgs = {
+  editionId: Scalars["Int"]["input"];
+};
+
+export type Query_RootListSetupGroupsArgs = {
+  editionId: Scalars["Int"]["input"];
+};
+
+export type Query_RootListSetupLevelSetsArgs = {
+  editionId: Scalars["Int"]["input"];
+};
+
+export type Query_RootListSetupUsersArgs = {
+  editionId: Scalars["Int"]["input"];
 };
 
 export type Query_RootPointsArgs = {

@@ -21,9 +21,7 @@ query GroupPoints($groupId: Int!) {
           subcategoryName
         }
         points {
-          purePoints {
-            value
-          }
+          value
         }
       }
     }

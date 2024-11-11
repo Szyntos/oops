@@ -86,6 +86,8 @@ select_permissions:
   - role: coordinator
     permission:
       columns:
+        - active
+        - email
         - first_name
         - image_file_id
         - index_number
@@ -94,7 +96,6 @@ select_permissions:
         - role
         - second_name
         - user_id
-        - email
       computed_fields:
         - fullName
       filter: {}
@@ -103,6 +104,7 @@ select_permissions:
   - role: student
     permission:
       columns:
+        - active
         - first_name
         - image_file_id
         - index_number
@@ -122,6 +124,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - active
         - first_name
         - image_file_id
         - index_number

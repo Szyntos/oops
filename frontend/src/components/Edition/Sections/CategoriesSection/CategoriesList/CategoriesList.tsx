@@ -32,7 +32,8 @@ export const CategoriesList = ({
                 category={category}
                 isSelected={
                   !!selectedCategories.find(
-                    (c) => c.categoryId === category.categoryId,
+                    (c) =>
+                      c.category.categoryId === category.category.categoryId,
                   )
                 }
                 handleSelectClick={() => handleSelectClick(category)}

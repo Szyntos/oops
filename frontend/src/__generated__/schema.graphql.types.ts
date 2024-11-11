@@ -955,7 +955,7 @@ export type AwardVarianceOrderBy = {
 
 export type AwardWithPermissionsType = {
   __typename?: "AwardWithPermissionsType";
-  award?: Maybe<AwardType>;
+  award: AwardType;
   permissions: ListPermissionsOutputType;
 };
 
@@ -2142,21 +2142,21 @@ export type CategoryPointsType = {
 
 export type CategoryType = {
   __typename?: "CategoryType";
-  awards: Array<Maybe<AwardType>>;
+  awards: Array<AwardType>;
   canAddPoints: Scalars["Boolean"]["output"];
-  categoryEdition: Array<Maybe<CategoryEditionType>>;
+  categoryEdition: Array<CategoryEditionType>;
   categoryId: Scalars["ID"]["output"];
   categoryName: Scalars["String"]["output"];
   darkColor: Scalars["String"]["output"];
-  gradingChecks: Array<Maybe<GradingChecksType>>;
+  gradingChecks: Array<GradingChecksType>;
   label: Scalars["String"]["output"];
   lightColor: Scalars["String"]["output"];
-  subcategories: Array<Maybe<SubcategoryType>>;
+  subcategories: Array<SubcategoryType>;
 };
 
 export type CategoryWithPermissionsType = {
   __typename?: "CategoryWithPermissionsType";
-  category?: Maybe<CategoryType>;
+  category: CategoryType;
   permissions: ListPermissionsOutputType;
 };
 
@@ -3403,7 +3403,7 @@ export type ChestType = {
 
 export type ChestWithPermissionsType = {
   __typename?: "ChestWithPermissionsType";
-  chest?: Maybe<ChestType>;
+  chest: ChestType;
   permissions: ListPermissionsOutputType;
 };
 

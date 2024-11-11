@@ -15,10 +15,10 @@ type ChestCardProps = {
 export const ChestCard = ({
   chest,
   isSelected,
-  onSelectClick,
-  onEditClick,
-  onDeleteClick,
-  onCopyClick,
+  // onSelectClick,
+  // onEditClick,
+  // onDeleteClick,
+  // onCopyClick,
 }: ChestCardProps) => {
   return (
     <div
@@ -32,11 +32,11 @@ export const ChestCard = ({
       <div style={styles.subtitle}>{chest.type}</div>
 
       <SetupButtons
-        selected={isSelected}
-        handleSelect={onSelectClick}
-        handleEdit={onEditClick}
-        handleDelete={onDeleteClick}
-        handleCopy={onCopyClick}
+        isSelected={isSelected}
+        // handleSelect={onSelectClick}
+        // handleEdit={onEditClick}
+        // handleDelete={onDeleteClick}
+        // handleCopy={onCopyClick}
       />
     </div>
   );

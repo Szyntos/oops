@@ -1297,7 +1297,7 @@ input AwardVarianceOrderBy {
 }
 
 type AwardWithPermissionsType {
-  award: AwardType
+  award: AwardType!
   permissions: ListPermissionsOutputType!
 }
 
@@ -2960,20 +2960,20 @@ type CategoryPointsType {
 }
 
 type CategoryType {
-  awards: [AwardType]!
+  awards: [AwardType!]!
   canAddPoints: Boolean!
-  categoryEdition: [CategoryEditionType]!
+  categoryEdition: [CategoryEditionType!]!
   categoryId: ID!
   categoryName: String!
   darkColor: String!
-  gradingChecks: [GradingChecksType]!
+  gradingChecks: [GradingChecksType!]!
   label: String!
   lightColor: String!
-  subcategories: [SubcategoryType]!
+  subcategories: [SubcategoryType!]!
 }
 
 type CategoryWithPermissionsType {
-  category: CategoryType
+  category: CategoryType!
   permissions: ListPermissionsOutputType!
 }
 
@@ -4623,7 +4623,7 @@ type ChestType {
 }
 
 type ChestWithPermissionsType {
-  chest: ChestType
+  chest: ChestType!
   permissions: ListPermissionsOutputType!
 }
 

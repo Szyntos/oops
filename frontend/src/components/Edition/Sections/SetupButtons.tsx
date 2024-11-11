@@ -1,40 +1,67 @@
+import { Styles } from "../../../utils/Styles";
+import { TooltipWrapper } from "../../TooltipWrapper";
+
 type SetupButtonsProps = {
-  handleCopy?: <T>(item: T) => void;
-  handleSelect?: <T>(item: T) => void;
-  handleEdit?: <T>(item: T) => void;
-  handleDelete?: <T>(item: T) => void;
-  disableCopy?: boolean;
-  disableSelect?: boolean;
-  disableEdit?: boolean;
-  disableDelete?: boolean;
-  selected: boolean;
+  select?: SetupButtonProps;
+  copy?: SetupButtonProps;
+  edit?: SetupButtonProps;
+  remove?: SetupButtonProps;
+  isSelected: boolean;
 };
 
 export const SetupButtons = ({
-  handleCopy,
-  handleDelete,
-  handleEdit,
-  handleSelect,
-  disableSelect,
-  disableCopy,
-  disableDelete,
-  disableEdit,
-  selected,
+  copy,
+  remove,
+  edit,
+  select,
+  isSelected,
 }: SetupButtonsProps) => {
   return (
-    <div>
-      <button disabled={disableSelect} onClick={handleSelect}>
-        {selected ? "unselect" : "select"}
-      </button>
-      <button disabled={disableCopy} onClick={handleCopy}>
-        copy
-      </button>
-      <button disabled={disableEdit} onClick={handleEdit}>
-        edit
-      </button>
-      <button disabled={disableDelete} onClick={handleDelete}>
-        delete
-      </button>
+    <div style={styles.buttonsContainer}>
+      {select && (
+        <SetupButton {...select} title={isSelected ? "unselect" : "select"} />
+      )}
+      {copy && <SetupButton {...copy} title="copy" />}
+      {edit && <SetupButton {...edit} title="edit" />}
+      {remove && <SetupButton {...remove} title="remove" />}
     </div>
   );
+};
+
+type SetupButtonProps = {
+  handleClick: <T>(item: T) => void;
+  isClickable: boolean;
+  reason: string | null | undefined;
+  title?: string;
+};
+
+const emptyReason = "no reason";
+
+const SetupButton = ({
+  handleClick,
+  isClickable,
+  reason,
+  title,
+}: SetupButtonProps) => {
+  {
+    return isClickable ? (
+      <button disabled={!isClickable} onClick={handleClick}>
+        {title}
+      </button>
+    ) : (
+      <TooltipWrapper tooltipContent={<div>{reason ?? emptyReason}</div>}>
+        <button disabled={!isClickable} onClick={handleClick}>
+          {title}
+        </button>
+      </TooltipWrapper>
+    );
+  }
+};
+
+const styles: Styles = {
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 4,
+  },
 };

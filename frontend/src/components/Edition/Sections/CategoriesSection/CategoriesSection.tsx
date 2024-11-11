@@ -71,9 +71,9 @@ export const CategoriesSection = () => {
           formError={formError}
           handleConfirm={handleEditCategory}
           title={"Edit Category"}
-          initialValues={selectedCategory}
+          initialValues={selectedCategory?.category}
           initialSelectedSubcategories={
-            selectedCategory?.subcategories.map((s) => ({
+            selectedCategory?.category.subcategories.map((s) => ({
               name: s.subcategoryName,
               max: parseInt(s.maxPoints),
             })) ?? []

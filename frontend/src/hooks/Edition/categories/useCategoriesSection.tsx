@@ -14,18 +14,21 @@ import { useSetupCategoryEditMutation } from "../../../graphql/setupCategoryEdit
 import { useDeleteCategoryMutation } from "../../../graphql/deleteCategory.graphql.types";
 import { useCopyCategoryMutation } from "../../../graphql/copyCategory.graphql.types";
 
-export type Category = SetupCategoriesQuery["categories"][number];
+export type Category = SetupCategoriesQuery["listSetupCategories"][number];
 
 export const useCategoriesSection = (editionId: number) => {
   const { localErrorWrapper, globalErrorWrapper } = useError();
 
-  const { data, loading, error, refetch } = useSetupCategoriesQuery();
+  const { data, loading, error, refetch } = useSetupCategoriesQuery({
+    variables: { editionId },
+  });
 
-  const categories: Category[] = data?.categories ?? [];
+  const categories: Category[] = data?.listSetupCategories ?? [];
 
-  const selectedCategories: Category[] = categories.filter(
-    ({ categoryEditions }) =>
-      categoryEditions.some(({ editionId: id }) => id === editionId.toString()),
+  const selectedCategories: Category[] = categories.filter((category) =>
+    category.category.categoryEdition.some(
+      (e) => e.edition.editionId === editionId.toString(),
+    ),
   );
 
   const [isAddCategory, setIsAddCategory] = useState(false);
@@ -69,11 +72,11 @@ export const useCategoriesSection = (editionId: number) => {
   const [unselectCategory] = useSetupCategoryEditionRemoveMutation();
   const handleSelectCategory = (category: Category) => {
     const isCategorySelected = !!selectedCategories.find(
-      (c) => c.categoryId === category.categoryId,
+      (c) => c.category.categoryId === category.category.categoryId,
     );
     const variables = {
       editionId,
-      categoryId: parseInt(category.categoryId),
+      categoryId: parseInt(category.category.categoryId),
     };
     globalErrorWrapper(async () => {
       isCategorySelected
@@ -105,12 +108,14 @@ export const useCategoriesSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await editCategory({
         variables: {
-          categoryId: parseInt(selectedCategory?.categoryId ?? "-1"),
+          categoryId: parseInt(selectedCategory?.category.categoryId ?? "-1"),
           ...values,
           subcategories: subcategories.map((row, index) => {
             return {
               label: "",
-              categoryId: parseInt(selectedCategory?.categoryId ?? "-1"),
+              categoryId: parseInt(
+                selectedCategory?.category.categoryId ?? "-1",
+              ),
               maxPoints: row.max.toString(),
               ordinalNumber: index,
               subcategoryName: row.name,
@@ -127,7 +132,7 @@ export const useCategoriesSection = (editionId: number) => {
   const handleDeleteCategory = (category: Category) => {
     globalErrorWrapper(async () => {
       await deleteCategory({
-        variables: { categoryId: parseInt(category.categoryId) },
+        variables: { categoryId: parseInt(category.category.categoryId) },
       });
       refetch();
     });
@@ -138,7 +143,7 @@ export const useCategoriesSection = (editionId: number) => {
   const handleCopyCategory = (category: Category) => {
     globalErrorWrapper(async () => {
       await copyCategory({
-        variables: { categoryId: parseInt(category.categoryId) },
+        variables: { categoryId: parseInt(category.category.categoryId) },
       });
       refetch();
     });

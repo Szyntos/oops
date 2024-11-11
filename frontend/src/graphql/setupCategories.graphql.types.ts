@@ -4,50 +4,115 @@ import { gql } from "@apollo/client";
 import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
 export type SetupCategoriesQueryVariables = Types.Exact<{
-  [key: string]: never;
+  editionId: Types.Scalars["Int"]["input"];
 }>;
 
 export type SetupCategoriesQuery = {
   __typename?: "query_root";
-  categories: Array<{
-    __typename?: "Categories";
-    categoryId: string;
-    categoryName: string;
-    canAddPoints: boolean;
-    categoryEditions: Array<{
-      __typename?: "CategoryEdition";
-      editionId: string;
-    }>;
-    subcategories: Array<{
-      __typename?: "Subcategories";
-      editionId?: string | null;
-      subcategoryId: string;
-      subcategoryName: string;
-      maxPoints: string;
-      ordinalNumber: number;
-    }>;
+  listSetupCategories: Array<{
+    __typename?: "CategoryWithPermissionsType";
+    category: {
+      __typename?: "CategoryType";
+      categoryId: string;
+      categoryName: string;
+      canAddPoints: boolean;
+      categoryEdition: Array<{
+        __typename?: "CategoryEditionType";
+        edition: { __typename?: "EditionType"; editionId: string };
+      }>;
+      subcategories: Array<{
+        __typename?: "SubcategoryType";
+        subcategoryId: string;
+        subcategoryName: string;
+        maxPoints: string;
+        ordinalNumber: number;
+        edition?: { __typename?: "EditionType"; editionId: string } | null;
+      }>;
+    };
+    permissions: {
+      __typename?: "ListPermissionsOutputType";
+      canAdd: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canCopy: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canEdit: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canRemove: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canSelect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canUnselect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+    };
   }>;
 };
 
 export const SetupCategoriesDocument = gql`
-  query SetupCategories {
-    categories(orderBy: { categoryName: ASC }) {
-      categoryId
-      categoryName
-      categoryEditions {
-        editionId
+  query SetupCategories($editionId: Int!) {
+    listSetupCategories(editionId: $editionId) {
+      category {
+        categoryId
+        categoryName
+        categoryEdition {
+          edition {
+            editionId
+          }
+        }
+        subcategories {
+          edition {
+            editionId
+          }
+          subcategoryId
+          subcategoryName
+          maxPoints
+          ordinalNumber
+        }
+        canAddPoints
       }
-      subcategories(
-        orderBy: { ordinalNumber: ASC }
-        where: { editionId: { _isNull: true } }
-      ) {
-        editionId
-        subcategoryId
-        subcategoryName
-        maxPoints
-        ordinalNumber
+      permissions {
+        canAdd {
+          allow
+          reason
+        }
+        canCopy {
+          allow
+          reason
+        }
+        canEdit {
+          allow
+          reason
+        }
+        canRemove {
+          allow
+          reason
+        }
+        canSelect {
+          allow
+          reason
+        }
+        canUnselect {
+          allow
+          reason
+        }
       }
-      canAddPoints
     }
   }
 `;
@@ -64,14 +129,19 @@ export const SetupCategoriesDocument = gql`
  * @example
  * const { data, loading, error } = useSetupCategoriesQuery({
  *   variables: {
+ *      editionId: // value for 'editionId'
  *   },
  * });
  */
 export function useSetupCategoriesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SetupCategoriesQuery,
     SetupCategoriesQueryVariables
-  >,
+  > &
+    (
+      | { variables: SetupCategoriesQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SetupCategoriesQuery, SetupCategoriesQueryVariables>(

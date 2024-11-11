@@ -5,6 +5,7 @@ import { AddGroupForm } from "./GroupAddForm";
 import { useGroupsSection } from "../../../../hooks/Edition/useGroupsSection";
 import { useParams } from "react-router-dom";
 import { UsersRolesType } from "../../../../__generated__/schema.graphql.types";
+import { mockPermissions } from "../../../../utils/utils";
 
 export const GroupsSection = () => {
   const params = useParams();
@@ -82,27 +83,7 @@ export const GroupsSection = () => {
                   __typename: "UserType",
                   role: u.user.role as UsersRolesType,
                 },
-                permissions: {
-                  __typename: "ListPermissionsOutputType",
-                  canAdd: {
-                    allow: false,
-                  },
-                  canCopy: {
-                    allow: false,
-                  },
-                  canEdit: {
-                    allow: false,
-                  },
-                  canRemove: {
-                    allow: false,
-                  },
-                  canSelect: {
-                    allow: false,
-                  },
-                  canUnselect: {
-                    allow: false,
-                  },
-                },
+                permissions: mockPermissions,
               };
             }) ?? []
           }

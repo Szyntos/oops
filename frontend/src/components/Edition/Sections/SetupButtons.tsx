@@ -3,7 +3,7 @@ import { Styles } from "../../../utils/Styles";
 
 import { TooltipWrapper } from "../../TooltipWrapper";
 
-type Permissions = Category["permissions"];
+export type Permissions = Category["permissions"];
 
 type SetupButtonsProps = {
   permissions: Permissions;

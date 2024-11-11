@@ -19,6 +19,7 @@ import { useSetupGroupEditMutation } from "../../graphql/setupGroupEdit.graphql.
 import { useDeleteGroupMutation } from "../../graphql/deleteGroup.graphql.types";
 import { useError } from "../common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../utils/constants";
+import { mockPermissions } from "../../utils/utils";
 
 export type Group = SetupGroupsQuery["listSetupGroups"][number];
 
@@ -181,7 +182,6 @@ export const useGroupsSection = (editionId: number) => {
         variables: { editionId, fileId },
       });
 
-      // NOTE: only for type match
       const uploadedStudents: Student[] =
         parseRes.data?.parseUsersFromCsv.users.map((u) => ({
           __typename: "UserWithPermissionsType",
@@ -193,27 +193,8 @@ export const useGroupsSection = (editionId: number) => {
               fileId: "",
             },
           },
-          permissions: {
-            __typename: "ListPermissionsOutputType",
-            canAdd: {
-              allow: false,
-            },
-            canCopy: {
-              allow: false,
-            },
-            canEdit: {
-              allow: false,
-            },
-            canRemove: {
-              allow: false,
-            },
-            canSelect: {
-              allow: false,
-            },
-            canUnselect: {
-              allow: false,
-            },
-          },
+          // mockPermissions only form type match
+          permissions: mockPermissions,
         })) ?? [];
 
       return uploadedStudents;

@@ -15,10 +15,10 @@ type LevelSetCardProps = {
 export const LevelSetCard = ({
   levelSet,
   isSelected,
-  // onSelectClick,
-  // onEditClick,
-  // onDeleteClick,
-  // onCopyClick,
+  onSelectClick,
+  onEditClick,
+  onDeleteClick,
+  onCopyClick,
 }: LevelSetCardProps) => {
   return (
     <div
@@ -42,10 +42,10 @@ export const LevelSetCard = ({
 
       <SetupButtons
         isSelected={isSelected}
-        // handleSelect={onSelectClick}
-        // handleEdit={onEditClick}
-        // handleDelete={onDeleteClick}
-        // handleCopy={onCopyClick}
+        handleSelect={onSelectClick}
+        handleEdit={onEditClick}
+        handleDelete={onDeleteClick}
+        handleCopy={onCopyClick}
       />
     </div>
   );

@@ -15,10 +15,10 @@ type AwardCardProps = {
 export const AwardCard = ({
   award,
   isSelected,
-  // onSelectClick,
-  // onEditClick,
-  // onDeleteClick,
-  // onCopyClick,
+  onSelectClick,
+  onEditClick,
+  onDeleteClick,
+  onCopyClick,
 }: AwardCardProps) => {
   return (
     <div
@@ -33,10 +33,10 @@ export const AwardCard = ({
 
       <SetupButtons
         isSelected={isSelected}
-        // handleSelect={onSelectClick}
-        // handleEdit={onEditClick}
-        // handleDelete={onDeleteClick}
-        // handleCopy={onCopyClick}
+        handleSelect={onSelectClick}
+        handleEdit={onEditClick}
+        handleDelete={onDeleteClick}
+        handleCopy={onCopyClick}
       />
     </div>
   );

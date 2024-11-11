@@ -39,30 +39,11 @@ export const CategoryCard = ({
 
       <SetupButtons
         isSelected={isSelected}
-        select={{
-          handleClick: handleSelectClick,
-          isClickable: isSelected
-            ? category.permissions.canUnselect.allow
-            : category.permissions.canSelect.allow,
-          reason: isSelected
-            ? category.permissions.canUnselect.reason
-            : category.permissions.canSelect.reason,
-        }}
-        edit={{
-          handleClick: handleEditClick,
-          isClickable: category.permissions.canEdit.allow,
-          reason: category.permissions.canEdit.reason,
-        }}
-        copy={{
-          handleClick: handleCopyClick,
-          isClickable: category.permissions.canCopy.allow,
-          reason: category.permissions.canCopy.reason,
-        }}
-        remove={{
-          handleClick: handleDeleteClick,
-          isClickable: category.permissions.canRemove.allow,
-          reason: category.permissions.canRemove.reason,
-        }}
+        permissions={category.permissions}
+        handleCopy={handleCopyClick}
+        handleSelect={handleSelectClick}
+        handleEdit={handleEditClick}
+        handleDelete={handleDeleteClick}
       />
     </div>
   );

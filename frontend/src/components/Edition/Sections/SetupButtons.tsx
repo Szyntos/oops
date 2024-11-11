@@ -1,21 +1,70 @@
+import { Category } from "../../../hooks/Edition/categories/useCategoriesSection";
 import { Styles } from "../../../utils/Styles";
+
 import { TooltipWrapper } from "../../TooltipWrapper";
 
+type Permissions = Category["permissions"];
+
 type SetupButtonsProps = {
-  select?: SetupButtonProps;
-  copy?: SetupButtonProps;
-  edit?: SetupButtonProps;
-  remove?: SetupButtonProps;
+  permissions?: Permissions;
+  handleSelect?: () => void;
+  handleEdit?: () => void;
+  handleDelete?: () => void;
+  handleCopy?: () => void;
   isSelected: boolean;
 };
 
 export const SetupButtons = ({
-  copy,
-  remove,
-  edit,
-  select,
+  permissions,
+  handleSelect,
+  handleDelete,
+  handleCopy,
+  handleEdit,
   isSelected,
 }: SetupButtonsProps) => {
+  if (!permissions) {
+    return <></>;
+  }
+  const copy: SetupButtonProps | undefined = handleCopy
+    ? {
+        handleClick: handleCopy,
+        isClickable: permissions.canCopy.allow,
+        reason: permissions.canCopy.reason,
+        title: "copy",
+      }
+    : undefined;
+
+  const edit: SetupButtonProps | undefined = handleEdit
+    ? {
+        handleClick: handleEdit,
+        isClickable: permissions.canEdit.allow,
+        reason: permissions.canEdit.reason,
+        title: "edit",
+      }
+    : undefined;
+
+  const select: SetupButtonProps | undefined = handleSelect
+    ? {
+        handleClick: handleSelect,
+        isClickable: isSelected
+          ? permissions.canUnselect.allow
+          : permissions.canSelect.allow,
+        reason: isSelected
+          ? permissions.canUnselect.reason
+          : permissions.canSelect.reason,
+        title: isSelected ? "unselect" : "select",
+      }
+    : undefined;
+
+  const remove: SetupButtonProps | undefined = handleDelete
+    ? {
+        handleClick: handleDelete,
+        isClickable: permissions.canRemove.allow,
+        reason: permissions.canRemove.reason,
+        title: "delete",
+      }
+    : undefined;
+
   return (
     <div style={styles.buttonsContainer}>
       {select && (
@@ -32,7 +81,7 @@ type SetupButtonProps = {
   handleClick: <T>(item: T) => void;
   isClickable: boolean;
   reason: string | null | undefined;
-  title?: string;
+  title: string;
 };
 
 const emptyReason = "no reason";

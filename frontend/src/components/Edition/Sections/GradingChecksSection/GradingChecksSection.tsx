@@ -86,8 +86,7 @@ export const GradingChecksSection = () => {
                   endOfLabsDate: gradingChecks.endOfLabsDate,
                   endOfLabsLevelsThreshold:
                     gradingChecks.endOfLabsLevelsThreshold,
-                  projectPointsThreshold:
-                    gradingChecks.projectPointsThreshold.toString(),
+                  projectPointsThreshold: gradingChecks.projectPointsThreshold,
                   projectId: gradingChecks.projectId,
                 }
               : undefined

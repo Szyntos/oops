@@ -63,7 +63,7 @@ export const useGradingChecksSection = (editionId: number) => {
           endOfLabsDate: values.endOfLabsDate,
           endOfLabsLevelsThreshold: parseFloat(values.endOfLabsLevelsThreshold),
           projectId: parseInt(values.projectId),
-          projectPointsThreshold: parseFloat(values.projectPointsThreshold),
+          projectPointsThreshold: values.projectPointsThreshold,
         },
       });
       refetch();
@@ -90,7 +90,7 @@ export const useGradingChecksSection = (editionId: number) => {
           endOfLabsDate: values.endOfLabsDate,
           endOfLabsLevelsThreshold: parseFloat(values.endOfLabsLevelsThreshold),
           projectId: parseInt(values.projectId),
-          projectPointsThreshold: parseFloat(values.projectPointsThreshold),
+          projectPointsThreshold: values.projectPointsThreshold,
         },
       });
       refetch();

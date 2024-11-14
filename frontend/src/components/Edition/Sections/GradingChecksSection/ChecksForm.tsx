@@ -19,7 +19,7 @@ const ValidationSchema = z.object({
     .min(1, "Date is required")
     .regex(dateRegex, "Invalid date format, expected YYYY-MM-DD"),
   endOfLabsLevelsThreshold: z.string().min(1, "Threshold is required"),
-  projectPointsThreshold: z.string().min(1, "Points threshold is required"),
+  projectPointsThreshold: z.number().min(1, "Points threshold is required"),
   projectId: z.string().min(1, "Project ID is required"),
 });
 
@@ -37,7 +37,7 @@ type GradingChecksFormProps = {
 const defaultInitialValues: GradingChecksFormValues = {
   endOfLabsDate: "",
   endOfLabsLevelsThreshold: "",
-  projectPointsThreshold: "",
+  projectPointsThreshold: 0,
   projectId: "",
 };
 

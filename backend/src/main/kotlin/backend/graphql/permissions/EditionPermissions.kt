@@ -332,6 +332,13 @@ class EditionPermissions {
             reason = "Invalid or missing 'editionYear'"
         )
 
+        val editionName = arguments.getStringField("editionName") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionName'"
+        )
+
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
@@ -357,6 +364,15 @@ class EditionPermissions {
                 arguments = arguments,
                 allow = false,
                 reason = "Edition with year $editionYear already exists"
+            )
+        }
+
+        if (editionRepository.existsByEditionName(editionName)) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition with name $editionName already exists"
             )
         }
 

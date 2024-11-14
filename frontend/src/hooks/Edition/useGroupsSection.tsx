@@ -139,7 +139,9 @@ export const useGroupsSection = (editionId: number) => {
           teacherId: parseInt(values.teacherId),
           usosId: values.usosId,
           weekdayId: parseInt(values.weekdayId),
-          userIds: selectedStudents.map((s) => parseInt(s.user.userId)) ?? [],
+          users: {
+            userIds: selectedStudents.map((s) => parseInt(s.user.userId)) ?? [],
+          },
         },
       });
       refetch();

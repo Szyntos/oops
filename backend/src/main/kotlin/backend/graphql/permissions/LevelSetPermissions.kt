@@ -199,6 +199,14 @@ class LevelSetPermissions {
                     reason = "Edition has already started"
                 )
             }
+            if (groupsRepository.findAll().any { it.edition.levelSet == levelSet }) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "There are groups using the level set"
+                )
+            }
         }
 
         val levels = arguments.getLevelInputList("levels") ?: return Permission(
@@ -207,6 +215,15 @@ class LevelSetPermissions {
             allow = false,
             reason = "Invalid or missing 'levels'"
         )
+
+        if (levelSet.levels.any { it.userLevels.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Level set has users assigned to it"
+            )
+        }
 
         // not validating further, as the levels are validated in checkEditLevelHelperPermission and checkAddLevelHelperPermission
 
@@ -332,6 +349,25 @@ class LevelSetPermissions {
             )
         }
 
+        if (edition.levelSet != null) {
+            if (edition.levelSet!!.levelSetId == levelSetId) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Edition already has the level set"
+                )
+            }
+            if (edition.levelSet!!.levels.any { level -> level.userLevels.any { it.edition == edition } }) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Edition already has users assigned to the selected level set"
+                )
+            }
+        }
+
         return Permission(
             action = action,
             arguments = arguments,
@@ -407,6 +443,17 @@ class LevelSetPermissions {
                 allow = false,
                 reason = "Edition does not have the level set"
             )
+        }
+
+        if (edition.levelSet != null) {
+            if (edition.levelSet!!.levels.any { level -> level.userLevels.any { it.edition == edition } }) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Edition already has users assigned to the selected level set"
+                )
+            }
         }
 
         return Permission(

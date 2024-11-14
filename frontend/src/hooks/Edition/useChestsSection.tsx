@@ -50,7 +50,7 @@ export const useChestsSection = (editionId: number) => {
 
   const selectedChests: Chest[] = chests.filter((c) =>
     c.chest.chestEdition.some(
-      (e) => e?.chestEditionId === editionId.toString(),
+      (e) => e?.edition.editionId === editionId.toString(),
     ),
   );
 

@@ -205,6 +205,15 @@ class CategoryEditionPartialPermissions {
             )
         }
 
+        if (subcategoriesRepository.findByCategoryAndEdition(category, edition).any { subcategory -> subcategory.points.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category has subcategories connected to points"
+            )
+        }
+
         return Permission(
             action = action,
             arguments = arguments,

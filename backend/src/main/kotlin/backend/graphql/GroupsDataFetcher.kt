@@ -132,14 +132,14 @@ class GroupsDataFetcher {
                         objectMapper.createObjectNode(),
                         false,
                         "Not applicable"),
-                    canEdit = permissionService.checkPartialPermission(PermissionInput("editGroupWithUsers", objectMapper.writeValueAsString(mapOf("groupsId" to group.groupsId)))),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editGroupWithUsers", objectMapper.writeValueAsString(mapOf("groupId" to group.groupsId)))),
                     canCopy =
                     Permission(
                         "copyGroup",
                         objectMapper.createObjectNode(),
                         false,
                         "Not applicable"),
-                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeGroup", objectMapper.writeValueAsString(mapOf("groupsId" to group.groupsId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeGroup", objectMapper.writeValueAsString(mapOf("groupId" to group.groupsId)))),
                     canSelect =
                     Permission(
                         "selectGroup",
@@ -536,7 +536,6 @@ class GroupsDataFetcher {
 
         userGroupsRepository.findByGroup_GroupsId(groupId).forEach(userGroupsRepository::delete)
 
-        groupsRepository.delete(group)
         return removeGroupHelper(groupId)
     }
 

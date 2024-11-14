@@ -79,6 +79,16 @@ class ChestsPartialPermissions {
             )
         }
 
+        if (chestHistoryRepository.findByChest(chest).any {it.opened}) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Users have already opened this chest"
+            )
+
+        }
+
         return Permission(
             action = action,
             arguments = arguments,
@@ -124,7 +134,7 @@ class ChestsPartialPermissions {
                 reason = "Edition has already ended"
             )
         }
-        if (chestEditions.any { it.startDate.isBefore(LocalDate.now()) } && chestHistoryRepository.existsByChest(chest)) {
+        if (chestHistoryRepository.existsByChest(chest)) {
             return Permission(
                 action = action,
                 arguments = arguments,

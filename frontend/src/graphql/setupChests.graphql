@@ -10,7 +10,9 @@ query SetupChests($editionId: Int!) {
       label
       chestType
       chestEdition {
-        chestEditionId
+        edition {
+          editionId
+        }
       }
       chestAward {
         award {

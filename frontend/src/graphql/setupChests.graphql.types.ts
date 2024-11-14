@@ -21,7 +21,7 @@ export type SetupChestsQuery = {
       imageFile?: { __typename?: "FileType"; fileId: string } | null;
       chestEdition: Array<{
         __typename?: "ChestEditionType";
-        chestEditionId: string;
+        edition: { __typename?: "EditionType"; editionId: string };
       } | null>;
       chestAward: Array<{
         __typename?: "ChestAwardType";
@@ -88,7 +88,9 @@ export const SetupChestsDocument = gql`
         label
         chestType
         chestEdition {
-          chestEditionId
+          edition {
+            editionId
+          }
         }
         chestAward {
           award {

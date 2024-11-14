@@ -1081,6 +1081,15 @@ class GroupsPermissions {
                 reason = "Edition has already ended"
             )
         }
+        if (group.userGroups.any { userGroup -> userGroup.user.points.isNotEmpty()}){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Cannot remove group with users that have points"
+            )
+        }
+
 
         return Permission(
             action = action,
@@ -1327,6 +1336,15 @@ class GroupsPermissions {
                 arguments = arguments,
                 allow = false,
                 reason = "Edition has already ended"
+            )
+        }
+
+        if (group.userGroups.any { userGroup -> userGroup.user.points.isNotEmpty()}){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Cannot remove group with users that have points"
             )
         }
 

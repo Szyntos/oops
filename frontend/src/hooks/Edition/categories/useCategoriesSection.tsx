@@ -124,6 +124,7 @@ export const useCategoriesSection = (editionId: number) => {
         },
       });
       refetch();
+      closeEditCategory();
     });
   };
 

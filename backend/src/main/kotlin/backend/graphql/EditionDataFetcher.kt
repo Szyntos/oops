@@ -205,11 +205,12 @@ class EditionDataFetcher {
 
     @DgsMutation
     @Transactional
-    fun copyEdition(@InputArgument editionId: Long, @InputArgument editionYear: Int): Edition {
+    fun copyEdition(@InputArgument editionId: Long, @InputArgument editionYear: Int, @InputArgument editionName: String): Edition {
         val action = "copyEdition"
         val arguments = mapOf(
             "editionId" to editionId,
-            "editionYear" to editionYear
+            "editionYear" to editionYear,
+            "editionName" to editionName
         )
         val permissionInput = PermissionInput(
             action = action,
@@ -225,13 +226,6 @@ class EditionDataFetcher {
 
         val startDate = LocalDate.of(editionYear, 10, 1)
         val endDate = LocalDate.of(editionYear + 1, 9, 30)
-
-        val editionNameRoot = edition.editionName
-        var i = 1
-        while (editionRepository.findAllByEditionName("$editionNameRoot (Copy $i)").isNotEmpty()) {
-            i++
-        }
-        val editionName = "$editionNameRoot (Copy $i)"
 
         val newEdition = Edition(
             editionName = editionName,

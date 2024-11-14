@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { ChecksForm } from "./ChecksForm";
 import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
+import { Category } from "../../../../hooks/Edition/categories/useCategoriesSection";
 
 export const GradingChecksSection = () => {
   const params = useParams();
@@ -31,16 +32,18 @@ export const GradingChecksSection = () => {
     handleEdit,
   } = useGradingChecksSection(editionId);
 
+  console.log(formLevelSet);
+
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
-  const level = formLevelSet.levels.filter(
+  const level = formLevelSet.levels.find(
     (l) => l.levelId === gradingChecks?.endOfLabsLevelsThreshold,
-  )[0];
+  );
 
-  const category = formCategories.filter(
+  const category: Category | undefined = formCategories.find(
     (c) => c.categoryId === gradingChecks?.projectId,
-  )[0];
+  );
 
   return (
     <div style={styles.container}>
@@ -54,8 +57,8 @@ export const GradingChecksSection = () => {
         <div>
           endOfLabsDate: {gradingChecks?.endOfLabsDate ?? EMPTY_FIELD_STRING}
         </div>
-        <div>endOfLabsLevelsThreshold: {level.name ?? EMPTY_FIELD_STRING}</div>
-        <div>projectId: {category.categoryName ?? EMPTY_FIELD_STRING}</div>
+        <div>endOfLabsLevelsThreshold: {level?.name ?? EMPTY_FIELD_STRING}</div>
+        <div>projectId: {category?.categoryName ?? EMPTY_FIELD_STRING}</div>
         <div>
           projectPointsThreshold:{" "}
           {gradingChecks?.projectPointsThreshold ?? EMPTY_FIELD_STRING}

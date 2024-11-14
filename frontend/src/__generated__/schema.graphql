@@ -274,6 +274,11 @@ input AwardAggregateOrderBy {
   variance: AwardVarianceOrderBy
 }
 
+type AwardAggregateType {
+  award: AwardType!
+  sumOfAll: Float!
+}
+
 """
 input type for inserting array relation for remote table "award"
 """
@@ -2954,9 +2959,10 @@ type CategoryPointsSumType {
 }
 
 type CategoryPointsType {
-  aggregate: CategoryAggregate!
+  awardAggregate: [AwardAggregateType!]!
   category: CategoryType!
-  subcategoryPoints: [SubcategoryPointsType!]!
+  categoryAggregate: CategoryAggregate!
+  subcategoryPoints: [SubcategoryPointsGroupType!]!
 }
 
 type CategoryType {
@@ -12793,6 +12799,14 @@ input SubcategoryInputType {
   subcategoryName: String!
 }
 
+type SubcategoryPointsGroupType {
+  createdAt: String!
+  points: PointType
+  subcategory: SubcategoryType!
+  teacher: UserType!
+  updatedAt: String!
+}
+
 type SubcategoryPointsType {
   createdAt: String!
   points: PurePointsType!
@@ -13965,6 +13979,7 @@ type UserPointsType {
 }
 
 type UserType {
+  active: Boolean!
   chestHistory: [ChestHistoryType]!
   chestHistoryByTeacher: [ChestHistoryType]!
   email: String!
@@ -16030,7 +16045,11 @@ type mutation_root {
   copyAward(awardId: Int!): AwardType
   copyCategory(categoryId: Int!): CategoryType
   copyChest(chestId: Int!): ChestType
-  copyEdition(editionId: Int!, editionYear: Int!): EditionType
+  copyEdition(
+    editionId: Int!
+    editionName: String!
+    editionYear: Int!
+  ): EditionType
   copyLevelSet(levelSetId: Int!): LevelSetType!
 
   """
@@ -17165,6 +17184,9 @@ type mutation_root {
     """
     onConflict: WeekdaysOnConflict
   ): Weekdays
+  markPassingStudentsFromEditionAsInactive(editionId: Int!): Boolean
+  markStudentAsActive(userId: Int!): Boolean
+  markStudentAsInactive(userId: Int!): Boolean
   parseUsersFromCsv(editionId: Int!, fileId: Int!): ParsedUsersTypeType!
   removeAward(awardId: Int!): Boolean
   removeAwardFromChest(awardId: Int!, chestId: Int!): Boolean

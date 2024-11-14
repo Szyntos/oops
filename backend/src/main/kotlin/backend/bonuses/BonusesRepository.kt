@@ -26,4 +26,5 @@ interface BonusesRepository : JpaRepository<Bonuses, Long> {
     fun findAllByAward(award: Award): List<Bonuses>
     fun existsByAward(award: Award): Boolean
     fun existsByAwardAndPoints_Subcategory_Edition(award: Award, edition: Edition): Boolean
+    fun findByChestHistory_User_UserIdInAndPoints_Subcategory_Edition(userId: List<Long>, edition: Edition): List<Bonuses>
 }

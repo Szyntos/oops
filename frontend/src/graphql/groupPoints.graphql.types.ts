@@ -27,7 +27,7 @@ export type GroupPointsQuery = {
         categoryName: string;
       };
       subcategoryPoints: Array<{
-        __typename?: "SubcategoryPointsType";
+        __typename?: "SubcategoryPointsGroupType";
         createdAt: string;
         updatedAt: string;
         subcategory: {
@@ -36,10 +36,7 @@ export type GroupPointsQuery = {
           subcategoryId: string;
           subcategoryName: string;
         };
-        points: {
-          __typename?: "PurePointsType";
-          purePoints?: { __typename?: "PointType"; value: string } | null;
-        };
+        points?: { __typename?: "PointType"; value: string } | null;
       }>;
     }>;
   } | null>;
@@ -69,9 +66,7 @@ export const GroupPointsDocument = gql`
             subcategoryName
           }
           points {
-            purePoints {
-              value
-            }
+            value
           }
         }
       }

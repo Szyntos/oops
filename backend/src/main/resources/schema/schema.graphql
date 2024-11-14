@@ -81,6 +81,7 @@ type Mutation {
   copyEdition(
     editionId: Int!
     editionYear: Int!
+    editionName: String!
   ): EditionType
 
 
@@ -364,6 +365,16 @@ type Mutation {
     editionId: Int!
   ): Boolean
 
+  markPassingStudentsFromEditionAsInactive(
+    editionId: Int!
+  ): Boolean
+
+  markStudentAsInactive(
+    userId: Int!
+  ): Boolean
+  markStudentAsActive(
+    userId: Int!
+  ): Boolean
 
 }
 
@@ -631,6 +642,7 @@ type UserType {
   firstName: String!
   secondName: String!
   email: String!
+  active: Boolean!
   label: String!
   firebaseUid: String
   imageFile: FileType
@@ -706,13 +718,28 @@ type CategoryAggregate {
 
 type CategoryPointsType {
   category: CategoryType!
-  subcategoryPoints: [SubcategoryPointsType!]!
-  aggregate: CategoryAggregate!
+  subcategoryPoints: [SubcategoryPointsGroupType!]!
+  awardAggregate: [AwardAggregateType!]!,
+  categoryAggregate: CategoryAggregate!
 }
+
+type AwardAggregateType{
+  award: AwardType!,
+  sumOfAll: Float!
+}
+
 
 type SubcategoryPointsType {
   subcategory: SubcategoryType!
   points: PurePointsType!
+  teacher: UserType!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type SubcategoryPointsGroupType {
+  subcategory: SubcategoryType!
+  points: PointType
   teacher: UserType!
   createdAt: String!
   updatedAt: String!

@@ -208,12 +208,13 @@ class CategoryEditionPermissions {
             )
         }
 
-        if (subcategoriesRepository.findByCategoryAndEdition(category, edition).any { subcategory -> subcategory.points.isNotEmpty() }){
+
+        if (category.subcategories.filter { it.edition == edition }.any { it.points.isNotEmpty() }){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category has subcategories connected to points"
+                reason = "Category has points assigned in this edition"
             )
         }
 

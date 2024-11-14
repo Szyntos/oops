@@ -172,6 +172,12 @@ export type AwardAggregateOrderBy = {
   variance?: InputMaybe<AwardVarianceOrderBy>;
 };
 
+export type AwardAggregateType = {
+  __typename?: "AwardAggregateType";
+  award: AwardType;
+  sumOfAll: Scalars["Float"]["output"];
+};
+
 /** input type for inserting array relation for remote table "award" */
 export type AwardArrRelInsertInput = {
   data: Array<AwardInsertInput>;
@@ -2135,9 +2141,10 @@ export type CategoryPointsSumType = {
 
 export type CategoryPointsType = {
   __typename?: "CategoryPointsType";
-  aggregate: CategoryAggregate;
+  awardAggregate: Array<AwardAggregateType>;
   category: CategoryType;
-  subcategoryPoints: Array<SubcategoryPointsType>;
+  categoryAggregate: CategoryAggregate;
+  subcategoryPoints: Array<SubcategoryPointsGroupType>;
 };
 
 export type CategoryType = {
@@ -9128,6 +9135,15 @@ export type SubcategoryInputType = {
   subcategoryName: Scalars["String"]["input"];
 };
 
+export type SubcategoryPointsGroupType = {
+  __typename?: "SubcategoryPointsGroupType";
+  createdAt: Scalars["String"]["output"];
+  points?: Maybe<PointType>;
+  subcategory: SubcategoryType;
+  teacher: UserType;
+  updatedAt: Scalars["String"]["output"];
+};
+
 export type SubcategoryPointsType = {
   __typename?: "SubcategoryPointsType";
   createdAt: Scalars["String"]["output"];
@@ -10026,6 +10042,7 @@ export type UserPointsType = {
 
 export type UserType = {
   __typename?: "UserType";
+  active: Scalars["Boolean"]["output"];
   chestHistory: Array<Maybe<ChestHistoryType>>;
   chestHistoryByTeacher: Array<Maybe<ChestHistoryType>>;
   email: Scalars["String"]["output"];
@@ -11517,6 +11534,11 @@ export type Mutation_Root = {
   insertWeekdays?: Maybe<WeekdaysMutationResponse>;
   /** insert a single row into the table: "weekdays" */
   insertWeekdaysOne?: Maybe<Weekdays>;
+  markPassingStudentsFromEditionAsInactive?: Maybe<
+    Scalars["Boolean"]["output"]
+  >;
+  markStudentAsActive?: Maybe<Scalars["Boolean"]["output"]>;
+  markStudentAsInactive?: Maybe<Scalars["Boolean"]["output"]>;
   parseUsersFromCsv: ParsedUsersTypeType;
   removeAward?: Maybe<Scalars["Boolean"]["output"]>;
   removeAwardFromChest?: Maybe<Scalars["Boolean"]["output"]>;
@@ -11908,6 +11930,7 @@ export type Mutation_RootCopyChestArgs = {
 /** mutation root */
 export type Mutation_RootCopyEditionArgs = {
   editionId: Scalars["Int"]["input"];
+  editionName: Scalars["String"]["input"];
   editionYear: Scalars["Int"]["input"];
 };
 
@@ -12553,6 +12576,21 @@ export type Mutation_RootInsertWeekdaysArgs = {
 export type Mutation_RootInsertWeekdaysOneArgs = {
   object: WeekdaysInsertInput;
   onConflict?: InputMaybe<WeekdaysOnConflict>;
+};
+
+/** mutation root */
+export type Mutation_RootMarkPassingStudentsFromEditionAsInactiveArgs = {
+  editionId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootMarkStudentAsActiveArgs = {
+  userId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootMarkStudentAsInactiveArgs = {
+  userId: Scalars["Int"]["input"];
 };
 
 /** mutation root */

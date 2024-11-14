@@ -10,14 +10,27 @@ export type Edition = EditionsQuery["edition"][number];
 
 export const EditionsScreen = () => {
   const {
-    editions,
     loading,
     error,
+    editions,
+    formError,
+    selectedEdition,
+    // ADD
+    isAddOpen,
+    openAddDialog,
+    closeAddDialog,
     handleCreateClick,
-    createError,
-    isOpen,
-    openDialog,
-    closeDialog,
+    // COPY
+    isCopyOpen,
+    openCopyDialog,
+    closeCopyDialog,
+    handleCopyClick,
+    // EDIT
+    isEditOpen,
+    openEditDialog,
+    closeEditDialog,
+    handleEditClick,
+    // DELETE
     handleDeleteClick,
   } = useEditionsScreen();
 
@@ -26,17 +39,57 @@ export const EditionsScreen = () => {
 
   return (
     <div style={styles.container}>
-      <Dialog open={isOpen}>
-        <CloseHeader onCloseClick={closeDialog} />
+      <Dialog open={isAddOpen}>
+        <CloseHeader onCloseClick={closeAddDialog} />
         <AddEditionForm
-          createError={createError}
+          createError={formError}
           handleAddEdition={handleCreateClick}
+          title={"Add Edition"}
         />
       </Dialog>
 
-      <button onClick={openDialog}>utwórz edycję</button>
+      <Dialog open={isCopyOpen}>
+        <CloseHeader onCloseClick={closeCopyDialog} />
+        <AddEditionForm
+          createError={formError}
+          handleAddEdition={handleCopyClick}
+          title={"Copy Edition"}
+          initialValues={
+            selectedEdition
+              ? {
+                  name: selectedEdition.name,
+                  year: selectedEdition.editionYear,
+                }
+              : undefined
+          }
+        />
+      </Dialog>
 
-      <EditionsList editions={editions} handleDeleteClick={handleDeleteClick} />
+      <Dialog open={isEditOpen}>
+        <CloseHeader onCloseClick={closeEditDialog} />
+        <AddEditionForm
+          createError={formError}
+          handleAddEdition={handleEditClick}
+          title={"Edit Edition"}
+          initialValues={
+            selectedEdition
+              ? {
+                  name: selectedEdition.name,
+                  year: selectedEdition.editionYear,
+                }
+              : undefined
+          }
+        />
+      </Dialog>
+
+      <button onClick={openAddDialog}>utwórz edycję</button>
+
+      <EditionsList
+        editions={editions}
+        handleDeleteClick={handleDeleteClick}
+        handleCopyClick={openCopyDialog}
+        handleEditClick={openEditDialog}
+      />
     </div>
   );
 };

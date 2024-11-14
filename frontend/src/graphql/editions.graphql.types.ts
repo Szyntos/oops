@@ -12,6 +12,8 @@ export type EditionsQuery = {
     editionId: string;
     startDate: string;
     endDate: string;
+    editionYear: number;
+    name: string;
   }>;
 };
 
@@ -21,6 +23,8 @@ export const EditionsDocument = gql`
       editionId
       startDate
       endDate
+      editionYear
+      name
     }
   }
 `;

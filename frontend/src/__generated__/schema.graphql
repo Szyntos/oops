@@ -13979,6 +13979,7 @@ type UserPointsType {
 }
 
 type UserType {
+  active: Boolean!
   chestHistory: [ChestHistoryType]!
   chestHistoryByTeacher: [ChestHistoryType]!
   email: String!
@@ -14010,6 +14011,8 @@ type UserWithPermissionsType {
 columns and relationships of "users"
 """
 type Users {
+  active: Boolean!
+
   """
   An array relationship
   """
@@ -14640,6 +14643,8 @@ type UsersAggregate {
 }
 
 input UsersAggregateBoolExp {
+  bool_and: usersAggregateBoolExpBool_and
+  bool_or: usersAggregateBoolExpBool_or
   count: usersAggregateBoolExpCount
 }
 
@@ -14714,6 +14719,7 @@ input UsersBoolExp {
   _and: [UsersBoolExp!]
   _not: UsersBoolExp
   _or: [UsersBoolExp!]
+  active: BooleanComparisonExp
   chestHistories: ChestHistoryBoolExp
   chestHistoriesAggregate: ChestHistoryAggregateBoolExp
   chestHistoriesByTeacherId: ChestHistoryBoolExp
@@ -14758,6 +14764,11 @@ enum UsersConstraint {
   uka0sjysw3ars20ri1eg8vilw2r
 
   """
+  unique or primary key constraint on columns "role"
+  """
+  unique_coordinator_role
+
+  """
   unique or primary key constraint on columns "index_number"
   """
   unique_index_number
@@ -14794,6 +14805,7 @@ input UsersInputTypeType {
 input type for inserting data into table "users"
 """
 input UsersInsertInput {
+  active: Boolean
   chestHistories: ChestHistoryArrRelInsertInput
   chestHistoriesByTeacherId: ChestHistoryArrRelInsertInput
   email: String
@@ -14931,6 +14943,7 @@ input UsersOnConflict {
 Ordering options when selecting data from "users".
 """
 input UsersOrderBy {
+  active: OrderBy
   chestHistoriesAggregate: ChestHistoryAggregateOrderBy
   chestHistoriesByTeacherIdAggregate: ChestHistoryAggregateOrderBy
   email: OrderBy
@@ -14973,6 +14986,11 @@ enum UsersRolesType {
 select columns of table "users"
 """
 enum UsersSelectColumn {
+  """
+  column name
+  """
+  active
+
   """
   column name
   """
@@ -15025,9 +15043,30 @@ enum UsersSelectColumn {
 }
 
 """
+select "usersAggregateBoolExpBool_andArgumentsColumns" columns of table "users"
+"""
+enum UsersSelectColumnUsersAggregateBoolExpBool_andArgumentsColumns {
+  """
+  column name
+  """
+  active
+}
+
+"""
+select "usersAggregateBoolExpBool_orArgumentsColumns" columns of table "users"
+"""
+enum UsersSelectColumnUsersAggregateBoolExpBool_orArgumentsColumns {
+  """
+  column name
+  """
+  active
+}
+
+"""
 input type for updating data in table "users"
 """
 input UsersSetInput {
+  active: Boolean
   email: String
   firebaseUid: String
   firstName: String
@@ -15113,6 +15152,7 @@ input UsersStreamCursorInput {
 Initial value of the column from where the streaming should start
 """
 input UsersStreamCursorValueInput {
+  active: Boolean
   email: String
   firebaseUid: String
   firstName: String
@@ -15147,6 +15187,11 @@ input UsersSumOrderBy {
 update columns of table "users"
 """
 enum UsersUpdateColumn {
+  """
+  column name
+  """
+  active
+
   """
   column name
   """
@@ -17135,6 +17180,9 @@ type mutation_root {
     """
     onConflict: WeekdaysOnConflict
   ): Weekdays
+  markPassingStudentsFromEditionAsInactive(editionId: Int!): Boolean
+  markStudentAsActive(userId: Int!): Boolean
+  markStudentAsInactive(userId: Int!): Boolean
   parseUsersFromCsv(editionId: Int!, fileId: Int!): ParsedUsersTypeType!
   removeAward(awardId: Int!): Boolean
   removeAwardFromChest(awardId: Int!, chestId: Int!): Boolean
@@ -21955,6 +22003,20 @@ input userLevelAggregateBoolExpVar_samp {
   distinct: Boolean
   filter: UserLevelBoolExp
   predicate: Float8ComparisonExp!
+}
+
+input usersAggregateBoolExpBool_and {
+  arguments: UsersSelectColumnUsersAggregateBoolExpBool_andArgumentsColumns!
+  distinct: Boolean
+  filter: UsersBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input usersAggregateBoolExpBool_or {
+  arguments: UsersSelectColumnUsersAggregateBoolExpBool_orArgumentsColumns!
+  distinct: Boolean
+  filter: UsersBoolExp
+  predicate: BooleanComparisonExp!
 }
 
 input usersAggregateBoolExpCount {

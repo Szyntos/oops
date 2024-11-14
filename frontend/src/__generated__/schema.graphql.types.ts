@@ -10042,6 +10042,7 @@ export type UserPointsType = {
 
 export type UserType = {
   __typename?: "UserType";
+  active: Scalars["Boolean"]["output"];
   chestHistory: Array<Maybe<ChestHistoryType>>;
   chestHistoryByTeacher: Array<Maybe<ChestHistoryType>>;
   email: Scalars["String"]["output"];
@@ -10073,6 +10074,7 @@ export type UserWithPermissionsType = {
 /** columns and relationships of "users" */
 export type Users = {
   __typename?: "Users";
+  active: Scalars["Boolean"]["output"];
   /** An array relationship */
   chestHistories: Array<ChestHistory>;
   /** An aggregate relationship */
@@ -10317,6 +10319,8 @@ export type UsersAggregate = {
 };
 
 export type UsersAggregateBoolExp = {
+  bool_and?: InputMaybe<UsersAggregateBoolExpBool_And>;
+  bool_or?: InputMaybe<UsersAggregateBoolExpBool_Or>;
   count?: InputMaybe<UsersAggregateBoolExpCount>;
 };
 
@@ -10384,6 +10388,7 @@ export type UsersBoolExp = {
   _and?: InputMaybe<Array<UsersBoolExp>>;
   _not?: InputMaybe<UsersBoolExp>;
   _or?: InputMaybe<Array<UsersBoolExp>>;
+  active?: InputMaybe<BooleanComparisonExp>;
   chestHistories?: InputMaybe<ChestHistoryBoolExp>;
   chestHistoriesAggregate?: InputMaybe<ChestHistoryAggregateBoolExp>;
   chestHistoriesByTeacherId?: InputMaybe<ChestHistoryBoolExp>;
@@ -10422,6 +10427,8 @@ export type UsersBoolExp = {
 export enum UsersConstraint {
   /** unique or primary key constraint on columns "index_number" */
   Uka0sjysw3ars20ri1eg8vilw2r = "uka0sjysw3ars20ri1eg8vilw2r",
+  /** unique or primary key constraint on columns "role" */
+  UniqueCoordinatorRole = "unique_coordinator_role",
   /** unique or primary key constraint on columns "index_number" */
   UniqueIndexNumber = "unique_index_number",
   /** unique or primary key constraint on columns "user_id" */
@@ -10450,6 +10457,7 @@ export type UsersInputTypeType = {
 
 /** input type for inserting data into table "users" */
 export type UsersInsertInput = {
+  active?: InputMaybe<Scalars["Boolean"]["input"]>;
   chestHistories?: InputMaybe<ChestHistoryArrRelInsertInput>;
   chestHistoriesByTeacherId?: InputMaybe<ChestHistoryArrRelInsertInput>;
   email?: InputMaybe<Scalars["String"]["input"]>;
@@ -10560,6 +10568,7 @@ export type UsersOnConflict = {
 
 /** Ordering options when selecting data from "users". */
 export type UsersOrderBy = {
+  active?: InputMaybe<OrderBy>;
   chestHistoriesAggregate?: InputMaybe<ChestHistoryAggregateOrderBy>;
   chestHistoriesByTeacherIdAggregate?: InputMaybe<ChestHistoryAggregateOrderBy>;
   email?: InputMaybe<OrderBy>;
@@ -10599,6 +10608,8 @@ export enum UsersRolesType {
 /** select columns of table "users" */
 export enum UsersSelectColumn {
   /** column name */
+  Active = "active",
+  /** column name */
   Email = "email",
   /** column name */
   FirebaseUid = "firebaseUid",
@@ -10620,8 +10631,21 @@ export enum UsersSelectColumn {
   UserId = "userId",
 }
 
+/** select "usersAggregateBoolExpBool_andArgumentsColumns" columns of table "users" */
+export enum UsersSelectColumnUsersAggregateBoolExpBool_AndArgumentsColumns {
+  /** column name */
+  Active = "active",
+}
+
+/** select "usersAggregateBoolExpBool_orArgumentsColumns" columns of table "users" */
+export enum UsersSelectColumnUsersAggregateBoolExpBool_OrArgumentsColumns {
+  /** column name */
+  Active = "active",
+}
+
 /** input type for updating data in table "users" */
 export type UsersSetInput = {
+  active?: InputMaybe<Scalars["Boolean"]["input"]>;
   email?: InputMaybe<Scalars["String"]["input"]>;
   firebaseUid?: InputMaybe<Scalars["String"]["input"]>;
   firstName?: InputMaybe<Scalars["String"]["input"]>;
@@ -10689,6 +10713,7 @@ export type UsersStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type UsersStreamCursorValueInput = {
+  active?: InputMaybe<Scalars["Boolean"]["input"]>;
   email?: InputMaybe<Scalars["String"]["input"]>;
   firebaseUid?: InputMaybe<Scalars["String"]["input"]>;
   firstName?: InputMaybe<Scalars["String"]["input"]>;
@@ -10718,6 +10743,8 @@ export type UsersSumOrderBy = {
 
 /** update columns of table "users" */
 export enum UsersUpdateColumn {
+  /** column name */
+  Active = "active",
   /** column name */
   Email = "email",
   /** column name */
@@ -11507,6 +11534,11 @@ export type Mutation_Root = {
   insertWeekdays?: Maybe<WeekdaysMutationResponse>;
   /** insert a single row into the table: "weekdays" */
   insertWeekdaysOne?: Maybe<Weekdays>;
+  markPassingStudentsFromEditionAsInactive?: Maybe<
+    Scalars["Boolean"]["output"]
+  >;
+  markStudentAsActive?: Maybe<Scalars["Boolean"]["output"]>;
+  markStudentAsInactive?: Maybe<Scalars["Boolean"]["output"]>;
   parseUsersFromCsv: ParsedUsersTypeType;
   removeAward?: Maybe<Scalars["Boolean"]["output"]>;
   removeAwardFromChest?: Maybe<Scalars["Boolean"]["output"]>;
@@ -12543,6 +12575,21 @@ export type Mutation_RootInsertWeekdaysArgs = {
 export type Mutation_RootInsertWeekdaysOneArgs = {
   object: WeekdaysInsertInput;
   onConflict?: InputMaybe<WeekdaysOnConflict>;
+};
+
+/** mutation root */
+export type Mutation_RootMarkPassingStudentsFromEditionAsInactiveArgs = {
+  editionId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootMarkStudentAsActiveArgs = {
+  userId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootMarkStudentAsInactiveArgs = {
+  userId: Scalars["Int"]["input"];
 };
 
 /** mutation root */
@@ -14741,6 +14788,20 @@ export type UserLevelAggregateBoolExpVar_Samp = {
   distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
   filter?: InputMaybe<UserLevelBoolExp>;
   predicate: Float8ComparisonExp;
+};
+
+export type UsersAggregateBoolExpBool_And = {
+  arguments: UsersSelectColumnUsersAggregateBoolExpBool_AndArgumentsColumns;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<UsersBoolExp>;
+  predicate: BooleanComparisonExp;
+};
+
+export type UsersAggregateBoolExpBool_Or = {
+  arguments: UsersSelectColumnUsersAggregateBoolExpBool_OrArgumentsColumns;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<UsersBoolExp>;
+  predicate: BooleanComparisonExp;
 };
 
 export type UsersAggregateBoolExpCount = {

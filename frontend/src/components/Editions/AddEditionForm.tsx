@@ -1,7 +1,6 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { TextField } from "@mui/material";
-import { NumberInput } from "../inputs/NumberInput";
 import { Styles } from "../../utils/Styles";
 
 export type EditionFormValues = z.infer<typeof ValidationSchema>;
@@ -12,21 +11,26 @@ const ValidationSchema = z.object({
   year: z.number().min(2000).max(2500),
 });
 
+const defaultValues = {
+  name: "",
+  year: 0,
+};
+
 type AddCategoryFormProps = {
   handleAddEdition: (values: EditionFormValues) => void;
   createError?: string;
+  title: string;
+  initialValues?: EditionFormValues;
 };
 
 export const AddEditionForm = ({
   handleAddEdition,
   createError,
+  initialValues = defaultValues,
+  title,
 }: AddCategoryFormProps) => {
   const formik = useFormik({
-    initialValues: {
-      name: "",
-      // TODO initial value
-      year: 0,
-    },
+    initialValues,
     validate: (values: EditionFormValues) => {
       try {
         ValidationSchema.parse(values);
@@ -43,7 +47,7 @@ export const AddEditionForm = ({
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>Add Edition</div>
+      <div style={styles.title}>{title}</div>
       <form onSubmit={formik.handleSubmit}>
         <div>
           <TextField
@@ -57,18 +61,22 @@ export const AddEditionForm = ({
             error={Boolean(formik.touched.name && formik.errors.name)}
             helperText={formik.touched.name && formik.errors.name}
           />
-          <NumberInput
-            handleChange={formik.handleChange}
-            handleBlur={formik.handleBlur}
-            value={formik.values.year}
-            error={formik.errors.year}
-            touched={formik.touched.year}
+
+          <TextField
+            fullWidth
             name="year"
             label="year"
+            variant="outlined"
+            type="number"
+            value={formik.values.year}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={Boolean(formik.touched.year && formik.errors.year)}
+            helperText={formik.touched.year && formik.errors.year}
           />
         </div>
 
-        <button type="submit">add edition</button>
+        <button type="submit">confirm</button>
       </form>
 
       {createError && <p style={styles.error}>Error: {createError}</p>}

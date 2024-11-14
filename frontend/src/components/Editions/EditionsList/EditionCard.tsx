@@ -2,15 +2,20 @@ import { useNavigate } from "react-router-dom";
 import { Edition } from "../../../screens/Editions/EditionsScreen";
 import { Styles } from "../../../utils/Styles";
 import { pathsGenerator } from "../../../router/paths";
+import { SetupButtons } from "../../Edition/Sections/SetupButtons";
 
 type EditionCardProps = {
   edition: Edition;
-  handleDeleteClick: (editionId: string) => void;
+  handleDeleteClick: () => void;
+  handleCopyClick: () => void;
+  handleEditClick: () => void;
 };
 
 export const EditionCard = ({
   edition,
   handleDeleteClick,
+  handleCopyClick,
+  handleEditClick,
 }: EditionCardProps) => {
   const navigate = useNavigate();
 
@@ -28,12 +33,12 @@ export const EditionCard = ({
       >
         show
       </button>
-      <button
-        style={styles.deleteButton}
-        onClick={() => handleDeleteClick(edition.editionId)}
-      >
-        x
-      </button>
+      <SetupButtons
+        selected={false}
+        handleDelete={handleDeleteClick}
+        handleCopy={handleCopyClick}
+        handleEdit={handleEditClick}
+      />
     </div>
   );
 };
@@ -45,11 +50,6 @@ const styles: Styles = {
   },
   showButton: {
     backgroundColor: "green",
-    padding: 4,
-    cursor: "pointer",
-  },
-  deleteButton: {
-    backgroundColor: "red",
     padding: 4,
     cursor: "pointer",
   },

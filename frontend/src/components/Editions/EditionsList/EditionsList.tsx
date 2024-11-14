@@ -4,17 +4,26 @@ import { EditionCard } from "./EditionCard";
 
 type EditionsListProps = {
   editions: Edition[];
-  handleDeleteClick: (editionId: string) => void;
+  handleDeleteClick: (edition: Edition) => void;
+  handleCopyClick: (edition: Edition) => void;
+  handleEditClick: (edition: Edition) => void;
 };
 
 export const EditionsList = ({
   editions,
   handleDeleteClick,
+  handleCopyClick,
+  handleEditClick,
 }: EditionsListProps) => {
   return (
     <div style={styles.container}>
       {editions.map((edition) => (
-        <EditionCard edition={edition} handleDeleteClick={handleDeleteClick} />
+        <EditionCard
+          edition={edition}
+          handleDeleteClick={() => handleDeleteClick(edition)}
+          handleCopyClick={() => handleCopyClick(edition)}
+          handleEditClick={() => handleEditClick(edition)}
+        />
       ))}
     </div>
   );

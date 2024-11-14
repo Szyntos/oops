@@ -6,65 +6,130 @@ import { useState } from "react";
 import { EditionFormValues } from "../../components/Editions/AddEditionForm";
 import { useCreateEditionMutation } from "../../graphql/createEdition.graphql.types";
 import { useDeleteEditionMutation } from "../../graphql/deleteEdition.graphql.types";
+import { useError } from "../common/useGlobalError";
+import { useCopyEditionMutation } from "../../graphql/copyEdition.graphql.types";
+import { useEditEditionMutation } from "../../graphql/editEdition.graphql.types";
 
 export type Edition = EditionsQuery["edition"][number];
 
 export const useEditionsScreen = () => {
+  const { localErrorWrapper, globalErrorWrapper } = useError();
   const { data, loading, error, refetch } = useEditionsQuery();
   const editions: Edition[] = data?.edition ?? [];
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [createEdition] = useCreateEditionMutation();
-  const [createError, setCreateError] = useState<string>();
+  const [formError, setFormError] = useState<string>();
+  const [selectedEdition, setSelectedEdition] = useState<Edition | undefined>(
+    undefined,
+  );
 
-  const [deleteEdition] = useDeleteEditionMutation();
-
-  const closeDialog = () => {
-    setCreateError(undefined);
-    setIsOpen(false);
+  // ADD
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const openAddDialog = () => {
+    setIsAddOpen(true);
   };
-
+  const closeAddDialog = () => {
+    setFormError(undefined);
+    setIsAddOpen(false);
+  };
+  const [createEdition] = useCreateEditionMutation();
   const handleCreateClick = async (values: EditionFormValues) => {
-    try {
+    localErrorWrapper(setFormError, async () => {
       await createEdition({
         variables: {
           editionName: values.name,
           editionYear: values.year,
         },
       });
-
       refetch();
-      closeDialog();
-    } catch (error) {
-      console.error(error);
-
-      setCreateError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+      closeAddDialog();
+    });
   };
 
-  const handleDeleteClick = async (id: string) => {
-    try {
-      await deleteEdition({ variables: { editionId: parseInt(id) } });
+  // COPY
+  const [isCopyOpen, setIsCopyOpen] = useState(false);
+  const openCopyDialog = (edition: Edition) => {
+    setSelectedEdition(edition);
+    setIsCopyOpen(true);
+  };
+  const closeCopyDialog = () => {
+    setSelectedEdition(undefined);
+    setFormError(undefined);
+    setIsCopyOpen(false);
+  };
+  const [copyEdition] = useCopyEditionMutation();
+  const handleCopyClick = async (values: EditionFormValues) => {
+    localErrorWrapper(setFormError, async () => {
+      await copyEdition({
+        variables: {
+          editionId: parseInt(selectedEdition?.editionId as string),
+          // editionName: values.name,
+          editionYear: values.year,
+        },
+      });
       refetch();
-    } catch (error) {
-      // TODO some kind of global error ?
-      console.error(error);
-    }
+      closeCopyDialog();
+    });
+  };
+
+  // EDIT
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const openEditDialog = (edition: Edition) => {
+    setSelectedEdition(edition);
+    setIsEditOpen(true);
+  };
+  const closeEditDialog = () => {
+    setSelectedEdition(undefined);
+    setFormError(undefined);
+    setIsEditOpen(false);
+  };
+  const [editEdition] = useEditEditionMutation();
+  const handleEditClick = async (values: EditionFormValues) => {
+    localErrorWrapper(setFormError, async () => {
+      await editEdition({
+        variables: {
+          editionId: parseInt(selectedEdition?.editionId as string),
+          editionName: values.name,
+          editionYear: values.year,
+        },
+      });
+      refetch();
+      closeEditDialog();
+    });
+  };
+
+  // DELETE
+  const [deleteEdition] = useDeleteEditionMutation();
+  const handleDeleteClick = async (edition: Edition) => {
+    globalErrorWrapper(async () => {
+      await deleteEdition({
+        variables: { editionId: parseInt(edition.editionId) },
+      });
+      refetch();
+    });
   };
 
   return {
     loading,
     error,
     editions,
+    selectedEdition,
+    formError,
+    // ADD
+    isAddOpen,
+    openAddDialog,
+    closeAddDialog,
     handleCreateClick,
-    createError,
+    // COPY
+    isCopyOpen,
+    openCopyDialog,
+    closeCopyDialog,
+    handleCopyClick,
+    // EDIT
+    isEditOpen,
+    openEditDialog,
+    closeEditDialog,
+    handleEditClick,
+    // DELETE
     handleDeleteClick,
-    // TODO
-    //deleteError,
-    isOpen,
-    openDialog: () => setIsOpen(true),
-    closeDialog,
   };
 };

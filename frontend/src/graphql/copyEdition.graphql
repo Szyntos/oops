@@ -1,0 +1,5 @@
+mutation CopyEdition($editionId: Int!, $editionYear: Int!) {
+  copyEdition(editionId: $editionId, editionYear: $editionYear) {
+    editionId
+  }
+}

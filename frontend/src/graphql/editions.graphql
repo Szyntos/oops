@@ -3,5 +3,7 @@ query Editions {
     editionId
     startDate
     endDate
+    editionYear
+    name
   }
 }

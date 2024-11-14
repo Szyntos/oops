@@ -1,5 +1,13 @@
-mutation CopyEdition($editionId: Int!, $editionYear: Int!) {
-  copyEdition(editionId: $editionId, editionYear: $editionYear) {
+mutation CopyEdition(
+  $editionId: Int!
+  $editionName: String!
+  $editionYear: Int!
+) {
+  copyEdition(
+    editionId: $editionId
+    editionName: $editionName
+    editionYear: $editionYear
+  ) {
     editionId
   }
 }

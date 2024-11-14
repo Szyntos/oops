@@ -62,7 +62,7 @@ export const useEditionsScreen = () => {
       await copyEdition({
         variables: {
           editionId: parseInt(selectedEdition?.editionId as string),
-          // editionName: values.name,
+          editionName: values.name,
           editionYear: values.year,
         },
       });

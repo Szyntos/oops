@@ -4,7 +4,7 @@ import { Dialog } from "@mui/material";
 import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { AddEditionForm } from "../../components/Editions/AddEditionForm";
 import { EditionsList } from "../../components/Editions/EditionsList/EditionsList";
-import { useEditionsScreen } from "../../hooks/Editions/useEditionScreen";
+import { useEditionsScreen } from "../../hooks/Editions/useEditionsScreen";
 
 export type Edition = EditionsQuery["edition"][number];
 

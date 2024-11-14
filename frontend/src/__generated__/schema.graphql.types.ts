@@ -11930,6 +11930,7 @@ export type Mutation_RootCopyChestArgs = {
 /** mutation root */
 export type Mutation_RootCopyEditionArgs = {
   editionId: Scalars["Int"]["input"];
+  editionName: Scalars["String"]["input"];
   editionYear: Scalars["Int"]["input"];
 };
 

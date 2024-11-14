@@ -16045,7 +16045,11 @@ type mutation_root {
   copyAward(awardId: Int!): AwardType
   copyCategory(categoryId: Int!): CategoryType
   copyChest(chestId: Int!): ChestType
-  copyEdition(editionId: Int!, editionYear: Int!): EditionType
+  copyEdition(
+    editionId: Int!
+    editionName: String!
+    editionYear: Int!
+  ): EditionType
   copyLevelSet(levelSetId: Int!): LevelSetType!
 
   """

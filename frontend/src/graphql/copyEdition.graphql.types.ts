@@ -5,6 +5,7 @@ import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
 export type CopyEditionMutationVariables = Types.Exact<{
   editionId: Types.Scalars["Int"]["input"];
+  editionName: Types.Scalars["String"]["input"];
   editionYear: Types.Scalars["Int"]["input"];
 }>;
 
@@ -14,8 +15,16 @@ export type CopyEditionMutation = {
 };
 
 export const CopyEditionDocument = gql`
-  mutation CopyEdition($editionId: Int!, $editionYear: Int!) {
-    copyEdition(editionId: $editionId, editionYear: $editionYear) {
+  mutation CopyEdition(
+    $editionId: Int!
+    $editionName: String!
+    $editionYear: Int!
+  ) {
+    copyEdition(
+      editionId: $editionId
+      editionName: $editionName
+      editionYear: $editionYear
+    ) {
       editionId
     }
   }
@@ -39,6 +48,7 @@ export type CopyEditionMutationFn = Apollo.MutationFunction<
  * const [copyEditionMutation, { data, loading, error }] = useCopyEditionMutation({
  *   variables: {
  *      editionId: // value for 'editionId'
+ *      editionName: // value for 'editionName'
  *      editionYear: // value for 'editionYear'
  *   },
  * });

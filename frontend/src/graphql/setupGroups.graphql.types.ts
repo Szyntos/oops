@@ -46,6 +46,7 @@ export type SetupGroupsQuery = {
           secondName: string;
           userId: string;
           email: string;
+          active: boolean;
         };
       }>;
     }>;
@@ -87,6 +88,7 @@ export const SetupGroupsDocument = gql`
             secondName
             userId
             email
+            active
           }
         }
       }

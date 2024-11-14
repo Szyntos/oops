@@ -9,5 +9,6 @@ query SetupUsers {
     secondName
     userId
     email
+    active
   }
 }

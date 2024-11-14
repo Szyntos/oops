@@ -1,10 +1,22 @@
 import { Dialog } from "@mui/material";
-import { useUsersSection } from "../../../../hooks/Edition/users/useUsersSection";
+import {
+  User,
+  useUsersSection,
+} from "../../../../hooks/Edition/users/useUsersSection";
 import { Styles } from "../../../../utils/Styles";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddStudentForm } from "./StudentAddForm";
 import { UsersList } from "./UsersList/UsersList";
 import { AddTeacherForm } from "./TeacherAddForm";
+import { StudentsListSearcher } from "../../../Students/StudentsListSearcher";
+import { useState } from "react";
+import { RadioFilterGroups } from "../../../Groups/RadioFilterGroup";
+import { isPartOfAString } from "../../../../utils/strings";
+
+const activeRadioOptions = [
+  { id: "active", name: "active" },
+  { id: "inactive", name: "inactive" },
+];
 
 export const UsersSection = () => {
   const {
@@ -35,8 +47,30 @@ export const UsersSection = () => {
     handleEditTeacherConfirm,
   } = useUsersSection();
 
+  const [input, setInput] = useState("");
+  const [showActiveUsers, setShowActiveUsers] = useState(true);
+
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
+
+  const doesFilterMatch = (user: User) => {
+    const matchActiveState = showActiveUsers
+      ? user.active === true
+      : user.active === false;
+    const matchInput =
+      input === "undefined" ||
+      input === "" ||
+      isPartOfAString(input, [`${user.fullName}`]);
+    return matchActiveState && matchInput;
+  };
+
+  const displayTeachers = teachers.filter((teacher) =>
+    doesFilterMatch(teacher),
+  );
+
+  const displayStudents = students.filter((student) =>
+    doesFilterMatch(student),
+  );
 
   return (
     <div>
@@ -44,18 +78,33 @@ export const UsersSection = () => {
         <button onClick={openAddStudent}>add student</button>
         <button onClick={openAddTeacher}>add teacher</button>
       </div>
-      <UsersList
-        users={teachers}
-        title="TEACHERS"
-        handleDeleteClick={handleDeleteConfirm}
-        handleEditClick={openEditTeacher}
-      />
-      <UsersList
-        users={students}
-        title="STUDENTS"
-        handleDeleteClick={handleDeleteConfirm}
-        handleEditClick={openEditStudent}
-      />
+      <div>
+        <div style={styles.topBar}>
+          <StudentsListSearcher
+            onInputChange={(input: string) => setInput(input)}
+          />
+          <RadioFilterGroups
+            options={activeRadioOptions}
+            onOptionChange={(option) =>
+              setShowActiveUsers(option.id === "active")
+            }
+            selectedOption={activeRadioOptions[showActiveUsers ? 0 : 1]}
+          />
+        </div>
+
+        <UsersList
+          users={displayTeachers}
+          title="TEACHERS"
+          handleDeleteClick={handleDeleteConfirm}
+          handleEditClick={openEditTeacher}
+        />
+        <UsersList
+          users={displayStudents}
+          title="STUDENTS"
+          handleDeleteClick={handleDeleteConfirm}
+          handleEditClick={openEditStudent}
+        />
+      </div>
 
       <Dialog open={isAddStudentOpen}>
         <CloseHeader onCloseClick={closeAddStudent} />
@@ -100,6 +149,11 @@ export const UsersSection = () => {
 
 const styles: Styles = {
   buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 12,
+  },
+  topBar: {
     display: "flex",
     flexDirection: "row",
     gap: 12,

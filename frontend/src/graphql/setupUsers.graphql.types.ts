@@ -18,6 +18,7 @@ export type SetupUsersQuery = {
     secondName: string;
     userId: string;
     email: string;
+    active: boolean;
   }>;
 };
 
@@ -33,6 +34,7 @@ export const SetupUsersDocument = gql`
       secondName
       userId
       email
+      active
     }
   }
 `;

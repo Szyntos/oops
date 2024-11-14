@@ -35,7 +35,6 @@ export const LevelRow = ({
   handleUp,
   handleDown,
 }: LevelRowProps) => {
-  // console.log("ADDED LEVEL: ", level);
   return (
     <div style={styles.innerContainer}>
       <Image size={64} disabled={false} id={level.imageId} />

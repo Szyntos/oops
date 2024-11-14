@@ -11,11 +11,16 @@ import { Styles } from "../../../../utils/Styles";
 import { Category } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { LevelSet } from "../../../../hooks/Edition/useLevelSetsSection";
 
+const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // 'YYYY-MM-DD'
+
 const ValidationSchema = z.object({
-  endOfLabsDate: z.string().min(1), // regexp
-  endOfLabsLevelsThreshold: z.string().min(1),
-  projectPointsThreshold: z.string().min(1),
-  projectId: z.string().min(1),
+  endOfLabsDate: z
+    .string()
+    .min(1, "Date is required")
+    .regex(dateRegex, "Invalid date format, expected YYYY-MM-DD"),
+  endOfLabsLevelsThreshold: z.string().min(1, "Threshold is required"),
+  projectPointsThreshold: z.string().min(1, "Points threshold is required"),
+  projectId: z.string().min(1, "Project ID is required"),
 });
 
 export type GradingChecksFormValues = z.infer<typeof ValidationSchema>;
@@ -70,7 +75,8 @@ export const ChecksForm = ({
           <TextField
             fullWidth
             name="endOfLabsDate"
-            label="endOfLabsDate"
+            label="End of Labs Date"
+            placeholder="YYYY-MM-DD"
             variant="outlined"
             value={formik.values.endOfLabsDate}
             onChange={formik.handleChange}

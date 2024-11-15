@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service
 class PermissionService {
 
     @Autowired
+    private lateinit var editionPartialPermissions: EditionPartialPermissions
+
+    @Autowired
     private lateinit var usersPartialPermissions: UsersPartialPermissions
 
     @Autowired
@@ -140,6 +143,7 @@ class PermissionService {
             "removeChest" -> chestsPermissions.checkRemoveChestPermission(jsonArguments)
             "copyChest" -> chestsPermissions.checkCopyChestPermission(jsonArguments)
             // EditionPermissions
+            "listSetupEditions" -> editionPermissions.checkListSetupEditionsPermission(jsonArguments)
             "addEdition" -> editionPermissions.checkAddEditionPermission(jsonArguments)
             "editEdition" -> editionPermissions.checkEditEditionPermission(jsonArguments)
             "copyEdition" -> editionPermissions.checkCopyEditionPermission(jsonArguments)
@@ -242,6 +246,10 @@ class PermissionService {
             "editChest" -> chestsPartialPermissions.checkEditChestPermission(jsonArguments)
             "removeChest" -> chestsPartialPermissions.checkRemoveChestPermission(jsonArguments)
             "copyChest" -> chestsPartialPermissions.checkCopyChestPermission(jsonArguments)
+            // EditionPermissions
+            "editEdition" -> editionPartialPermissions.checkEditEditionPermission(jsonArguments)
+            "copyEdition" -> editionPartialPermissions.checkCopyEditionPermission(jsonArguments)
+            "removeEdition" -> editionPartialPermissions.checkRemoveEditionPermission(jsonArguments)
             // GroupsPermissions
             "editGroupWithUsers" -> groupsPartialPermissions.checkEditGroupWithUsersPermission(jsonArguments)
             "removeGroup" -> groupsPartialPermissions.checkRemoveGroupPermission(jsonArguments)

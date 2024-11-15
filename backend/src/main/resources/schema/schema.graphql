@@ -416,6 +416,7 @@ type Query {
   listSetupAwards(
       editionId: Int!
   ): [AwardWithPermissionsType!]!
+  listSetupEditions: [EditionWithPermissionsType!]!
 
 
 }
@@ -847,6 +848,11 @@ type CategoryWithPermissionsType{
 
 type AwardWithPermissionsType{
   award: AwardType,
+  permissions: ListPermissionsOutputType!
+}
+
+type EditionWithPermissionsType{
+  edition: EditionType!,
   permissions: ListPermissionsOutputType!
 }
 

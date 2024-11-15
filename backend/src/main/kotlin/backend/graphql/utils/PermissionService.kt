@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service
 class PermissionService {
 
     @Autowired
+    private lateinit var filePartialPermissions: FilePartialPermissions
+
+    @Autowired
     private lateinit var editionPartialPermissions: EditionPartialPermissions
 
     @Autowired
@@ -149,6 +152,7 @@ class PermissionService {
             "copyEdition" -> editionPermissions.checkCopyEditionPermission(jsonArguments)
             "removeEdition" -> editionPermissions.checkRemoveEditionPermission(jsonArguments)
             // FilePermissions
+            "removeFile" -> filePermissions.checkRemoveFilePermission(jsonArguments)
             "getFilesGroupedByType" -> filePermissions.checkGetFilesGroupedByTypePermission(jsonArguments)
             "getFilesGroupedByTypeBySelectedTypes" -> filePermissions.checkGetFilesGroupedByTypeBySelectedTypesPermission(jsonArguments)
             // GradingChecksPermissions
@@ -253,6 +257,8 @@ class PermissionService {
             "editEdition" -> editionPartialPermissions.checkEditEditionPermission(jsonArguments)
             "copyEdition" -> editionPartialPermissions.checkCopyEditionPermission(jsonArguments)
             "removeEdition" -> editionPartialPermissions.checkRemoveEditionPermission(jsonArguments)
+            // FilePermissions
+            "removeFile" -> filePartialPermissions.checkRemoveFilePermission(jsonArguments)
             // GradingChecksPermissions
             "editGradingCheck" -> gradingChecksPermissions.checkEditGradingCheckPermission(jsonArguments)
             // GroupsPermissions

@@ -41,7 +41,7 @@ export const useAwardsSection = (editionId: number) => {
 
   const imageIds: string[] =
     imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>
-      i.files.map((f) => f.fileId),
+      i.files.map((f) => f.file.fileId),
     ) ?? [];
 
   const awards: Award[] = data?.award ?? [];

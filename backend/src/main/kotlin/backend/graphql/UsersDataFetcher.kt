@@ -435,6 +435,28 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
     @DgsMutation
     @Transactional
+    fun resetPasswordByEmail(@InputArgument email: String): Boolean {
+        val action = "resetPasswordByEmail"
+        val arguments = mapOf(
+            "email" to email
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        if (usersRepository.existsByEmail(email)) {
+            return firebaseUserService.resetPassword(email)
+        }
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
     fun markPassingStudentsFromEditionAsInactive(@InputArgument editionId: Long): Boolean{
         val action = "markPassingStudentsFromEditionAsInactive"
         val arguments = mapOf(

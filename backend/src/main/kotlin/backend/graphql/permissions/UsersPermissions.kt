@@ -698,6 +698,24 @@ class UsersPermissions {
         )
     }
 
+    fun checkResetPasswordByEmailPermission(arguments: JsonNode): Permission {
+        val action = "resetPasswordByEmail"
+
+        val email = arguments.getStringField("email") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'email'"
+        )
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
     fun checkMarkPassingStudentsFromEditionAsInactivePermission(arguments: JsonNode): Permission{
         val action = "markPassingStudentsFromEditionAsInactive"
         val currentUser = userMapper.getCurrentUser()

@@ -27,6 +27,10 @@ type Mutation {
   assignPhotoToLevel(levelId: Int!, fileId: Int): Boolean
   assignPhotoToAward(awardId: Int!, fileId: Int): Boolean
   assignPhotoToChest(chestId: Int!, fileId: Int): Boolean
+  setStudentNick(
+    userId: Int!, nick: String!
+  ): UserType
+
   addAward(
     awardName: String!
     awardType: String!
@@ -151,6 +155,7 @@ type Mutation {
     editionId: Int!
   ): ParsedUsersTypeType!
   resetPassword(userId: Int!): Boolean
+  resetPasswordByEmail(email: String!): Boolean
   generateSubcategories(
     editionId: Int!
     categoryId: Int!
@@ -420,6 +425,7 @@ type Query {
     editionId: Int!
   ): GradingCheckWithPermissions!
 
+  listSetupEditions: [EditionWithPermissionsType!]!
 
 
 }
@@ -647,6 +653,8 @@ type UserType {
   secondName: String!
   email: String!
   active: Boolean!
+  nickSetByUser: Boolean!
+  avatarSetByUser: Boolean!
   label: String!
   firebaseUid: String
   imageFile: FileType
@@ -854,8 +862,14 @@ type AwardWithPermissionsType{
   permissions: ListPermissionsOutputType!
 }
 
+
 type GradingCheckWithPermissions{
   gradingCheck: GradingChecksType,
+  permissions: ListPermissionsOutputType!
+}
+
+type EditionWithPermissionsType{
+  edition: EditionType!,
   permissions: ListPermissionsOutputType!
 }
 

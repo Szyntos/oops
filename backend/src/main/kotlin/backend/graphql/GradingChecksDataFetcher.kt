@@ -6,6 +6,10 @@ import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecks
 import backend.gradingChecks.GradingChecksRepository
 import backend.graphql.utils.*
+import backend.graphql.permissions.GradingChecksPermissions
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.levels.LevelsRepository
 import backend.points.PointsRepository
 import backend.users.UsersRepository
@@ -22,6 +26,9 @@ import kotlin.jvm.optionals.getOrNull
 
 @DgsComponent
 class GradingChecksDataFetcher {
+    @Autowired
+    private lateinit var gradingChecksPermissions: GradingChecksPermissions
+
     @Autowired
     private lateinit var permissionService: PermissionService
 
@@ -221,6 +228,15 @@ class GradingChecksDataFetcher {
             arguments = objectMapper.writeValueAsString(arguments)
         )
         val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        return removeGradingCheckHelper(gradingCheckId)
+    }
+
+    fun removeGradingCheckHelper(gradingCheckId: Long): Boolean {
+        val permission = gradingChecksPermissions.checkRemoveGradingCheckHelperPermission(gradingCheckId)
         if (!permission.allow) {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }

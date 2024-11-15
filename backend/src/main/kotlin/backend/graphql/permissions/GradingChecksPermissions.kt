@@ -18,6 +18,7 @@ import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.JsonNodeExtensions.getStringField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -393,6 +394,56 @@ class GradingChecksPermissions {
 
     fun checkRemoveGradingCheckPermission(arguments: JsonNode): Permission {
         val action = "removeGradingCheck"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is not a coordinator"
+            )
+        }
+
+        val gradingCheckId = arguments.getLongField("gradingCheckId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'gradingCheckId'"
+        )
+
+        val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
+            .orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Grading check not found"
+            )
+
+        if (gradingCheck.edition.endDate.isBefore(LocalDate.now())) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition has already ended"
+            )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkRemoveGradingCheckHelperPermission(gradingCheckId: Long): Permission{
+        val action = "removeGradingCheckHelper"
+        val arguments = objectMapper.valueToTree<JsonNode>(
+            mapOf(
+                "gradingCheckId" to gradingCheckId
+            )
+        )
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
             return Permission(

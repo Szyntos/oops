@@ -11,4 +11,5 @@ interface GradingChecksRepository : JpaRepository<GradingChecks, Long> {
     fun existsByEdition(edition: Edition): Boolean
     fun findByEdition(edition: Edition): Optional<GradingChecks>
     fun existsByProject(category: Categories): Boolean
+    fun existsByProjectAndEdition(category: Categories, edition: Edition): Boolean
 }

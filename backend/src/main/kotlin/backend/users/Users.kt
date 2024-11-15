@@ -52,6 +52,12 @@ class Users(
     @Column(name = "active", nullable = false, length = 256)
     var active: Boolean = true,
 
+    @Column(name = "nick_set_by_user", nullable = false, length = 256)
+    var nickSetByUser: Boolean = false,
+
+    @Column(name = "avatar_set_by_user", nullable = false, length = 256)
+    var avatarSetByUser: Boolean = false,
+
     @Column(name = "label", nullable = false, length = 256)
     var label: String,
 

@@ -1,0 +1,28 @@
+mutation SetupGradingChecksEdit(
+  $gradingCheckId: Int!
+  $endOfLabsDate: String
+  $endOfLabsLevelsThreshold: Int!
+  $projectId: Int!
+  $projectPointsThreshold: Float!
+) {
+  editGradingCheck(
+    gradingCheckId: $gradingCheckId
+    endOfLabsDate: $endOfLabsDate
+    endOfLabsLevelsThreshold: $endOfLabsLevelsThreshold
+    projectId: $projectId
+    projectPointsThreshold: $projectPointsThreshold
+  ) {
+    edition {
+      editionId
+    }
+    endOfLabsDate
+    endOfLabsLevelsThreshold {
+      levelId
+    }
+    gradingCheckId
+    project {
+      categoryId
+    }
+    projectPointsThreshold
+  }
+}

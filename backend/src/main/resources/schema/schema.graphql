@@ -644,7 +644,7 @@ type UserType {
   role: UsersRolesType!
   indexNumber: Int!
   firstName: String!
-  secondName: String! s
+  secondName: String!
   email: String!
   active: Boolean!
   nickSetByUser: Boolean!

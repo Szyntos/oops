@@ -152,6 +152,7 @@ class PermissionService {
             "getFilesGroupedByType" -> filePermissions.checkGetFilesGroupedByTypePermission(jsonArguments)
             "getFilesGroupedByTypeBySelectedTypes" -> filePermissions.checkGetFilesGroupedByTypeBySelectedTypesPermission(jsonArguments)
             // GradingChecksPermissions
+            "listSetupGradingChecks" -> gradingChecksPermissions.checkListSetupGradingChecksPermission(jsonArguments)
             "addGradingCheck" -> gradingChecksPermissions.checkAddGradingCheckPermission(jsonArguments)
             "editGradingCheck" -> gradingChecksPermissions.checkEditGradingCheckPermission(jsonArguments)
             "removeGradingCheck" -> gradingChecksPermissions.checkRemoveGradingCheckPermission(jsonArguments)
@@ -252,6 +253,8 @@ class PermissionService {
             "editEdition" -> editionPartialPermissions.checkEditEditionPermission(jsonArguments)
             "copyEdition" -> editionPartialPermissions.checkCopyEditionPermission(jsonArguments)
             "removeEdition" -> editionPartialPermissions.checkRemoveEditionPermission(jsonArguments)
+            // GradingChecksPermissions
+            "editGradingCheck" -> gradingChecksPermissions.checkEditGradingCheckPermission(jsonArguments)
             // GroupsPermissions
             "editGroupWithUsers" -> groupsPartialPermissions.checkEditGroupWithUsersPermission(jsonArguments)
             "removeGroup" -> groupsPartialPermissions.checkRemoveGroupPermission(jsonArguments)

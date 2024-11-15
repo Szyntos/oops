@@ -151,6 +151,7 @@ type Mutation {
     editionId: Int!
   ): ParsedUsersTypeType!
   resetPassword(userId: Int!): Boolean
+  resetPasswordByEmail(email: String!): Boolean
   generateSubcategories(
     editionId: Int!
     categoryId: Int!

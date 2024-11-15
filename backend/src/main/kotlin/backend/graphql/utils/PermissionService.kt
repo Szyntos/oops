@@ -202,6 +202,7 @@ class PermissionService {
             "editUser" -> usersPermissions.checkEditUserPermission(jsonArguments)
             "removeUser" -> usersPermissions.checkRemoveUserPermission(jsonArguments)
             "resetPassword" -> usersPermissions.checkResetPasswordPermission(jsonArguments)
+            "resetPasswordByEmail" -> usersPermissions.checkResetPasswordByEmailPermission(jsonArguments)
             "markPassingStudentsFromEditionAsInactive" -> usersPermissions.checkMarkPassingStudentsFromEditionAsInactivePermission(jsonArguments)
             "markStudentAsInactive" -> usersPermissions.checkMarkStudentAsInactivePermission(jsonArguments)
             "markStudentAsActive" -> usersPermissions.checkMarkStudentAsActivePermission(jsonArguments)

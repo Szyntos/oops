@@ -8,10 +8,8 @@ import backend.chests.ChestsRepository
 import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
-import backend.graphql.utils.PhotoAssigner
-import backend.graphql.utils.PermissionDeniedException
-import backend.graphql.utils.PermissionInput
-import backend.graphql.utils.PermissionService
+import backend.gradingChecks.GradingChecksRepository
+import backend.graphql.utils.*
 import backend.groups.GroupsRepository
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
@@ -19,14 +17,22 @@ import backend.users.UsersRepository
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import kotlin.jvm.optionals.getOrNull
 
 @DgsComponent
 class EditionDataFetcher {
+    @Autowired
+    private lateinit var gradingChecksDataFetcher: GradingChecksDataFetcher
+
+    @Autowired
+    private lateinit var gradingChecksRepository: GradingChecksRepository
+
     @Autowired
     private lateinit var permissionService: PermissionService
 
@@ -80,6 +86,51 @@ class EditionDataFetcher {
 
     @Autowired
     lateinit var categoryEditionDataFetcher: CategoryEditionDataFetcher
+
+    @DgsQuery
+    @Transactional
+    fun listSetupEditions(): List<EditionWithPermissions>{
+        val action = "listSetupEditions"
+        val arguments = mapOf<String, Any>()
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val editions = editionRepository.findAll()
+        return editions.map {
+            EditionWithPermissions(
+                edition = it,
+                permissions =  ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addEdition",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editEdition", objectMapper.writeValueAsString(mapOf("editionId" to it.editionId)))),
+                    canCopy = permissionService.checkPartialPermission(PermissionInput("copyEdition", objectMapper.writeValueAsString(mapOf("editionId" to it.editionId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeEdition", objectMapper.writeValueAsString(mapOf("editionId" to it.editionId)))),
+                    canSelect =
+                    Permission(
+                        "selectEdition",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canUnselect =
+                    Permission(
+                        "unselectEdition",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    additional = emptyList()
+                )
+            )
+        }.sortedBy { it.edition.editionYear }
+    }
 
     @DgsMutation
     @Transactional
@@ -199,6 +250,11 @@ class EditionDataFetcher {
             groupsDataFetcher.removeGroupHelper(it.groupsId)
         }
 
+        val gradingCheck = gradingChecksRepository.findByEdition(edition).getOrNull()
+        if (gradingCheck != null){
+            gradingChecksDataFetcher.removeGradingCheckHelper(gradingCheck.gradingCheckId)
+        }
+
         editionRepository.delete(edition)
         return true
     }
@@ -256,3 +312,8 @@ class EditionDataFetcher {
         return resultEdition
     }
 }
+
+data class EditionWithPermissions(
+    val edition: Edition,
+    val permissions: ListPermissionsOutput
+)

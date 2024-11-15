@@ -32,8 +32,7 @@ export const GradingChecksSection = () => {
     handleEdit,
   } = useGradingChecksSection(editionId);
 
-  console.log(formLevelSet);
-
+  console.log(gradingChecks);
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
@@ -89,7 +88,9 @@ export const GradingChecksSection = () => {
                   endOfLabsDate: gradingChecks.endOfLabsDate,
                   endOfLabsLevelsThreshold:
                     gradingChecks.endOfLabsLevelsThreshold,
-                  projectPointsThreshold: gradingChecks.projectPointsThreshold,
+                  projectPointsThreshold: parseInt(
+                    gradingChecks.projectPointsThreshold as unknown as string,
+                  ),
                   projectId: gradingChecks.projectId,
                 }
               : undefined

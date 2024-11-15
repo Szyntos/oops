@@ -148,6 +148,7 @@ class PermissionService {
             "copyEdition" -> editionPermissions.checkCopyEditionPermission(jsonArguments)
             "removeEdition" -> editionPermissions.checkRemoveEditionPermission(jsonArguments)
             // FilePermissions
+            "removeFile" -> filePermissions.checkRemoveFilePermission(jsonArguments)
             "getFilesGroupedByType" -> filePermissions.checkGetFilesGroupedByTypePermission(jsonArguments)
             "getFilesGroupedByTypeBySelectedTypes" -> filePermissions.checkGetFilesGroupedByTypeBySelectedTypesPermission(jsonArguments)
             // GradingChecksPermissions

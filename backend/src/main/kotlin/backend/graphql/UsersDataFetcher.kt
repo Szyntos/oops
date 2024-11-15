@@ -163,7 +163,16 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
         val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
 
-        return photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", userId, fileId)
+        val result = photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", userId, fileId)
+
+        if (result){
+            if (getCurrentUser().userId == userId){
+                user.avatarSetByUser = true
+                usersRepository.save(user)
+            }
+        }
+
+        return result
     }
 
     @DgsMutation
@@ -222,6 +231,33 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         }
 
         return addUserHelper(-1, "", firstName, secondName, "teacher", email, label, createFirebaseUser, sendEmail)
+    }
+
+    @DgsMutation
+    @Transactional
+    fun setStudentNick(@InputArgument userId: Long, @InputArgument nick: String): Users {
+        val action = "setStudentNick"
+        val arguments = mapOf(
+            "userId" to userId,
+            "nick" to nick
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+
+        user.nick = nick
+        if (getCurrentUser().userId == userId){
+            user.nickSetByUser = true
+        }
+
+        return usersRepository.save(user)
     }
 
     @DgsMutation
@@ -659,6 +695,8 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
             email = userEmail,
             label = label
         )
+        user.nickSetByUser = false
+        user.avatarSetByUser = false
         usersRepository.save(user)
         if (createFirebaseUser) {
             val firebaseUid = try {

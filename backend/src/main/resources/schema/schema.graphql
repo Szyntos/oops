@@ -27,6 +27,10 @@ type Mutation {
   assignPhotoToLevel(levelId: Int!, fileId: Int): Boolean
   assignPhotoToAward(awardId: Int!, fileId: Int): Boolean
   assignPhotoToChest(chestId: Int!, fileId: Int): Boolean
+  setStudentNick(
+    userId: Int!, nick: String!
+  ): UserType
+
   addAward(
     awardName: String!
     awardType: String!
@@ -643,6 +647,8 @@ type UserType {
   secondName: String!
   email: String!
   active: Boolean!
+  nickSetByUser: Boolean!
+  avatarSetByUser: Boolean!
   label: String!
   firebaseUid: String
   imageFile: FileType

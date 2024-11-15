@@ -5,20 +5,20 @@ import backend.categoryEdition.CategoryEditionRepository
 import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecks
 import backend.gradingChecks.GradingChecksRepository
-import backend.graphql.utils.PermissionDeniedException
-import backend.graphql.utils.PermissionInput
-import backend.graphql.utils.PermissionService
+import backend.graphql.utils.*
 import backend.levels.LevelsRepository
 import backend.points.PointsRepository
 import backend.users.UsersRepository
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import kotlin.jvm.optionals.getOrNull
 
 @DgsComponent
 class GradingChecksDataFetcher {
@@ -48,6 +48,68 @@ class GradingChecksDataFetcher {
 
     @Autowired
     lateinit var gradingChecksRepository: GradingChecksRepository
+
+    @DgsQuery
+    @Transactional
+    fun listSetupGradingChecks(@InputArgument editionId: Long): GradingCheckWithPermissions {
+        val action = "listSetupGradingChecks"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val edition = editionRepository.findById(editionId)
+            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+
+        val gradingCheck = gradingChecksRepository.findByEdition(edition).getOrNull()
+
+        val gradingCheckPermissions = GradingCheckWithPermissions(
+            gradingCheck = gradingCheck,
+            permissions = ListPermissionsOutput(
+                canAdd = Permission(
+                    "addGradingCheck",
+                    objectMapper.createObjectNode(),
+                    false,
+                    "Not applicable"),
+                canEdit = permissionService.checkPartialPermission(PermissionInput("editGradingCheck", objectMapper.writeValueAsString(mapOf("gradingCheckId" to gradingCheck?.gradingCheckId)))),
+                canCopy =
+                Permission(
+                    "copyGradingCheck",
+                    objectMapper.createObjectNode(),
+                    false,
+                    "Not applicable"),
+                canRemove =
+                Permission(
+                    "removeGradingCheck",
+                    objectMapper.createObjectNode(),
+                    false,
+                    "Not applicable"),
+                canSelect =
+                Permission(
+                    "selectGradingCheck",
+                    objectMapper.createObjectNode(),
+                    false,
+                    "Not applicable"),
+                canUnselect =
+                Permission(
+                    "unselectGradingCheck",
+                    objectMapper.createObjectNode(),
+                    false,
+                    "Not applicable"),
+                additional = emptyList()
+            )
+        )
+
+        return gradingCheckPermissions
+    }
 
     @DgsMutation
     @Transactional
@@ -172,3 +234,7 @@ class GradingChecksDataFetcher {
 
 }
 
+data class GradingCheckWithPermissions(
+    val gradingCheck: GradingChecks?,
+    val permissions: ListPermissionsOutput
+)

@@ -416,6 +416,10 @@ type Query {
   listSetupAwards(
       editionId: Int!
   ): [AwardWithPermissionsType!]!
+  listSetupGradingChecks(
+    editionId: Int!
+  ): GradingCheckWithPermissions!
+
 
 
 }
@@ -847,6 +851,11 @@ type CategoryWithPermissionsType{
 
 type AwardWithPermissionsType{
   award: AwardType,
+  permissions: ListPermissionsOutputType!
+}
+
+type GradingCheckWithPermissions{
+  gradingCheck: GradingChecksType,
   permissions: ListPermissionsOutputType!
 }
 

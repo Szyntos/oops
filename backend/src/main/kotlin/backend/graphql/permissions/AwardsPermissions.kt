@@ -335,7 +335,7 @@ class AwardsPermissions {
         }
 
         if (awardName != null) {
-            val awardsWithSameName = awardRepository.findAllByAwardName(awardName)
+            val awardsWithSameName = awardRepository.findAllByAwardName(awardName).filter { it.awardId != award.awardId }
             if (awardsWithSameName.any { it.awardType != award.awardType }) {
                 return Permission(
                     action = action,

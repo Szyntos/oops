@@ -195,6 +195,7 @@ class PermissionService {
             // UsersPermissions
             "listSetupUsers" -> usersPermissions.checkListSetupUsersPermission(jsonArguments)
             "assignPhotoToUser" -> usersPermissions.checkAssignPhotoToUserPermission(jsonArguments)
+            "setStudentNick" -> usersPermissions.checkSetStudentNickPermission(jsonArguments)
             "addUser" -> usersPermissions.checkAddUserPermission(jsonArguments)
             "addTeacher" -> usersPermissions.checkAddTeacherPermission(jsonArguments)
             "parseUsersFromCsv" -> usersPermissions.checkParseUsersFromCsvPermission(jsonArguments)

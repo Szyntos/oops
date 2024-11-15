@@ -23,6 +23,7 @@ import backend.users.Users
 import backend.users.UsersRoles
 import backend.utils.CsvReader
 import backend.utils.UserMapper
+import com.google.common.primitives.Floats.max
 import com.google.firebase.ErrorCode
 import com.google.firebase.auth.FirebaseAuthException
 import com.netflix.graphql.dgs.DgsComponent
@@ -36,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDateTime
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.min
 
 @DgsComponent
@@ -552,27 +554,19 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         val points = pointsRepository.findAllByStudentAndSubcategory_Edition(user, edition)
         val bonuses = bonusesRepository.findByChestHistory_User_UserId(studentId)
 
-        val additivePrevBonuses = bonuses.filter { it.award.awardType == AwardType.ADDITIVE_PREV }
-
-        val additivePrevBonusesMap = additivePrevBonuses.associateWith { it.points.value }.toMutableMap()
+        val additivePrevBonuses = bonuses.filter { it.award.awardType == AwardType.ADDITIVE_PREV }.sortedBy { it.points.createdAt }
 
         val subcategoryPoints = points.sortedByDescending { it.subcategory.ordinalNumber }.groupBy { it.subcategory }
             .map { (subcategory, points) ->
                 val purePoints = points.firstOrNull { bonusesRepository.findByPoints(it).isEmpty() }
-                val allBonuses = bonuses.filter { (it.award.awardType != AwardType.MULTIPLICATIVE && it.award.awardType != AwardType.ADDITIVE_PREV && it.points.subcategory == subcategory)  ||
-                        ((it.award.awardType == AwardType.MULTIPLICATIVE || it.award.awardType == AwardType.ADDITIVE_PREV) && it.points.subcategory.category == subcategory.category) }
+                val allBonuses = bonuses.filter { (it.award.awardType != AwardType.MULTIPLICATIVE && it.points.subcategory == subcategory)  ||
+                        ((it.award.awardType == AwardType.MULTIPLICATIVE) && it.points.subcategory.category == subcategory.category) }
+                    .filter { it.award.awardType != AwardType.ADDITIVE_PREV }
                 val partialBonusType = allBonuses.map { bonus ->
                     PartialBonusType(
                         bonuses = bonus,
                         partialValue = if (bonus.award.awardType == AwardType.MULTIPLICATIVE) {
                             purePoints?.value?.times(bonus.award.awardValue)?.toFloat() ?: 0f
-                        } else if (bonus.award.awardType == AwardType.ADDITIVE_PREV) {
-                            val contribution = min(
-                                additivePrevBonusesMap[bonus]?.toFloat() ?: 0f,
-                                purePoints?.value?.let { (purePoints.subcategory.maxPoints.toFloat()).minus(it.toFloat()) } ?: 0f
-                            )
-                            additivePrevBonusesMap[bonus] = BigDecimal(((additivePrevBonusesMap[bonus]?.toFloat() ?: 0f) - contribution).toString()).setScale(2, RoundingMode.HALF_UP)
-                            contribution
                         } else {
                             bonus.points.value.toFloat()
                         }
@@ -591,7 +585,92 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                     createdAt = createdAt,
                     updatedAt = updatedAt
                 )
+            }.toMutableList()
+
+
+        val uniqueCategories = categoriesRepository.findByCategoryEdition_Edition(edition).filter { it.canAddPoints }
+        uniqueCategories.forEach { category ->
+            val categoryPoints = subcategoryPoints.filter { it.subcategory.category == category }.sortedByDescending { it.subcategory.ordinalNumber }.toMutableList()
+            val additivePrevBonusesInCategory = additivePrevBonuses.filter { it.points.subcategory.category == category }.associateWith { it.points.value.toFloat() }
+            for (bonus in additivePrevBonusesInCategory){
+                categoryPoints.sortByDescending { it.subcategory.ordinalNumber }
+                var valueToSpread = bonus.value
+                var i = 0
+                while (valueToSpread > 0){
+                    if (i >= categoryPoints.size){
+                        break
+                    }
+                    val subcategoryPoint = categoryPoints[i].points
+                    val purePoints = subcategoryPoint.purePoints?.value?.toFloat() ?: 0f
+                    val pointsFromAddPrev = subcategoryPoint.partialBonusType.filter { it.bonuses.award.awardType == AwardType.ADDITIVE_PREV }
+                        .sumOf { it.partialValue.toDouble() }.toFloat()
+                    val maxPoints = categoryPoints[i].subcategory.maxPoints.toFloat()
+                    val freeSpace = maxPoints - purePoints - pointsFromAddPrev
+                    val pointsToAdd = max(min(valueToSpread, freeSpace), 0f)
+                    valueToSpread -= pointsToAdd
+                    if (pointsToAdd != 0f){
+                        categoryPoints[i].points.partialBonusType = categoryPoints[i].points.partialBonusType.toMutableList().apply {
+                            add(PartialBonusType(
+                                bonuses = bonus.key,
+                                partialValue = pointsToAdd
+                            ))
+                        }
+                    }
+                    i++
+                }
+
+                if (valueToSpread > 0){
+                    val nextSubcategoriesWithoutPurePoints = subcategoriesRepository.findAllByCategoryAndEdition(category, edition)
+                        .filter { subcategory -> subcategory.points.none { it.bonuses == null } }
+                        .sortedBy { it.ordinalNumber }
+                    var j = 0
+                    while (valueToSpread > 0){
+                        if (j >= nextSubcategoriesWithoutPurePoints.size){
+                            break
+                        }
+                        val subcategory = nextSubcategoriesWithoutPurePoints[j]
+                        val maxPoints = subcategory.maxPoints.toFloat()
+                        val index = categoryPoints.find {it.subcategory == subcategory}?.let { categoryPoints.indexOf(it) }
+                        val pointsFromAddPrev = if (index != null){
+                            categoryPoints[index].points.partialBonusType.filter { it.bonuses.award.awardType == AwardType.ADDITIVE_PREV }
+                                .sumOf { it.partialValue.toDouble() }.toFloat()
+                        } else {
+                            0f
+                        }
+                        val freeSpace = maxPoints - pointsFromAddPrev
+                        val pointsToAdd = max(min(valueToSpread, freeSpace), 0f)
+                        valueToSpread -= pointsToAdd
+                        if (pointsToAdd != 0f){
+                            if (index != null){
+                                categoryPoints[index].points.partialBonusType = categoryPoints[index].points.partialBonusType.toMutableList().apply {
+                                    add(PartialBonusType(
+                                        bonuses = bonus.key,
+                                        partialValue = pointsToAdd
+                                    ))
+                                }
+                            } else {
+                                categoryPoints.add(SubcategoryPointsType(
+                                    subcategory = subcategory,
+                                    points = PurePointsType(
+                                        purePoints = null,
+                                        partialBonusType = listOf(PartialBonusType(
+                                            bonuses = bonus.key,
+                                            partialValue = pointsToAdd
+                                        ))
+                                    ),
+                                    teacher = bonus.key.points.teacher,
+                                    createdAt = bonus.key.points.createdAt,
+                                    updatedAt = bonus.key.points.updatedAt
+                                ))
+                            }
+                        }
+                        j++
+                    }
+                }
             }
+            subcategoryPoints.removeAll { it.subcategory.category == category }
+            subcategoryPoints.addAll(categoryPoints)
+        }
 
         val sumOfPurePoints = BigDecimal(subcategoryPoints.sumOf { it.points.purePoints?.value?.toDouble() ?: 0.0 }.toString())
             .setScale(2, RoundingMode.HALF_UP).toFloat()

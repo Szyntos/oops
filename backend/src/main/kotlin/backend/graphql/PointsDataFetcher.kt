@@ -6,6 +6,7 @@ import backend.bonuses.BonusesRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
 import backend.award.AwardType
+import backend.bonuses.Bonuses
 import backend.graphql.permissions.PointsPermissions
 import backend.graphql.utils.PermissionDeniedException
 import backend.graphql.utils.PermissionInput
@@ -246,12 +247,16 @@ class PointsDataFetcher {
         val bonusesAdditivePrev = bonusRepository.findByAward_AwardTypeAndPoints_Student(AwardType.ADDITIVE_PREV, points.student)
             .filter { bonus -> bonus.points.subcategory.edition == points.subcategory.edition }
             .filter { bonus -> bonus.points.subcategory.category == points.subcategory.category }
+            .sortedByDescending { it.updatedAt }
 
         bonusesMultiplicative.forEach { bonus ->
             bonus.updateMultiplicativePoints(bonusRepository, pointsRepository)
         }
+
+        val updatedBonuses = mutableListOf<Points>()
         bonusesAdditivePrev.forEach { bonus ->
-            bonus.updateAdditivePrevPoints(bonusRepository, pointsRepository)
+            val updatedBonus = bonus.updateAdditivePrevPoints(subcategoriesRepository, bonusRepository, pointsRepository, points.subcategory.edition!!, updatedBonuses)
+            updatedBonuses.add(updatedBonus)
         }
 
         return savedPoints
@@ -294,12 +299,16 @@ class PointsDataFetcher {
         val bonusesAdditivePrev = bonusRepository.findByAward_AwardTypeAndPoints_Student(AwardType.ADDITIVE_PREV, points.student)
             .filter { bonus -> bonus.points.subcategory.edition == points.subcategory.edition }
             .filter { bonus -> bonus.points.subcategory.category == points.subcategory.category }
+            .sortedByDescending { it.updatedAt }
 
         bonusesMultiplicative.forEach { bonus ->
             bonus.updateMultiplicativePoints(bonusRepository, pointsRepository)
         }
+
+        val updatedBonuses = mutableListOf<Points>()
         bonusesAdditivePrev.forEach { bonus ->
-            bonus.updateAdditivePrevPoints(bonusRepository, pointsRepository)
+            val updatedBonus = bonus.updateAdditivePrevPoints(subcategoriesRepository, bonusRepository, pointsRepository, points.subcategory.edition!!, updatedBonuses)
+            updatedBonuses.add(updatedBonus)
         }
 
         return savedPoints
@@ -321,14 +330,17 @@ class PointsDataFetcher {
         val bonusesAdditivePrev = bonusRepository.findByAward_AwardTypeAndPoints_Student(AwardType.ADDITIVE_PREV, points.student)
             .filter { bonus -> bonus.points.subcategory.edition == points.subcategory.edition }
             .filter { bonus -> bonus.points.subcategory.category == points.subcategory.category }
+            .sortedByDescending { it.updatedAt }
 
         pointsRepository.delete(points)
 
         bonusesMultiplicative.forEach { bonus ->
             bonus.updateMultiplicativePoints(bonusRepository, pointsRepository)
         }
+        val updatedBonuses = mutableListOf<Points>()
         bonusesAdditivePrev.forEach { bonus ->
-            bonus.updateAdditivePrevPoints(bonusRepository, pointsRepository)
+            val updatedBonus = bonus.updateAdditivePrevPoints(subcategoriesRepository, bonusRepository, pointsRepository, points.subcategory.edition!!, updatedBonuses)
+            updatedBonuses.add(updatedBonus)
         }
         return true
     }

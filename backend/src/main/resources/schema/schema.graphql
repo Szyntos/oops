@@ -597,7 +597,7 @@ type PointType {
   updatedBy: UserType!
   value: String!
   subcategory: SubcategoryType!
-  bonuses: [BonusType]!
+  bonuses: BonusType
   label: String!
   createdAt: String!
   updatedAt: String!

@@ -644,9 +644,11 @@ type UserType {
   role: UsersRolesType!
   indexNumber: Int!
   firstName: String!
-  secondName: String!
+  secondName: String! s
   email: String!
   active: Boolean!
+  nickSetByUser: Boolean!
+  avatarSetByUser: Boolean!
   label: String!
   firebaseUid: String
   imageFile: FileType

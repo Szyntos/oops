@@ -113,6 +113,17 @@ class UsersPermissions {
             )
         }
 
+        if (currentUser.role == UsersRoles.STUDENT){
+            if (currentUser.avatarSetByUser){
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Student already has an avatar"
+                )
+            }
+        }
+
         val permission = photoAssigner.checkAssignPhotoToAssigneePermission(usersRepository, "image/user", userId, null)
         if (!permission.allow) {
             return Permission(
@@ -121,6 +132,91 @@ class UsersPermissions {
                 allow = false,
                 reason = permission.reason
             )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkSetStudentNickPermission(arguments: JsonNode): Permission {
+        val action = "setStudentNick"
+        val currentUser = userMapper.getCurrentUser()
+
+        val userId = arguments.getLongField("userId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'userId'"
+        )
+
+        val nick = arguments.getStringField("nick") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'nick'"
+        )
+
+        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != userId) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only teachers and coordinators can set nicks to other users"
+            )
+        }
+
+        val user = usersRepository.findById(userId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid user ID"
+            )
+
+        if (user.role != UsersRoles.STUDENT) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is not a student"
+            )
+        }
+
+        if (currentUser.role == UsersRoles.STUDENT){
+            if (currentUser.nickSetByUser){
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Student already set their nick"
+                )
+            }
+        }
+
+        if (usersRepository.findAllByNick(nick).any { it.userId != userId }) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User with nick $nick already exists"
+            )
+        }
+
+        if (currentUser.role == UsersRoles.TEACHER){
+            val userGroupsEditions = groupsRepository.findByUserGroups_User_UserId(userId).map { it.edition }
+            val teacherGroupsEditions = groupsRepository.findByTeacher_UserId(currentUser.userId).map { it.edition }
+            if (userGroupsEditions.intersect(teacherGroupsEditions.toSet()).isEmpty()){
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Teacher can only set nicks of students that are in their editions"
+                )
+            }
         }
 
         return Permission(
@@ -594,6 +690,24 @@ class UsersPermissions {
                 allow = false,
                 reason = "Invalid user ID"
             )
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkResetPasswordByEmailPermission(arguments: JsonNode): Permission {
+        val action = "resetPasswordByEmail"
+
+        val email = arguments.getStringField("email") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'email'"
+        )
+
         return Permission(
             action = action,
             arguments = arguments,

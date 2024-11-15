@@ -1,17 +1,17 @@
 package backend.graphql
 
 import backend.categories.CategoriesRepository
+import backend.chests.Chests
 import backend.files.FileEntity
 import backend.files.FileEntityRepository
-import backend.graphql.utils.PhotoAssigner
-import backend.graphql.utils.PermissionDeniedException
-import backend.graphql.utils.PermissionInput
-import backend.graphql.utils.PermissionService
+import backend.files.FileRetrievalService
+import backend.graphql.utils.*
 
 import backend.points.PointsRepository
 import backend.users.UsersRepository
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
+import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
@@ -20,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @DgsComponent
 class FileDataFetcher {
+    @Autowired
+    private lateinit var fileRetrievalService: FileRetrievalService
+
     @Autowired
     private lateinit var permissionService: PermissionService
 
@@ -57,7 +60,45 @@ class FileDataFetcher {
         val files = fileEntityRepository.findAll()
         return files.groupBy { it.fileType }
             .map { (fileType, files) ->
-                FileGroup(fileType, files.sortedByDescending { it.updatedAt })
+                FileGroup(fileType = fileType,
+                    files = files.sortedByDescending { it.updatedAt }.map { file ->
+                        FileWithPermissions(
+                            file = file,
+                            permissions = ListPermissionsOutput(
+                                canAdd = Permission(
+                                    "addFile",
+                                    objectMapper.createObjectNode(),
+                                    false,
+                                    "Not applicable"),
+                                canEdit =
+                                Permission(
+                                    "editFile",
+                                    objectMapper.createObjectNode(),
+                                    false,
+                                    "Not applicable"),
+                                canCopy =
+                                Permission(
+                                    "copyFile",
+                                    objectMapper.createObjectNode(),
+                                    false,
+                                    "Not applicable"),
+                                canRemove = permissionService.checkPartialPermission(PermissionInput("removeFile", objectMapper.writeValueAsString(mapOf("fileId" to file.fileId)))),
+                                canSelect =
+                                Permission(
+                                    "selectFile",
+                                    objectMapper.createObjectNode(),
+                                    false,
+                                    "Not applicable"),
+                                canUnselect =
+                                Permission(
+                                    "unselectFile",
+                                    objectMapper.createObjectNode(),
+                                    false,
+                                    "Not applicable"),
+                                additional = emptyList()
+                            )
+                        )
+                    })
             }
     }
 
@@ -79,12 +120,74 @@ class FileDataFetcher {
         val selectedFiles = fileEntityRepository.findAllByFileTypeIn(fileTypes)
         return selectedFiles.groupBy { it.fileType }
             .map { (fileType, files) ->
-                FileGroup(fileType, files.sortedByDescending { it.updatedAt })
+                FileGroup(fileType, files.sortedByDescending { it.updatedAt }.map { file ->
+                    FileWithPermissions(
+                        file = file,
+                        permissions = ListPermissionsOutput(
+                            canAdd = Permission(
+                                "addFile",
+                                objectMapper.createObjectNode(),
+                                false,
+                                "Not applicable"),
+                            canEdit =
+                            Permission(
+                                "editFile",
+                                objectMapper.createObjectNode(),
+                                false,
+                                "Not applicable"),
+                            canCopy =
+                            Permission(
+                                "copyFile",
+                                objectMapper.createObjectNode(),
+                                false,
+                                "Not applicable"),
+                            canRemove = permissionService.checkPartialPermission(PermissionInput("removeFile", objectMapper.writeValueAsString(mapOf("fileId" to file.fileId)))),
+                            canSelect =
+                            Permission(
+                                "selectFile",
+                                objectMapper.createObjectNode(),
+                                false,
+                                "Not applicable"),
+                            canUnselect =
+                            Permission(
+                                "unselectFile",
+                                objectMapper.createObjectNode(),
+                                false,
+                                "Not applicable"),
+                            additional = emptyList()
+                        )
+                    )
+                })
             }
+    }
+
+    @DgsMutation
+    @Transactional
+    fun removeFile(@InputArgument fileId: Long): Boolean{
+        val action = "removeFile"
+        val arguments = mapOf(
+            "fileId" to fileId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        fileRetrievalService.deleteFile(fileId)
+        return true
     }
 }
 
 data class FileGroup(
     val fileType: String,
-    val files: List<FileEntity>
+    val files: List<FileWithPermissions>
+)
+
+data class FileWithPermissions(
+    val file: FileEntity,
+    val permissions: ListPermissionsOutput
 )

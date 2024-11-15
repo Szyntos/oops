@@ -84,6 +84,9 @@ type Mutation {
     editionName: String!
   ): EditionType
 
+  removeFile(
+    fileId: Int!
+  ): Boolean
 
   addGradingCheck(
     editionId: Int!
@@ -781,7 +784,7 @@ type GroupTeacherType {
 
 type FileGroupType {
   fileType: String!
-  files: [FileType!]!
+  files: [FileWithPermissions!]!
 }
 
 type ParsedUsersTypeType {
@@ -850,6 +853,10 @@ type AwardWithPermissionsType{
   permissions: ListPermissionsOutputType!
 }
 
+type FileWithPermissions{
+  file: FileType!,
+  permissions: ListPermissionsOutputType!
+}
 
 type ListPermissionsOutputType{
   canAdd: PermissionType!

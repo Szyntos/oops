@@ -26,7 +26,7 @@ export const FilesSection = () => {
 
   const imagesIds: string[] =
     data?.getFilesGroupedByTypeBySelectedTypes.flatMap((a) =>
-      a.files.map((f) => f.fileId),
+      a.files.map((f) => f.file.fileId),
     ) ?? [];
 
   useEffect(() => {

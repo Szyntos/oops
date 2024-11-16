@@ -15,14 +15,17 @@ export type FilesQuery = {
     __typename?: "FileGroupType";
     fileType: string;
     files: Array<{
-      __typename?: "FileType";
-      createdAt: string;
-      fileId: string;
-      fileName: string;
-      fileType: string;
-      label: string;
-      pathToFile: string;
-      updatedAt: string;
+      __typename?: "FileWithPermissions";
+      file: {
+        __typename?: "FileType";
+        createdAt: string;
+        fileId: string;
+        fileName: string;
+        fileType: string;
+        label: string;
+        pathToFile: string;
+        updatedAt: string;
+      };
     }>;
   }>;
 };
@@ -32,13 +35,15 @@ export const FilesDocument = gql`
     getFilesGroupedByTypeBySelectedTypes(fileTypes: $paths) {
       fileType
       files {
-        createdAt
-        fileId
-        fileName
-        fileType
-        label
-        pathToFile
-        updatedAt
+        file {
+          createdAt
+          fileId
+          fileName
+          fileType
+          label
+          pathToFile
+          updatedAt
+        }
       }
     }
   }

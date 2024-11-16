@@ -12,6 +12,12 @@ import org.springframework.stereotype.Service
 class PermissionService {
 
     @Autowired
+    private lateinit var filePartialPermissions: FilePartialPermissions
+
+    @Autowired
+    private lateinit var editionPartialPermissions: EditionPartialPermissions
+
+    @Autowired
     private lateinit var usersPartialPermissions: UsersPartialPermissions
 
     @Autowired
@@ -140,14 +146,17 @@ class PermissionService {
             "removeChest" -> chestsPermissions.checkRemoveChestPermission(jsonArguments)
             "copyChest" -> chestsPermissions.checkCopyChestPermission(jsonArguments)
             // EditionPermissions
+            "listSetupEditions" -> editionPermissions.checkListSetupEditionsPermission(jsonArguments)
             "addEdition" -> editionPermissions.checkAddEditionPermission(jsonArguments)
             "editEdition" -> editionPermissions.checkEditEditionPermission(jsonArguments)
             "copyEdition" -> editionPermissions.checkCopyEditionPermission(jsonArguments)
             "removeEdition" -> editionPermissions.checkRemoveEditionPermission(jsonArguments)
             // FilePermissions
+            "removeFile" -> filePermissions.checkRemoveFilePermission(jsonArguments)
             "getFilesGroupedByType" -> filePermissions.checkGetFilesGroupedByTypePermission(jsonArguments)
             "getFilesGroupedByTypeBySelectedTypes" -> filePermissions.checkGetFilesGroupedByTypeBySelectedTypesPermission(jsonArguments)
             // GradingChecksPermissions
+            "listSetupGradingChecks" -> gradingChecksPermissions.checkListSetupGradingChecksPermission(jsonArguments)
             "addGradingCheck" -> gradingChecksPermissions.checkAddGradingCheckPermission(jsonArguments)
             "editGradingCheck" -> gradingChecksPermissions.checkEditGradingCheckPermission(jsonArguments)
             "removeGradingCheck" -> gradingChecksPermissions.checkRemoveGradingCheckPermission(jsonArguments)
@@ -195,6 +204,7 @@ class PermissionService {
             // UsersPermissions
             "listSetupUsers" -> usersPermissions.checkListSetupUsersPermission(jsonArguments)
             "assignPhotoToUser" -> usersPermissions.checkAssignPhotoToUserPermission(jsonArguments)
+            "setStudentNick" -> usersPermissions.checkSetStudentNickPermission(jsonArguments)
             "addUser" -> usersPermissions.checkAddUserPermission(jsonArguments)
             "addTeacher" -> usersPermissions.checkAddTeacherPermission(jsonArguments)
             "parseUsersFromCsv" -> usersPermissions.checkParseUsersFromCsvPermission(jsonArguments)
@@ -202,6 +212,7 @@ class PermissionService {
             "editUser" -> usersPermissions.checkEditUserPermission(jsonArguments)
             "removeUser" -> usersPermissions.checkRemoveUserPermission(jsonArguments)
             "resetPassword" -> usersPermissions.checkResetPasswordPermission(jsonArguments)
+            "resetPasswordByEmail" -> usersPermissions.checkResetPasswordByEmailPermission(jsonArguments)
             "markPassingStudentsFromEditionAsInactive" -> usersPermissions.checkMarkPassingStudentsFromEditionAsInactivePermission(jsonArguments)
             "markStudentAsInactive" -> usersPermissions.checkMarkStudentAsInactivePermission(jsonArguments)
             "markStudentAsActive" -> usersPermissions.checkMarkStudentAsActivePermission(jsonArguments)
@@ -242,6 +253,14 @@ class PermissionService {
             "editChest" -> chestsPartialPermissions.checkEditChestPermission(jsonArguments)
             "removeChest" -> chestsPartialPermissions.checkRemoveChestPermission(jsonArguments)
             "copyChest" -> chestsPartialPermissions.checkCopyChestPermission(jsonArguments)
+            // EditionPermissions
+            "editEdition" -> editionPartialPermissions.checkEditEditionPermission(jsonArguments)
+            "copyEdition" -> editionPartialPermissions.checkCopyEditionPermission(jsonArguments)
+            "removeEdition" -> editionPartialPermissions.checkRemoveEditionPermission(jsonArguments)
+            // FilePermissions
+            "removeFile" -> filePartialPermissions.checkRemoveFilePermission(jsonArguments)
+            // GradingChecksPermissions
+            "editGradingCheck" -> gradingChecksPermissions.checkEditGradingCheckPermission(jsonArguments)
             // GroupsPermissions
             "editGroupWithUsers" -> groupsPartialPermissions.checkEditGroupWithUsersPermission(jsonArguments)
             "removeGroup" -> groupsPartialPermissions.checkRemoveGroupPermission(jsonArguments)

@@ -1,4 +1,4 @@
-package backend.graphql.permissions
+package backend.graphql.partialPermissions
 
 import backend.award.AwardRepository
 import backend.chestEdition.ChestEditionRepository
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class FilePermissions {
+class FilePartialPermissions {
 
     @Autowired
     private lateinit var fileEntityRepository: FileEntityRepository
@@ -114,46 +114,6 @@ class FilePermissions {
             )
         }
 
-
-        return Permission(
-            action = action,
-            arguments = arguments,
-            allow = true,
-            reason = null
-        )
-    }
-
-    fun checkGetFilesGroupedByTypePermission(arguments: JsonNode): Permission {
-        val action = "getFilesGroupedByType"
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.COORDINATOR || currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.STUDENT || currentUser.role == UsersRoles.UNAUTHENTICATED_USER)) {
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Only coordinators, teachers, students and unauthenticated users can get files grouped by type"
-            )
-        }
-
-        return Permission(
-            action = action,
-            arguments = arguments,
-            allow = true,
-            reason = null
-        )
-    }
-
-    fun checkGetFilesGroupedByTypeBySelectedTypesPermission(arguments: JsonNode): Permission {
-        val action = "getFilesGroupedByTypeBySelectedTypes"
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.COORDINATOR || currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.STUDENT || currentUser.role == UsersRoles.UNAUTHENTICATED_USER)) {
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Only coordinators, teachers, students and unauthenticated users can get files grouped by type by selected types"
-            )
-        }
 
         return Permission(
             action = action,

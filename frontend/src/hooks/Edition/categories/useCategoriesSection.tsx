@@ -96,6 +96,7 @@ export const useCategoriesSection = (editionId: number) => {
     setFormError(undefined);
   };
 
+  // EDIT
   const [editCategory] = useSetupCategoryEditMutation();
   const handleEditCategory = (
     values: CategoriesFormValues,
@@ -118,6 +119,7 @@ export const useCategoriesSection = (editionId: number) => {
         },
       });
       refetch();
+      closeEditCategory();
     });
   };
 

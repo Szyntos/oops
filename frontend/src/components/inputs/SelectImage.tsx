@@ -55,20 +55,20 @@ export const SelectImage = ({
         return options.map((award) => (
           <div
             style={styles.imageWrapper}
-            onClick={() => handleSelect(award.awardId)}
+            onClick={() => handleSelect(award.award.awardId)}
           >
             <TooltipWrapper
               tooltipContent={
                 <div style={styles.container}>
-                  <div style={styles.title}>{award.awardName}</div>
-                  <div>{award.description}</div>
+                  <div style={styles.title}>{award.award.awardName}</div>
+                  <div>{award.award.description}</div>
                 </div>
               }
             >
               <AwardImage
-                id={award.imageFileId as string}
+                id={award.award.imageFile?.fileId as string}
                 size={"l"}
-                disabled={!selectedIds.some((id) => id === award.awardId)}
+                disabled={!selectedIds.some((id) => id === award.award.awardId)}
               />
             </TooltipWrapper>
           </div>

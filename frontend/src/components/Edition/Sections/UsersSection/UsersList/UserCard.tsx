@@ -1,5 +1,6 @@
 import { User } from "../../../../../hooks/Edition/users/useUsersSection";
 import { Styles } from "../../../../../utils/Styles";
+import { SetupButtons } from "../../SetupButtons";
 
 type GroupCardProps = {
   user: User;
@@ -15,10 +16,14 @@ export const UserCard = ({
   return (
     <div style={styles.card}>
       <div>
-        [{user.userId}] {user?.fullName}
+        [{user.user.userId}] {user.user.firstName} {user.user.secondName}
       </div>
-      <button onClick={handleEditClick}>edit</button>
-      <button onClick={handleDeleteClick}>delete</button>
+      <SetupButtons
+        isSelected={false}
+        permissions={user.permissions}
+        handleDelete={handleDeleteClick}
+        handleEdit={handleEditClick}
+      />
     </div>
   );
 };

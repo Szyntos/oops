@@ -211,6 +211,14 @@ class CategoriesPermissions {
                 reason = "Category is already in an edition that has started"
             )
         }
+        if (category.subcategories.any { subcategory -> subcategory.points.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category has subcategories connected to points"
+            )
+        }
         if (awardRepository.existsByCategory(category)) {
             return Permission(
                 action = action,

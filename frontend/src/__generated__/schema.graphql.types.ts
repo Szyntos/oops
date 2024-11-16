@@ -850,13 +850,13 @@ export type AwardSumOrderBy = {
 
 export type AwardType = {
   __typename?: "AwardType";
-  awardEditions: Array<Maybe<AwardEditionType>>;
+  awardEditions: Array<AwardEditionType>;
   awardId: Scalars["ID"]["output"];
   awardName: Scalars["String"]["output"];
   awardType: AwardTypeType;
   awardValue: Scalars["String"]["output"];
   bonuses: Array<Maybe<BonusType>>;
-  category?: Maybe<CategoryType>;
+  category: CategoryType;
   chestAward: Array<Maybe<ChestAwardType>>;
   description: Scalars["String"]["output"];
   imageFile?: Maybe<FileType>;
@@ -961,7 +961,7 @@ export type AwardVarianceOrderBy = {
 
 export type AwardWithPermissionsType = {
   __typename?: "AwardWithPermissionsType";
-  award?: Maybe<AwardType>;
+  award: AwardType;
   permissions: ListPermissionsOutputType;
 };
 
@@ -2149,21 +2149,21 @@ export type CategoryPointsType = {
 
 export type CategoryType = {
   __typename?: "CategoryType";
-  awards: Array<Maybe<AwardType>>;
+  awards: Array<AwardType>;
   canAddPoints: Scalars["Boolean"]["output"];
-  categoryEdition: Array<Maybe<CategoryEditionType>>;
+  categoryEdition: Array<CategoryEditionType>;
   categoryId: Scalars["ID"]["output"];
   categoryName: Scalars["String"]["output"];
   darkColor: Scalars["String"]["output"];
-  gradingChecks: Array<Maybe<GradingChecksType>>;
+  gradingChecks: Array<GradingChecksType>;
   label: Scalars["String"]["output"];
   lightColor: Scalars["String"]["output"];
-  subcategories: Array<Maybe<SubcategoryType>>;
+  subcategories: Array<SubcategoryType>;
 };
 
 export type CategoryWithPermissionsType = {
   __typename?: "CategoryWithPermissionsType";
-  category?: Maybe<CategoryType>;
+  category: CategoryType;
   permissions: ListPermissionsOutputType;
 };
 
@@ -3399,7 +3399,7 @@ export type ChestType = {
   __typename?: "ChestType";
   active: Scalars["Boolean"]["output"];
   awardBundleCount: Scalars["Int"]["output"];
-  chestAward: Array<Maybe<ChestAwardType>>;
+  chestAward: Array<ChestAwardType>;
   chestEdition: Array<Maybe<ChestEditionType>>;
   chestHistory: Array<Maybe<ChestHistoryType>>;
   chestId: Scalars["ID"]["output"];
@@ -3410,7 +3410,7 @@ export type ChestType = {
 
 export type ChestWithPermissionsType = {
   __typename?: "ChestWithPermissionsType";
-  chest?: Maybe<ChestType>;
+  chest: ChestType;
   permissions: ListPermissionsOutputType;
 };
 
@@ -4489,6 +4489,12 @@ export type EditionVarianceOrderBy = {
   levelSetId?: InputMaybe<OrderBy>;
 };
 
+export type EditionWithPermissionsType = {
+  __typename?: "EditionWithPermissionsType";
+  edition: EditionType;
+  permissions: ListPermissionsOutputType;
+};
+
 export type FileGroupType = {
   __typename?: "FileGroupType";
   fileType: Scalars["String"]["output"];
@@ -5244,6 +5250,12 @@ export type FlywaySchemaHistoryVarianceFields = {
   installedRank?: Maybe<Scalars["Float"]["output"]>;
 };
 
+export type GradingCheckWithPermissions = {
+  __typename?: "GradingCheckWithPermissions";
+  gradingCheck?: Maybe<GradingChecksType>;
+  permissions: ListPermissionsOutputType;
+};
+
 /** columns and relationships of "grading_checks" */
 export type GradingChecks = {
   __typename?: "GradingChecks";
@@ -5759,7 +5771,7 @@ export type GroupType = {
   label?: Maybe<Scalars["String"]["output"]>;
   startTime: Scalars["String"]["output"];
   teacher: UserType;
-  userGroups: Array<Maybe<UserGroupType>>;
+  userGroups: Array<UserGroupType>;
   usosId: Scalars["Int"]["output"];
   weekday: WeekdayType;
 };
@@ -7510,7 +7522,7 @@ export type PermissionType = {
 
 export type PointType = {
   __typename?: "PointType";
-  bonuses: Array<Maybe<BonusType>>;
+  bonuses?: Maybe<BonusType>;
   createdAt: Scalars["String"]["output"];
   label: Scalars["String"]["output"];
   pointsId: Scalars["ID"]["output"];
@@ -10049,6 +10061,7 @@ export type UserPointsType = {
 export type UserType = {
   __typename?: "UserType";
   active: Scalars["Boolean"]["output"];
+  avatarSetByUser: Scalars["Boolean"]["output"];
   chestHistory: Array<Maybe<ChestHistoryType>>;
   chestHistoryByTeacher: Array<Maybe<ChestHistoryType>>;
   email: Scalars["String"]["output"];
@@ -10059,6 +10072,7 @@ export type UserType = {
   indexNumber: Scalars["Int"]["output"];
   label: Scalars["String"]["output"];
   nick: Scalars["String"]["output"];
+  nickSetByUser: Scalars["Boolean"]["output"];
   points: Array<Maybe<PointType>>;
   pointsByTeacher: Array<Maybe<PointType>>;
   pointsByUpdatedBy: Array<Maybe<PointType>>;
@@ -11593,6 +11607,8 @@ export type Mutation_Root = {
   removeUser?: Maybe<Scalars["Boolean"]["output"]>;
   removeUserFromGroup?: Maybe<Scalars["Boolean"]["output"]>;
   resetPassword?: Maybe<Scalars["Boolean"]["output"]>;
+  resetPasswordByEmail?: Maybe<Scalars["Boolean"]["output"]>;
+  setStudentNick?: Maybe<UserType>;
   /** update data of the table: "award" */
   updateAward?: Maybe<AwardMutationResponse>;
   /** update single row of the table: "award" */
@@ -12736,6 +12752,17 @@ export type Mutation_RootResetPasswordArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootResetPasswordByEmailArgs = {
+  email: Scalars["String"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootSetStudentNickArgs = {
+  nick: Scalars["String"]["input"];
+  userId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
 export type Mutation_RootUpdateAwardArgs = {
   _inc?: InputMaybe<AwardIncInput>;
   _set?: InputMaybe<AwardSetInput>;
@@ -13305,6 +13332,8 @@ export type Query_Root = {
   listSetupAwards: Array<AwardWithPermissionsType>;
   listSetupCategories: Array<CategoryWithPermissionsType>;
   listSetupChests: Array<ChestWithPermissionsType>;
+  listSetupEditions: Array<EditionWithPermissionsType>;
+  listSetupGradingChecks: GradingCheckWithPermissions;
   listSetupGroups: Array<GroupWithPermissionsType>;
   listSetupLevelSets: Array<LevelSetWithPermissionsType>;
   listSetupUsers: Array<UserWithPermissionsType>;
@@ -13749,6 +13778,10 @@ export type Query_RootListSetupCategoriesArgs = {
 };
 
 export type Query_RootListSetupChestsArgs = {
+  editionId: Scalars["Int"]["input"];
+};
+
+export type Query_RootListSetupGradingChecksArgs = {
   editionId: Scalars["Int"]["input"];
 };
 

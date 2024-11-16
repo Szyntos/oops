@@ -4,15 +4,15 @@ import { gql } from "@apollo/client";
 import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
 export type SetupGroupsQueryVariables = Types.Exact<{
-  editionId: Types.Scalars["bigint"]["input"];
+  editionId: Types.Scalars["Int"]["input"];
 }>;
 
 export type SetupGroupsQuery = {
   __typename?: "query_root";
-  editionByPk?: {
-    __typename?: "Edition";
-    groups: Array<{
-      __typename?: "Groups";
+  listSetupGroups: Array<{
+    __typename?: "GroupWithPermissionsType";
+    group: {
+      __typename?: "GroupType";
       groupName?: string | null;
       generatedName: string;
       groupsId: string;
@@ -20,42 +20,74 @@ export type SetupGroupsQuery = {
       endTime: string;
       usosId: number;
       weekday: {
-        __typename?: "Weekdays";
+        __typename?: "WeekdayType";
         weekdayId: string;
         weekdayName: string;
       };
       teacher: {
-        __typename?: "Users";
-        fullName?: string | null;
+        __typename?: "UserType";
         userId: string;
         secondName: string;
         firstName: string;
       };
-      file?: { __typename?: "Files"; fileId: string } | null;
+      imageFile?: { __typename?: "FileType"; fileId: string } | null;
       userGroups: Array<{
-        __typename?: "UserGroups";
+        __typename?: "UserGroupType";
         user: {
-          __typename?: "Users";
+          __typename?: "UserType";
           firstName: string;
-          fullName?: string | null;
-          imageFileId?: string | null;
+          secondName: string;
           indexNumber: number;
           label: string;
           nick: string;
-          role: string;
-          secondName: string;
+          role: Types.UsersRolesType;
           userId: string;
           email: string;
+          active: boolean;
+          imageFile?: { __typename?: "FileType"; fileId: string } | null;
         };
       }>;
-    }>;
-  } | null;
+    };
+    permissions: {
+      __typename?: "ListPermissionsOutputType";
+      canAdd: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canCopy: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canEdit: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canRemove: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canSelect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canUnselect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+    };
+  }>;
 };
 
 export const SetupGroupsDocument = gql`
-  query SetupGroups($editionId: bigint!) {
-    editionByPk(editionId: $editionId) {
-      groups {
+  query SetupGroups($editionId: Int!) {
+    listSetupGroups(editionId: $editionId) {
+      group {
         groupName
         generatedName
         groupsId
@@ -66,20 +98,21 @@ export const SetupGroupsDocument = gql`
         }
         endTime
         teacher {
-          fullName
           userId
           secondName
           firstName
         }
-        file {
+        imageFile {
           fileId
         }
         usosId
-        userGroups(where: { user: { role: { _eq: "student" } } }) {
+        userGroups {
           user {
             firstName
-            fullName
-            imageFileId
+            secondName
+            imageFile {
+              fileId
+            }
             indexNumber
             label
             nick
@@ -87,7 +120,34 @@ export const SetupGroupsDocument = gql`
             secondName
             userId
             email
+            active
           }
+        }
+      }
+      permissions {
+        canAdd {
+          allow
+          reason
+        }
+        canCopy {
+          allow
+          reason
+        }
+        canEdit {
+          allow
+          reason
+        }
+        canRemove {
+          allow
+          reason
+        }
+        canSelect {
+          allow
+          reason
+        }
+        canUnselect {
+          allow
+          reason
         }
       }
     }

@@ -151,7 +151,7 @@ object JsonNodeExtensions {
     }
 
     fun JsonNode.getUserIdsType(fieldName: String): UserIdsType? {
-        val node = this.get(fieldName)
+        val node = this.get(fieldName).get("userIds")
         if (node == null || !node.isArray) return null
         if (node.any { !it.isNumber }) return null
         return UserIdsType(

@@ -1,17 +1,11 @@
 import { Dialog } from "@mui/material";
-import { SetupGroupsQuery } from "../../../../graphql/setupGroups.graphql.types";
 import { GroupsList } from "./GroupsList/GroupsList";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddGroupForm } from "./GroupAddForm";
-import {
-  Student,
-  useGroupsSection,
-} from "../../../../hooks/Edition/useGroupsSection";
+import { useGroupsSection } from "../../../../hooks/Edition/useGroupsSection";
 import { useParams } from "react-router-dom";
-
-export type Group = NonNullable<
-  SetupGroupsQuery["editionByPk"]
->["groups"][number];
+import { UsersRolesType } from "../../../../__generated__/schema.graphql.types";
+import { mockPermissions } from "../../../../utils/utils";
 
 export const GroupsSection = () => {
   const params = useParams();
@@ -82,16 +76,25 @@ export const GroupsSection = () => {
           editionId={editionId}
           variant={"select"}
           initSelected={
-            selectedGroup?.userGroups.map((u) => u.user as Student) ?? []
+            selectedGroup?.group.userGroups.map((u) => {
+              return {
+                user: {
+                  ...u.user,
+                  __typename: "UserType",
+                  role: u.user.role as UsersRolesType,
+                },
+                permissions: mockPermissions,
+              };
+            }) ?? []
           }
           initValues={
             selectedGroup
               ? {
-                  ...selectedGroup,
-                  startTime: selectedGroup.startTime.slice(0, -3),
-                  endTime: selectedGroup.endTime.slice(0, -3),
-                  weekdayId: selectedGroup.weekday.weekdayId,
-                  teacherId: selectedGroup.teacher.userId,
+                  ...selectedGroup.group,
+                  startTime: selectedGroup.group.startTime.slice(0, -3),
+                  endTime: selectedGroup.group.endTime.slice(0, -3),
+                  weekdayId: selectedGroup.group.weekday.weekdayId,
+                  teacherId: selectedGroup.group.teacher.userId,
                 }
               : undefined
           }

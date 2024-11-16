@@ -10,7 +10,9 @@ export const StudentRow = ({ student, handleDelete }: StudentRowProps) => {
   return (
     <div style={styles.container}>
       <button onClick={() => handleDelete(student)}>-</button>
-      <div>{student.fullName}</div>
+      <div>
+        {student.user.firstName} {student.user.secondName}
+      </div>
     </div>
   );
 };

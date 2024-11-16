@@ -100,9 +100,9 @@ export const ChecksForm = ({
                   formik.errors.endOfLabsLevelsThreshold,
               )}
             >
-              {levelSet.levels.map((level) => (
-                <MenuItem key={level.name} value={level.levelId}>
-                  {level.name}
+              {levelSet.levelSet.levels.map((level) => (
+                <MenuItem key={level.levelName} value={level.levelId}>
+                  {level.levelName}
                 </MenuItem>
               ))}
             </Select>
@@ -141,10 +141,10 @@ export const ChecksForm = ({
             >
               {categories.map((category) => (
                 <MenuItem
-                  key={category.categoryName}
-                  value={category.categoryId}
+                  key={category.category.categoryName}
+                  value={category.category.categoryId}
                 >
-                  {category.categoryName}
+                  {category.category.categoryName}
                 </MenuItem>
               ))}
             </Select>

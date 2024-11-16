@@ -165,6 +165,17 @@ class UsersPartialPermissions {
             )
         }
 
+        if (user.points.isNotEmpty() || user.pointsByTeacher.isNotEmpty() || user.pointsByUpdatedBy.isNotEmpty()
+            || user.pointsHistory.isNotEmpty() || user.pointsHistoryByTeacher.isNotEmpty()){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Cannot remove user that has points"
+            )
+        }
+
+
         return Permission(
             action = action,
             arguments = arguments,

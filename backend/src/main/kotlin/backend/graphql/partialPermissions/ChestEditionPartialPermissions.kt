@@ -188,7 +188,7 @@ class ChestEditionPartialPermissions {
             )
         }
 
-        if (edition.startDate.isBefore(java.time.LocalDate.now()) && chestHistoryRepository.existsByChestAndSubcategory_Edition(chest, edition)){
+        if (chestHistoryRepository.existsByChestAndSubcategory_Edition(chest, edition)){
             return Permission(
                 action = action,
                 arguments = arguments,

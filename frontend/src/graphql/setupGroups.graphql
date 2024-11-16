@@ -1,6 +1,6 @@
-query SetupGroups($editionId: bigint!) {
-  editionByPk(editionId: $editionId) {
-    groups {
+query SetupGroups($editionId: Int!) {
+  listSetupGroups(editionId: $editionId) {
+    group {
       groupName
       generatedName
       groupsId
@@ -11,20 +11,21 @@ query SetupGroups($editionId: bigint!) {
       }
       endTime
       teacher {
-        fullName
         userId
         secondName
         firstName
       }
-      file {
+      imageFile {
         fileId
       }
       usosId
-      userGroups(where: { user: { role: { _eq: "student" } } }) {
+      userGroups {
         user {
           firstName
-          fullName
-          imageFileId
+          secondName
+          imageFile {
+            fileId
+          }
           indexNumber
           label
           nick
@@ -32,7 +33,34 @@ query SetupGroups($editionId: bigint!) {
           secondName
           userId
           email
+          active
         }
+      }
+    }
+    permissions {
+      canAdd {
+        allow
+        reason
+      }
+      canCopy {
+        allow
+        reason
+      }
+      canEdit {
+        allow
+        reason
+      }
+      canRemove {
+        allow
+        reason
+      }
+      canSelect {
+        allow
+        reason
+      }
+      canUnselect {
+        allow
+        reason
       }
     }
   }

@@ -1,0 +1,5 @@
+mutation CopyCategory($categoryId: Int!) {
+  copyCategory(categoryId: $categoryId) {
+    categoryId
+  }
+}

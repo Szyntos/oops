@@ -335,8 +335,8 @@ class AwardsPermissions {
         }
 
         if (awardName != null) {
-            val awardsWithSameName = awardRepository.findAllByAwardName(awardName).filter { it.awardId != award.awardId }
-            if (awardsWithSameName.any { it.awardType != award.awardType }) {
+            val otherAwardsWithSameName = awardRepository.findAllByAwardName(awardName).filter { it.awardId != award.awardId }
+            if (otherAwardsWithSameName.any { it.awardType != award.awardType }) {
                 return Permission(
                     action = action,
                     arguments = arguments,
@@ -344,7 +344,7 @@ class AwardsPermissions {
                     reason = "Award with this name cannot be added with this type (already exists with different type)"
                 )
             }
-            if (awardsWithSameName.any { it.awardValue == award.awardValue }) {
+            if (otherAwardsWithSameName.any { it.awardValue == award.awardValue }) {
                 return Permission(
                     action = action,
                     arguments = arguments,
@@ -477,6 +477,15 @@ class AwardsPermissions {
                 )
             }
         }
+
+//        if (award.bonuses.isNotEmpty()){
+//            return Permission(
+//                action = action,
+//                arguments = arguments,
+//                allow = false,
+//                reason = "Award is already in use"
+//            )
+//        }
 
         return Permission(
             action = action,

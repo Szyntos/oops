@@ -105,6 +105,15 @@ class AwardsPartialPermissions {
             )
         }
 
+//        if (award.bonuses.isNotEmpty()){
+//            return Permission(
+//                action = action,
+//                arguments = arguments,
+//                allow = false,
+//                reason = "Award is already in use"
+//            )
+//        }
+
         return Permission(
             action = action,
             arguments = arguments,

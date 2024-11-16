@@ -1,5 +1,6 @@
 package backend.graphql
 
+import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.graphql.permissions.LevelSetPermissions
@@ -16,6 +17,7 @@ import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
+import jakarta.persistence.*
 import org.slf4j.event.Level
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -69,20 +71,25 @@ class LevelSetDataFetcher {
         if (!permission.allow) {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
-        val levelSets = levelSetRepository.findAll().map {
+        val levelSets = levelSetRepository.findAll().map { levelSet ->
             LevelSetWithPermissions(
-                levelSet = it,
+                levelSet = LevelSetOutput(
+                    levelSetId = levelSet.levelSetId,
+                    levelSetName = levelSet.levelSetName,
+                    edition = levelSet.edition,
+                    levels = levelSet.levels.sortedBy { it.ordinalNumber }.toSet()
+                ),
                 permissions = ListPermissionsOutput(
                     canAdd = Permission(
                         "addLevelSet",
                         objectMapper.createObjectNode(),
                         false,
                         "Not applicable"),
-                    canEdit = permissionService.checkPartialPermission(PermissionInput("editLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to it.levelSetId)))),
-                    canCopy = permissionService.checkPartialPermission(PermissionInput("copyLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to it.levelSetId)))),
-                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to it.levelSetId)))),
-                    canSelect = permissionService.checkPartialPermission(PermissionInput("addLevelSetToEdition", objectMapper.writeValueAsString(mapOf("levelSetId" to it.levelSetId, "editionId" to editionId)))),
-                    canUnselect = permissionService.checkPartialPermission(PermissionInput("removeLevelSetFromEdition", objectMapper.writeValueAsString(mapOf("levelSetId" to it.levelSetId, "editionId" to editionId)))),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to levelSet.levelSetId)))),
+                    canCopy = permissionService.checkPartialPermission(PermissionInput("copyLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to levelSet.levelSetId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to levelSet.levelSetId)))),
+                    canSelect = permissionService.checkPartialPermission(PermissionInput("addLevelSetToEdition", objectMapper.writeValueAsString(mapOf("levelSetId" to levelSet.levelSetId, "editionId" to editionId)))),
+                    canUnselect = permissionService.checkPartialPermission(PermissionInput("removeLevelSetFromEdition", objectMapper.writeValueAsString(mapOf("levelSetId" to levelSet.levelSetId, "editionId" to editionId)))),
                     additional = emptyList()
                 )
             )
@@ -220,6 +227,9 @@ class LevelSetDataFetcher {
                         prevLevel.highest = true
                         levelsRepository.save(prevLevel)
                     }
+                }
+                if (level.userLevels.isNotEmpty()) {
+                    throw IllegalArgumentException("Cannot remove level with users assigned")
                 }
                 levelsRepository.delete(level)
                 levelSet.levels = levelSet.levels.filter { it.levelId != level.levelId }.toSet()
@@ -488,6 +498,13 @@ data class LevelInput(
 )
 
 data class LevelSetWithPermissions(
-    val levelSet: LevelSet,
+    val levelSet: LevelSetOutput,
     val permissions: ListPermissionsOutput
+)
+
+data class LevelSetOutput(
+    val levelSetId: Long = 0,
+    var levelSetName: String,
+    val edition: Set<Edition> = HashSet(),
+    var levels: Set<Levels> = HashSet()
 )

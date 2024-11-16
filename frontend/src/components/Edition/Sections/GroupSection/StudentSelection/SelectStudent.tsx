@@ -20,15 +20,15 @@ export const SelectStudent = ({
         <InputLabel>Student</InputLabel>
         <Select
           name="studentId"
-          value={student?.userId}
+          value={student?.user.userId}
           placeholder="choose student"
           onChange={(e) =>
-            setStudent(students.find((s) => s.userId === e.target.value))
+            setStudent(students.find((s) => s.user.userId === e.target.value))
           }
         >
           {students.map((student) => (
-            <MenuItem key={student.userId} value={student.userId}>
-              {student.fullName}
+            <MenuItem key={student.user.userId} value={student.user.userId}>
+              {student.user.firstName} {student.user.secondName}
             </MenuItem>
           ))}
         </Select>

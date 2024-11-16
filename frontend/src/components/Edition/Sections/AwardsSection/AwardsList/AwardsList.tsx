@@ -29,10 +29,10 @@ export const AwardsList = ({
         {awards.length !== 0
           ? awards.map((award) => (
               <AwardCard
-                key={award.awardId}
+                key={award.award.awardId}
                 award={award}
                 isSelected={selectedAwards.some(
-                  (a) => a.awardId === award.awardId,
+                  (a) => a.award.awardId === award.award.awardId,
                 )}
                 onSelectClick={() => handleSelectAward(award)}
                 onEditClick={() => handleEditAward(award)}

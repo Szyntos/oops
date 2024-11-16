@@ -27,6 +27,7 @@ export const CategoriesSection = () => {
     closeEditCategory,
     handleEditCategory,
     handleDeleteCategory,
+    handleCopyCategory,
   } = useCategoriesSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -42,6 +43,7 @@ export const CategoriesSection = () => {
         handleSelectClick={handleSelectCategory}
         handleEditClick={openEditCategory}
         handleDeleteClick={handleDeleteCategory}
+        handleCopyClick={handleCopyCategory}
         title="Selected categories"
       />
       <CategoriesList
@@ -50,6 +52,7 @@ export const CategoriesSection = () => {
         handleSelectClick={handleSelectCategory}
         handleEditClick={openEditCategory}
         handleDeleteClick={handleDeleteCategory}
+        handleCopyClick={handleCopyCategory}
         title="All categories"
       />
 
@@ -68,9 +71,9 @@ export const CategoriesSection = () => {
           formError={formError}
           handleConfirm={handleEditCategory}
           title={"Edit Category"}
-          initialValues={selectedCategory}
+          initialValues={selectedCategory?.category}
           initialSelectedSubcategories={
-            selectedCategory?.subcategories.map((s) => ({
+            selectedCategory?.category.subcategories.map((s) => ({
               name: s.subcategoryName,
               max: parseInt(s.maxPoints),
             })) ?? []

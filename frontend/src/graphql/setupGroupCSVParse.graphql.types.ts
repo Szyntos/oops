@@ -23,6 +23,7 @@ export type SetupGroupCsvParseMutation = {
       role: Types.UsersRolesType;
       secondName: string;
       userId: string;
+      active: boolean;
     }>;
   };
 };
@@ -40,6 +41,7 @@ export const SetupGroupCsvParseDocument = gql`
         role
         secondName
         userId
+        active
       }
     }
   }

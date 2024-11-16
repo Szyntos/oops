@@ -16,7 +16,7 @@ import { ChestFormValues } from "../../components/Edition/Sections/ChestsSection
 import { useAwardsSection } from "./useAwardsSection";
 import { useSetupChestCreateMutation } from "../../graphql/setupChestCreate.graphql.types";
 
-export type Chest = SetupChestsQuery["chests"][number];
+export type Chest = SetupChestsQuery["listSetupChests"][number];
 
 export const useChestsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();
@@ -26,7 +26,7 @@ export const useChestsSection = (editionId: number) => {
     loading: chestsLoading,
     error: chestsError,
     refetch,
-  } = useSetupChestsQuery();
+  } = useSetupChestsQuery({ variables: { editionId } });
 
   const {
     data: imageData,
@@ -46,10 +46,12 @@ export const useChestsSection = (editionId: number) => {
     error: awardsError,
   } = useAwardsSection(editionId);
 
-  const chests: Chest[] = data?.chests ?? [];
+  const chests: Chest[] = data?.listSetupChests ?? [];
 
   const selectedChests: Chest[] = chests.filter((c) =>
-    c.chestEditions.some((e) => e.editionId === editionId.toString()),
+    c.chest.chestEdition.some(
+      (e) => e?.edition.editionId === editionId.toString(),
+    ),
   );
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
@@ -58,7 +60,6 @@ export const useChestsSection = (editionId: number) => {
   );
 
   // ADD CHEST
-
   const [isAddChest, setIsAddChest] = useState(false);
   const openAddChest = () => {
     setIsAddChest(true);
@@ -89,11 +90,11 @@ export const useChestsSection = (editionId: number) => {
   const [removeChest] = useSetupChestEditionRemoveMutation();
   const handleSelectChest = async (chest: Chest) => {
     const isChestSelected = selectedChests.some(
-      (c) => c.chestId === chest.chestId,
+      (c) => c.chest.chestId === chest.chest.chestId,
     );
     const variables = {
       editionId,
-      chestId: parseInt(chest.chestId),
+      chestId: parseInt(chest.chest.chestId),
     };
     globalErrorWrapper(async () => {
       isChestSelected
@@ -124,7 +125,7 @@ export const useChestsSection = (editionId: number) => {
             ...values.awardThisEditionIds.map((id) => parseInt(id)),
             ...values.awardNotThisEditionIds.map((id) => parseInt(id)),
           ],
-          chestId: parseInt(selectedChest?.chestId as string),
+          chestId: parseInt(selectedChest?.chest.chestId as string),
           awardBundleCount: values.awardBundleCount,
           fileId: parseInt(values.fileId),
           // NOTE: chest type is name xd
@@ -142,7 +143,7 @@ export const useChestsSection = (editionId: number) => {
     globalErrorWrapper(async () => {
       await deleteChest({
         variables: {
-          chestId: parseInt(chest.chestId),
+          chestId: parseInt(chest.chest.chestId),
         },
       });
       refetch();
@@ -151,11 +152,11 @@ export const useChestsSection = (editionId: number) => {
 
   // COPY CHEST
   const [copyChest] = useCopyChestMutation();
-  const handleCopyChest = (Chest: Chest) => {
+  const handleCopyChest = (chest: Chest) => {
     globalErrorWrapper(async () => {
       await copyChest({
         variables: {
-          chestId: parseInt(Chest.chestId),
+          chestId: parseInt(chest.chest.chestId),
         },
       });
       refetch();

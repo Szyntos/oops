@@ -36,6 +36,8 @@ export const LevelSetsSection = () => {
     selectedToEditSet,
 
     handleDeleteSet,
+
+    handleCopySet,
   } = useLevelSetsSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -55,6 +57,7 @@ export const LevelSetsSection = () => {
             onDeleteClick={() => {
               handleDeleteSet(activeSet);
             }}
+            onCopyClick={() => handleCopySet(activeSet)}
           />
         ) : (
           EMPTY_FIELD_STRING
@@ -67,6 +70,7 @@ export const LevelSetsSection = () => {
         handleSelect={handleSelectSet}
         handleEdit={openEditSet}
         handleDelete={handleDeleteSet}
+        handleCopy={handleCopySet}
         title={"All level sets"}
       />
 
@@ -84,12 +88,13 @@ export const LevelSetsSection = () => {
         <CloseHeader onCloseClick={closeEditSet} />
         <AddSetForm
           initLevels={
-            selectedToEditSet?.levels?.map((l, index) => ({
+            selectedToEditSet?.levelSet.levels?.map((l, index) => ({
               ...l,
               ordinal: index,
               minPoints: parseFloat(l.minimumPoints),
               maxPoints: parseFloat(l.maximumPoints),
-              imageId: l.imageFileId ?? "-1",
+              imageId: l.imageFile?.fileId ?? "-1",
+              name: l.levelName,
             })) ?? []
           }
           formError={formError}

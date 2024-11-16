@@ -11,11 +11,13 @@ import { Category } from "../../../utils/utils";
 type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
   categories: Category[];
+  handleStudentClick: (id: string) => void;
 };
 
 export const GroupTableWithFilters = ({
   rows,
   categories,
+  handleStudentClick,
 }: GroupTableWithFiltersProps) => {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
 
@@ -57,7 +59,11 @@ export const GroupTableWithFilters = ({
           return { id: category.id, name: category.name };
         })}
       />
-      <GroupTable rows={rowsToDisplay} subcategories={subcategoriesToDisplay} />
+      <GroupTable
+        rows={rowsToDisplay}
+        subcategories={subcategoriesToDisplay}
+        handleStudentClick={handleStudentClick}
+      />
     </div>
   );
 };

@@ -17,9 +17,14 @@ import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 type GroupTableProps = {
   rows: GroupTableRow[];
   subcategories: Subcategory[];
+  handleStudentClick: (id: string) => void;
 };
 
-export const GroupTable = ({ rows, subcategories }: GroupTableProps) => {
+export const GroupTable = ({
+  rows,
+  subcategories,
+  handleStudentClick,
+}: GroupTableProps) => {
   const darkTheme = createTheme({
     palette: {
       mode: "dark",
@@ -44,7 +49,10 @@ export const GroupTable = ({ rows, subcategories }: GroupTableProps) => {
           <TableBody>
             {rows.map((row, index) => (
               <TableRow key={row.student.id}>
-                <TableCell style={styles.regularStudentCell}>
+                <TableCell
+                  style={styles.regularStudentCell}
+                  onClick={() => handleStudentClick(row.student.id)}
+                >
                   {index + 1}. {row.student.fullName}
                 </TableCell>
                 {row.subcategories.map((subcategory) => (

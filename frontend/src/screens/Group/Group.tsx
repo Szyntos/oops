@@ -3,13 +3,32 @@ import { Styles } from "../../utils/Styles";
 import { pathsGenerator } from "../../router/paths";
 import { useGroupScreenData } from "../../hooks/Group/useGroupScreenData";
 import { GroupTableWithFilters } from "../../components/Group/table/GroupTableWithFilters";
+import { Dialog } from "@mui/material";
+import { CloseHeader } from "../../components/dialogs/CloseHeader";
+import { PointsForm } from "../../components/StudentProfile/PointsForm/PointsForm";
+import { useUser } from "../../hooks/common/useUser";
 
 export const Group = () => {
   const navigate = useNavigate();
   const params = useParams();
   const groupId = params.id ? parseInt(params.id) : undefined;
 
-  const { rows, categories, loading, error } = useGroupScreenData(groupId);
+  // TODO add rights
+  const { user } = useUser();
+  const teacherId = user.userId;
+
+  const {
+    rows,
+    categories,
+    loading,
+    error,
+    formError,
+    isStudentOpen,
+    openStudent,
+    formCategories,
+    closeStudent,
+    handleAddPointsConfirmation,
+  } = useGroupScreenData(groupId, teacherId);
 
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
@@ -23,7 +42,23 @@ export const Group = () => {
         <div>params - group id: {groupId}</div>
       </div>
 
-      <GroupTableWithFilters rows={rows} categories={categories} />
+      <GroupTableWithFilters
+        rows={rows}
+        categories={categories}
+        handleStudentClick={openStudent}
+      />
+
+      <Dialog open={isStudentOpen}>
+        <CloseHeader onCloseClick={closeStudent} />
+        <PointsForm
+          categories={formCategories}
+          handleConfirmClick={handleAddPointsConfirmation}
+          mutationError={formError}
+          initialValues={{ categoryId: "", subcategoryId: "", points: 0 }}
+          variant="add"
+          disableCategoryAndSubcategory={false}
+        />
+      </Dialog>
     </div>
   );
 };

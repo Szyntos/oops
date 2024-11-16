@@ -1,5 +1,10 @@
+import { useState } from "react";
 import { useGroupPointsQuery } from "../../graphql/groupPoints.graphql.types";
 import { Category } from "../../utils/utils";
+import { useFormCategories } from "../common/useFormCategories";
+import { useCreatePointsMutation } from "../../graphql/createPoints.graphql.types";
+import { FormPoints } from "../../components/StudentProfile/PointsForm/types";
+import { useError } from "../common/useGlobalError";
 
 export type GroupTableRow = {
   student: Student;
@@ -18,8 +23,11 @@ export type SubcategoryPoints = {
   categoryId: string;
 };
 
-export const useGroupScreenData = (groupId: number | undefined) => {
-  const { data, loading, error } = useGroupPointsQuery({
+export const useGroupScreenData = (
+  groupId: number | undefined,
+  teacherId: string,
+) => {
+  const { data, loading, error, refetch } = useGroupPointsQuery({
     variables: { groupId: groupId as number },
     skip: !groupId,
   });
@@ -66,10 +74,59 @@ export const useGroupScreenData = (groupId: number | undefined) => {
       };
     }) ?? [];
 
+  const [selectedStudent, setSelectedStudent] = useState<string | undefined>(
+    undefined,
+  );
+  const [formError, setFormError] = useState<string | undefined>(undefined);
+
+  const {
+    formCategories,
+    loading: formDataLoading,
+    error: formDataError,
+  } = useFormCategories();
+
+  const { localErrorWrapper } = useError();
+
+  // ADD
+  const [isStudentOpen, setIsStudentOpen] = useState<boolean>(false);
+  const openStudent = (id: string) => {
+    setSelectedStudent(id);
+    setIsStudentOpen(true);
+  };
+  const closeStudent = () => {
+    setSelectedStudent(undefined);
+    setFormError(undefined);
+    setIsStudentOpen(false);
+  };
+  const [createPoints] = useCreatePointsMutation();
+  const handleAddPointsConfirmation = async (formPoints: FormPoints) => {
+    localErrorWrapper(setFormError, async () => {
+      await createPoints({
+        variables: {
+          studentId: parseInt(selectedStudent ?? "-1"),
+          subcategoryId: parseInt(formPoints.subcategoryId),
+          teacherId: parseInt(teacherId),
+          value: formPoints.points,
+        },
+      });
+      closeStudent();
+      refetch();
+    });
+  };
+
   return {
     rows,
     categories,
-    loading,
-    error,
+    loading: loading || formDataLoading,
+    error: error || formDataError,
+
+    selectedStudent,
+    formError,
+    isStudentOpen,
+    openStudent,
+    closeStudent,
+
+    formCategories,
+    handleAddPointsConfirmation,
   };
 };

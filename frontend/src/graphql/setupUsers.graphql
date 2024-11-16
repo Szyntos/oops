@@ -13,6 +13,7 @@ query SetupUsers($editionId: Int!) {
       secondName
       userId
       email
+      active
     }
     permissions {
       canAdd {

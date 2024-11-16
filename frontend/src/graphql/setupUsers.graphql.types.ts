@@ -20,6 +20,7 @@ export type SetupUsersQuery = {
       role: Types.UsersRolesType;
       userId: string;
       email: string;
+      active: boolean;
       imageFile?: { __typename?: "FileType"; fileId: string } | null;
     };
     permissions: {
@@ -74,6 +75,7 @@ export const SetupUsersDocument = gql`
         secondName
         userId
         email
+        active
       }
       permissions {
         canAdd {

@@ -4489,10 +4489,16 @@ export type EditionVarianceOrderBy = {
   levelSetId?: InputMaybe<OrderBy>;
 };
 
+export type EditionWithPermissionsType = {
+  __typename?: "EditionWithPermissionsType";
+  edition: EditionType;
+  permissions: ListPermissionsOutputType;
+};
+
 export type FileGroupType = {
   __typename?: "FileGroupType";
   fileType: Scalars["String"]["output"];
-  files: Array<FileType>;
+  files: Array<FileWithPermissions>;
 };
 
 export type FileType = {
@@ -4509,6 +4515,12 @@ export type FileType = {
   pathToFile: Scalars["String"]["output"];
   updatedAt: Scalars["String"]["output"];
   users: Array<Maybe<UserType>>;
+};
+
+export type FileWithPermissions = {
+  __typename?: "FileWithPermissions";
+  file: FileType;
+  permissions: ListPermissionsOutputType;
 };
 
 /** columns and relationships of "files" */
@@ -5236,6 +5248,12 @@ export type FlywaySchemaHistoryVarianceFields = {
   checksum?: Maybe<Scalars["Float"]["output"]>;
   executionTime?: Maybe<Scalars["Float"]["output"]>;
   installedRank?: Maybe<Scalars["Float"]["output"]>;
+};
+
+export type GradingCheckWithPermissions = {
+  __typename?: "GradingCheckWithPermissions";
+  gradingCheck?: Maybe<GradingChecksType>;
+  permissions: ListPermissionsOutputType;
 };
 
 /** columns and relationships of "grading_checks" */
@@ -7504,7 +7522,7 @@ export type PermissionType = {
 
 export type PointType = {
   __typename?: "PointType";
-  bonuses: Array<Maybe<BonusType>>;
+  bonuses?: Maybe<BonusType>;
   createdAt: Scalars["String"]["output"];
   label: Scalars["String"]["output"];
   pointsId: Scalars["ID"]["output"];
@@ -10043,6 +10061,7 @@ export type UserPointsType = {
 export type UserType = {
   __typename?: "UserType";
   active: Scalars["Boolean"]["output"];
+  avatarSetByUser: Scalars["Boolean"]["output"];
   chestHistory: Array<Maybe<ChestHistoryType>>;
   chestHistoryByTeacher: Array<Maybe<ChestHistoryType>>;
   email: Scalars["String"]["output"];
@@ -10053,6 +10072,7 @@ export type UserType = {
   indexNumber: Scalars["Int"]["output"];
   label: Scalars["String"]["output"];
   nick: Scalars["String"]["output"];
+  nickSetByUser: Scalars["Boolean"]["output"];
   points: Array<Maybe<PointType>>;
   pointsByTeacher: Array<Maybe<PointType>>;
   pointsByUpdatedBy: Array<Maybe<PointType>>;
@@ -10075,6 +10095,7 @@ export type UserWithPermissionsType = {
 export type Users = {
   __typename?: "Users";
   active: Scalars["Boolean"]["output"];
+  avatarSetByUser: Scalars["Boolean"]["output"];
   /** An array relationship */
   chestHistories: Array<ChestHistory>;
   /** An aggregate relationship */
@@ -10098,6 +10119,7 @@ export type Users = {
   indexNumber: Scalars["Int"]["output"];
   label: Scalars["String"]["output"];
   nick: Scalars["String"]["output"];
+  nickSetByUser: Scalars["Boolean"]["output"];
   /** An array relationship */
   points: Array<Points>;
   /** An aggregate relationship */
@@ -10389,6 +10411,7 @@ export type UsersBoolExp = {
   _not?: InputMaybe<UsersBoolExp>;
   _or?: InputMaybe<Array<UsersBoolExp>>;
   active?: InputMaybe<BooleanComparisonExp>;
+  avatarSetByUser?: InputMaybe<BooleanComparisonExp>;
   chestHistories?: InputMaybe<ChestHistoryBoolExp>;
   chestHistoriesAggregate?: InputMaybe<ChestHistoryAggregateBoolExp>;
   chestHistoriesByTeacherId?: InputMaybe<ChestHistoryBoolExp>;
@@ -10404,6 +10427,7 @@ export type UsersBoolExp = {
   indexNumber?: InputMaybe<IntComparisonExp>;
   label?: InputMaybe<StringComparisonExp>;
   nick?: InputMaybe<StringComparisonExp>;
+  nickSetByUser?: InputMaybe<BooleanComparisonExp>;
   points?: InputMaybe<PointsBoolExp>;
   pointsAggregate?: InputMaybe<PointsAggregateBoolExp>;
   pointsByTeacherId?: InputMaybe<PointsBoolExp>;
@@ -10458,6 +10482,7 @@ export type UsersInputTypeType = {
 /** input type for inserting data into table "users" */
 export type UsersInsertInput = {
   active?: InputMaybe<Scalars["Boolean"]["input"]>;
+  avatarSetByUser?: InputMaybe<Scalars["Boolean"]["input"]>;
   chestHistories?: InputMaybe<ChestHistoryArrRelInsertInput>;
   chestHistoriesByTeacherId?: InputMaybe<ChestHistoryArrRelInsertInput>;
   email?: InputMaybe<Scalars["String"]["input"]>;
@@ -10469,6 +10494,7 @@ export type UsersInsertInput = {
   indexNumber?: InputMaybe<Scalars["Int"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
   nick?: InputMaybe<Scalars["String"]["input"]>;
+  nickSetByUser?: InputMaybe<Scalars["Boolean"]["input"]>;
   points?: InputMaybe<PointsArrRelInsertInput>;
   pointsByTeacherId?: InputMaybe<PointsArrRelInsertInput>;
   pointsByUpdatedBy?: InputMaybe<PointsArrRelInsertInput>;
@@ -10569,6 +10595,7 @@ export type UsersOnConflict = {
 /** Ordering options when selecting data from "users". */
 export type UsersOrderBy = {
   active?: InputMaybe<OrderBy>;
+  avatarSetByUser?: InputMaybe<OrderBy>;
   chestHistoriesAggregate?: InputMaybe<ChestHistoryAggregateOrderBy>;
   chestHistoriesByTeacherIdAggregate?: InputMaybe<ChestHistoryAggregateOrderBy>;
   email?: InputMaybe<OrderBy>;
@@ -10581,6 +10608,7 @@ export type UsersOrderBy = {
   indexNumber?: InputMaybe<OrderBy>;
   label?: InputMaybe<OrderBy>;
   nick?: InputMaybe<OrderBy>;
+  nickSetByUser?: InputMaybe<OrderBy>;
   pointsAggregate?: InputMaybe<PointsAggregateOrderBy>;
   pointsByTeacherIdAggregate?: InputMaybe<PointsAggregateOrderBy>;
   pointsByUpdatedByAggregate?: InputMaybe<PointsAggregateOrderBy>;
@@ -10610,6 +10638,8 @@ export enum UsersSelectColumn {
   /** column name */
   Active = "active",
   /** column name */
+  AvatarSetByUser = "avatarSetByUser",
+  /** column name */
   Email = "email",
   /** column name */
   FirebaseUid = "firebaseUid",
@@ -10624,6 +10654,8 @@ export enum UsersSelectColumn {
   /** column name */
   Nick = "nick",
   /** column name */
+  NickSetByUser = "nickSetByUser",
+  /** column name */
   Role = "role",
   /** column name */
   SecondName = "secondName",
@@ -10635,17 +10667,26 @@ export enum UsersSelectColumn {
 export enum UsersSelectColumnUsersAggregateBoolExpBool_AndArgumentsColumns {
   /** column name */
   Active = "active",
+  /** column name */
+  AvatarSetByUser = "avatarSetByUser",
+  /** column name */
+  NickSetByUser = "nickSetByUser",
 }
 
 /** select "usersAggregateBoolExpBool_orArgumentsColumns" columns of table "users" */
 export enum UsersSelectColumnUsersAggregateBoolExpBool_OrArgumentsColumns {
   /** column name */
   Active = "active",
+  /** column name */
+  AvatarSetByUser = "avatarSetByUser",
+  /** column name */
+  NickSetByUser = "nickSetByUser",
 }
 
 /** input type for updating data in table "users" */
 export type UsersSetInput = {
   active?: InputMaybe<Scalars["Boolean"]["input"]>;
+  avatarSetByUser?: InputMaybe<Scalars["Boolean"]["input"]>;
   email?: InputMaybe<Scalars["String"]["input"]>;
   firebaseUid?: InputMaybe<Scalars["String"]["input"]>;
   firstName?: InputMaybe<Scalars["String"]["input"]>;
@@ -10653,6 +10694,7 @@ export type UsersSetInput = {
   indexNumber?: InputMaybe<Scalars["Int"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
   nick?: InputMaybe<Scalars["String"]["input"]>;
+  nickSetByUser?: InputMaybe<Scalars["Boolean"]["input"]>;
   role?: InputMaybe<Scalars["String"]["input"]>;
   secondName?: InputMaybe<Scalars["String"]["input"]>;
   userId?: InputMaybe<Scalars["bigint"]["input"]>;
@@ -10714,6 +10756,7 @@ export type UsersStreamCursorInput = {
 /** Initial value of the column from where the streaming should start */
 export type UsersStreamCursorValueInput = {
   active?: InputMaybe<Scalars["Boolean"]["input"]>;
+  avatarSetByUser?: InputMaybe<Scalars["Boolean"]["input"]>;
   email?: InputMaybe<Scalars["String"]["input"]>;
   firebaseUid?: InputMaybe<Scalars["String"]["input"]>;
   firstName?: InputMaybe<Scalars["String"]["input"]>;
@@ -10721,6 +10764,7 @@ export type UsersStreamCursorValueInput = {
   indexNumber?: InputMaybe<Scalars["Int"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
   nick?: InputMaybe<Scalars["String"]["input"]>;
+  nickSetByUser?: InputMaybe<Scalars["Boolean"]["input"]>;
   role?: InputMaybe<Scalars["String"]["input"]>;
   secondName?: InputMaybe<Scalars["String"]["input"]>;
   userId?: InputMaybe<Scalars["bigint"]["input"]>;
@@ -10746,6 +10790,8 @@ export enum UsersUpdateColumn {
   /** column name */
   Active = "active",
   /** column name */
+  AvatarSetByUser = "avatarSetByUser",
+  /** column name */
   Email = "email",
   /** column name */
   FirebaseUid = "firebaseUid",
@@ -10759,6 +10805,8 @@ export enum UsersUpdateColumn {
   Label = "label",
   /** column name */
   Nick = "nick",
+  /** column name */
+  NickSetByUser = "nickSetByUser",
   /** column name */
   Role = "role",
   /** column name */
@@ -11549,6 +11597,7 @@ export type Mutation_Root = {
   removeChestFromEdition?: Maybe<Scalars["Boolean"]["output"]>;
   removeChestFromUser?: Maybe<Scalars["Boolean"]["output"]>;
   removeEdition?: Maybe<Scalars["Boolean"]["output"]>;
+  removeFile?: Maybe<Scalars["Boolean"]["output"]>;
   removeGradingCheck?: Maybe<Scalars["Boolean"]["output"]>;
   removeGroup?: Maybe<Scalars["Boolean"]["output"]>;
   removeLevelSet?: Maybe<Scalars["Boolean"]["output"]>;
@@ -11558,6 +11607,8 @@ export type Mutation_Root = {
   removeUser?: Maybe<Scalars["Boolean"]["output"]>;
   removeUserFromGroup?: Maybe<Scalars["Boolean"]["output"]>;
   resetPassword?: Maybe<Scalars["Boolean"]["output"]>;
+  resetPasswordByEmail?: Maybe<Scalars["Boolean"]["output"]>;
+  setStudentNick?: Maybe<UserType>;
   /** update data of the table: "award" */
   updateAward?: Maybe<AwardMutationResponse>;
   /** update single row of the table: "award" */
@@ -12649,6 +12700,11 @@ export type Mutation_RootRemoveEditionArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootRemoveFileArgs = {
+  fileId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
 export type Mutation_RootRemoveGradingCheckArgs = {
   gradingCheckId: Scalars["Int"]["input"];
 };
@@ -12692,6 +12748,17 @@ export type Mutation_RootRemoveUserFromGroupArgs = {
 
 /** mutation root */
 export type Mutation_RootResetPasswordArgs = {
+  userId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootResetPasswordByEmailArgs = {
+  email: Scalars["String"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootSetStudentNickArgs = {
+  nick: Scalars["String"]["input"];
   userId: Scalars["Int"]["input"];
 };
 
@@ -13265,6 +13332,8 @@ export type Query_Root = {
   listSetupAwards: Array<AwardWithPermissionsType>;
   listSetupCategories: Array<CategoryWithPermissionsType>;
   listSetupChests: Array<ChestWithPermissionsType>;
+  listSetupEditions: Array<EditionWithPermissionsType>;
+  listSetupGradingChecks: GradingCheckWithPermissions;
   listSetupGroups: Array<GroupWithPermissionsType>;
   listSetupLevelSets: Array<LevelSetWithPermissionsType>;
   listSetupUsers: Array<UserWithPermissionsType>;
@@ -13709,6 +13778,10 @@ export type Query_RootListSetupCategoriesArgs = {
 };
 
 export type Query_RootListSetupChestsArgs = {
+  editionId: Scalars["Int"]["input"];
+};
+
+export type Query_RootListSetupGradingChecksArgs = {
   editionId: Scalars["Int"]["input"];
 };
 

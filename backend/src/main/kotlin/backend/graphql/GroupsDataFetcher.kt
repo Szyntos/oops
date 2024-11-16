@@ -652,7 +652,7 @@ class GroupsDataFetcher {
         val allAvailableAwards = awardRepository.findByAwardEditions_Edition(group.edition).distinctBy { it.awardId }
 
         // Pre-process data into maps
-        val purePointsByUserAndCategory = points.filter { it.bonuses.isEmpty() }.groupBy { it.student.userId }
+        val purePointsByUserAndCategory = points.filter { it.bonuses == null }.groupBy { it.student.userId }
             .mapValues { it.value.groupBy { it.subcategory.category.categoryId } }
         val bonusesByUserAndCategory = bonuses.groupBy { it.points.student.userId }
             .mapValues { it.value.groupBy { it.points.subcategory.category.categoryId } }
@@ -852,7 +852,7 @@ data class SubcategoryPointsGroupType(
 
 data class PurePointsType(
     val purePoints: Points?,
-    val partialBonusType: List<PartialBonusType>
+    var partialBonusType: List<PartialBonusType>
 )
 
 data class PartialBonusType(

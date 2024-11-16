@@ -85,6 +85,9 @@ const coordinatorPaths = {
       Users: {
         path: "users",
       },
+      GradingChecks: {
+        path: "grading-checks",
+      },
     },
   },
 };
@@ -129,6 +132,8 @@ export const pathsGenerator = {
         `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Groups.path}`,
       Users: (id: string) =>
         `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Users.path}`,
+      GradingChecks: (id: string) =>
+        `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.GradingChecks.path}`,
     },
   },
 };

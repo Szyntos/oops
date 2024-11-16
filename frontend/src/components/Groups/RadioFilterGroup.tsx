@@ -1,18 +1,6 @@
 import { Styles } from "../../utils/Styles";
 
-export type GroupRadioFilterItem =
-  | {
-      id: "all";
-      name: "wszystkie";
-    }
-  | {
-      id: "yours";
-      name: "twoje";
-    }
-  | {
-      id: "foreign";
-      name: "obce";
-    };
+export type GroupRadioFilterItem = { id: string; name: string };
 
 type RadioFilterGroupProps = {
   options: GroupRadioFilterItem[];

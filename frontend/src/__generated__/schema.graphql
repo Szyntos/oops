@@ -6351,9 +6351,14 @@ input EditionVarianceOrderBy {
   levelSetId: OrderBy
 }
 
+type EditionWithPermissionsType {
+  edition: EditionType!
+  permissions: ListPermissionsOutputType!
+}
+
 type FileGroupType {
   fileType: String!
-  files: [FileType!]!
+  files: [FileWithPermissions!]!
 }
 
 type FileType {
@@ -6369,6 +6374,11 @@ type FileType {
   pathToFile: String!
   updatedAt: String!
   users: [UserType]!
+}
+
+type FileWithPermissions {
+  file: FileType!
+  permissions: ListPermissionsOutputType!
 }
 
 """
@@ -7496,6 +7506,11 @@ type FlywaySchemaHistoryVarianceFields {
   checksum: Float
   executionTime: Float
   installedRank: Float
+}
+
+type GradingCheckWithPermissions {
+  gradingCheck: GradingChecksType
+  permissions: ListPermissionsOutputType!
 }
 
 """
@@ -10553,7 +10568,7 @@ type PermissionType {
 }
 
 type PointType {
-  bonuses: [BonusType]!
+  bonuses: BonusType
   createdAt: String!
   label: String!
   pointsId: ID!
@@ -13980,6 +13995,7 @@ type UserPointsType {
 
 type UserType {
   active: Boolean!
+  avatarSetByUser: Boolean!
   chestHistory: [ChestHistoryType]!
   chestHistoryByTeacher: [ChestHistoryType]!
   email: String!
@@ -13990,6 +14006,7 @@ type UserType {
   indexNumber: Int!
   label: String!
   nick: String!
+  nickSetByUser: Boolean!
   points: [PointType]!
   pointsByTeacher: [PointType]!
   pointsByUpdatedBy: [PointType]!
@@ -14012,6 +14029,7 @@ columns and relationships of "users"
 """
 type Users {
   active: Boolean!
+  avatarSetByUser: Boolean!
 
   """
   An array relationship
@@ -14209,6 +14227,7 @@ type Users {
   indexNumber: Int!
   label: String!
   nick: String!
+  nickSetByUser: Boolean!
 
   """
   An array relationship
@@ -14720,6 +14739,7 @@ input UsersBoolExp {
   _not: UsersBoolExp
   _or: [UsersBoolExp!]
   active: BooleanComparisonExp
+  avatarSetByUser: BooleanComparisonExp
   chestHistories: ChestHistoryBoolExp
   chestHistoriesAggregate: ChestHistoryAggregateBoolExp
   chestHistoriesByTeacherId: ChestHistoryBoolExp
@@ -14735,6 +14755,7 @@ input UsersBoolExp {
   indexNumber: IntComparisonExp
   label: StringComparisonExp
   nick: StringComparisonExp
+  nickSetByUser: BooleanComparisonExp
   points: PointsBoolExp
   pointsAggregate: PointsAggregateBoolExp
   pointsByTeacherId: PointsBoolExp
@@ -14806,6 +14827,7 @@ input type for inserting data into table "users"
 """
 input UsersInsertInput {
   active: Boolean
+  avatarSetByUser: Boolean
   chestHistories: ChestHistoryArrRelInsertInput
   chestHistoriesByTeacherId: ChestHistoryArrRelInsertInput
   email: String
@@ -14817,6 +14839,7 @@ input UsersInsertInput {
   indexNumber: Int
   label: String
   nick: String
+  nickSetByUser: Boolean
   points: PointsArrRelInsertInput
   pointsByTeacherId: PointsArrRelInsertInput
   pointsByUpdatedBy: PointsArrRelInsertInput
@@ -14944,6 +14967,7 @@ Ordering options when selecting data from "users".
 """
 input UsersOrderBy {
   active: OrderBy
+  avatarSetByUser: OrderBy
   chestHistoriesAggregate: ChestHistoryAggregateOrderBy
   chestHistoriesByTeacherIdAggregate: ChestHistoryAggregateOrderBy
   email: OrderBy
@@ -14956,6 +14980,7 @@ input UsersOrderBy {
   indexNumber: OrderBy
   label: OrderBy
   nick: OrderBy
+  nickSetByUser: OrderBy
   pointsAggregate: PointsAggregateOrderBy
   pointsByTeacherIdAggregate: PointsAggregateOrderBy
   pointsByUpdatedByAggregate: PointsAggregateOrderBy
@@ -14990,6 +15015,11 @@ enum UsersSelectColumn {
   column name
   """
   active
+
+  """
+  column name
+  """
+  avatarSetByUser
 
   """
   column name
@@ -15029,6 +15059,11 @@ enum UsersSelectColumn {
   """
   column name
   """
+  nickSetByUser
+
+  """
+  column name
+  """
   role
 
   """
@@ -15050,6 +15085,16 @@ enum UsersSelectColumnUsersAggregateBoolExpBool_andArgumentsColumns {
   column name
   """
   active
+
+  """
+  column name
+  """
+  avatarSetByUser
+
+  """
+  column name
+  """
+  nickSetByUser
 }
 
 """
@@ -15060,6 +15105,16 @@ enum UsersSelectColumnUsersAggregateBoolExpBool_orArgumentsColumns {
   column name
   """
   active
+
+  """
+  column name
+  """
+  avatarSetByUser
+
+  """
+  column name
+  """
+  nickSetByUser
 }
 
 """
@@ -15067,6 +15122,7 @@ input type for updating data in table "users"
 """
 input UsersSetInput {
   active: Boolean
+  avatarSetByUser: Boolean
   email: String
   firebaseUid: String
   firstName: String
@@ -15074,6 +15130,7 @@ input UsersSetInput {
   indexNumber: Int
   label: String
   nick: String
+  nickSetByUser: Boolean
   role: String
   secondName: String
   userId: bigint
@@ -15153,6 +15210,7 @@ Initial value of the column from where the streaming should start
 """
 input UsersStreamCursorValueInput {
   active: Boolean
+  avatarSetByUser: Boolean
   email: String
   firebaseUid: String
   firstName: String
@@ -15160,6 +15218,7 @@ input UsersStreamCursorValueInput {
   indexNumber: Int
   label: String
   nick: String
+  nickSetByUser: Boolean
   role: String
   secondName: String
   userId: bigint
@@ -15195,6 +15254,11 @@ enum UsersUpdateColumn {
   """
   column name
   """
+  avatarSetByUser
+
+  """
+  column name
+  """
   email
 
   """
@@ -15226,6 +15290,11 @@ enum UsersUpdateColumn {
   column name
   """
   nick
+
+  """
+  column name
+  """
+  nickSetByUser
 
   """
   column name
@@ -17197,6 +17266,7 @@ type mutation_root {
   removeChestFromEdition(chestId: Int!, editionId: Int!): Boolean
   removeChestFromUser(chestHistoryId: Int!): Boolean
   removeEdition(editionId: Int!): Boolean
+  removeFile(fileId: Int!): Boolean
   removeGradingCheck(gradingCheckId: Int!): Boolean
   removeGroup(groupId: Int!): Boolean
   removeLevelSet(levelSetId: Int!): Boolean
@@ -17206,6 +17276,8 @@ type mutation_root {
   removeUser(userId: Int!): Boolean
   removeUserFromGroup(groupId: Int!, userId: Int!): Boolean
   resetPassword(userId: Int!): Boolean
+  resetPasswordByEmail(email: String!): Boolean
+  setStudentNick(nick: String!, userId: Int!): UserType
 
   """
   update data of the table: "award"
@@ -19403,6 +19475,8 @@ type query_root {
   listSetupAwards(editionId: Int!): [AwardWithPermissionsType!]!
   listSetupCategories(editionId: Int!): [CategoryWithPermissionsType!]!
   listSetupChests(editionId: Int!): [ChestWithPermissionsType!]!
+  listSetupEditions: [EditionWithPermissionsType!]!
+  listSetupGradingChecks(editionId: Int!): GradingCheckWithPermissions!
   listSetupGroups(editionId: Int!): [GroupWithPermissionsType!]!
   listSetupLevelSets(editionId: Int!): [LevelSetWithPermissionsType!]!
   listSetupUsers(editionId: Int!): [UserWithPermissionsType!]!

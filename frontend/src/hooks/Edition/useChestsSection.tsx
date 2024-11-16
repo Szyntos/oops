@@ -36,7 +36,7 @@ export const useChestsSection = (editionId: number) => {
 
   const imageIds: string[] =
     imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>
-      i.files.map((f) => f.fileId),
+      i.files.map((f) => f.file.fileId),
     ) ?? [];
 
   const {

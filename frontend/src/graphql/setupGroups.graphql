@@ -33,6 +33,7 @@ query SetupGroups($editionId: Int!) {
           secondName
           userId
           email
+          active
         }
       }
     }

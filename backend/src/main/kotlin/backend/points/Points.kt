@@ -38,8 +38,8 @@ class Points(
     @Column(name = "label", nullable = false, length = 256)
     var label: String,
 
-    @OneToMany(mappedBy = "points", fetch = FetchType.LAZY)
-    val bonuses: Set<Bonuses> = HashSet(),
+    @OneToOne(mappedBy = "points", fetch = FetchType.LAZY)
+    val bonuses: Bonuses? = null,
 ) : TimestampModel(){
     constructor() : this(
         student = Users(),

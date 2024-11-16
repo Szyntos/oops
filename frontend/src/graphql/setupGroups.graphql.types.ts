@@ -43,6 +43,7 @@ export type SetupGroupsQuery = {
           role: Types.UsersRolesType;
           userId: string;
           email: string;
+          active: boolean;
           imageFile?: { __typename?: "FileType"; fileId: string } | null;
         };
       }>;
@@ -119,6 +120,7 @@ export const SetupGroupsDocument = gql`
             secondName
             userId
             email
+            active
           }
         }
       }

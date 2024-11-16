@@ -27,6 +27,10 @@ type Mutation {
   assignPhotoToLevel(levelId: Int!, fileId: Int): Boolean
   assignPhotoToAward(awardId: Int!, fileId: Int): Boolean
   assignPhotoToChest(chestId: Int!, fileId: Int): Boolean
+  setStudentNick(
+    userId: Int!, nick: String!
+  ): UserType
+
   addAward(
     awardName: String!
     awardType: String!
@@ -84,6 +88,9 @@ type Mutation {
     editionName: String!
   ): EditionType
 
+  removeFile(
+    fileId: Int!
+  ): Boolean
 
   addGradingCheck(
     editionId: Int!
@@ -151,6 +158,7 @@ type Mutation {
     editionId: Int!
   ): ParsedUsersTypeType!
   resetPassword(userId: Int!): Boolean
+  resetPasswordByEmail(email: String!): Boolean
   generateSubcategories(
     editionId: Int!
     categoryId: Int!
@@ -416,6 +424,11 @@ type Query {
   listSetupAwards(
       editionId: Int!
   ): [AwardWithPermissionsType!]!
+  listSetupGradingChecks(
+    editionId: Int!
+  ): GradingCheckWithPermissions!
+
+  listSetupEditions: [EditionWithPermissionsType!]!
 
 
 }
@@ -584,7 +597,7 @@ type PointType {
   updatedBy: UserType!
   value: String!
   subcategory: SubcategoryType!
-  bonuses: [BonusType]!
+  bonuses: BonusType
   label: String!
   createdAt: String!
   updatedAt: String!
@@ -643,6 +656,8 @@ type UserType {
   secondName: String!
   email: String!
   active: Boolean!
+  nickSetByUser: Boolean!
+  avatarSetByUser: Boolean!
   label: String!
   firebaseUid: String
   imageFile: FileType
@@ -781,7 +796,7 @@ type GroupTeacherType {
 
 type FileGroupType {
   fileType: String!
-  files: [FileType!]!
+  files: [FileWithPermissions!]!
 }
 
 type ParsedUsersTypeType {
@@ -847,6 +862,21 @@ type CategoryWithPermissionsType{
 
 type AwardWithPermissionsType{
   award: AwardType!,
+  permissions: ListPermissionsOutputType!
+}
+
+type FileWithPermissions{
+  file: FileType!,
+  permissions: ListPermissionsOutputType!
+}
+
+type GradingCheckWithPermissions{
+  gradingCheck: GradingChecksType,
+  permissions: ListPermissionsOutputType!
+}
+
+type EditionWithPermissionsType{
+  edition: EditionType!,
   permissions: ListPermissionsOutputType!
 }
 

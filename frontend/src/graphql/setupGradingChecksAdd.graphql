@@ -1,0 +1,28 @@
+mutation SetupGradingChecksAdd(
+  $editionId: Int!
+  $endOfLabsDate: String!
+  $endOfLabsLevelsThreshold: Int!
+  $projectId: Int!
+  $projectPointsThreshold: Float!
+) {
+  addGradingCheck(
+    editionId: $editionId
+    endOfLabsDate: $endOfLabsDate
+    endOfLabsLevelsThreshold: $endOfLabsLevelsThreshold
+    projectId: $projectId
+    projectPointsThreshold: $projectPointsThreshold
+  ) {
+    endOfLabsDate
+    gradingCheckId
+    projectPointsThreshold
+    edition {
+      editionId
+    }
+    endOfLabsLevelsThreshold {
+      levelId
+    }
+    project {
+      categoryId
+    }
+  }
+}

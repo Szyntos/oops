@@ -69,7 +69,9 @@ export const useGroupsSection = (editionId: number) => {
     ) ?? [];
   const students: Student[] =
     usersData?.listSetupUsers.filter(
-      (u) => u.user.role.toLocaleUpperCase() === UsersRolesType.Student,
+      (u) =>
+        u.user.role.toLocaleUpperCase() === UsersRolesType.Student &&
+        u.user.active,
     ) ?? [];
 
   // ADD

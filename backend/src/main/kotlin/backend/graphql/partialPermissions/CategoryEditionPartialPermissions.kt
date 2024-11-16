@@ -204,6 +204,14 @@ class CategoryEditionPartialPermissions {
                 reason = "Edition has already started"
             )
         }
+        if (gradingChecksRepository.existsByProjectAndEdition(category, edition)){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Category has grading checks assigned in this edition"
+            )
+        }
 
         if (subcategoriesRepository.findByCategoryAndEdition(category, edition).any { subcategory -> subcategory.points.isNotEmpty() }){
             return Permission(

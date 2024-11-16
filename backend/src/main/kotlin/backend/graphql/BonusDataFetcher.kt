@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.max
 import kotlin.math.min
 
 @DgsComponent
@@ -155,26 +156,27 @@ class BonusDataFetcher {
     }
 
     private fun createAdditivePrevPoints(chestHistory: ChestHistory, award: Award, edition: Edition): Points {
-        val pointsInAwardCategory = chestHistory.user.getPointsByEditionAndCategory(edition,
-            award.category, pointsRepository).filter{
-                point -> bonusesRepository.findByPoints(point).isEmpty()
-        }.sortedBy { it.subcategory.ordinalNumber }
+        val pointsInAwardCategory = chestHistory.user.getPointsByEditionAndCategory(edition, award.category, pointsRepository)
+            .sortedBy { it.subcategory.ordinalNumber }
+            .filter { point -> bonusesRepository.findByPoints(point).isEmpty() || point.bonuses?.award?.awardType == AwardType.ADDITIVE_PREV }
 
-        var sum = 0f
-        var i = pointsInAwardCategory.size - 1
-        while (sum < award.awardValue.toFloat() && i >= 0) {
-            val lastPoints = pointsInAwardCategory.getOrNull(i--)
-                ?: break
-            val pointsToAdd = min(award.awardValue.toFloat() - sum, lastPoints.subcategory.maxPoints.toFloat() - lastPoints.value.toFloat())
-            sum += pointsToAdd
-        }
+
+        val sumOfAllPointsInAwardCategory = pointsInAwardCategory.sumOf { it.value.toDouble() }.toFloat()
+
+        val allSubcategoriesInAwardCategory = subcategoriesRepository.findAllByCategoryAndEdition(award.category, edition)
+
+        val maxPoints = allSubcategoriesInAwardCategory.sumOf { it.maxPoints.toDouble() }.toFloat()
+
+        val freeSpace = maxPoints - sumOfAllPointsInAwardCategory
+
+        val pointsToAdd = max(min(award.awardValue.toFloat(), freeSpace), 0f)
 
         return Points(
             student = chestHistory.user,
             teacher = chestHistory.teacher,
             updatedBy = chestHistory.teacher,
-            value = BigDecimal(sum.toString()).setScale(2, RoundingMode.HALF_UP),
-            subcategory = pointsInAwardCategory.last().subcategory,
+            value = pointsToAdd.toBigDecimal().setScale(2, RoundingMode.HALF_UP),
+            subcategory = pointsInAwardCategory.first().subcategory,
             label = "Points awarded for ${award.awardName}"
         )
     }

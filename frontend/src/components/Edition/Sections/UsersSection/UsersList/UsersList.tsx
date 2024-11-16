@@ -1,4 +1,5 @@
 import { User } from "../../../../../hooks/Edition/users/useUsersSection";
+import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
 import { UserCard } from "./UserCard";
 
@@ -18,15 +19,19 @@ export const UsersList = ({
   return (
     <div style={styles.wrap}>
       <div style={styles.title}>{title}</div>
-      <div style={styles.container}>
-        {users.map((user) => (
-          <UserCard
-            user={user}
-            handleDeleteClick={() => handleDeleteClick(user)}
-            handleEditClick={() => handleEditClick(user)}
-          />
-        ))}
-      </div>
+      {users.length > 0 ? (
+        <div style={styles.container}>
+          {users.map((user) => (
+            <UserCard
+              user={user}
+              handleDeleteClick={() => handleDeleteClick(user)}
+              handleEditClick={() => handleEditClick(user)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div>{EMPTY_FIELD_STRING}</div>
+      )}
     </div>
   );
 };

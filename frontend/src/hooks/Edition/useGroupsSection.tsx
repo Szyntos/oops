@@ -68,7 +68,7 @@ export const useGroupsSection = (editionId: number) => {
     ) ?? [];
   const students: Student[] =
     usersData?.users.filter(
-      (u) => u.role.toLocaleUpperCase() === UsersRolesType.Student,
+      (u) => u.role.toLocaleUpperCase() === UsersRolesType.Student && u.active,
     ) ?? [];
 
   // ADD
@@ -190,6 +190,7 @@ export const useGroupsSection = (editionId: number) => {
           secondName: u.secondName,
           userId: u.userId,
           email: u.email,
+          active: true,
         })) ?? [];
 
       return uploadedStudents;

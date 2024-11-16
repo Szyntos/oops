@@ -26,6 +26,9 @@ export const useAwardsSection = (editionId: number) => {
     error: categoriesError,
   } = useCategoriesSection(editionId);
 
+  const formCategories =
+    selectedCategories.filter((category) => category.canAddPoints) ?? [];
+
   const {
     data,
     loading: awardsLoading,
@@ -41,7 +44,7 @@ export const useAwardsSection = (editionId: number) => {
 
   const imageIds: string[] =
     imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>
-      i.files.map((f) => f.fileId),
+      i.files.map((f) => f.file.fileId),
     ) ?? [];
 
   const awards: Award[] = data?.award ?? [];
@@ -160,7 +163,7 @@ export const useAwardsSection = (editionId: number) => {
   return {
     awards,
     selectedAwards,
-    formCategories: selectedCategories,
+    formCategories,
     imageIds,
     loading: awardsLoading || categoriesLoading || imageLoading,
     error: awardsError || categoriesError || imageError,

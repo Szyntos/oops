@@ -14,7 +14,9 @@ export type Section = {
     | "groups"
     | "levels"
     | "files"
-    | "users";
+    | "users"
+    | "grading checks";
+
   path: (editionId: string) => string;
 };
 
@@ -27,7 +29,10 @@ const sections: Section[] = [
     title: "levels",
     path: pathsGenerator.coordinator.EditionChildren.Levels,
   },
-  // grading checks
+  {
+    title: "grading checks",
+    path: pathsGenerator.coordinator.EditionChildren.GradingChecks,
+  },
   {
     title: "awards",
     path: pathsGenerator.coordinator.EditionChildren.Awards,

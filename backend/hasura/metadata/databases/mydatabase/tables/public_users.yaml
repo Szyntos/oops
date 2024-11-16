@@ -87,12 +87,14 @@ select_permissions:
     permission:
       columns:
         - active
+        - avatar_set_by_user
         - email
         - first_name
         - image_file_id
         - index_number
         - label
         - nick
+        - nick_set_by_user
         - role
         - second_name
         - user_id
@@ -105,10 +107,12 @@ select_permissions:
     permission:
       columns:
         - active
+        - avatar_set_by_user
         - first_name
         - image_file_id
         - index_number
         - nick
+        - nick_set_by_user
         - role
         - second_name
         - user_id
@@ -125,11 +129,13 @@ select_permissions:
     permission:
       columns:
         - active
+        - avatar_set_by_user
         - first_name
         - image_file_id
         - index_number
         - label
         - nick
+        - nick_set_by_user
         - role
         - second_name
         - user_id

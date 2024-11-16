@@ -3,12 +3,15 @@ package backend.bonuses
 import backend.award.Award
 import backend.award.AwardType
 import backend.chestHistory.ChestHistory
+import backend.edition.Edition
 import backend.points.Points
 import backend.points.PointsRepository
+import backend.subcategories.SubcategoriesRepository
 import backend.utils.TimestampModel
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.max
 import kotlin.math.min
 
 @Entity
@@ -64,37 +67,32 @@ class Bonuses(
         pointsRepository.save(points)
     }
 
-    fun updateAdditivePrevPoints(bonusRepository: BonusesRepository, pointsRepository: PointsRepository) {
+    fun updateAdditivePrevPoints(subcategoriesRepository: SubcategoriesRepository, bonusRepository: BonusesRepository, pointsRepository: PointsRepository, edition: Edition, updatedBonuses: List<Points>): Points {
         if (award.awardType != AwardType.ADDITIVE_PREV) {
-            throw IllegalArgumentException("Award type is not ADDITIVE_NEXT")
+            throw IllegalArgumentException("Award type is not ADDITIVE_PREV")
         }
         if (points.subcategory.edition == null){
             throw IllegalArgumentException("Points edition is null")
         }
-        val pointsInAwardCategory = points.student.getPointsByEditionAndCategory(
-            points.subcategory.edition!!,
-            award.category, pointsRepository).filter{
-                point -> bonusRepository.findByPoints(point).isEmpty()
-        }.sortedBy { it.subcategory.ordinalNumber }
 
-        if (pointsInAwardCategory.isEmpty()) {
-            points.value = BigDecimal.ZERO
-            pointsRepository.save(points)
-            return
-        }
+        val purePointsInAwardCategory = chestHistory.user.getPointsByEditionAndCategory(edition, award.category, pointsRepository)
+            .sortedBy { it.subcategory.ordinalNumber }
+            .filter { point -> bonusRepository.findByPoints(point).isEmpty()}
 
-        var sum = 0f
-        var i = pointsInAwardCategory.size - 1
-        while (sum < award.awardValue.toFloat() || i >= 0) {
-            val lastPoints = pointsInAwardCategory.getOrNull(i--)
-                ?: break
-            val pointsToAdd = min(award.awardValue.toFloat() - sum, lastPoints.subcategory.maxPoints.toFloat() - lastPoints.value.toFloat())
-            sum += pointsToAdd
-        }
+        val sumOfPurePointsInAwardCategory = purePointsInAwardCategory.sumOf { it.value.toDouble() }.toFloat()
 
-        points.value = BigDecimal(sum.toString()).setScale(2, RoundingMode.HALF_UP)
+        val sumOfUpdatedBonuses = updatedBonuses.sumOf { it.value.toDouble() }.toFloat()
 
+        val allSubcategoriesInAwardCategory = subcategoriesRepository.findAllByCategoryAndEdition(award.category, edition)
 
-        pointsRepository.save(points)
+        val maxPoints = allSubcategoriesInAwardCategory.sumOf { it.maxPoints.toDouble() }.toFloat()
+
+        val freeSpace = maxPoints - sumOfPurePointsInAwardCategory - sumOfUpdatedBonuses
+
+        val pointsToAdd = max(min(award.awardValue.toFloat(), freeSpace), 0f)
+
+        points.value = pointsToAdd.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+
+        return pointsRepository.save(points)
     }
 }

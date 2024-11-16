@@ -6,7 +6,7 @@ import { TooltipWrapper } from "../../TooltipWrapper";
 export type Permissions = Category["permissions"];
 
 type SetupButtonsProps = {
-  permissions: Permissions;
+  permissions?: Permissions;
   handleSelect?: () => void;
   handleEdit?: () => void;
   handleDelete?: () => void;

@@ -34,10 +34,11 @@ export const EditionCard = ({
         show
       </button>
       <SetupButtons
-        selected={false}
+        isSelected={false}
         handleDelete={handleDeleteClick}
         handleCopy={handleCopyClick}
         handleEdit={handleEditClick}
+        //permissions={}
       />
     </div>
   );

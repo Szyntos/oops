@@ -1,6 +1,6 @@
+import { Group } from "../../../../../hooks/Edition/useGroupsSection";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
-import { Group } from "../GroupsSection";
 import { GroupCard } from "./GroupCard";
 
 type GroupsListProps = {

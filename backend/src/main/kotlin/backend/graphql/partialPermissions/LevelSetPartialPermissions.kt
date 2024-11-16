@@ -137,6 +137,15 @@ class LevelSetPartialPermissions {
             }
         }
 
+        if (levelSet.levels.any { it.userLevels.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Level set has users assigned to it"
+            )
+        }
+
         // not validating further, as the levels are validated in checkEditLevelHelperPermission and checkAddLevelHelperPermission
 
         return Permission(
@@ -261,6 +270,26 @@ class LevelSetPartialPermissions {
             )
         }
 
+
+        if (edition.levelSet != null) {
+            if (edition.levelSet!!.levelSetId == levelSetId) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Edition already has the level set"
+                )
+            }
+            if (edition.levelSet!!.levels.any { level -> level.userLevels.any { it.edition == edition } }) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Edition already has users assigned to the selected level set"
+                )
+            }
+        }
+
         return Permission(
             action = action,
             arguments = arguments,
@@ -336,6 +365,17 @@ class LevelSetPartialPermissions {
                 allow = false,
                 reason = "Edition does not have the level set"
             )
+        }
+
+        if (edition.levelSet != null) {
+            if (edition.levelSet!!.levels.any { level -> level.userLevels.any { it.edition == edition } }) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Edition already has users assigned to the selected level set"
+                )
+            }
         }
 
         return Permission(

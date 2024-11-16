@@ -158,6 +158,16 @@ class GroupsPartialPermissions {
             )
         }
 
+        if (group.userGroups.any { userGroup -> userGroup.user.points.isNotEmpty()}){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Cannot remove group with users that have points"
+            )
+        }
+
+
         return Permission(
             action = action,
             arguments = arguments,

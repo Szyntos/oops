@@ -10,6 +10,7 @@ mutation SetupGroupCSVParse($editionId: Int!, $fileId: Int!) {
       role
       secondName
       userId
+      active
     }
   }
 }

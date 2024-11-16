@@ -1,26 +1,62 @@
-query SetupChests {
-  chests {
-    active
-    awardBundleCount
-    chestId
-    imageFileId
-    label
-    type
-    chestAwards {
-      award {
-        awardId
-        awardName
-        awardType
-        awardValue
-        categoryId
-        description
-        imageFileId
-        label
-        maxUsages
+query SetupChests($editionId: Int!) {
+  listSetupChests(editionId: $editionId) {
+    chest {
+      active
+      awardBundleCount
+      chestId
+      imageFile {
+        fileId
+      }
+      label
+      chestType
+      chestEdition {
+        edition {
+          editionId
+        }
+      }
+      chestAward {
+        award {
+          awardId
+          awardName
+          awardType
+          awardValue
+          category {
+            categoryId
+          }
+          description
+          imageFile {
+            fileId
+          }
+          label
+          maxUsages
+        }
       }
     }
-    chestEditions {
-      editionId
+    permissions {
+      canAdd {
+        allow
+        reason
+      }
+      canCopy {
+        allow
+        reason
+      }
+      canEdit {
+        allow
+        reason
+      }
+      canRemove {
+        allow
+        reason
+      }
+      canSelect {
+        allow
+        reason
+      }
+      canUnselect {
+        allow
+        reason
+      }
     }
   }
 }

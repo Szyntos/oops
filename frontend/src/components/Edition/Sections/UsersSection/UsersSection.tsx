@@ -8,6 +8,7 @@ import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddStudentForm } from "./StudentAddForm";
 import { UsersList } from "./UsersList/UsersList";
 import { AddTeacherForm } from "./TeacherAddForm";
+import { useParams } from "react-router-dom";
 import { StudentsListSearcher } from "../../../Students/StudentsListSearcher";
 import { useState } from "react";
 import { RadioFilterGroups } from "../../../Groups/RadioFilterGroup";
@@ -19,6 +20,9 @@ const activeRadioOptions = [
 ];
 
 export const UsersSection = () => {
+  const params = useParams();
+  const editionId = params.id ? parseInt(params.id) : -1;
+
   const {
     teachers,
     students,
@@ -45,7 +49,7 @@ export const UsersSection = () => {
     closeEditTeacher,
     openEditTeacher,
     handleEditTeacherConfirm,
-  } = useUsersSection();
+  } = useUsersSection(editionId);
 
   const [input, setInput] = useState("");
   const [showActiveUsers, setShowActiveUsers] = useState(true);
@@ -55,12 +59,14 @@ export const UsersSection = () => {
 
   const doesFilterMatch = (user: User) => {
     const matchActiveState = showActiveUsers
-      ? user.active === true
-      : user.active === false;
+      ? user.user.active === true
+      : user.user.active === false;
     const matchInput =
       input === "undefined" ||
       input === "" ||
-      isPartOfAString(input, [`${user.fullName}`]);
+      isPartOfAString(input, [
+        `${user.user.firstName} ${user.user.secondName}`,
+      ]);
     return matchActiveState && matchInput;
   };
 
@@ -120,7 +126,7 @@ export const UsersSection = () => {
         <AddStudentForm
           formError={formError}
           handleConfirm={handleEditStudentConfirm}
-          initialValues={selectedUser}
+          initialValues={selectedUser?.user}
           title={"Edit student"}
         />
       </Dialog>
@@ -130,7 +136,7 @@ export const UsersSection = () => {
         <AddTeacherForm
           formError={formError}
           handleConfirm={handleEditTeacherConfirm}
-          initialValues={selectedUser}
+          initialValues={selectedUser?.user}
           title={"Add teacher"}
         />
       </Dialog>

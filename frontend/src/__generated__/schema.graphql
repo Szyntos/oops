@@ -1147,13 +1147,13 @@ input AwardSumOrderBy {
 }
 
 type AwardType {
-  awardEditions: [AwardEditionType]!
+  awardEditions: [AwardEditionType!]!
   awardId: ID!
   awardName: String!
   awardType: AwardTypeType!
   awardValue: String!
   bonuses: [BonusType]!
-  category: CategoryType
+  category: CategoryType!
   chestAward: [ChestAwardType]!
   description: String!
   imageFile: FileType
@@ -1302,7 +1302,7 @@ input AwardVarianceOrderBy {
 }
 
 type AwardWithPermissionsType {
-  award: AwardType
+  award: AwardType!
   permissions: ListPermissionsOutputType!
 }
 
@@ -2966,20 +2966,20 @@ type CategoryPointsType {
 }
 
 type CategoryType {
-  awards: [AwardType]!
+  awards: [AwardType!]!
   canAddPoints: Boolean!
-  categoryEdition: [CategoryEditionType]!
+  categoryEdition: [CategoryEditionType!]!
   categoryId: ID!
   categoryName: String!
   darkColor: String!
-  gradingChecks: [GradingChecksType]!
+  gradingChecks: [GradingChecksType!]!
   label: String!
   lightColor: String!
-  subcategories: [SubcategoryType]!
+  subcategories: [SubcategoryType!]!
 }
 
 type CategoryWithPermissionsType {
-  category: CategoryType
+  category: CategoryType!
   permissions: ListPermissionsOutputType!
 }
 
@@ -4619,7 +4619,7 @@ input ChestHistoryVarianceOrderBy {
 type ChestType {
   active: Boolean!
   awardBundleCount: Int!
-  chestAward: [ChestAwardType]!
+  chestAward: [ChestAwardType!]!
   chestEdition: [ChestEditionType]!
   chestHistory: [ChestHistoryType]!
   chestId: ID!
@@ -4629,7 +4629,7 @@ type ChestType {
 }
 
 type ChestWithPermissionsType {
-  chest: ChestType
+  chest: ChestType!
   permissions: ListPermissionsOutputType!
 }
 
@@ -6351,6 +6351,11 @@ input EditionVarianceOrderBy {
   levelSetId: OrderBy
 }
 
+type EditionWithPermissionsType {
+  edition: EditionType!
+  permissions: ListPermissionsOutputType!
+}
+
 type FileGroupType {
   fileType: String!
   files: [FileWithPermissions!]!
@@ -7503,6 +7508,11 @@ type FlywaySchemaHistoryVarianceFields {
   installedRank: Float
 }
 
+type GradingCheckWithPermissions {
+  gradingCheck: GradingChecksType
+  permissions: ListPermissionsOutputType!
+}
+
 """
 columns and relationships of "grading_checks"
 """
@@ -8166,7 +8176,7 @@ type GroupType {
   label: String
   startTime: String!
   teacher: UserType!
-  userGroups: [UserGroupType]!
+  userGroups: [UserGroupType!]!
   usosId: Int!
   weekday: WeekdayType!
 }
@@ -10558,7 +10568,7 @@ type PermissionType {
 }
 
 type PointType {
-  bonuses: [BonusType]!
+  bonuses: BonusType
   createdAt: String!
   label: String!
   pointsId: ID!
@@ -13985,6 +13995,7 @@ type UserPointsType {
 
 type UserType {
   active: Boolean!
+  avatarSetByUser: Boolean!
   chestHistory: [ChestHistoryType]!
   chestHistoryByTeacher: [ChestHistoryType]!
   email: String!
@@ -13995,6 +14006,7 @@ type UserType {
   indexNumber: Int!
   label: String!
   nick: String!
+  nickSetByUser: Boolean!
   points: [PointType]!
   pointsByTeacher: [PointType]!
   pointsByUpdatedBy: [PointType]!
@@ -17264,6 +17276,8 @@ type mutation_root {
   removeUser(userId: Int!): Boolean
   removeUserFromGroup(groupId: Int!, userId: Int!): Boolean
   resetPassword(userId: Int!): Boolean
+  resetPasswordByEmail(email: String!): Boolean
+  setStudentNick(nick: String!, userId: Int!): UserType
 
   """
   update data of the table: "award"
@@ -19461,6 +19475,8 @@ type query_root {
   listSetupAwards(editionId: Int!): [AwardWithPermissionsType!]!
   listSetupCategories(editionId: Int!): [CategoryWithPermissionsType!]!
   listSetupChests(editionId: Int!): [ChestWithPermissionsType!]!
+  listSetupEditions: [EditionWithPermissionsType!]!
+  listSetupGradingChecks(editionId: Int!): GradingCheckWithPermissions!
   listSetupGroups(editionId: Int!): [GroupWithPermissionsType!]!
   listSetupLevelSets(editionId: Int!): [LevelSetWithPermissionsType!]!
   listSetupUsers(editionId: Int!): [UserWithPermissionsType!]!

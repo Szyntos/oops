@@ -299,15 +299,16 @@ class ChestsPermissions {
                     reason = "awardBundleCount cannot be greater than the number of awards"
                 )
             }
-            if (chestHistoryRepository.findByChest(chest).any {it.opened}) {
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "Users have already opened this chest"
-                )
+        }
 
-            }
+        if (chestHistoryRepository.findByChest(chest).any {it.opened}) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Users have already opened this chest"
+            )
+
         }
 
         return Permission(
@@ -355,7 +356,7 @@ class ChestsPermissions {
                 reason = "Edition has already ended"
             )
         }
-        if (chestEditions.any { it.startDate.isBefore(LocalDate.now()) } && chestHistoryRepository.existsByChest(chest)) {
+        if (chestHistoryRepository.existsByChest(chest)) {
             return Permission(
                 action = action,
                 arguments = arguments,

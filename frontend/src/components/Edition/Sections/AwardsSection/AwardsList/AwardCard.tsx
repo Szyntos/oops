@@ -27,16 +27,17 @@ export const AwardCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <AwardImage id={award.imageFileId ?? undefined} size="l" />
-      <div>{award.awardName}</div>
-      <div style={styles.subtitle}>{award.awardType}</div>
+      <AwardImage id={award.award.imageFile?.fileId ?? undefined} size="l" />
+      <div>{award.award.awardName}</div>
+      <div style={styles.subtitle}>{award.award.awardType}</div>
 
       <SetupButtons
-        selected={isSelected}
+        isSelected={isSelected}
         handleSelect={onSelectClick}
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
+        permissions={award.permissions}
       />
     </div>
   );

@@ -1,16 +1,50 @@
-query SetupAwards {
-  award(orderBy: { awardName: ASC }) {
-    awardEditions {
-      editionId
+query SetupAwards($editionId: Int!) {
+  listSetupAwards(editionId: $editionId) {
+    award {
+      awardEditions {
+        edition {
+          editionId
+        }
+      }
+      awardId
+      awardName
+      awardType
+      awardValue
+      description
+      label
+      maxUsages
+      category {
+        categoryId
+      }
+      imageFile {
+        fileId
+      }
     }
-    awardId
-    awardName
-    awardType
-    awardValue
-    description
-    imageFileId
-    label
-    maxUsages
-    categoryId
+    permissions {
+      canAdd {
+        allow
+        reason
+      }
+      canCopy {
+        allow
+        reason
+      }
+      canEdit {
+        allow
+        reason
+      }
+      canRemove {
+        allow
+        reason
+      }
+      canSelect {
+        allow
+        reason
+      }
+      canUnselect {
+        allow
+        reason
+      }
+    }
   }
 }

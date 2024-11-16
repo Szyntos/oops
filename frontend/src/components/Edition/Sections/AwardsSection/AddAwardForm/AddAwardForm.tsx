@@ -99,8 +99,11 @@ export const AddAwardForm = ({
               )}
             >
               {categories.map((cat) => (
-                <MenuItem key={cat.categoryId} value={cat.categoryId}>
-                  {cat.categoryName}
+                <MenuItem
+                  key={cat.category.categoryId}
+                  value={cat.category.categoryId}
+                >
+                  {cat.category.categoryName}
                 </MenuItem>
               ))}
             </Select>

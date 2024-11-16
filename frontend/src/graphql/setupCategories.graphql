@@ -1,20 +1,49 @@
-query SetupCategories {
-  categories(orderBy: { categoryName: ASC }) {
-    categoryId
-    categoryName
-    categoryEditions {
-      editionId
+query SetupCategories($editionId: Int!) {
+  listSetupCategories(editionId: $editionId) {
+    category {
+      categoryId
+      categoryName
+      categoryEdition {
+        edition {
+          editionId
+        }
+      }
+      subcategories {
+        edition {
+          editionId
+        }
+        subcategoryId
+        subcategoryName
+        maxPoints
+        ordinalNumber
+      }
+      canAddPoints
     }
-    subcategories(
-      orderBy: { ordinalNumber: ASC }
-      where: { editionId: { _isNull: true } }
-    ) {
-      editionId
-      subcategoryId
-      subcategoryName
-      maxPoints
-      ordinalNumber
+    permissions {
+      canAdd {
+        allow
+        reason
+      }
+      canCopy {
+        allow
+        reason
+      }
+      canEdit {
+        allow
+        reason
+      }
+      canRemove {
+        allow
+        reason
+      }
+      canSelect {
+        allow
+        reason
+      }
+      canUnselect {
+        allow
+        reason
+      }
     }
-    canAddPoints
   }
 }

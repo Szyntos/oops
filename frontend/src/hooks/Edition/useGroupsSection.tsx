@@ -19,13 +19,14 @@ import { useSetupGroupEditMutation } from "../../graphql/setupGroupEdit.graphql.
 import { useDeleteGroupMutation } from "../../graphql/deleteGroup.graphql.types";
 import { useError } from "../common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../utils/constants";
+import { mockPermissions } from "../../utils/utils";
 
-export type Group = NonNullable<
-  SetupGroupsQuery["editionByPk"]
->["groups"][number];
+export type Group = SetupGroupsQuery["listSetupGroups"][number];
 
-export type Teacher = SetupUsersQuery["users"][number];
-export type Student = SetupUsersQuery["users"][number];
+// TODO check if those types are ok
+export type Teacher = SetupUsersQuery["listSetupUsers"][number];
+export type Student = SetupUsersQuery["listSetupUsers"][number];
+export type GroupStudent = Student["user"];
 
 export const useGroupsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();
@@ -43,10 +44,10 @@ export const useGroupsSection = (editionId: number) => {
   };
 
   const { data, loading, error, refetch } = useSetupGroupsQuery({
-    variables: { editionId: editionId.toString() },
+    variables: { editionId },
   });
 
-  const groups: Group[] = data?.editionByPk?.groups ?? [];
+  const groups: Group[] = data?.listSetupGroups ?? [];
 
   const {
     weekdays,
@@ -58,17 +59,19 @@ export const useGroupsSection = (editionId: number) => {
     data: usersData,
     loading: usersLoading,
     error: UsersError,
-  } = useSetupUsersQuery();
+  } = useSetupUsersQuery({ variables: { editionId } });
 
   const teachers: Teacher[] =
-    usersData?.users.filter(
+    usersData?.listSetupUsers.filter(
       (u) =>
-        u.role.toLocaleUpperCase() === UsersRolesType.Coordinator ||
-        u.role.toLocaleUpperCase() === UsersRolesType.Teacher,
+        u.user.role.toLocaleUpperCase() === UsersRolesType.Coordinator ||
+        u.user.role.toLocaleUpperCase() === UsersRolesType.Teacher,
     ) ?? [];
   const students: Student[] =
-    usersData?.users.filter(
-      (u) => u.role.toLocaleUpperCase() === UsersRolesType.Student && u.active,
+    usersData?.listSetupUsers.filter(
+      (u) =>
+        u.user.role.toLocaleUpperCase() === UsersRolesType.Student &&
+        u.user.active,
     ) ?? [];
 
   // ADD
@@ -86,14 +89,15 @@ export const useGroupsSection = (editionId: number) => {
           startTime: values.startTime,
           teacherId: parseInt(values.teacherId),
           weekdayId: parseInt(values.weekdayId),
-          users: selectedStudents.map((s) => {
+          users: selectedStudents.map((u) => {
+            const s = u.user;
             return {
               indexNumber: s.indexNumber,
               nick: s.nick,
               firstName: s.firstName,
               secondName: s.secondName,
               role: s.role,
-              imageFileId: s.imageFileId ? Number(s.imageFileId) : undefined,
+              imageFileId: parseInt(s.imageFile?.fileId as string),
               // TODO: change to true on production
               createFirebaseUser: false,
               email: s.email,
@@ -131,13 +135,15 @@ export const useGroupsSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await editGroup({
         variables: {
-          groupId: parseInt(selectedGroup?.groupsId ?? "-1"),
+          groupId: parseInt(selectedGroup?.group.groupsId as string),
           startTime: values.startTime,
           endTime: values.endTime,
           teacherId: parseInt(values.teacherId),
           usosId: values.usosId,
           weekdayId: parseInt(values.weekdayId),
-          userIds: selectedStudents.map((s) => parseInt(s.userId)) ?? [],
+          users: {
+            userIds: selectedStudents.map((s) => parseInt(s.user.userId)) ?? [],
+          },
         },
       });
       refetch();
@@ -149,7 +155,9 @@ export const useGroupsSection = (editionId: number) => {
   const [deleteGroup] = useDeleteGroupMutation();
   const handleDeleteGroup = async (group: Group) => {
     globalErrorWrapper(async () => {
-      await deleteGroup({ variables: { groupId: parseInt(group.groupsId) } });
+      await deleteGroup({
+        variables: { groupId: parseInt(group.group.groupsId) },
+      });
       refetch();
     });
   };
@@ -180,17 +188,17 @@ export const useGroupsSection = (editionId: number) => {
 
       const uploadedStudents: Student[] =
         parseRes.data?.parseUsersFromCsv.users.map((u) => ({
-          __typename: "Users",
-          firstName: u.firstName,
-          imageFileId: "",
-          fullName: `${u.firstName} ${u.secondName}`,
-          indexNumber: u.indexNumber,
-          nick: u.nick,
-          role: u.role,
-          secondName: u.secondName,
-          userId: u.userId,
-          email: u.email,
-          active: true,
+          __typename: "UserWithPermissionsType",
+          user: {
+            __typename: "UserType",
+            ...u,
+            imageFile: {
+              __typename: "FileType",
+              fileId: "",
+            },
+          },
+          // mockPermissions only form type match
+          permissions: mockPermissions,
         })) ?? [];
 
       return uploadedStudents;

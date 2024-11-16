@@ -3,38 +3,106 @@ import * as Types from "../__generated__/schema.graphql.types";
 import { gql } from "@apollo/client";
 import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
-export type SetupUsersQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type SetupUsersQueryVariables = Types.Exact<{
+  editionId: Types.Scalars["Int"]["input"];
+}>;
 
 export type SetupUsersQuery = {
   __typename?: "query_root";
-  users: Array<{
-    __typename?: "Users";
-    firstName: string;
-    imageFileId?: string | null;
-    fullName?: string | null;
-    indexNumber: number;
-    nick: string;
-    role: string;
-    secondName: string;
-    userId: string;
-    email: string;
-    active: boolean;
+  listSetupUsers: Array<{
+    __typename?: "UserWithPermissionsType";
+    user: {
+      __typename?: "UserType";
+      firstName: string;
+      secondName: string;
+      indexNumber: number;
+      nick: string;
+      role: Types.UsersRolesType;
+      userId: string;
+      email: string;
+      active: boolean;
+      imageFile?: { __typename?: "FileType"; fileId: string } | null;
+    };
+    permissions: {
+      __typename?: "ListPermissionsOutputType";
+      canAdd: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canCopy: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canEdit: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canRemove: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canSelect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canUnselect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+    };
   }>;
 };
 
 export const SetupUsersDocument = gql`
-  query SetupUsers {
-    users(orderBy: { fullName: ASC }) {
-      firstName
-      imageFileId
-      fullName
-      indexNumber
-      nick
-      role
-      secondName
-      userId
-      email
-      active
+  query SetupUsers($editionId: Int!) {
+    listSetupUsers(editionId: $editionId) {
+      user {
+        firstName
+        imageFile {
+          fileId
+        }
+        firstName
+        secondName
+        indexNumber
+        nick
+        role
+        secondName
+        userId
+        email
+        active
+      }
+      permissions {
+        canAdd {
+          allow
+          reason
+        }
+        canCopy {
+          allow
+          reason
+        }
+        canEdit {
+          allow
+          reason
+        }
+        canRemove {
+          allow
+          reason
+        }
+        canSelect {
+          allow
+          reason
+        }
+        canUnselect {
+          allow
+          reason
+        }
+      }
     }
   }
 `;
@@ -51,14 +119,19 @@ export const SetupUsersDocument = gql`
  * @example
  * const { data, loading, error } = useSetupUsersQuery({
  *   variables: {
+ *      editionId: // value for 'editionId'
  *   },
  * });
  */
 export function useSetupUsersQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SetupUsersQuery,
     SetupUsersQueryVariables
-  >,
+  > &
+    (
+      | { variables: SetupUsersQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SetupUsersQuery, SetupUsersQueryVariables>(

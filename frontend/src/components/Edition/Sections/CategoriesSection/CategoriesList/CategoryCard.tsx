@@ -8,6 +8,7 @@ type CategoryCardProps = {
   handleSelectClick: () => void;
   handleEditClick: () => void;
   handleDeleteClick: () => void;
+  handleCopyClick: () => void;
 };
 
 export const CategoryCard = ({
@@ -16,9 +17,10 @@ export const CategoryCard = ({
   handleSelectClick,
   handleEditClick,
   handleDeleteClick,
+  handleCopyClick,
 }: CategoryCardProps) => {
   const getSubcategoriesString = (category: Category) => {
-    const subcategoryNames = category.subcategories.map(
+    const subcategoryNames = category.category.subcategories.map(
       (subcategory) => subcategory.subcategoryName,
     );
     const n = subcategoryNames.length;
@@ -32,15 +34,16 @@ export const CategoryCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <div>{category.categoryName}</div>
+      <div>{category.category.categoryName}</div>
       <div>subcategories: {getSubcategoriesString(category)}</div>
 
       <SetupButtons
-        selected={isSelected}
+        isSelected={isSelected}
+        permissions={category.permissions}
+        handleCopy={handleCopyClick}
         handleSelect={handleSelectClick}
         handleEdit={handleEditClick}
         handleDelete={handleDeleteClick}
-        disableCopy={true}
       />
     </div>
   );

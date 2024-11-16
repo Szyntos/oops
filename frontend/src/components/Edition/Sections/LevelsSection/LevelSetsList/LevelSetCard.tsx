@@ -9,6 +9,7 @@ type LevelSetCardProps = {
   onSelectClick: () => void;
   onEditClick: () => void;
   onDeleteClick: () => void;
+  onCopyClick: () => void;
 };
 
 export const LevelSetCard = ({
@@ -17,6 +18,7 @@ export const LevelSetCard = ({
   onSelectClick,
   onEditClick,
   onDeleteClick,
+  onCopyClick,
 }: LevelSetCardProps) => {
   return (
     <div
@@ -25,13 +27,13 @@ export const LevelSetCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <div>[{levelSet.levelSetId}]</div>
+      <div>[{levelSet.levelSet.levelSetId}]</div>
 
       <div>
-        {levelSet.levels.length > 0
-          ? levelSet.levels.map((l) => (
+        {levelSet.levelSet.levels.length > 0
+          ? levelSet.levelSet.levels.map((l) => (
               <div>
-                {l.ordinalNumber + 1}. {l.name}, {l.minimumPoints}-
+                {l.ordinalNumber + 1}. {l.levelName}, {l.minimumPoints}-
                 {l.maximumPoints}
               </div>
             ))
@@ -39,11 +41,12 @@ export const LevelSetCard = ({
       </div>
 
       <SetupButtons
-        selected={isSelected}
+        isSelected={isSelected}
+        permissions={levelSet.permissions}
         handleSelect={onSelectClick}
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
-        disableCopy={true}
+        handleCopy={onCopyClick}
       />
     </div>
   );

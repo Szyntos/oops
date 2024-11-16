@@ -1,14 +1,45 @@
-query SetupUsers {
-  users(orderBy: { fullName: ASC }) {
-    firstName
-    imageFileId
-    fullName
-    indexNumber
-    nick
-    role
-    secondName
-    userId
-    email
-    active
+query SetupUsers($editionId: Int!) {
+  listSetupUsers(editionId: $editionId) {
+    user {
+      firstName
+      imageFile {
+        fileId
+      }
+      firstName
+      secondName
+      indexNumber
+      nick
+      role
+      secondName
+      userId
+      email
+      active
+    }
+    permissions {
+      canAdd {
+        allow
+        reason
+      }
+      canCopy {
+        allow
+        reason
+      }
+      canEdit {
+        allow
+        reason
+      }
+      canRemove {
+        allow
+        reason
+      }
+      canSelect {
+        allow
+        reason
+      }
+      canUnselect {
+        allow
+        reason
+      }
+    }
   }
 }

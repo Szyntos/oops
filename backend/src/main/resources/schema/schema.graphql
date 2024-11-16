@@ -443,11 +443,11 @@ type AwardType {
   label: String!
   maxUsages: Int!
   awardValue: String!
-  category: CategoryType
+  category: CategoryType!
   imageFile: FileType
   chestAward: [ChestAwardType]!
   bonuses: [BonusType]!
-  awardEditions: [AwardEditionType]!
+  awardEditions: [AwardEditionType!]!
 }
 
 type AwardEditionType {
@@ -473,10 +473,10 @@ type CategoryType {
   lightColor: String!
   darkColor: String!
   canAddPoints: Boolean!
-  gradingChecks: [GradingChecksType]!
-  categoryEdition: [CategoryEditionType]!
-  subcategories: [SubcategoryType]!
-  awards: [AwardType]!
+  gradingChecks: [GradingChecksType!]!
+  categoryEdition: [CategoryEditionType!]!
+  subcategories: [SubcategoryType!]!
+  awards: [AwardType!]!
   label: String!
 }
 
@@ -514,7 +514,7 @@ type ChestType {
   active: Boolean!
   awardBundleCount: Int!
   chestHistory: [ChestHistoryType]!
-  chestAward: [ChestAwardType]!
+  chestAward: [ChestAwardType!]!
   chestEdition: [ChestEditionType]!
   imageFile: FileType
 }
@@ -571,7 +571,7 @@ type GroupType {
   startTime: String!
   endTime: String!
   imageFile: FileType
-  userGroups: [UserGroupType]!
+  userGroups: [UserGroupType!]!
   edition: EditionType!
 }
 
@@ -851,17 +851,17 @@ type GroupWithPermissionsType{
   permissions: ListPermissionsOutputType!
 }
 type ChestWithPermissionsType{
-  chest: ChestType,
+  chest: ChestType!,
   permissions: ListPermissionsOutputType!
 }
 
 type CategoryWithPermissionsType{
-  category: CategoryType,
+  category: CategoryType!,
   permissions: ListPermissionsOutputType!
 }
 
 type AwardWithPermissionsType{
-  award: AwardType,
+  award: AwardType!,
   permissions: ListPermissionsOutputType!
 }
 

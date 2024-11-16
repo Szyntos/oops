@@ -75,7 +75,10 @@ export const ChestsSection = () => {
           imageIds={imageIds}
           awardsThisEdition={selectedAwards}
           awardsNotThisEdition={awards.filter(
-            (a) => !selectedAwards.some((aw) => aw.awardId === a.awardId),
+            (a) =>
+              !selectedAwards.some(
+                (aw) => aw.award.awardId === a.award.awardId,
+              ),
           )}
         />
       </Dialog>
@@ -88,26 +91,29 @@ export const ChestsSection = () => {
           imageIds={imageIds}
           awardsThisEdition={selectedAwards}
           awardsNotThisEdition={awards.filter(
-            (a) => !selectedAwards.some((aw) => aw.awardId === a.awardId),
+            (a) =>
+              !selectedAwards.some(
+                (aw) => aw.award.awardId === a.award.awardId,
+              ),
           )}
           initialValues={
             selectedChest
               ? {
-                  awardBundleCount: selectedChest.awardBundleCount,
-                  fileId: selectedChest.imageFileId as string,
-                  name: selectedChest.type,
-                  awardThisEditionIds: selectedChest.chestAwards
+                  awardBundleCount: selectedChest.chest.awardBundleCount,
+                  fileId: selectedChest.chest.imageFile?.fileId as string,
+                  name: selectedChest.chest.chestType,
+                  awardThisEditionIds: selectedChest.chest.chestAward
                     .filter((a) =>
                       selectedAwards.some(
-                        (aw) => aw.awardId === a.award.awardId,
+                        (aw) => aw.award.awardId === a.award.awardId,
                       ),
                     )
                     .map((award) => award.award.awardId),
-                  awardNotThisEditionIds: selectedChest.chestAwards
+                  awardNotThisEditionIds: selectedChest.chest.chestAward
                     .filter(
                       (a) =>
                         !selectedAwards.some(
-                          (aw) => aw.awardId === a.award.awardId,
+                          (aw) => aw.award.awardId === a.award.awardId,
                         ),
                     )
                     .map((award) => award.award.awardId),

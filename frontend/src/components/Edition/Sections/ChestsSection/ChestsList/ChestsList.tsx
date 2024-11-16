@@ -29,10 +29,10 @@ export const ChestsList = ({
         {chests.length !== 0
           ? chests.map((chest) => (
               <ChestCard
-                key={chest.chestId}
+                key={chest.chest.chestId}
                 chest={chest}
                 isSelected={selectedChests.some(
-                  (c) => c.chestId === chest.chestId,
+                  (c) => c.chest.chestId === chest.chest.chestId,
                 )}
                 onSelectClick={() => handleSelectChest(chest)}
                 onEditClick={() => handleEditChest(chest)}

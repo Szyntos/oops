@@ -36,12 +36,12 @@ export const GradingChecksSection = () => {
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
-  const level = formLevelSet.levels.find(
+  const level = formLevelSet.levelSet.levels.find(
     (l) => l.levelId === gradingChecks?.endOfLabsLevelsThreshold,
   );
 
   const category: Category | undefined = formCategories.find(
-    (c) => c.categoryId === gradingChecks?.projectId,
+    (c) => c.category.categoryId === gradingChecks?.projectId,
   );
 
   return (
@@ -56,8 +56,12 @@ export const GradingChecksSection = () => {
         <div>
           endOfLabsDate: {gradingChecks?.endOfLabsDate ?? EMPTY_FIELD_STRING}
         </div>
-        <div>endOfLabsLevelsThreshold: {level?.name ?? EMPTY_FIELD_STRING}</div>
-        <div>projectId: {category?.categoryName ?? EMPTY_FIELD_STRING}</div>
+        <div>
+          endOfLabsLevelsThreshold: {level?.levelName ?? EMPTY_FIELD_STRING}
+        </div>
+        <div>
+          projectId: {category?.category.categoryName ?? EMPTY_FIELD_STRING}
+        </div>
         <div>
           projectPointsThreshold:{" "}
           {gradingChecks?.projectPointsThreshold ?? EMPTY_FIELD_STRING}

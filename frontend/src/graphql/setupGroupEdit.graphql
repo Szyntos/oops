@@ -5,7 +5,7 @@ mutation SetupGroupEdit(
   $usosId: Int!
   $weekdayId: Int!
   $teacherId: Int!
-  $userIds: [Int!]!
+  $users: UserIdsType!
 ) {
   editGroupWithUsers(
     groupId: $groupId
@@ -14,7 +14,7 @@ mutation SetupGroupEdit(
     teacherId: $teacherId
     usosId: $usosId
     weekdayId: $weekdayId
-    users: { userIds: $userIds }
+    users: $users
   ) {
     groupsId
   }

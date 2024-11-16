@@ -9,6 +9,7 @@ type SelectedSetCardProps = {
   onSelectClick: () => void;
   onEditClick: () => void;
   onDeleteClick: () => void;
+  onCopyClick: () => void;
 };
 
 export const SelectedSetCard = ({
@@ -16,22 +17,24 @@ export const SelectedSetCard = ({
   onSelectClick,
   onEditClick,
   onDeleteClick,
+  onCopyClick,
 }: SelectedSetCardProps) => {
   return (
     <div style={styles.card}>
-      <div>[{levelSet.levelSetId}]</div>
+      <div>[{levelSet.levelSet.levelSetId}]</div>
 
       <div>
-        {levelSet.levels.length > 0 ? (
+        {levelSet.levelSet.levels.length > 0 ? (
           <div style={styles.levelContainer}>
-            {levelSet.levels.map((l) => (
+            {levelSet.levelSet.levels.map((l) => (
               <AnimalWithTooltip
                 level={{
                   ...l,
                   realLevelNumber: l.ordinalNumber + 1,
-                  imageId: l.imageFileId ?? undefined,
+                  imageId: l.imageFile?.fileId ?? undefined,
                   minimumPoints: parseFloat(l.minimumPoints),
                   maximumPoints: parseFloat(l.maximumPoints),
+                  name: l.levelName,
                 }}
                 size={"m"}
                 disabled={false}
@@ -44,11 +47,12 @@ export const SelectedSetCard = ({
       </div>
 
       <SetupButtons
-        selected={true}
+        permissions={levelSet.permissions}
+        isSelected={true}
         handleSelect={onSelectClick}
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
-        disableCopy={true}
+        handleCopy={onCopyClick}
       />
     </div>
   );

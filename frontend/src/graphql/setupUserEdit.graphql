@@ -1,0 +1,25 @@
+mutation SEtupUserEdit(
+  $userId: Int!
+  $secondName: String!
+  $nick: String
+  $indexNumber: Int
+  $firstName: String!
+) {
+  editUser(
+    userId: $userId
+    secondName: $secondName
+    nick: $nick
+    indexNumber: $indexNumber
+    firstName: $firstName
+  ) {
+    email
+    firebaseUid
+    firstName
+    indexNumber
+    label
+    nick
+    role
+    secondName
+    userId
+  }
+}

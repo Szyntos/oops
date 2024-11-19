@@ -1,5 +1,6 @@
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
-import { Edition } from "../contexts/userEditionsContext";
+import { Edition } from "../hooks/common/useGroupsData";
+import { Permissions } from "../components/Edition/Sections/SetupButtons";
 
 type User = {
   role: string;
@@ -25,3 +26,25 @@ export const isEditionActive = (edition: Edition) => {
   const now = new Date();
   return new Date(edition.startDate) < now && now < new Date(edition.endDate);
 };
+
+export const mockPermissions = {
+  __typename: "ListPermissionsOutputType",
+  canAdd: {
+    allow: false,
+  },
+  canCopy: {
+    allow: false,
+  },
+  canEdit: {
+    allow: false,
+  },
+  canRemove: {
+    allow: false,
+  },
+  canSelect: {
+    allow: false,
+  },
+  canUnselect: {
+    allow: false,
+  },
+} as Permissions;

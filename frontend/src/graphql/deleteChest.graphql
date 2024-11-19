@@ -1,0 +1,3 @@
+mutation DeleteChest($chestId: Int!) {
+  removeChest(chestId: $chestId)
+}

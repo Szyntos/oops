@@ -4,23 +4,30 @@ import { AddCategoryForm } from "./AddCategoryForm/AddCategoryForm";
 import { CategoriesList } from "./CategoriesList/CategoriesList";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useCategoriesSection } from "../../../../hooks/Edition/categories/useCategoriesSection";
+import { useParams } from "react-router-dom";
 
-type CategoriesSectionProps = {
-  editionId: number;
-};
+export const CategoriesSection = () => {
+  const params = useParams();
+  const editionId = params.id ? parseInt(params.id) : -1;
 
-export const CategoriesSection = ({ editionId }: CategoriesSectionProps) => {
   const {
     categories,
     selectedCategories,
     loading,
     error,
-    handleSelectClick,
-    handleCreate,
-    createCategoryError,
-    isOpen,
-    closeDialog,
-    openDialog,
+    formError,
+    selectedCategory,
+    isAddCategory,
+    handleSelectCategory,
+    openAddCategory,
+    closeAddCategory,
+    handleAddCategory,
+    iseEditCategory,
+    openEditCategory,
+    closeEditCategory,
+    handleEditCategory,
+    handleDeleteCategory,
+    handleCopyCategory,
   } = useCategoriesSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -28,26 +35,49 @@ export const CategoriesSection = ({ editionId }: CategoriesSectionProps) => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openDialog}>add category</button>
+      <button onClick={openAddCategory}>add category</button>
 
       <CategoriesList
         categories={selectedCategories}
         selectedCategories={selectedCategories}
-        handleSelectCategoryClick={handleSelectClick}
-        title={"Selected categories"}
+        handleSelectClick={handleSelectCategory}
+        handleEditClick={openEditCategory}
+        handleDeleteClick={handleDeleteCategory}
+        handleCopyClick={handleCopyCategory}
+        title="Selected categories"
       />
       <CategoriesList
         categories={categories}
         selectedCategories={selectedCategories}
-        handleSelectCategoryClick={handleSelectClick}
-        title={"All categories"}
+        handleSelectClick={handleSelectCategory}
+        handleEditClick={openEditCategory}
+        handleDeleteClick={handleDeleteCategory}
+        handleCopyClick={handleCopyCategory}
+        title="All categories"
       />
 
-      <Dialog open={isOpen}>
-        <CloseHeader onCloseClick={closeDialog} />
+      <Dialog open={isAddCategory}>
+        <CloseHeader onCloseClick={closeAddCategory} />
         <AddCategoryForm
-          createError={createCategoryError}
-          handleAddCategory={handleCreate}
+          formError={formError}
+          handleConfirm={handleAddCategory}
+          title={"Add Category"}
+        />
+      </Dialog>
+
+      <Dialog open={iseEditCategory}>
+        <CloseHeader onCloseClick={closeEditCategory} />
+        <AddCategoryForm
+          formError={formError}
+          handleConfirm={handleEditCategory}
+          title={"Edit Category"}
+          initialValues={selectedCategory?.category}
+          initialSelectedSubcategories={
+            selectedCategory?.category.subcategories.map((s) => ({
+              name: s.subcategoryName,
+              max: parseInt(s.maxPoints),
+            })) ?? []
+          }
         />
       </Dialog>
     </div>

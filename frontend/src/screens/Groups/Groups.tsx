@@ -25,8 +25,8 @@ export const Groups = () => {
   const [teacherIds, setTeacherIds] = useState<string[]>([]);
   const [timestampIds, setTimestampIds] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<GroupRadioFilterItem>({
-    id: "all",
-    name: "wszystkie",
+    id: "yours",
+    name: "twoje",
   });
 
   const doesGroupMatchRadioButtons = useCallback(

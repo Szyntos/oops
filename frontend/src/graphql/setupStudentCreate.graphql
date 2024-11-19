@@ -1,0 +1,17 @@
+mutation SetupStudentCreate(
+  $firstName: String!
+  $secondName: String!
+  $indexNumber: Int!
+  $nick: String!
+) {
+  addUser(
+    firstName: $firstName
+    indexNumber: $indexNumber
+    nick: $nick
+    role: "student"
+    secondName: $secondName
+  ) {
+    userId
+    role
+  }
+}

@@ -1,20 +1,44 @@
 package backend.graphql
 
+import backend.award.Award
+import backend.award.AwardRepository
 import backend.categories.Categories
 import backend.categories.CategoriesRepository
+import backend.categoryEdition.CategoryEdition
+import backend.categoryEdition.CategoryEditionRepository
+import backend.edition.EditionRepository
+import backend.gradingChecks.GradingChecks
+import backend.gradingChecks.GradingChecksRepository
+import backend.graphql.utils.*
+import backend.subcategories.Subcategories
 import backend.subcategories.SubcategoriesRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.math.RoundingMode
-import java.time.LocalDate
 
 @DgsComponent
 class CategoriesDataFetcher {
+    @Autowired
+    private lateinit var editionRepository: EditionRepository
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
+    @Autowired
+    private lateinit var categoryEditionRepository: CategoryEditionRepository
+
+    @Autowired
+    private lateinit var gradingChecksRepository: GradingChecksRepository
+
+    @Autowired
+    private lateinit var awardRepository: AwardRepository
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -27,27 +51,96 @@ class CategoriesDataFetcher {
     @Autowired
     lateinit var subcategoriesDataFetcher: SubcategoriesDataFetcher
 
+    @DgsQuery
+    @Transactional
+    fun listSetupCategories(@InputArgument editionId: Long): List<CategoryWithPermissions> {
+        val action = "listSetupCategories"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val categoriesList = categoriesRepository.findAll().map { category ->
+            CategoryWithPermissions(
+                category = CategoryOutputType(
+                    categoryId = category.categoryId,
+                    categoryName = category.categoryName,
+                    lightColor = category.lightColor,
+                    darkColor = category.darkColor,
+                    canAddPoints = category.canAddPoints,
+                    gradingChecks = category.gradingChecks,
+                    categoryEdition = category.categoryEdition,
+                    subcategories = category.subcategories
+                        .filter { it.edition == null }
+                        .sortedBy { it.ordinalNumber }.toSet(),
+                    awards = category.awards,
+                    label = category.label
+                ),
+                permissions = ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addCategory",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editCategory", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId)))),
+                    canCopy = permissionService.checkPartialPermission(PermissionInput("copyCategory", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeCategory", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId)))),
+                    canSelect = permissionService.checkPartialPermission(PermissionInput("addCategoryToEdition", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId, "editionId" to editionId)))),
+                    canUnselect = permissionService.checkPartialPermission(PermissionInput("removeCategoryFromEdition", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId, "editionId" to editionId)))),
+                    additional = emptyList()
+                )
+            )
+
+        }.sortedBy { it.category.categoryName }
+        return categoriesList
+    }
+
     @DgsMutation
     @Transactional
     fun addCategory(@InputArgument categoryName: String, @InputArgument canAddPoints: Boolean,
                     @InputArgument subcategories: List<SubcategoryInput>,
                     @InputArgument lightColor: String = "#FFFFFF", @InputArgument darkColor: String = "#000000",
                  @InputArgument label: String = ""): Categories {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add categories")
+        val action = "addCategory"
+        val subcategoriesMap = subcategories.map { subcategory ->
+            mapOf(
+                "subcategoryId" to subcategory.subcategoryId,
+                "subcategoryName" to subcategory.subcategoryName,
+                "maxPoints" to subcategory.maxPoints,
+                "ordinalNumber" to subcategory.ordinalNumber,
+                "categoryId" to subcategory.categoryId,
+                "editionId" to subcategory.editionId,
+                "label" to subcategory.label
+            )
         }
 
-        val categoriesWithSameName = categoriesRepository.findAllByCategoryName(categoryName)
-        if (categoriesWithSameName.any { it.canAddPoints == canAddPoints }) {
-            throw IllegalArgumentException("Category with this name and canAddPoints already exists")
+        val arguments = mapOf(
+            "categoryName" to categoryName,
+            "canAddPoints" to canAddPoints,
+            "subcategories" to subcategoriesMap,
+            "lightColor" to lightColor,
+            "darkColor" to darkColor,
+            "label" to label
+        )
+
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
-        if (!isValidHexColor(lightColor)) {
-            throw IllegalArgumentException("Invalid light color")
-        }
-        if (!isValidHexColor(darkColor)) {
-            throw IllegalArgumentException("Invalid dark color")
-        }
+
+
         val category = Categories(
             categoryName = categoryName,
             canAddPoints = canAddPoints,
@@ -69,18 +162,25 @@ class CategoriesDataFetcher {
     @DgsMutation
     @Transactional
     fun removeCategory(@InputArgument categoryId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove categories")
+        val action = "removeCategory"
+        val arguments = mapOf(
+            "categoryId" to categoryId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val category = categoriesRepository.findById(categoryId)
             .orElseThrow { IllegalArgumentException("Invalid category ID") }
-        if (category.categoryEdition.any { categoryEdition -> categoryEdition.edition.endDate.isBefore(LocalDate.now()) }) {
-            throw IllegalArgumentException("Category is already in an edition that has ended")
-        }
-        if (category.categoryEdition.any { categoryEdition -> categoryEdition.edition.startDate.isBefore(LocalDate.now()) }) {
-            throw IllegalArgumentException("Category is already in an edition that has started")
+
+        val categoryEditions = category.categoryEdition
+        categoryEditions.forEach {
+            categoryEditionRepository.delete(it)
         }
         val subcategories = subcategoriesRepository.findByCategory(category)
         subcategories.forEach {
@@ -101,43 +201,48 @@ class CategoriesDataFetcher {
         @InputArgument darkColor: String?,
         @InputArgument label: String?
     ): Categories {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can edit categories")
+        val action = "editCategory"
+        val subcategoriesMap = subcategories.map { subcategory ->
+            mapOf(
+                "subcategoryId" to subcategory.subcategoryId,
+                "subcategoryName" to subcategory.subcategoryName,
+                "maxPoints" to subcategory.maxPoints,
+                "ordinalNumber" to subcategory.ordinalNumber,
+                "categoryId" to subcategory.categoryId,
+                "editionId" to subcategory.editionId,
+                "label" to subcategory.label
+            )
         }
 
+        val arguments = mapOf(
+            "categoryId" to categoryId,
+            "categoryName" to categoryName,
+            "canAddPoints" to canAddPoints,
+            "subcategories" to subcategoriesMap,
+            "lightColor" to lightColor,
+            "darkColor" to darkColor,
+            "label" to label
+        )
+
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
         val category = categoriesRepository.findById(categoryId)
             .orElseThrow { IllegalArgumentException("Invalid category ID") }
 
-        // Check if category can be edited based on editions
-        if (categoryName != null || canAddPoints != null || subcategories.isNotEmpty()) {
-            if (category.categoryEdition.any { it.edition.endDate.isBefore(LocalDate.now()) }) {
-                throw IllegalArgumentException("Category is already in an edition that has ended")
-            }
-            if (category.categoryEdition.any { it.edition.startDate.isBefore(LocalDate.now()) }) {
-                throw IllegalArgumentException("Category is already in an edition that has started")
-            }
-        }
 
         lightColor?.let {
-            if (!isValidHexColor(it)) {
-                throw IllegalArgumentException("Invalid light color")
-            }
             category.lightColor = it
         }
         darkColor?.let {
-            if (!isValidHexColor(it)) {
-                throw IllegalArgumentException("Invalid dark color")
-            }
             category.darkColor = it
         }
         categoryName?.let {
-            val categoriesWithSameName = categoriesRepository.findAllByCategoryName(it)
-            if (categoriesWithSameName.any { existing ->
-                    existing.categoryId != categoryId && existing.canAddPoints == canAddPoints
-                }) {
-                throw IllegalArgumentException("Category with this name and canAddPoints already exists")
-            }
             category.categoryName = it
         }
         canAddPoints?.let {
@@ -146,13 +251,20 @@ class CategoriesDataFetcher {
         label?.let {
             category.label = it
         }
+        val subcategoriesInEditions = subcategoriesRepository.findByCategory(category).filter { it.edition != null }
+        val editions = category.categoryEdition.map { it.edition }
+        subcategoriesInEditions.forEach { subcategory ->
+            subcategoriesRepository.delete(subcategory)
+        }
 
         val existingSubcategories = subcategoriesRepository.findByCategory(category)
         val inputSubcategoryIds = subcategories.mapNotNull { it.subcategoryId }.toSet()
 
         // Remove subcategories not in input list
         existingSubcategories.filter { it.subcategoryId !in inputSubcategoryIds }
-            .forEach { subcategoriesRepository.delete(it) }
+            .forEach {
+                subcategoriesRepository.delete(it)
+            }
 
         // Process input subcategories
         subcategories.forEach { subcategoryInput ->
@@ -161,30 +273,102 @@ class CategoriesDataFetcher {
                 // Update existing subcategory
                 val existingSubcategory = subcategoriesRepository.findById(subcategoryId)
                     .orElseThrow { IllegalArgumentException("Invalid subcategory ID: $subcategoryId") }
-
-                if (existingSubcategory.category.categoryId != categoryId) {
-                    throw IllegalArgumentException("Subcategory does not belong to the specified category")
-                }
-
                 existingSubcategory.subcategoryName = subcategoryInput.subcategoryName
                 existingSubcategory.maxPoints = subcategoryInput.maxPoints.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-                if (subcategoriesRepository.findByCategoryAndOrdinalNumber(category, subcategoryInput.ordinalNumber).any { it.subcategoryId != subcategoryId }) {
-                    throw IllegalArgumentException("Subcategory with this ordinal number already exists")
-                }
                 existingSubcategory.ordinalNumber = subcategoryInput.ordinalNumber
                 existingSubcategory.label = subcategoryInput.label
-
                 subcategoriesRepository.save(existingSubcategory)
             } else {
+                subcategoryInput.categoryId = categoryId
                 subcategoriesDataFetcher.addSubcategoryHelper(subcategoryInput)
             }
         }
+        val subcategoriesFromOneEdition = subcategoriesRepository.findByCategory(category)
+
+        editions.forEach { edition ->
+                subcategoriesFromOneEdition.forEach {
+                        val input = SubcategoryInput(
+                            subcategoryName = it.subcategoryName,
+                            maxPoints = it.maxPoints.toFloat(),
+                            ordinalNumber = it.ordinalNumber,
+                            categoryId = it.category.categoryId,
+                            editionId = edition.editionId,
+                            label = it.label
+                        )
+                        subcategoriesDataFetcher.addSubcategoryHelper(input)
+                    }
+            }
 
         return categoriesRepository.save(category)
     }
 
-    private fun isValidHexColor(color: String): Boolean {
-        val hexColorPattern = "^#(?:[0-9a-fA-F]{3}){1,2}$".toRegex()
-        return hexColorPattern.matches(color)
+    @DgsMutation
+    @Transactional
+    fun copyCategory(@InputArgument categoryId: Long): Categories {
+        val action = "copyCategory"
+        val arguments = mapOf(
+            "categoryId" to categoryId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val category = categoriesRepository.findById(categoryId)
+            .orElseThrow { IllegalArgumentException("Invalid category ID") }
+
+        val categoryNameRoot = category.categoryName
+        var i = 1
+        while (categoriesRepository.findAllByCategoryName("$categoryNameRoot (Copy $i)").isNotEmpty()) {
+            i++
+        }
+        val categoryName = "$categoryNameRoot (Copy $i)"
+
+        val newCategory = Categories(
+            categoryName = categoryName,
+            canAddPoints = category.canAddPoints,
+            lightColor = category.lightColor,
+            darkColor = category.darkColor,
+            label = category.label
+        )
+
+        val resultCategory = categoriesRepository.save(newCategory)
+
+        val subcategories = subcategoriesRepository.findByCategory(category).filter { it.edition == null }
+        subcategories.forEach {
+            val subcategoryInput = SubcategoryInput(
+                subcategoryName = it.subcategoryName,
+                maxPoints = it.maxPoints.toFloat(),
+                ordinalNumber = it.ordinalNumber,
+                categoryId = resultCategory.categoryId,
+                label = it.label
+            )
+            subcategoriesDataFetcher.addSubcategoryHelper(subcategoryInput)
+        }
+
+        return resultCategory
     }
 }
+
+data class CategoryWithPermissions(
+    val category: CategoryOutputType,
+    val permissions: ListPermissionsOutput
+)
+
+data class CategoryOutputType (
+    val categoryId: Long,
+    val categoryName: String,
+    val lightColor: String,
+    val darkColor: String,
+    val canAddPoints: Boolean,
+    val gradingChecks: Set<GradingChecks>,
+    val categoryEdition: Set<CategoryEdition>,
+    val subcategories: Set<Subcategories>,
+    val awards: Set<Award>,
+    val label: String
+)
+

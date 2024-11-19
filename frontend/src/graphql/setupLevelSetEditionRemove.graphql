@@ -1,0 +1,3 @@
+mutation SetupLevelSetEditionRemove($levelSetId: Int!, $editionId: Int!) {
+  removeLevelSetFromEdition(levelSetId: $levelSetId, editionId: $editionId)
+}

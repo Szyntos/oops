@@ -1,5 +1,9 @@
 package backend.chests
 
+import backend.categoryEdition.CategoryEdition
+import backend.chestAward.ChestAward
+import backend.chestEdition.ChestEdition
+import backend.chestHistory.ChestHistory
 import backend.edition.Edition
 import backend.files.FileEntity
 import backend.utils.HasImageFile
@@ -19,12 +23,20 @@ class Chests(
     @Column(name="active", nullable = false)
     var active: Boolean = true,
 
+    @Column(name = "award_bundle_count", nullable = false)
+    var awardBundleCount: Int,
+
     @Column(name = "label", nullable = false, length = 256)
     var label: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "edition_id", nullable = false)
-    var edition: Edition,
+    @OneToMany(mappedBy = "chest", fetch = FetchType.LAZY)
+    val chestEdition: Set<ChestEdition> = HashSet(),
+
+    @OneToMany(mappedBy = "chest", fetch = FetchType.LAZY)
+    val chestAward: Set<ChestAward> = HashSet(),
+
+    @OneToMany(mappedBy = "chest", fetch = FetchType.LAZY)
+    val chestHistory: Set<ChestHistory> = HashSet(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_file_id")
@@ -32,7 +44,7 @@ class Chests(
 ) : HasImageFile {
     constructor() : this(
         chestType = "",
+        awardBundleCount = 0,
         label = "",
-        edition = Edition()
     )
 }

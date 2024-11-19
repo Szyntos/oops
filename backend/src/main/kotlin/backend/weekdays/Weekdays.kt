@@ -1,5 +1,7 @@
 package backend.weekdays
 
+import backend.groups.Groups
+import backend.pointsHistory.PointsHistory
 import jakarta.persistence.*
 
 @Entity
@@ -21,6 +23,9 @@ class Weekdays(
 
     @Column(name = "label", nullable = false, length = 256)
     var label: String,
+
+    @OneToMany(mappedBy = "weekday", fetch = FetchType.LAZY)
+    val groups: Set<Groups> = HashSet(),
 
     ) {
     constructor() : this(

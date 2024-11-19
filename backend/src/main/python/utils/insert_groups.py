@@ -2,7 +2,7 @@ import requests
 
 def insert_groups(hasura_url, headers, editions, random, number_of_groups_per_year_bounds, teacher_ids_and_roles):
     weekdays = [i for i in range(1, 6)]
-    timespans = [("08:00:00", "09:30:00"), ("10:00:00", "11:30:00"), ("12:00:00", "13:30:00"), ("14:00:00", "15:30:00"), ("16:00:00", "17:30:00")]
+    timespans = [("08:00", "09:30"), ("10:00", "11:30"), ("12:00", "13:30"), ("14:00", "15:30"), ("16:00", "17:30")]
     groups = []
 
     teacher_ids = [user_id for user_id, role in teacher_ids_and_roles]

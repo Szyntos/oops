@@ -21,8 +21,8 @@ export const StudentsScreen = () => {
   const [input, setInput] = useState("");
   const [groupsIds, setGroupsIds] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<GroupRadioFilterItem>({
-    id: "all",
-    name: "wszystkie",
+    id: "yours",
+    name: "twoje",
   });
 
   const doesGroupMatchRadioButtons = useCallback(

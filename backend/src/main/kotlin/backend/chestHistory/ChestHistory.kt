@@ -1,8 +1,10 @@
 package backend.chestHistory
 
+import backend.bonuses.Bonuses
 import backend.bonuses.BonusesRepository
 import backend.chests.Chests
 import backend.subcategories.Subcategories
+import backend.userLevel.UserLevel
 import backend.users.Users
 import backend.utils.TimestampModel
 import jakarta.persistence.*
@@ -37,6 +39,9 @@ class ChestHistory(
     @Column(name = "opened", nullable = false)
     var opened: Boolean = false,
 
+    @OneToMany(mappedBy = "chestHistory", fetch = FetchType.LAZY)
+    val bonuses: Set<Bonuses> = HashSet(),
+
     ): TimestampModel() {
     constructor() : this(
         user = Users(),
@@ -48,9 +53,6 @@ class ChestHistory(
 
     fun hasExistingBonus(bonusRepository: BonusesRepository): Boolean {
         val existingBonuses = bonusRepository.findByChestHistory(this)
-        if (existingBonuses.isNotEmpty()) {
-            return true
-        }
-        return false
+        return existingBonuses.isNotEmpty()
     }
 }

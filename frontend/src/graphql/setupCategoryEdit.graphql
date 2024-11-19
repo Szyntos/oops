@@ -1,0 +1,15 @@
+mutation SetupCategoryEdit(
+  $categoryId: Int!
+  $subcategories: [SubcategoryInputType!]!
+  $categoryName: String!
+  $canAddPoints: Boolean!
+) {
+  editCategory(
+    categoryId: $categoryId
+    subcategories: $subcategories
+    categoryName: $categoryName
+    canAddPoints: $canAddPoints
+  ) {
+    categoryName
+  }
+}

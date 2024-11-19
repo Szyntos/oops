@@ -3,22 +3,31 @@ package backend.graphql
 import backend.categories.CategoriesRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
-import backend.levels.Levels
-import backend.levels.LevelsRepository
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
+import backend.graphql.permissions.SubcategoriesPermissions
+import backend.graphql.utils.PhotoAssigner
 import backend.points.PointsRepository
 import backend.subcategories.Subcategories
 import backend.subcategories.SubcategoriesRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.math.RoundingMode
 
 @DgsComponent
 class SubcategoriesDataFetcher {
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
+    @Autowired
+    private lateinit var subcategoriesPermissions: SubcategoriesPermissions
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -45,32 +54,29 @@ class SubcategoriesDataFetcher {
     fun generateSubcategories(@InputArgument editionId: Long, @InputArgument categoryId: Long,
                               @InputArgument subcategoryPrefix: String,
                               @InputArgument subcategoryCount: Int, @InputArgument maxPoints: Float): List<Subcategories> {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can generate subcategories")
+        val action = "generateSubcategories"
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "categoryId" to categoryId,
+            "subcategoryPrefix" to subcategoryPrefix,
+            "subcategoryCount" to subcategoryCount,
+            "maxPoints" to maxPoints
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId).orElseThrow { throw Exception("Edition not found") }
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
+
         val category = categoriesRepository.findById(categoryId).orElseThrow { throw Exception("Category not found") }
-        if (category.categoryEdition.none { it.edition == edition }) {
-            throw IllegalArgumentException("Category with id $categoryId does not exist in edition with id $editionId")
-        }
-        if (subcategoriesRepository.findByCategoryAndEdition(category, edition).isNotEmpty()) {
-            throw IllegalArgumentException("Subcategories for category with id $categoryId and edition with id $editionId already exist")
-        }
+
         val subcategories = mutableListOf<Subcategories>()
-        if (subcategoryCount < 1) {
-            throw IllegalArgumentException("Subcategory count must be greater than 0")
-        }
-        if (maxPoints < 0) {
-            throw IllegalArgumentException("Max points must be greater than or equal to 0")
-        }
-        if (subcategoryPrefix.isBlank()) {
-            throw IllegalArgumentException("Subcategory prefix must not be blank")
-        }
+
         for (i in 0..<subcategoryCount) {
             val subcategory = Subcategories(
                 subcategoryName = "${subcategoryPrefix}_$i",
@@ -88,6 +94,28 @@ class SubcategoriesDataFetcher {
     @DgsMutation
     @Transactional
     fun addSubcategory(@InputArgument subcategory: SubcategoryInput): Subcategories {
+        val action = "addSubcategory"
+        val subcategoryMap = mapOf(
+            "subcategoryId" to subcategory.subcategoryId,
+            "subcategoryName" to subcategory.subcategoryName,
+            "maxPoints" to subcategory.maxPoints,
+            "ordinalNumber" to subcategory.ordinalNumber,
+            "categoryId" to subcategory.categoryId,
+            "editionId" to subcategory.editionId,
+            "label" to subcategory.label
+        )
+        val arguments = mapOf(
+            "subcategory" to subcategoryMap
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
         return addSubcategoryHelper(subcategory)
     }
 
@@ -100,61 +128,40 @@ class SubcategoriesDataFetcher {
         @InputArgument ordinalNumber: Int?,
         @InputArgument label: String?
     ): Subcategories {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can edit subcategories")
+        val action = "editSubcategory"
+        val arguments = mapOf(
+            "subcategoryId" to subcategoryId,
+            "subcategoryName" to subcategoryName,
+            "maxPoints" to maxPoints,
+            "ordinalNumber" to ordinalNumber,
+            "label" to label
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
+
 
         val subcategory = subcategoriesRepository.findById(subcategoryId)
             .orElseThrow { IllegalArgumentException("Subcategory not found") }
 
-        if (subcategory.edition == null){
-            throw IllegalArgumentException("Subcategory's edition is null")
-        }
 
-        if (subcategory.edition?.endDate?.isBefore(java.time.LocalDate.now()) == true){
-            throw IllegalArgumentException("Subcategory's edition has already ended")
-        }
+
 
 
         subcategoryName?.let {
-            if (it.isBlank()) {
-                throw IllegalArgumentException("Subcategory name must not be blank")
-            }
-            if (subcategoriesRepository.findBySubcategoryNameAndCategoryAndEdition(it, subcategory.category,
-                    subcategory.edition!!
-                ).isPresent) {
-                throw IllegalArgumentException("Subcategory with name $it already exists in the same category and edition")
-            }
             subcategory.subcategoryName = it
         }
 
         maxPoints?.let {
-            if (subcategory.edition!!.startDate.isBefore(java.time.LocalDate.now())){
-                throw IllegalArgumentException("Subcategory's edition has already started")
-            }
-            if (it < 0) {
-                throw IllegalArgumentException("Max points must be greater than or equal to 0")
-            }
             subcategory.maxPoints = it.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         }
 
         ordinalNumber?.let {
-            if (subcategory.edition!!.startDate.isBefore(java.time.LocalDate.now())){
-                throw IllegalArgumentException("Subcategory's edition has already started")
-            }
-            if (it < 0) {
-                throw IllegalArgumentException("Ordinal number must be greater or equal to 0")
-            }
-            val ordinalNumbers = subcategoriesRepository.findByCategoryAndEdition(subcategory.category,
-                subcategory.edition!!
-            ).map { it.ordinalNumber }
-            if (ordinalNumbers.contains(it) && it != subcategory.ordinalNumber) {
-                throw IllegalArgumentException("Subcategory with ordinal number $it already exists")
-            }
-            if (ordinalNumbers.isEmpty() && it != 0) {
-                throw IllegalArgumentException("First subcategory must have ordinal number 0")
-            }
             subcategory.ordinalNumber = it
         }
 
@@ -169,79 +176,39 @@ class SubcategoriesDataFetcher {
     @DgsMutation
     @Transactional
     fun removeSubcategory(@InputArgument subcategoryId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove subcategories")
+        val action = "removeSubcategory"
+        val arguments = mapOf(
+            "subcategoryId" to subcategoryId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val subcategory = subcategoriesRepository.findById(subcategoryId)
             .orElseThrow { IllegalArgumentException("Subcategory not found") }
 
-        if (subcategory.edition != null && subcategory.edition!!.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Subcategory's edition has already ended")
-        }
-        if (pointsRepository.findBySubcategory(subcategory).isNotEmpty()) {
-            throw IllegalArgumentException("Subcategory has points")
-        }
         subcategoriesRepository.delete(subcategory)
         return true
     }
 
+    @Transactional
     fun addSubcategoryHelper(subcategory: SubcategoryInput): Subcategories {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add subcategories")
-        }
-
-        if (subcategory.subcategoryId != null && subcategory.subcategoryId != -1L) {
-            throw IllegalArgumentException("You cannot specify subcategoryId when adding a new subcategory")
-        }
-
-        if (subcategory.categoryId == -1L || subcategory.categoryId == null) {
-            throw IllegalArgumentException("Category ID must be specified")
+        val permission = subcategoriesPermissions.checkAddSubcategoryHelperPermission(subcategory)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val category = categoriesRepository.findById(subcategory.categoryId!!).orElseThrow { throw Exception("Category not found") }
         val edition = if (!(subcategory.editionId == -1L || subcategory.editionId == null)) {
-            val edition = editionRepository.findById(subcategory.editionId).orElseThrow { throw Exception("Edition not found") }
-            if (edition.endDate.isBefore(java.time.LocalDate.now())){
-                throw IllegalArgumentException("Edition has already ended")
-            }
-            if (category.categoryEdition.none { it.edition == edition }) {
-                throw IllegalArgumentException("Category with id $subcategory.categoryId does not exist in edition with id $subcategory.editionId")
-            }
-            if (subcategoriesRepository.findBySubcategoryNameAndCategoryAndEdition(subcategory.subcategoryName, category, edition).isPresent) {
-                throw IllegalArgumentException("Subcategory with name $subcategory.subcategoryName already exists in category $category and edition ${subcategory.editionId}")
-            }
-            edition
+            editionRepository.findById(subcategory.editionId).orElseThrow { throw Exception("Edition not found") }
         } else {
-            if (subcategoriesRepository.existsBySubcategoryNameAndCategory(subcategory.subcategoryName, category)) {
-                throw IllegalArgumentException("Subcategory with name $subcategory.subcategoryName already exists in category $category")
-            }
             null
-        }
-        val ordinalNumbers = if (edition != null) {
-            subcategoriesRepository.findByCategoryAndEdition(category, edition).map { it.ordinalNumber }
-        } else {
-            subcategoriesRepository.findByCategory(category).map { it.ordinalNumber }
-        }
-        if (subcategory.subcategoryName.isBlank()) {
-            throw IllegalArgumentException("Subcategory name must not be blank")
-        }
-        if (subcategory.maxPoints < 0) {
-            throw IllegalArgumentException("Max points must be greater than or equal to 0")
-        }
-        if (subcategory.ordinalNumber < 0) {
-            throw IllegalArgumentException("Ordinal number must be greater or equal to 0")
-        }
-        if (ordinalNumbers.contains(subcategory.ordinalNumber)) {
-            throw IllegalArgumentException("Subcategory with ordinal number $subcategory.ordinalNumber already exists")
-        }
-        if (ordinalNumbers.isEmpty() && subcategory.ordinalNumber != 0) {
-            throw IllegalArgumentException("First subcategory must have ordinal number 0")
-        }
-        if (ordinalNumbers.isNotEmpty() && ordinalNumbers.max() != subcategory.ordinalNumber - 1) {
-            throw IllegalArgumentException("Ordinal number must be greater by 1 than the previous subcategory-(${ordinalNumbers.max()})")
         }
         val subcategories = Subcategories(
             subcategoryName = subcategory.subcategoryName,

@@ -6,14 +6,20 @@ import { CategoryCard } from "./CategoryCard";
 type CategoriesListProps = {
   categories: Category[];
   selectedCategories: Category[];
-  handleSelectCategoryClick: (category: Category) => void;
+  handleSelectClick: (category: Category) => void;
+  handleEditClick: (category: Category) => void;
+  handleDeleteClick: (category: Category) => void;
+  handleCopyClick: (category: Category) => void;
   title: string;
 };
 
 export const CategoriesList = ({
   categories,
   selectedCategories,
-  handleSelectCategoryClick,
+  handleSelectClick,
+  handleEditClick,
+  handleDeleteClick,
+  handleCopyClick,
   title,
 }: CategoriesListProps) => {
   return (
@@ -26,10 +32,14 @@ export const CategoriesList = ({
                 category={category}
                 isSelected={
                   !!selectedCategories.find(
-                    (c) => c.categoryId === category.categoryId,
+                    (c) =>
+                      c.category.categoryId === category.category.categoryId,
                   )
                 }
-                onSelectClick={() => handleSelectCategoryClick(category)}
+                handleSelectClick={() => handleSelectClick(category)}
+                handleEditClick={() => handleEditClick(category)}
+                handleDeleteClick={() => handleDeleteClick(category)}
+                handleCopyClick={() => handleCopyClick(category)}
               />
             ))
           : EMPTY_FIELD_STRING}

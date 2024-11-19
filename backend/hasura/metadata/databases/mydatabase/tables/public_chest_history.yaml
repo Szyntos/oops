@@ -2,13 +2,6 @@ table:
   name: chest_history
   schema: public
 object_relationships:
-  - name: bonus
-    using:
-      foreign_key_constraint_on:
-        column: chest_history_id
-        table:
-          name: bonuses
-          schema: public
   - name: chest
     using:
       foreign_key_constraint_on: chest_id
@@ -21,6 +14,14 @@ object_relationships:
   - name: userByTeacherId
     using:
       foreign_key_constraint_on: teacher_id
+array_relationships:
+  - name: bonuses
+    using:
+      foreign_key_constraint_on:
+        column: chest_history_id
+        table:
+          name: bonuses
+          schema: public
 select_permissions:
   - role: coordinator
     permission:
@@ -84,7 +85,7 @@ update_permissions:
                   end_date:
                     _lte: now()
           - _not:
-              bonus:
+              bonuses:
                 bonus_id:
                   _is_null: false
       check:
@@ -95,7 +96,7 @@ update_permissions:
                   end_date:
                     _lte: now()
           - _not:
-              bonus:
+              bonuses:
                 bonus_id:
                   _is_null: false
       set:
@@ -111,11 +112,12 @@ update_permissions:
       filter:
         _and:
           - chest:
-              edition:
-                groups:
-                  userGroups:
-                    user_id:
-                      _eq: X-Hasura-User-Id
+              chestEditions:
+                edition:
+                  groups:
+                    userGroups:
+                      user_id:
+                        _eq: X-Hasura-User-Id
           - user:
               userGroups:
                 group:
@@ -139,11 +141,12 @@ update_permissions:
       check:
         _and:
           - chest:
-              edition:
-                groups:
-                  userGroups:
-                    user_id:
-                      _eq: X-Hasura-User-Id
+              chestEditions:
+                edition:
+                  groups:
+                    userGroups:
+                      user_id:
+                        _eq: X-Hasura-User-Id
           - user:
               userGroups:
                 group:
@@ -173,7 +176,7 @@ delete_permissions:
       filter:
         _and:
           - _not:
-              bonus:
+              bonuses:
                 bonus_id:
                   _is_null: false
           - _not:

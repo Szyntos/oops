@@ -1,35 +1,37 @@
 package backend.graphql
 
-import backend.award.AwardType
-import backend.bonuses.BonusesRepository
-import backend.categories.Categories
 import backend.categories.CategoriesRepository
 import backend.categoryEdition.CategoryEditionRepository
-import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.gradingChecks.GradingChecks
 import backend.gradingChecks.GradingChecksRepository
-import backend.levels.Levels
+import backend.graphql.utils.*
+import backend.graphql.permissions.GradingChecksPermissions
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.levels.LevelsRepository
 import backend.points.PointsRepository
-import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
-import backend.users.Users
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeParseException
-import kotlin.math.min
+import kotlin.jvm.optionals.getOrNull
 
 @DgsComponent
 class GradingChecksDataFetcher {
+    @Autowired
+    private lateinit var gradingChecksPermissions: GradingChecksPermissions
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -54,51 +56,102 @@ class GradingChecksDataFetcher {
     @Autowired
     lateinit var gradingChecksRepository: GradingChecksRepository
 
-    @DgsMutation
+    @DgsQuery
     @Transactional
-    fun addGradingCheck(@InputArgument editionId: Long, @InputArgument endOfLabsDate: String,
-                        @InputArgument endOfLabsLevelsThreshold: Long, @InputArgument projectPointsThreshold: Float,
-                        @InputArgument projectId: Long, @InputArgument checkDates: Boolean = true): GradingChecks {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("User is not a coordinator")
+    fun listSetupGradingChecks(@InputArgument editionId: Long): GradingCheckWithPermissions {
+        val action = "listSetupGradingChecks"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)
             .orElseThrow { IllegalArgumentException("Invalid edition ID") }
 
-        if (gradingChecksRepository.existsByEdition(edition)) {
-            throw IllegalArgumentException("Grading checks for edition ${edition.editionName} already exist")
+        val gradingCheck = gradingChecksRepository.findByEdition(edition).getOrNull()
+
+        val gradingCheckPermissions = GradingCheckWithPermissions(
+            gradingCheck = gradingCheck,
+            permissions = ListPermissionsOutput(
+                canAdd = Permission(
+                    "addGradingCheck",
+                    objectMapper.createObjectNode(),
+                    false,
+                    "Not applicable"),
+                canEdit = permissionService.checkPartialPermission(PermissionInput("editGradingCheck", objectMapper.writeValueAsString(mapOf("gradingCheckId" to gradingCheck?.gradingCheckId)))),
+                canCopy =
+                Permission(
+                    "copyGradingCheck",
+                    objectMapper.createObjectNode(),
+                    false,
+                    "Not applicable"),
+                canRemove =
+                Permission(
+                    "removeGradingCheck",
+                    objectMapper.createObjectNode(),
+                    false,
+                    "Not applicable"),
+                canSelect =
+                Permission(
+                    "selectGradingCheck",
+                    objectMapper.createObjectNode(),
+                    false,
+                    "Not applicable"),
+                canUnselect =
+                Permission(
+                    "unselectGradingCheck",
+                    objectMapper.createObjectNode(),
+                    false,
+                    "Not applicable"),
+                additional = emptyList()
+            )
+        )
+
+        return gradingCheckPermissions
+    }
+
+    @DgsMutation
+    @Transactional
+    fun addGradingCheck(@InputArgument editionId: Long, @InputArgument endOfLabsDate: String,
+                        @InputArgument endOfLabsLevelsThreshold: Long, @InputArgument projectPointsThreshold: Float,
+                        @InputArgument projectId: Long, @InputArgument checkDates: Boolean = true): GradingChecks {
+        val action = "addGradingCheck"
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "endOfLabsDate" to endOfLabsDate,
+            "endOfLabsLevelsThreshold" to endOfLabsLevelsThreshold,
+            "projectPointsThreshold" to projectPointsThreshold,
+            "projectId" to projectId,
+            "checkDates" to checkDates
+        )
+
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
+
+        val edition = editionRepository.findById(editionId)
+            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
 
         val endOfLabsDateParsed = LocalDate.parse(endOfLabsDate)
-        if (checkDates) {
-
-            if (edition.endDate.isBefore(LocalDate.now())){
-                throw IllegalArgumentException("Edition has already ended")
-            }
-            if (endOfLabsDateParsed.isBefore(LocalDate.now())) {
-                throw IllegalArgumentException("End of labs date must be in the future")
-            }
-        }
-
-        if (endOfLabsDateParsed.isBefore(edition.startDate) || endOfLabsDateParsed.isAfter(edition.endDate)) {
-            throw IllegalArgumentException("End of labs date must be between ${edition.startDate} and ${edition.endDate}")
-        }
 
         val endOfLabsLevelsThresholdLevel = levelsRepository.findById(endOfLabsLevelsThreshold)
             .orElseThrow { IllegalArgumentException("Invalid level ID") }
 
         val project = categoriesRepository.findById(projectId)
             .orElseThrow { IllegalArgumentException("Invalid project ID") }
-
-        if (categoryEditionRepository.findByCategoryAndEdition(project, edition).isEmpty()) {
-            throw IllegalArgumentException("Project ${project.categoryName} is not part of edition ${edition.editionName}")
-        }
-
-        if (projectPointsThreshold < 0) {
-            throw IllegalArgumentException("Project points threshold cannot be negative")
-        }
 
         val gradingCheck = GradingChecks(
             endOfLabsDate = endOfLabsDateParsed,
@@ -120,35 +173,28 @@ class GradingChecksDataFetcher {
         @InputArgument projectPointsThreshold: Float?,
         @InputArgument projectId: Long?
     ): GradingChecks {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("User is not a coordinator")
+        val action = "editGradingCheck"
+        val arguments = mapOf(
+            "gradingCheckId" to gradingCheckId,
+            "endOfLabsDate" to endOfLabsDate,
+            "endOfLabsLevelsThreshold" to endOfLabsLevelsThreshold,
+            "projectPointsThreshold" to projectPointsThreshold,
+            "projectId" to projectId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
             .orElseThrow { IllegalArgumentException("Grading check not found") }
 
         endOfLabsDate?.let {
-            val endOfLabsDateParsed = try {
-                LocalDate.parse(it)
-            } catch (e: DateTimeParseException) {
-                throw IllegalArgumentException("Invalid date format for endOfLabsDate")
-            }
-
-            val edition = gradingCheck.edition
-
-            if (edition.endDate.isBefore(LocalDate.now())) {
-                throw IllegalArgumentException("Edition has already ended")
-            }
-            if (endOfLabsDateParsed.isBefore(LocalDate.now())) {
-                throw IllegalArgumentException("End of labs date must be in the future")
-            }
-
-            if (endOfLabsDateParsed.isBefore(edition.startDate) || endOfLabsDateParsed.isAfter(edition.endDate)) {
-                throw IllegalArgumentException("End of labs date must be between ${edition.startDate} and ${edition.endDate}")
-            }
-
-            gradingCheck.endOfLabsDate = endOfLabsDateParsed
+            gradingCheck.endOfLabsDate = LocalDate.parse(it)
         }
 
         endOfLabsLevelsThreshold?.let {
@@ -158,21 +204,12 @@ class GradingChecksDataFetcher {
         }
 
         projectPointsThreshold?.let {
-            if (it < 0) {
-                throw IllegalArgumentException("Project points threshold cannot be negative")
-            }
-
             gradingCheck.projectPointsThreshold = it
         }
 
         projectId?.let {
             val project = categoriesRepository.findById(it)
                 .orElseThrow { IllegalArgumentException("Invalid project ID") }
-
-            if (categoryEditionRepository.findByCategoryAndEdition(project, gradingCheck.edition).isEmpty()) {
-                throw IllegalArgumentException("Project ${project.categoryName} is not part of edition ${gradingCheck.edition.editionName}")
-            }
-
             gradingCheck.project = project
         }
 
@@ -182,17 +219,30 @@ class GradingChecksDataFetcher {
     @DgsMutation
     @Transactional
     fun removeGradingCheck(@InputArgument gradingCheckId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("User is not a coordinator")
+        val action = "removeGradingCheck"
+        val arguments = mapOf(
+            "gradingCheckId" to gradingCheckId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        return removeGradingCheckHelper(gradingCheckId)
+    }
+
+    fun removeGradingCheckHelper(gradingCheckId: Long): Boolean {
+        val permission = gradingChecksPermissions.checkRemoveGradingCheckHelperPermission(gradingCheckId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
             .orElseThrow { IllegalArgumentException("Grading check not found") }
-
-        if (gradingCheck.edition.endDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
 
         gradingChecksRepository.delete(gradingCheck)
         return true
@@ -200,3 +250,7 @@ class GradingChecksDataFetcher {
 
 }
 
+data class GradingCheckWithPermissions(
+    val gradingCheck: GradingChecks?,
+    val permissions: ListPermissionsOutput
+)

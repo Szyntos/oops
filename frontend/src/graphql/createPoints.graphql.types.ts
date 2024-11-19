@@ -12,7 +12,7 @@ export type CreatePointsMutationVariables = Types.Exact<{
 
 export type CreatePointsMutation = {
   __typename?: "mutation_root";
-  addPointsMutation?: {
+  addPoints?: {
     __typename?: "PointType";
     value: string;
     updatedAt: string;
@@ -53,7 +53,7 @@ export const CreatePointsDocument = gql`
     $teacherId: Int!
     $value: Float!
   ) {
-    addPointsMutation(
+    addPoints(
       studentId: $studentId
       subcategoryId: $subcategoryId
       teacherId: $teacherId

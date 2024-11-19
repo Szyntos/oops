@@ -35,6 +35,7 @@ select_permissions:
         - label
         - start_time
         - teacher_id
+        - usos_id
         - weekday_id
       filter: {}
       allow_aggregations: true
@@ -51,6 +52,7 @@ select_permissions:
         - label
         - start_time
         - teacher_id
+        - usos_id
         - weekday_id
       filter:
         edition:
@@ -71,6 +73,7 @@ select_permissions:
         - label
         - start_time
         - teacher_id
+        - usos_id
         - weekday_id
       filter:
         edition:

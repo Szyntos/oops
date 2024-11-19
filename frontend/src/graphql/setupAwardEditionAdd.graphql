@@ -1,0 +1,7 @@
+mutation SetupAwardEditionAdd($editionId: Int!, $awardId: Int!) {
+  addAwardToEdition(editionId: $editionId, awardId: $awardId) {
+    award {
+      awardId
+    }
+  }
+}

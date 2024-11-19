@@ -1,17 +1,16 @@
 query Levels($editionId: bigint!) {
-  levels(
-    where: { editionId: { _eq: $editionId } }
-    orderBy: { ordinalNumber: ASC }
-  ) {
-    grade
-    imageFileId
-    levelId
-    maximumPoints
-    minimumPoints
-    name
-    ordinalNumber
-    label
-    highest
-    editionId
+  levelSets(where: { edition: { editionId: { _eq: $editionId } } }) {
+    levels(orderBy: { ordinalNumber: ASC }) {
+      grade
+      imageFileId
+      levelId
+      maximumPoints
+      minimumPoints
+      name
+      ordinalNumber
+      label
+      highest
+      levelSetId
+    }
   }
 }

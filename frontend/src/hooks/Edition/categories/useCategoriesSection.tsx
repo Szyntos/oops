@@ -9,45 +9,49 @@ import { useSetupCategoryEditionRemoveMutation } from "../../../graphql/setupCat
 import { CategoriesFormValues } from "../../../components/Edition/Sections/CategoriesSection/AddCategoryForm/AddCategoryForm";
 import { FormSubcategory } from "../../../components/Edition/Sections/CategoriesSection/AddCategoryForm/SubcategoryRows";
 import { useSetupCategoryCreateMutation } from "../../../graphql/setupCategoryCreate.graphql.types";
+import { useError } from "../../common/useGlobalError";
+import { useSetupCategoryEditMutation } from "../../../graphql/setupCategoryEdit.graphql.types";
+import { useDeleteCategoryMutation } from "../../../graphql/deleteCategory.graphql.types";
+import { useCopyCategoryMutation } from "../../../graphql/copyCategory.graphql.types";
 
-export type Category = SetupCategoriesQuery["categories"][number];
+export type Category = SetupCategoriesQuery["listSetupCategories"][number];
 
 export const useCategoriesSection = (editionId: number) => {
-  const { data, loading, error, refetch } = useSetupCategoriesQuery();
+  const { localErrorWrapper, globalErrorWrapper } = useError();
 
-  const categories: Category[] = data?.categories ?? [];
-
-  const selectedCategories: Category[] = categories.filter((c: Category) => {
-    const found = c.categoryEditions.find(
-      (category) => category.editionId === editionId.toString(),
-    );
-    return !!found;
+  const { data, loading, error, refetch } = useSetupCategoriesQuery({
+    variables: { editionId },
   });
 
-  const [isOpen, setIsOpen] = useState(false);
+  const categories: Category[] = data?.listSetupCategories ?? [];
 
-  const [createCategory] = useSetupCategoryCreateMutation();
-  const [createCategoryError, setCreateCategoryError] = useState<
-    string | undefined
-  >(undefined);
+  const selectedCategories: Category[] = categories.filter((category) =>
+    category.category.categoryEdition.some(
+      (e) => e.edition.editionId === editionId.toString(),
+    ),
+  );
 
-  const [addCategory] = useSetupCategoryEditionAddMutation();
-  const [removeCategory] = useSetupCategoryEditionRemoveMutation();
-
-  const closeDialog = () => {
-    setIsOpen(false);
-    setCreateCategoryError(undefined);
+  const [isAddCategory, setIsAddCategory] = useState(false);
+  const openAddCategory = () => {
+    setIsAddCategory(true);
+  };
+  const closeAddCategory = () => {
+    setIsAddCategory(false);
+    setFormError(undefined);
   };
 
-  const handleCreate = async (
+  const [formError, setFormError] = useState<string | undefined>(undefined);
+
+  // ADD
+  const [createCategory] = useSetupCategoryCreateMutation();
+  const handleAddCategory = (
     values: CategoriesFormValues,
     subcategories: FormSubcategory[],
   ) => {
-    try {
+    localErrorWrapper(setFormError, async () => {
       await createCategory({
         variables: {
-          categoryName: values.categoryName,
-          canAddPoints: values.canAddPoints,
+          ...values,
           subcategories: subcategories.map((row, index) => {
             return {
               label: "",
@@ -58,41 +62,93 @@ export const useCategoriesSection = (editionId: number) => {
           }),
         },
       });
-
       refetch();
-      closeDialog();
-    } catch (error) {
-      console.error(error);
-
-      setCreateCategoryError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
+      closeAddCategory();
+    });
   };
 
-  const handleSelectClick = async (category: Category) => {
+  // SELECT
+  const [selectCategory] = useSetupCategoryEditionAddMutation();
+  const [unselectCategory] = useSetupCategoryEditionRemoveMutation();
+  const handleSelectCategory = (category: Category) => {
     const isCategorySelected = !!selectedCategories.find(
-      (c) => c.categoryId === category.categoryId,
+      (c) => c.category.categoryId === category.category.categoryId,
     );
-
     const variables = {
-      variables: {
-        editionId,
-        categoryId: parseInt(category.categoryId),
-      },
+      editionId,
+      categoryId: parseInt(category.category.categoryId),
     };
-
-    try {
-      // TODO add some kind of global error
-      if (isCategorySelected) {
-        await removeCategory(variables);
-      } else {
-        await addCategory(variables);
-      }
+    globalErrorWrapper(async () => {
+      isCategorySelected
+        ? await unselectCategory({ variables })
+        : await selectCategory({ variables });
       refetch();
-    } catch (error) {
-      console.error(error);
-    }
+    });
+  };
+
+  // EDIT
+  const [selectedCategory, setSelectedCategory] = useState<
+    Category | undefined
+  >(undefined);
+  const [iseEditCategory, setIsEditCategory] = useState(false);
+  const openEditCategory = (category: Category) => {
+    setSelectedCategory(category);
+    setIsEditCategory(true);
+  };
+  const closeEditCategory = () => {
+    setIsEditCategory(false);
+    setFormError(undefined);
+  };
+
+  // EDIT
+  const [editCategory] = useSetupCategoryEditMutation();
+  const handleEditCategory = (
+    values: CategoriesFormValues,
+    subcategories: FormSubcategory[],
+  ) => {
+    localErrorWrapper(setFormError, async () => {
+      await editCategory({
+        variables: {
+          categoryId: parseInt(selectedCategory?.category.categoryId ?? "-1"),
+          ...values,
+          subcategories: subcategories.map((row, index) => {
+            return {
+              label: "",
+              categoryId: parseInt(
+                selectedCategory?.category.categoryId ?? "-1",
+              ),
+              maxPoints: row.max.toString(),
+              ordinalNumber: index,
+              subcategoryName: row.name,
+            };
+          }),
+        },
+      });
+      refetch();
+      closeEditCategory();
+    });
+  };
+
+  // DELETE
+  const [deleteCategory] = useDeleteCategoryMutation();
+  const handleDeleteCategory = (category: Category) => {
+    globalErrorWrapper(async () => {
+      await deleteCategory({
+        variables: { categoryId: parseInt(category.category.categoryId) },
+      });
+      refetch();
+    });
+  };
+
+  // COPY
+  const [copyCategory] = useCopyCategoryMutation();
+  const handleCopyCategory = (category: Category) => {
+    globalErrorWrapper(async () => {
+      await copyCategory({
+        variables: { categoryId: parseInt(category.category.categoryId) },
+      });
+      refetch();
+    });
   };
 
   return {
@@ -100,11 +156,18 @@ export const useCategoriesSection = (editionId: number) => {
     selectedCategories,
     loading,
     error,
-    handleSelectClick,
-    handleCreate,
-    createCategoryError,
-    isOpen,
-    closeDialog,
-    openDialog: () => setIsOpen(true),
+    formError,
+    selectedCategory,
+    isAddCategory,
+    handleSelectCategory,
+    openAddCategory,
+    closeAddCategory,
+    handleAddCategory,
+    iseEditCategory,
+    openEditCategory,
+    closeEditCategory,
+    handleEditCategory,
+    handleDeleteCategory,
+    handleCopyCategory,
   };
 };

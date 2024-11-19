@@ -1,0 +1,59 @@
+table:
+  name: level_sets
+  schema: public
+array_relationships:
+  - name: edition
+    using:
+      foreign_key_constraint_on:
+        column: level_set_id
+        table:
+          name: edition
+          schema: public
+  - name: levels
+    using:
+      foreign_key_constraint_on:
+        column: level_set_id
+        table:
+          name: levels
+          schema: public
+select_permissions:
+  - role: coordinator
+    permission:
+      columns:
+        - level_set_id
+        - level_set_name
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: student
+    permission:
+      columns:
+        - level_set_id
+        - level_set_name
+      filter:
+        edition:
+          groups:
+            userGroups:
+              user_id:
+                _eq: X-Hasura-User-Id
+      allow_aggregations: true
+    comment: ""
+  - role: teacher
+    permission:
+      columns:
+        - level_set_id
+        - level_set_name
+      filter:
+        _or:
+          - edition:
+              groups:
+                teacher:
+                  user_id:
+                    _eq: X-Hasura-User-Id
+          - edition:
+              groups:
+                userGroups:
+                  user_id:
+                    _eq: X-Hasura-User-Id
+      allow_aggregations: true
+    comment: ""

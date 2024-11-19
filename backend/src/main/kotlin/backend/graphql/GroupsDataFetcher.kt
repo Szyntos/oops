@@ -1,14 +1,21 @@
 package backend.graphql
 
-import backend.award.AwardType
+import backend.award.Award
+import backend.award.AwardRepository
 import backend.bonuses.Bonuses
 import backend.bonuses.BonusesRepository
 import backend.categories.Categories
 import backend.categories.CategoriesRepository
+import backend.edition.Edition
 import backend.edition.EditionRepository
+import backend.files.FileEntity
 import backend.files.FileEntityRepository
+import backend.graphql.permissions.AwardsPermissions
+import backend.graphql.permissions.GroupsPermissions
+import backend.graphql.utils.*
 import backend.groups.Groups
 import backend.groups.GroupsRepository
+import backend.levels.LevelsRepository
 import backend.points.Points
 import backend.points.PointsRepository
 import backend.subcategories.Subcategories
@@ -25,16 +32,33 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.sql.Time
 import java.time.LocalDateTime
-import kotlin.math.min
 
 @DgsComponent
 class GroupsDataFetcher {
+
+    @Autowired
+    private lateinit var awardRepository: AwardRepository
+
+    @Autowired
+    private lateinit var awardsPermissions: AwardsPermissions
+
+    @Autowired
+    private lateinit var groupsPermissions: GroupsPermissions
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
+    @Autowired
+    private lateinit var photoAssigner: PhotoAssigner
+
+    @Autowired
+    private lateinit var levelsRepository: LevelsRepository
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -71,26 +95,93 @@ class GroupsDataFetcher {
     @Autowired
     lateinit var usersDataFetcher: UsersDataFetcher
 
-    @DgsMutation
+    @DgsQuery
     @Transactional
-    fun assignPhotosToGroups(@InputArgument editionId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can assign photos to groups")
+    fun listSetupGroups(@InputArgument editionId: Long): List<GroupWithPermissions> {
+        val action = "listSetupGroups"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
+
+        val groups = groupsRepository.findByEdition(edition).map { group ->
+            GroupWithPermissions(
+                group = GroupOutputType(
+                    groupsId = group.groupsId,
+                    groupName = group.groupName,
+                    generatedName = group.generatedName,
+                    usosId = group.usosId,
+                    label = group.label,
+                    teacher = group.teacher,
+                    userGroups = group.userGroups.filter { it.user.role == UsersRoles.STUDENT }.toSet(),
+                    weekday = group.weekday,
+                    startTime = group.startTime,
+                    endTime = group.endTime,
+                    edition = group.edition,
+                    imageFile = group.imageFile
+                ),
+                permissions = ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addGroup",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editGroupWithUsers", objectMapper.writeValueAsString(mapOf("groupId" to group.groupsId)))),
+                    canCopy =
+                    Permission(
+                        "copyGroup",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeGroup", objectMapper.writeValueAsString(mapOf("groupId" to group.groupsId)))),
+                    canSelect =
+                    Permission(
+                        "selectGroup",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canUnselect =
+                    Permission(
+                        "unselectGroup",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    additional = emptyList()
+                )
+            )
         }
+        return groups
+    }
+
+    @DgsMutation
+    @Transactional
+    fun assignPhotosToGroups(@InputArgument editionId: Long): Boolean {
+        val action = "assignPhotosToGroups"
+        val arguments = mapOf("editionId" to editionId)
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+
         val groups = groupsRepository.findByEdition(edition)
 
         val photosForGroups = fileRepository.findAllByFileType("image/group")
-
-        if (groups.size > photosForGroups.size) {
-            throw IllegalArgumentException("Not enough photos to assign to all groups. Missing ${groups.size - photosForGroups.size} photos." +
-                    " Please upload more photos with fileType = image/group and try again.")
-        }
 
         val shuffledPhotos = photosForGroups.shuffled()
 
@@ -105,39 +196,38 @@ class GroupsDataFetcher {
     @DgsMutation
     @Transactional
     fun addGroup(@InputArgument editionId: Long, @InputArgument usosId: Int,
-                 @InputArgument weekdayId: Long, @InputArgument startTime: Time,
-                 @InputArgument endTime: Time, @InputArgument teacherId: Long, @InputArgument label: String = "",
+                 @InputArgument weekdayId: Long, @InputArgument startTime: String,
+                 @InputArgument endTime: String, @InputArgument teacherId: Long, @InputArgument label: String = "",
                  @InputArgument groupName: String = ""): Groups {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can add groups")
+        val action = "addGroup"
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "usosId" to usosId,
+            "weekdayId" to weekdayId,
+            "startTime" to startTime,
+            "endTime" to endTime,
+            "teacherId" to teacherId,
+            "label" to label,
+            "groupName" to groupName
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
+
+        val startTimeWithSeconds = Time.valueOf("$startTime:00")
+        val endTimeWithSeconds = Time.valueOf("$endTime:00")
+
         val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Invalid edition ID") }
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {
-            throw IllegalArgumentException("Group with USOS ID $usosId already exists for edition ${edition.editionId}")
-        }
-        if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName.isNotBlank() }) {
-            throw IllegalArgumentException("Group with name $groupName already exists for edition ${edition.editionId}")
-        }
-        if (startTime.after(endTime)) {
-            throw IllegalArgumentException("Start time must be before end time")
-        }
-        if (startTime == endTime) {
-            throw IllegalArgumentException("Start time must be different from end time")
-        }
+
         val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Invalid weekday ID") }
         val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Invalid teacher ID") }
-        if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("User with ID $teacherId is not a teacher nor a coordinator")
-        }
-        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTime, endTime, edition)) {
-            throw IllegalArgumentException("Teacher is already teaching a group at this time")
-        }
-        val generatedName = generateGroupName(usosId, weekday, startTime, teacher)
+        val generatedName = generateGroupName(usosId, weekday, startTimeWithSeconds, teacher)
         val group = Groups(
             generatedName = generatedName,
             groupName = groupName,
@@ -145,11 +235,15 @@ class GroupsDataFetcher {
             label = label,
             teacher = teacher,
             weekday = weekday,
-            startTime = startTime,
-            endTime = endTime,
+            startTime = startTimeWithSeconds,
+            endTime = endTimeWithSeconds,
             edition = edition
         )
         groupsRepository.save(group)
+        val filesFromGroupInEdition = groupsRepository.findByEdition(edition).mapNotNull { it.imageFile }
+        val file = fileRepository.findAllByFileType("image/group").filter { it !in filesFromGroupInEdition }.shuffled().firstOrNull()
+        val fileId = file?.fileId ?: fileRepository.findAllByFileType("image/group").shuffled().firstOrNull()?.fileId
+        photoAssigner.assignPhotoToAssignee(groupsRepository, "image/group", group.groupsId, fileId)
         val userGroups = UserGroups(
             user = teacher,
             group = group
@@ -161,39 +255,56 @@ class GroupsDataFetcher {
     @DgsMutation
     @Transactional
     fun addGroupWithUsers(@InputArgument editionId: Long, @InputArgument usosId: Int,
-                          @InputArgument weekdayId: Long, @InputArgument startTime: Time,
-                          @InputArgument endTime: Time, @InputArgument teacherId: Long, @InputArgument label: String = "",
+                          @InputArgument weekdayId: Long, @InputArgument startTime: String,
+                          @InputArgument endTime: String, @InputArgument teacherId: Long, @InputArgument label: String = "",
                           @InputArgument groupName: String = "", @InputArgument users: List<UsersInputType>): Groups {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can add groups")
+        val action = "addGroupWithUsers"
+        val usersMap = users.map { user ->
+            mapOf(
+                "indexNumber" to user.indexNumber,
+                "nick" to user.nick,
+                "firstName" to user.firstName,
+                "secondName" to user.secondName,
+                "role" to user.role,
+                "email" to user.email,
+                "label" to user.label,
+                "createFirebaseUser" to user.createFirebaseUser,
+                "sendEmail" to user.sendEmail,
+                "imageFileId" to user.imageFileId
+            )
+        }
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "usosId" to usosId,
+            "weekdayId" to weekdayId,
+            "startTime" to startTime,
+            "endTime" to endTime,
+            "teacherId" to teacherId,
+            "label" to label,
+            "groupName" to groupName,
+            "users" to usersMap
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
+        val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
+        if (!hh_mm.matches(startTime) || !hh_mm.matches(endTime)) {
+            throw IllegalArgumentException("Invalid time format")
+        }
+
+        val startTimeWithSeconds = Time.valueOf("$startTime:00")
+        val endTimeWithSeconds = Time.valueOf("$endTime:00")
+
         val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Invalid edition ID") }
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {
-            throw IllegalArgumentException("Group with USOS ID $usosId already exists for edition ${edition.editionId}")
-        }
-        if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName.isNotBlank() }) {
-            throw IllegalArgumentException("Group with name $groupName already exists for edition ${edition.editionId}")
-        }
-        if (startTime.after(endTime)) {
-            throw IllegalArgumentException("Start time must be before end time")
-        }
-        if (startTime == endTime) {
-            throw IllegalArgumentException("Start time must be different from end time")
-        }
         val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Invalid weekday ID") }
         val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Invalid teacher ID") }
-        if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("User with ID $teacherId is not a teacher nor a coordinator")
-        }
-        if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTime, endTime, edition)) {
-            throw IllegalArgumentException("Teacher is already teaching a group at this time")
-        }
-        val generatedName = generateGroupName(usosId, weekday, startTime, teacher)
+        val generatedName = generateGroupName(usosId, weekday, startTimeWithSeconds, teacher)
         val group = Groups(
             generatedName = generatedName,
             groupName = groupName,
@@ -201,11 +312,17 @@ class GroupsDataFetcher {
             label = label,
             teacher = teacher,
             weekday = weekday,
-            startTime = startTime,
-            endTime = endTime,
+            startTime = startTimeWithSeconds,
+            endTime = endTimeWithSeconds,
             edition = edition
         )
         groupsRepository.save(group)
+
+        val filesFromGroupInEdition = groupsRepository.findByEdition(edition).mapNotNull { it.imageFile }
+        val file = fileRepository.findAllByFileType("image/group").filter { it !in filesFromGroupInEdition }.shuffled().firstOrNull()
+        val fileId = file?.fileId ?: fileRepository.findAllByFileType("image/group").shuffled().firstOrNull()?.fileId
+        photoAssigner.assignPhotoToAssignee(groupsRepository, "image/group", group.groupsId, fileId)
+
         val userGroups = UserGroups(
             user = teacher,
             group = group
@@ -223,7 +340,8 @@ class GroupsDataFetcher {
                     it.email,
                     it.label,
                     it.createFirebaseUser,
-                    it.sendEmail
+                    it.sendEmail,
+                    it.imageFileId
                 )
             } else {
                 usersRepository.findByIndexNumber(it.indexNumber)
@@ -246,43 +364,40 @@ class GroupsDataFetcher {
         @InputArgument groupName: String?,
         @InputArgument usosId: Int?,
         @InputArgument weekdayId: Long?,
-        @InputArgument startTime: Time?,
-        @InputArgument endTime: Time?,
+        @InputArgument startTime: String?,
+        @InputArgument endTime: String?,
         @InputArgument teacherId: Long?,
         @InputArgument label: String?
     ): Groups {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            throw IllegalArgumentException("Student cannot edit groups")
+        val action = "editGroup"
+        val arguments = mapOf(
+            "groupId" to groupId,
+            "groupName" to groupName,
+            "usosId" to usosId,
+            "weekdayId" to weekdayId,
+            "startTime" to startTime,
+            "endTime" to endTime,
+            "teacherId" to teacherId,
+            "label" to label
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val group = groupsRepository.findById(groupId)
             .orElseThrow { IllegalArgumentException("Invalid group ID") }
 
-        if (currentUser.role == UsersRoles.TEACHER){
-            if (group.teacher.userId != currentUser.userId){
-                throw IllegalArgumentException("Teacher can only edit their groups")
-            }
-            if (usosId != null || weekdayId != null || startTime != null || endTime != null || teacherId != null){
-                throw IllegalArgumentException("Teacher can only edit groupName and label")
-            }
-        }
-
-        if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
 
         groupName?.let {
-            if (it != "" && groupsRepository.existsByGroupNameAndEdition(it, group.edition) && it != group.groupName) {
-                throw IllegalArgumentException("Group with name $it already exists for edition ${group.edition.editionId}")
-            }
             group.groupName = it
         }
 
         usosId?.let {
-            if (groupsRepository.existsByUsosIdAndEdition(it.toLong(), group.edition) && it != group.usosId) {
-                throw IllegalArgumentException("Group with USOS ID $it already exists for edition ${group.edition.editionId}")
-            }
             group.usosId = it
         }
 
@@ -293,31 +408,16 @@ class GroupsDataFetcher {
         }
 
         startTime?.let {
-            if (endTime != null && it.after(endTime)) {
-                throw IllegalArgumentException("Start time must be before end time")
-            }
-            group.startTime = it
+            group.startTime = Time.valueOf("$startTime:00")
         }
 
         endTime?.let {
-            if (startTime != null && startTime.after(it)) {
-                throw IllegalArgumentException("End time must be after start time")
-            }
-            group.endTime = it
+            group.endTime = Time.valueOf("$endTime:00")
         }
 
         teacherId?.let {
             val teacher = usersRepository.findById(it)
                 .orElseThrow { IllegalArgumentException("Invalid teacher ID") }
-            if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
-                throw IllegalArgumentException("User with ID $it is not a teacher nor a coordinator")
-            }
-            if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(
-                    teacher, group.weekday, group.startTime, group.endTime, group.edition
-                ) && it != group.teacher.userId
-            ) {
-                throw IllegalArgumentException("Teacher is already teaching a group at this time")
-            }
             group.teacher = teacher
         }
 
@@ -332,36 +432,139 @@ class GroupsDataFetcher {
 
     @DgsMutation
     @Transactional
-    fun removeGroup(@InputArgument groupId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can remove groups")
+    fun editGroupWithUsers(
+        @InputArgument groupId: Long,
+        @InputArgument groupName: String?,
+        @InputArgument usosId: Int?,
+        @InputArgument weekdayId: Long?,
+        @InputArgument startTime: String?,
+        @InputArgument endTime: String?,
+        @InputArgument teacherId: Long?,
+        @InputArgument label: String?,
+        @InputArgument users: UserIdsType
+    ): Groups {
+        val action = "editGroupWithUsers"
+        val arguments = mapOf(
+            "groupId" to groupId,
+            "groupName" to groupName,
+            "usosId" to usosId,
+            "weekdayId" to weekdayId,
+            "startTime" to startTime,
+            "endTime" to endTime,
+            "teacherId" to teacherId,
+            "label" to label,
+            "users" to mapOf(
+                "userIds" to users.userIds
+            )
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val group = groupsRepository.findById(groupId)
             .orElseThrow { IllegalArgumentException("Invalid group ID") }
 
-        if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
+        groupName?.let {
+            group.groupName = it
         }
 
-        if (group.userGroups.map { it.user }.map { it.role }.contains(UsersRoles.STUDENT)) {
-            throw IllegalArgumentException("Group has students assigned to it")
+        usosId?.let {
+            group.usosId = it
         }
 
-        groupsRepository.delete(group)
-        return true
+        weekdayId?.let {
+            val weekday = weekdaysRepository.findById(it)
+                .orElseThrow { IllegalArgumentException("Invalid weekday ID") }
+            group.weekday = weekday
+        }
+
+        startTime?.let {
+            group.startTime = Time.valueOf("$startTime:00")
+        }
+
+        endTime?.let {
+            group.endTime = Time.valueOf("$endTime:00")
+        }
+
+        teacherId?.let {
+            val teacher = usersRepository.findById(it)
+                .orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+            group.teacher = teacher
+        }
+
+        label?.let {
+            group.label = it
+        }
+
+        group.generatedName = generateGroupName(group.usosId, group.weekday, group.startTime, group.teacher)
+
+        val existingUsers = usersRepository.findByUserGroups_Group_GroupsId(groupId)
+        val inputUserIds = users.userIds.toSet()
+
+        // Remove userGroups not in input list
+        existingUsers.filter { it.userId !in inputUserIds }.filter { it.role == UsersRoles.STUDENT }
+            .forEach { userGroupsRepository.deleteByUserAndGroup(it, group) }
+
+        // users that are not in the group yet
+        users.userIds.filter { userId -> userId !in existingUsers.map { it.userId } }
+            .forEach { userId ->
+                val user = usersRepository.findById(userId)
+                    .orElseThrow { IllegalArgumentException("Invalid User ID: $userId") }
+
+                val userGroup = UserGroups(
+                    user = user,
+                    group = group
+                )
+                userGroupsRepository.save(userGroup)
+            }
+
+        return groupsRepository.save(group)
+    }
+
+    @DgsMutation
+    @Transactional
+    fun removeGroup(@InputArgument groupId: Long): Boolean {
+        val action = "removeGroup"
+        val arguments = mapOf(
+            "groupId" to groupId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+
+        val group = groupsRepository.findById(groupId)
+            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+
+        userGroupsRepository.findByGroup_GroupsId(groupId).forEach(userGroupsRepository::delete)
+
+        return removeGroupHelper(groupId)
     }
 
     @DgsQuery
     @Transactional
     fun getPossibleGroupsWeekdays(@InputArgument editionId: Long): List<Weekdays> {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
-            if (userEditions.none { it.editionId == editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID $editionId")
-            }
+        val action = "getPossibleGroupsWeekdays"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw IllegalArgumentException(permission.reason)
         }
 
         val edition = editionRepository
@@ -375,12 +578,17 @@ class GroupsDataFetcher {
     @DgsQuery
     @Transactional
     fun getPossibleGroupsTimeSpans(@InputArgument editionId: Long): List<TimeSpansType> {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
-            if (userEditions.none { it.editionId == editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID $editionId")
-            }
+        val action = "getPossibleGroupsTimeSpans"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository
@@ -395,12 +603,17 @@ class GroupsDataFetcher {
     @DgsQuery
     @Transactional
     fun getPossibleGroupDates(@InputArgument editionId: Long): List<GroupDateType> {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
-            if (userEditions.none { it.editionId == editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID $editionId")
-            }
+        val action = "getPossibleGroupDates"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository
@@ -413,103 +626,97 @@ class GroupsDataFetcher {
     @DgsQuery
     @Transactional
     fun getUsersInGroupWithPoints(@InputArgument groupId: Long): List<UserPointsType> {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            throw IllegalArgumentException("Student cannot view users in groups")
-        }
-        if (currentUser.role == UsersRoles.TEACHER){
-            val groupEdition = groupsRepository.findById(groupId).orElseThrow { IllegalArgumentException("Invalid group ID") }.edition
-            val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
-            if (userEditions.none { it.editionId == groupEdition.editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID ${groupEdition.editionId}")
-            }
+        val action = "getUsersInGroupWithPoints"
+        val arguments = mapOf(
+            "groupId" to groupId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
-        val group = groupsRepository.findById(groupId).orElseThrow { IllegalArgumentException("Invalid group ID") }
-        val users = usersRepository.findByUserGroups_Group_GroupsId(groupId).filter { it.role == UsersRoles.STUDENT }
+        val group = groupsRepository.findById(groupId)
+            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+
+        val users = usersRepository.findByUserGroups_Group_GroupsIdAndRole(groupId, UsersRoles.STUDENT)
         val userIds = users.map { it.userId }
-        val points = pointsRepository.findByStudent_UserIdIn(userIds).filter { it.subcategory.edition == group.edition }
-        val bonuses = bonusesRepository.findByChestHistory_User_UserIdIn(userIds).filter { it.points.subcategory.edition == group.edition }
+
+        val points = pointsRepository.findByStudent_UserIdInAndSubcategory_Edition(userIds, group.edition)
+        val bonuses = bonusesRepository.findByChestHistory_User_UserIdInAndPoints_Subcategory_Edition(userIds, group.edition)
         val categories = categoriesRepository.findByCategoryEdition_Edition(group.edition)
         val subcategories = subcategoriesRepository.findByEdition_EditionId(group.edition.editionId)
+        val allAvailableAwards = awardRepository.findByAwardEditions_Edition(group.edition).distinctBy { it.awardId }
+
+        // Pre-process data into maps
+        val purePointsByUserAndCategory = points.filter { it.bonuses == null }.groupBy { it.student.userId }
+            .mapValues { it.value.groupBy { it.subcategory.category.categoryId } }
+        val bonusesByUserAndCategory = bonuses.groupBy { it.points.student.userId }
+            .mapValues { it.value.groupBy { it.points.subcategory.category.categoryId } }
 
         return users.map { user ->
-            val userBonuses = bonuses.filter { it.chestHistory.user.userId == user.userId }
+            UserPointsType(
+                user = user,
+                categoriesPoints = categories.map { category ->
+                    val categoryPurePoints = purePointsByUserAndCategory[user.userId]?.get(category.categoryId) ?: emptyList()
+                    val categoryBonuses = bonusesByUserAndCategory[user.userId]?.get(category.categoryId) ?: emptyList()
+                    val awardTypes = allAvailableAwards.filter { it.category == category }
 
-            val additivePrevBonuses = userBonuses.filter { it.award.awardType == AwardType.ADDITIVE_PREV }
-
-            val additivePrevBonusesMap = additivePrevBonuses.associateWith { it.points.value }.toMutableMap()
-
-            val userPoints = points.filter { it.student.userId == user.userId }
-                .groupBy { it.subcategory }
-                .mapNotNull { (subcategory, points) ->
-
-                    val purePoints = points.filter { bonusesRepository.findByPoints(it).isEmpty() }.firstOrNull()
-                    val allBonuses = bonuses.filter { (it.award.awardType != AwardType.MULTIPLICATIVE && it.award.awardType != AwardType.ADDITIVE_PREV && it.points.subcategory == subcategory)  ||
-                            ((it.award.awardType == AwardType.MULTIPLICATIVE || it.award.awardType == AwardType.ADDITIVE_PREV) && it.points.subcategory.category == subcategory.category) }
-                    val partialBonusType = allBonuses.map { bonus ->
-                        PartialBonusType(
-                            bonuses = bonus,
-                            partialValue = if (bonus.award.awardType == AwardType.MULTIPLICATIVE) {
-                                purePoints?.value?.times(bonus.award.awardValue)?.toFloat() ?: 0f
-                            } else if (bonus.award.awardType == AwardType.ADDITIVE_PREV) {
-                                val contribution = min(
-                                    additivePrevBonusesMap[bonus]?.toFloat() ?: 0f,
-                                    purePoints?.value?.let { (purePoints.subcategory.maxPoints.toFloat()).minus(it.toFloat()) } ?: 0f
-                                )
-                                additivePrevBonusesMap[bonus] = BigDecimal(((additivePrevBonusesMap[bonus]?.toFloat() ?: 0f) - contribution).toString()).setScale(2, RoundingMode.HALF_UP)
-                                contribution
-                            } else {
-                                bonus.points.value.toFloat()
-                            }
-                        )
-                    }
-                    val teacherToPoints = purePoints?.teacher ?: allBonuses.maxByOrNull { it.updatedAt }?.points?.teacher ?: Users()
-                    val createdAt = purePoints?.createdAt ?: allBonuses.minOfOrNull { it.points.createdAt } ?: LocalDateTime.now()
-                    val updatedAt = purePoints?.updatedAt ?: allBonuses.maxOfOrNull { it.points.updatedAt } ?: LocalDateTime.now()
-                    SubcategoryPointsType(
-                        subcategory = subcategory,
-                        points = PurePointsType(
-                            purePoints = purePoints,
-                            partialBonusType = partialBonusType
+                    CategoryPointsType(
+                        category = category,
+                        subcategoryPoints = subcategories.filter { it.category == category }.map { subcategory ->
+                            val subcategoryPurePoints = categoryPurePoints.firstOrNull { it.subcategory == subcategory }
+                            SubcategoryPointsGroupType(
+                                subcategory = subcategory,
+                                points = subcategoryPurePoints,
+                                teacher = subcategoryPurePoints?.teacher ?: Users(),
+                                createdAt = subcategoryPurePoints?.createdAt ?: LocalDateTime.now(),
+                                updatedAt = subcategoryPurePoints?.updatedAt ?: LocalDateTime.now()
+                            )
+                        },
+                        categoryAggregate = CategoryAggregate(
+                            category = category,
+                            sumOfPurePoints = categoryPurePoints.sumOf { it.value }.toFloat(),
+                            sumOfBonuses = categoryBonuses.sumOf { it.points.value }.toFloat(),
+                            sumOfAll = categoryPurePoints.sumOf { it.value }.toFloat() +
+                                    categoryBonuses.sumOf { it.points.value }.toFloat()
                         ),
-                        teacher = teacherToPoints,
-                        createdAt = createdAt,
-                        updatedAt = updatedAt
+                        awardAggregate = awardTypes.map { awardType ->
+                            val awardPoints = categoryBonuses.filter { it.award == awardType }.map { it.points }
+                            AwardAggregate(
+                                award = awardType,
+                                sumOfAll = awardPoints.sumOf { it.value }.toFloat()
+                            )
+                        }
                     )
-
                 }
-                .groupBy { it.subcategory.category } // Grouping by category
-                .map { (category, subcategoryPoints) ->
-                    createCategoryPointsType(category, subcategoryPoints.sortedBy { it.subcategory.ordinalNumber }, subcategories)
-                }
-
-            // Ensure all categories are included
-            val userCategoriesWithDefaults = getUserCategoriesWithDefaults(categories, userPoints, subcategories)
-
-            UserPointsType(user, userCategoriesWithDefaults)
+            )
         }
     }
+
 
     @DgsQuery
     @Transactional
     fun getGroupsInEdition(@InputArgument editionId: Long, @InputArgument teacherId: Long): List<GroupTeacherType> {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            throw IllegalArgumentException("Student cannot view groups")
-        }
-        if (currentUser.role == UsersRoles.TEACHER){
-            val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
-            if (userEditions.none { it.editionId == editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID $editionId")
-            }
+        val action = "getGroupsInEdition"
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "teacherId" to teacherId
+        )
+        val permissionInput = PermissionInput(
+            action,
+            objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
         val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Invalid teacher ID") }
-        if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("User with ID $teacherId is not a teacher nor a coordinator")
-        }
         val groups = groupsRepository.findByEdition(edition)
         return groups.map { group ->
             GroupTeacherType(
@@ -520,68 +727,84 @@ class GroupsDataFetcher {
         }
     }
 
-    private fun getUserCategoriesWithDefaults(categories: List<Categories>, userPoints: List<CategoryPointsType>, subcategories: List<Subcategories>): List<CategoryPointsType> {
-        return categories.filter{it.canAddPoints}.map { category ->
-            userPoints.find { it.category == category } ?: CategoryPointsType(
-                category = category,
-                subcategoryPoints = subcategories.filter { it.category == category }.map { subcat ->
-                    SubcategoryPointsType(
-                        subcategory = subcat,
-                        points = PurePointsType(
-                            purePoints = null,
-                            partialBonusType = emptyList()
-                        ),
-                        teacher = Users(),
-                        createdAt = LocalDateTime.now(),
-                        updatedAt = LocalDateTime.now()
-                    )
-                },
-                aggregate = CategoryAggregate(
-                    category = category,
-                    sumOfPurePoints = 0f,
-                    sumOfBonuses = 0f,
-                    sumOfAll = 0f
-                )
-            )
+    @Transactional
+    fun removeGroupHelper(groupId: Long): Boolean {
+        val permission = groupsPermissions.checkRemoveGroupHelperPermission(groupId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
+
+        val group = groupsRepository.findById(groupId)
+            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+
+        userGroupsRepository.findByGroup_GroupsId(groupId).forEach(userGroupsRepository::delete)
+
+        groupsRepository.delete(group)
+        return true
     }
 
-    private fun getSubcategoryPointsWithDefaults(subcategoryPoints: List<SubcategoryPointsType>, subcategories: List<Subcategories>, category: Categories): List<SubcategoryPointsType> {
-        val allSubcategoriesForCategory = subcategories.filter { it.category == category }
-        return allSubcategoriesForCategory.map { subcat ->
-            subcategoryPoints.find { it.subcategory == subcat } ?: SubcategoryPointsType(
-                subcategory = subcat,
-                points = PurePointsType(
-                    purePoints = null,
-                    partialBonusType = emptyList()
-                ),
-                teacher = Users(),
-                createdAt = LocalDateTime.now(),
-                updatedAt = LocalDateTime.now()
-            )
-        }
-    }
-
-    private fun createCategoryPointsType(category: Categories, subcategoryPoints: List<SubcategoryPointsType>, subcategories: List<Subcategories>): CategoryPointsType{
-        val subcategoryPointsWithDefaults = getSubcategoryPointsWithDefaults(subcategoryPoints, subcategories, category)
-
-        val sumOfPurePoints = BigDecimal(subcategoryPointsWithDefaults.sumOf { it.points.purePoints?.value?.toDouble() ?: 0.0 }.toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
-        val sumOfBonuses = BigDecimal(subcategoryPointsWithDefaults.sumOf { subcategory ->
-            subcategory.points.partialBonusType.sumOf { it.partialValue.toDouble() }
-        }.toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
-        val sumOfAll = BigDecimal((sumOfPurePoints + sumOfBonuses).toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
-
-        return CategoryPointsType(
-            category = category,
-            subcategoryPoints = subcategoryPointsWithDefaults,
-            aggregate = CategoryAggregate(
-                category = category,
-                sumOfPurePoints = sumOfPurePoints,
-                sumOfBonuses = sumOfBonuses,
-                sumOfAll = sumOfAll
-            )
-        )
-    }
+//    private fun getUserCategoriesWithDefaults(categories: List<Categories>, userPoints: List<CategoryPointsType>, subcategories: List<Subcategories>): List<CategoryPointsType> {
+//        return categories.filter{it.canAddPoints}.map { category ->
+//            userPoints.find { it.category == category } ?: CategoryPointsType(
+//                category = category,
+//                subcategoryPoints = subcategories.filter { it.category == category }.map { subcat ->
+//                    SubcategoryPointsType(
+//                        subcategory = subcat,
+//                        points = PurePointsType(
+//                            purePoints = null,
+//                            partialBonusType = emptyList()
+//                        ),
+//                        teacher = Users(),
+//                        createdAt = LocalDateTime.now(),
+//                        updatedAt = LocalDateTime.now()
+//                    )
+//                },
+//                categoryAggregate = CategoryAggregate(
+//                    category = category,
+//                    sumOfPurePoints = 0f,
+//                    sumOfBonuses = 0f,
+//                    sumOfAll = 0f
+//                )
+//            )
+//        }
+//    }
+//
+//    private fun getSubcategoryPointsWithDefaults(subcategoryPoints: List<SubcategoryPointsType>, subcategories: List<Subcategories>, category: Categories): List<SubcategoryPointsType> {
+//        val allSubcategoriesForCategory = subcategories.filter { it.category == category }
+//        return allSubcategoriesForCategory.map { subcat ->
+//            subcategoryPoints.find { it.subcategory == subcat } ?: SubcategoryPointsType(
+//                subcategory = subcat,
+//                points = PurePointsType(
+//                    purePoints = null,
+//                    partialBonusType = emptyList()
+//                ),
+//                teacher = Users(),
+//                createdAt = LocalDateTime.now(),
+//                updatedAt = LocalDateTime.now()
+//            )
+//        }
+//    }
+//
+//    private fun createCategoryPointsType(category: Categories, subcategoryPoints: List<SubcategoryPointsType>, subcategories: List<Subcategories>): CategoryPointsType{
+//        val subcategoryPointsWithDefaults = getSubcategoryPointsWithDefaults(subcategoryPoints, subcategories, category)
+//
+//        val sumOfPurePoints = BigDecimal(subcategoryPointsWithDefaults.sumOf { it.points.purePoints?.value?.toDouble() ?: 0.0 }.toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
+//        val sumOfBonuses = BigDecimal(subcategoryPointsWithDefaults.sumOf { subcategory ->
+//            subcategory.points.partialBonusType.sumOf { it.partialValue.toDouble() }
+//        }.toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
+//        val sumOfAll = BigDecimal((sumOfPurePoints + sumOfBonuses).toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
+//
+//        return CategoryPointsType(
+//            category = category,
+//            subcategoryPoints = subcategoryPointsWithDefaults,
+//            categoryAggregate = CategoryAggregate(
+//                category = category,
+//                sumOfPurePoints = sumOfPurePoints,
+//                sumOfBonuses = sumOfBonuses,
+//                sumOfAll = sumOfAll
+//            )
+//        )
+//    }
     private fun generateGroupName(usosId: Int, weekday: Weekdays, startTime: Time, teacher: Users): String {
         return "${weekday.weekdayAbbr}-${startTime.toString().replace(":", "").subSequence(0, 4)}-${teacher.firstName.subSequence(0, 3)}-${teacher.secondName.subSequence(0, 3)}-${usosId}"
     }
@@ -594,8 +817,14 @@ data class UserPointsType(
 
 data class CategoryPointsType(
     val category: Categories,
-    val subcategoryPoints: List<SubcategoryPointsType>,
-    val aggregate: CategoryAggregate
+    val subcategoryPoints: List<SubcategoryPointsGroupType>,
+    val awardAggregate: List<AwardAggregate>,
+    val categoryAggregate: CategoryAggregate
+)
+
+data class AwardAggregate(
+    val award: Award,
+    val sumOfAll: Float
 )
 
 data class CategoryAggregate(
@@ -613,9 +842,17 @@ data class SubcategoryPointsType(
     val updatedAt: LocalDateTime
 )
 
+data class SubcategoryPointsGroupType(
+    val subcategory: Subcategories,
+    val points: Points?,
+    val teacher: Users,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
+)
+
 data class PurePointsType(
     val purePoints: Points?,
-    val partialBonusType: List<PartialBonusType>
+    var partialBonusType: List<PartialBonusType>
 )
 
 data class PartialBonusType(
@@ -648,6 +885,31 @@ data class UsersInputType (
     val role: String,
     val email: String,
     val label: String,
+    val imageFileId: Long?,
     val createFirebaseUser: Boolean,
     val sendEmail: Boolean
+)
+
+data class UserIdsType(
+    val userIds: List<Long>
+)
+
+data class GroupWithPermissions(
+    val group: GroupOutputType,
+    val permissions: ListPermissionsOutput
+)
+
+data class GroupOutputType (
+    val groupsId: Long = 0,
+    var groupName: String? = "",
+    var generatedName: String,
+    var usosId: Int,
+    var label: String? = "",
+    var teacher: Users,
+    val userGroups: Set<UserGroups>,
+    var weekday: Weekdays,
+    var startTime: Time,
+    var endTime: Time,
+    var edition: Edition,
+    val imageFile: FileEntity? = null
 )

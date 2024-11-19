@@ -12,6 +12,7 @@ export type NeighboringLevelsQuery = {
   __typename?: "query_root";
   getNeighboringLevels: {
     __typename?: "NeighboringLevelsType";
+    sumOfAllPoints: string;
     currLevel: {
       __typename?: "LevelType";
       highest: boolean;
@@ -22,15 +23,6 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
-      edition: {
-        __typename?: "EditionType";
-        editionId: string;
-        editionName: string;
-        editionYear: number;
-        endDate: string;
-        label: string;
-        startDate: string;
-      };
       imageFile?: {
         __typename?: "FileType";
         createdAt: string;
@@ -40,6 +32,8 @@ export type NeighboringLevelsQuery = {
         fileType: string;
         label: string;
         pathToFile: string;
+        createdAt: string;
+        updatedAt: string;
       } | null;
     };
     nextLevel?: {
@@ -52,15 +46,6 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
-      edition: {
-        __typename?: "EditionType";
-        editionId: string;
-        editionName: string;
-        editionYear: number;
-        endDate: string;
-        label: string;
-        startDate: string;
-      };
       imageFile?: {
         __typename?: "FileType";
         createdAt: string;
@@ -70,6 +55,8 @@ export type NeighboringLevelsQuery = {
         fileType: string;
         label: string;
         pathToFile: string;
+        createdAt: string;
+        updatedAt: string;
       } | null;
     } | null;
     prevLevel?: {
@@ -82,15 +69,6 @@ export type NeighboringLevelsQuery = {
       ordinalNumber: number;
       grade: string;
       label: string;
-      edition: {
-        __typename?: "EditionType";
-        editionId: string;
-        editionName: string;
-        editionYear: number;
-        endDate: string;
-        label: string;
-        startDate: string;
-      };
       imageFile?: {
         __typename?: "FileType";
         createdAt: string;
@@ -100,6 +78,8 @@ export type NeighboringLevelsQuery = {
         fileType: string;
         label: string;
         pathToFile: string;
+        createdAt: string;
+        updatedAt: string;
       } | null;
     } | null;
   };
@@ -108,6 +88,7 @@ export type NeighboringLevelsQuery = {
 export const NeighboringLevelsDocument = gql`
   query NeighboringLevels($editionId: Int!, $studentId: Int!) {
     getNeighboringLevels(editionId: $editionId, studentId: $studentId) {
+      sumOfAllPoints
       currLevel {
         highest
         levelId
@@ -117,14 +98,6 @@ export const NeighboringLevelsDocument = gql`
         ordinalNumber
         grade
         label
-        edition {
-          editionId
-          editionName
-          editionYear
-          endDate
-          label
-          startDate
-        }
         imageFile {
           createdAt
           updatedAt
@@ -133,6 +106,8 @@ export const NeighboringLevelsDocument = gql`
           fileType
           label
           pathToFile
+          createdAt
+          updatedAt
         }
       }
       nextLevel {
@@ -144,14 +119,6 @@ export const NeighboringLevelsDocument = gql`
         ordinalNumber
         grade
         label
-        edition {
-          editionId
-          editionName
-          editionYear
-          endDate
-          label
-          startDate
-        }
         imageFile {
           createdAt
           updatedAt
@@ -160,6 +127,8 @@ export const NeighboringLevelsDocument = gql`
           fileType
           label
           pathToFile
+          createdAt
+          updatedAt
         }
       }
       prevLevel {
@@ -171,14 +140,6 @@ export const NeighboringLevelsDocument = gql`
         ordinalNumber
         grade
         label
-        edition {
-          editionId
-          editionName
-          editionYear
-          endDate
-          label
-          startDate
-        }
         imageFile {
           createdAt
           updatedAt
@@ -187,6 +148,8 @@ export const NeighboringLevelsDocument = gql`
           fileType
           label
           pathToFile
+          createdAt
+          updatedAt
         }
       }
     }

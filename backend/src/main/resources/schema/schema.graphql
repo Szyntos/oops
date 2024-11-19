@@ -1,29 +1,36 @@
 type Mutation {
-  addBonusMutation(
+  addBonus(
     chestHistoryId: Int!
-    awardId: Int!
+    awardIds: [Int!]!
     checkDates: Boolean = true
-  ): AddBonusReturnType
+  ): [AddBonusReturnType!]!
 
-  addPointsMutation(
+  addPoints(
     studentId: Int!
     teacherId: Int!
     value: Float!
     subcategoryId: Int!
     checkDates: Boolean = true
   ): PointType
+
+
+  addPointsToGroup(
+    groupId: Int!,
+    teacherId: Int!,
+    values: [GroupPointsInputType!]!,
+    subcategoryId: Int!,
+    checkDates: Boolean = true
+  ): [GroupPointsType!]!
+
   assignPhotosToGroups(editionId: Int!): Boolean
   assignPhotoToUser(userId: Int!, fileId: Int): Boolean
   assignPhotoToLevel(levelId: Int!, fileId: Int): Boolean
   assignPhotoToAward(awardId: Int!, fileId: Int): Boolean
   assignPhotoToChest(chestId: Int!, fileId: Int): Boolean
-  addLevel(
-    editionId: Int!
-    name: String!
-    maximumPoints: Float!
-    grade: Float!
-    imageFileId: Int
-  ): LevelType
+  setStudentNick(
+    userId: Int!, nick: String!
+  ): UserType
+
   addAward(
     awardName: String!
     awardType: String!
@@ -34,6 +41,11 @@ type Mutation {
     fileId: Int
     label: String = ""
   ): AwardType
+
+  copyAward(
+    awardId: Int!
+  ): AwardType
+
   addAwardToEdition(awardId: Int!, editionId: Int!): AwardEditionType
   addChestToUser(
     userId: Int!
@@ -41,7 +53,15 @@ type Mutation {
     teacherId: Int!
     subcategoryId: Int!
   ): ChestHistoryType
-  addChest(chestType: String!, editionId: Int!, fileId: Int, label: String = ""): ChestType
+
+  addChest(
+    chestType: String!,
+    fileId: Int,
+    awardBundleCount: Int!,
+    label: String = "",
+    awardIds: [Int!]!
+  ): ChestType
+
   addCategory(
     categoryName: String!
     canAddPoints: Boolean!
@@ -50,12 +70,28 @@ type Mutation {
     darkColor: String = "#000000"
     label: String = ""
   ): CategoryType
+
+  copyCategory(
+    categoryId: Int!
+  ): CategoryType
+
   addCategoryToEdition(categoryId: Int!, editionId: Int!): CategoryEditionType
   addEdition(
     editionName: String!
     editionYear: Int!
     label: String = ""
   ): EditionType
+
+  copyEdition(
+    editionId: Int!
+    editionYear: Int!
+    editionName: String!
+  ): EditionType
+
+  removeFile(
+    fileId: Int!
+  ): Boolean
+
   addGradingCheck(
     editionId: Int!
     endOfLabsDate: String!
@@ -109,11 +145,20 @@ type Mutation {
     createFirebaseUser: Boolean = false
     sendEmail: Boolean = false
   ): UserType
+  addTeacher(
+    firstName: String!
+    secondName: String!
+    email: String!
+    label: String = ""
+    createFirebaseUser: Boolean = false
+    sendEmail: Boolean = false
+  ): UserType
   parseUsersFromCsv(
     fileId: Int!,
     editionId: Int!
   ): ParsedUsersTypeType!
   resetPassword(userId: Int!): Boolean
+  resetPasswordByEmail(email: String!): Boolean
   generateSubcategories(
     editionId: Int!
     categoryId: Int!
@@ -138,6 +183,10 @@ type Mutation {
     fileId: Int,
     label: String
   ): AwardType
+
+  removeAward(
+    awardId: Int!
+  ): Boolean
 
   removeCategory(
     categoryId: Int!
@@ -184,9 +233,10 @@ type Mutation {
   editChest(
     chestId: Int!,
     chestType: String,
-    editionId: Int,
     fileId: Int,
-    label: String
+    awardBundleCount: Int,
+    label: String = "",
+    awardIds: [Int!]!
   ): ChestType
 
   removeChest(
@@ -215,22 +265,49 @@ type Mutation {
     label: String
   ): GroupType
 
+  editGroupWithUsers(
+    groupId: Int!,
+    groupName: String,
+    usosId: Int,
+    weekdayId: Int,
+    startTime: String,
+    endTime: String,
+    teacherId: Int,
+    label: String
+    users: UserIdsType!
+  ): GroupType
+
   removeGroup(
     groupId: Int!
   ): Boolean
 
-  editLevel(
-    levelId: Int!,
-    name: String,
-    maximumPoints: Float,
-    grade: Float,
-    imageFileId: Int,
-    label: String
-  ): LevelType
+  addLevelSet(
+    levels: [LevelInputType!]!
+  ): LevelSetType!
 
-  removeLevel(
-    levelId: Int!
+  copyLevelSet(
+    levelSetId: Int!
+  ): LevelSetType!
+
+  editLevelSet(
+    levelSetId: Int!,
+    levels: [LevelInputType!]!
+  ): LevelSetType!
+
+  removeLevelSet(
+    levelSetId: Int!
   ): Boolean
+
+  addLevelSetToEdition(
+    levelSetId: Int!
+    editionId: Int!
+  ): LevelSetType!
+
+  removeLevelSetFromEdition(
+    levelSetId: Int!,
+    editionId: Int!
+  ): Boolean
+
 
   editPoints(
     pointsId: Int!,
@@ -259,6 +336,11 @@ type Mutation {
     groupId: Int!
   ): UserGroupType
 
+  changeStudentGroup(
+    userId: Int!,
+    groupId: Int!
+  ): UserGroupType
+
   removeUserFromGroup(
     userId: Int!,
     groupId: Int!
@@ -279,8 +361,29 @@ type Mutation {
   ): Boolean
   copyChest(
     chestId: Int!,
-    editionId: Int!
   ): ChestType
+
+  addChestToEdition(
+    chestId: Int!,
+    editionId: Int!
+  ): ChestEditionType
+
+  removeChestFromEdition(
+    chestId: Int!,
+    editionId: Int!
+  ): Boolean
+
+  markPassingStudentsFromEditionAsInactive(
+    editionId: Int!
+  ): Boolean
+
+  markStudentAsInactive(
+    userId: Int!
+  ): Boolean
+  markStudentAsActive(
+    userId: Int!
+  ): Boolean
+
 }
 
 type Query {
@@ -300,7 +403,37 @@ type Query {
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
 
+  checkFullPermission(input: PermissionInputType!): PermissionType!
+  checkPartialPermission(input: PermissionInputType!): PermissionType!
+
+  listSetupUsers(
+    editionId: Int!
+  ): [UserWithPermissionsType!]!
+  listSetupLevelSets(
+      editionId: Int!
+  ): [LevelSetWithPermissionsType!]!
+  listSetupGroups(
+      editionId: Int!
+  ): [GroupWithPermissionsType!]!
+  listSetupChests(
+      editionId: Int!
+  ): [ChestWithPermissionsType!]!
+  listSetupCategories(
+      editionId: Int!
+  ): [CategoryWithPermissionsType!]!
+  listSetupAwards(
+      editionId: Int!
+  ): [AwardWithPermissionsType!]!
+  listSetupGradingChecks(
+    editionId: Int!
+  ): GradingCheckWithPermissions!
+
+  listSetupEditions: [EditionWithPermissionsType!]!
+
+
 }
+
+scalar JSON
 
 type AwardType {
   awardId: ID!
@@ -310,9 +443,11 @@ type AwardType {
   label: String!
   maxUsages: Int!
   awardValue: String!
-  category: CategoryType
+  category: CategoryType!
   imageFile: FileType
-  awardEditions: [AwardEditionType]
+  chestAward: [ChestAwardType]!
+  bonuses: [BonusType]!
+  awardEditions: [AwardEditionType!]!
 }
 
 type AwardEditionType {
@@ -338,7 +473,10 @@ type CategoryType {
   lightColor: String!
   darkColor: String!
   canAddPoints: Boolean!
-  categoryEdition: [CategoryEditionType]!
+  gradingChecks: [GradingChecksType!]!
+  categoryEdition: [CategoryEditionType!]!
+  subcategories: [SubcategoryType!]!
+  awards: [AwardType!]!
   label: String!
 }
 
@@ -366,13 +504,18 @@ type ChestHistoryType {
   updatedAt: String!
   teacher: UserType!
   opened: Boolean!
+  bonuses: [BonusType]!
 }
 
 type ChestType {
   chestId: ID!
   chestType: String!
   label: String!
-  edition: EditionType!
+  active: Boolean!
+  awardBundleCount: Int!
+  chestHistory: [ChestHistoryType]!
+  chestAward: [ChestAwardType!]!
+  chestEdition: [ChestEditionType]!
   imageFile: FileType
 }
 
@@ -383,6 +526,14 @@ type EditionType {
   startDate: String!
   endDate: String!
   label: String!
+  levelSet: LevelSetType!
+  userLevels: [UserLevelType]!
+  categoryEdition: [CategoryEditionType]!
+  chestEdition: [ChestEditionType]!
+  awardEdition: [AwardEditionType]!
+  gradingChecks: [GradingChecksType]!
+  groups: [GroupType]!
+  subcategories: [SubcategoryType]!
 }
 
 type FileType {
@@ -393,6 +544,11 @@ type FileType {
   createdAt: String!
   updatedAt: String!
   label: String!
+  awards: [AwardType]!
+  chests: [ChestType]!
+  groups: [GroupType]!
+  levels: [LevelType]!
+  users: [UserType]!
 }
 
 type GradingChecksType {
@@ -415,7 +571,7 @@ type GroupType {
   startTime: String!
   endTime: String!
   imageFile: FileType
-  userGroups: [UserGroupType]!
+  userGroups: [UserGroupType!]!
   edition: EditionType!
 }
 
@@ -427,10 +583,11 @@ type LevelType {
   grade: String!
   ordinalNumber: Int!
   label: String!
-  edition: EditionType!
+  levelSet: LevelSetType!
   highest: Boolean!
   imageFile: FileType
-  userLevels: [UserLevelType]
+  userLevels: [UserLevelType!]!
+  gradingChecks: [GradingChecksType]!
 }
 
 type PointType {
@@ -440,6 +597,7 @@ type PointType {
   updatedBy: UserType!
   value: String!
   subcategory: SubcategoryType!
+  bonuses: BonusType
   label: String!
   createdAt: String!
   updatedAt: String!
@@ -467,6 +625,9 @@ type SubcategoryType {
   edition: EditionType
   maxPoints: String!
   ordinalNumber: Int!
+  chestHistory: [ChestHistoryType]!
+  points: [PointType]!
+  pointsHistory: [PointsHistoryType]!
 }
 
 type UserGroupType {
@@ -494,11 +655,22 @@ type UserType {
   firstName: String!
   secondName: String!
   email: String!
+  active: Boolean!
+  nickSetByUser: Boolean!
+  avatarSetByUser: Boolean!
   label: String!
   firebaseUid: String
   imageFile: FileType
   userGroups: [UserGroupType]!
   userLevels: [UserLevelType]!
+  points: [PointType]!
+  pointsByTeacher: [PointType]!
+  pointsByUpdatedBy: [PointType]!
+  pointsHistory: [PointsHistoryType]!
+  pointsHistoryByTeacher: [PointsHistoryType]!
+  groups: [GroupType]!
+  chestHistory: [ChestHistoryType]!
+  chestHistoryByTeacher: [ChestHistoryType]!
 }
 
 type WeekdayType {
@@ -507,6 +679,7 @@ type WeekdayType {
   weekdayAbbr: String!
   ordinalNumber: Int!
   label: String!
+  groups: [GroupType]!
 }
 
 enum UsersRolesType {
@@ -560,13 +733,28 @@ type CategoryAggregate {
 
 type CategoryPointsType {
   category: CategoryType!
-  subcategoryPoints: [SubcategoryPointsType!]!
-  aggregate: CategoryAggregate!
+  subcategoryPoints: [SubcategoryPointsGroupType!]!
+  awardAggregate: [AwardAggregateType!]!,
+  categoryAggregate: CategoryAggregate!
 }
+
+type AwardAggregateType{
+  award: AwardType!,
+  sumOfAll: Float!
+}
+
 
 type SubcategoryPointsType {
   subcategory: SubcategoryType!
   points: PurePointsType!
+  teacher: UserType!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type SubcategoryPointsGroupType {
+  subcategory: SubcategoryType!
+  points: PointType
   teacher: UserType!
   createdAt: String!
   updatedAt: String!
@@ -594,6 +782,7 @@ type GroupDateType {
 }
 
 type NeighboringLevelsType {
+  sumOfAllPoints: String!
   prevLevel: LevelType
   currLevel: LevelType!
   nextLevel: LevelType
@@ -607,7 +796,7 @@ type GroupTeacherType {
 
 type FileGroupType {
   fileType: String!
-  files: [FileType!]!
+  files: [FileWithPermissions!]!
 }
 
 type ParsedUsersTypeType {
@@ -618,6 +807,88 @@ type ParsedUsersTypeType {
 type NotValidUserType {
   user: UserType!
   group: GroupType!
+}
+
+type LevelSetType {
+  levelSetId: ID!,
+  levelSetName: String!,
+  edition: [EditionType!]!
+  levels: [LevelType!]!
+}
+
+type ChestEditionType {
+  chestEditionId: ID!
+  chest: ChestType!
+  edition: EditionType!
+  label: String!
+}
+
+
+type PermissionType {
+  action: String!
+  arguments: JSON!
+  allow: Boolean!
+  reason: String
+  stackTrace: String!
+}
+
+type GroupPointsType{
+  student: UserType!
+  points: PointType
+}
+
+type UserWithPermissionsType{
+  user: UserType!,
+  permissions: ListPermissionsOutputType!
+}
+
+type LevelSetWithPermissionsType{
+  levelSet: LevelSetType!,
+  permissions: ListPermissionsOutputType!
+}
+type GroupWithPermissionsType{
+  group: GroupType!,
+  permissions: ListPermissionsOutputType!
+}
+type ChestWithPermissionsType{
+  chest: ChestType!,
+  permissions: ListPermissionsOutputType!
+}
+
+type CategoryWithPermissionsType{
+  category: CategoryType!,
+  permissions: ListPermissionsOutputType!
+}
+
+type AwardWithPermissionsType{
+  award: AwardType!,
+  permissions: ListPermissionsOutputType!
+}
+
+type FileWithPermissions{
+  file: FileType!,
+  permissions: ListPermissionsOutputType!
+}
+
+type GradingCheckWithPermissions{
+  gradingCheck: GradingChecksType,
+  permissions: ListPermissionsOutputType!
+}
+
+type EditionWithPermissionsType{
+  edition: EditionType!,
+  permissions: ListPermissionsOutputType!
+}
+
+
+type ListPermissionsOutputType{
+  canAdd: PermissionType!
+  canEdit: PermissionType!
+  canCopy: PermissionType!
+  canRemove: PermissionType!
+  canSelect: PermissionType!
+  canUnselect: PermissionType!
+  additional: [PermissionType!]!
 }
 
 input SubcategoryInputType {
@@ -638,7 +909,30 @@ input UsersInputTypeType {
   role: String!,
   email: String!
   label: String!
+  imageFileId: Int
   createFirebaseUser: Boolean!
   sendEmail: Boolean!
 }
 
+input LevelInputType {
+  levelId: ID
+  name: String!,
+  maximumPoints: String!,
+  grade: String!,
+  imageFileId: ID
+}
+
+input UserIdsType {
+  userIds: [Int!]!
+}
+
+
+input PermissionInputType {
+  action: String!
+  arguments: JSON!
+}
+
+input GroupPointsInputType{
+  studentId: Int!,
+  value: Float
+}

@@ -1,19 +1,26 @@
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
 import { Styles } from "../../../../../utils/Styles";
+import { SetupButtons } from "../../SetupButtons";
 
 type CategoryCardProps = {
   category: Category;
   isSelected: boolean;
-  onSelectClick: () => void;
+  handleSelectClick: () => void;
+  handleEditClick: () => void;
+  handleDeleteClick: () => void;
+  handleCopyClick: () => void;
 };
 
 export const CategoryCard = ({
   category,
   isSelected,
-  onSelectClick,
+  handleSelectClick,
+  handleEditClick,
+  handleDeleteClick,
+  handleCopyClick,
 }: CategoryCardProps) => {
   const getSubcategoriesString = (category: Category) => {
-    const subcategoryNames = category.subcategories.map(
+    const subcategoryNames = category.category.subcategories.map(
       (subcategory) => subcategory.subcategoryName,
     );
     const n = subcategoryNames.length;
@@ -27,11 +34,17 @@ export const CategoryCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <div>{category.categoryName}</div>
-      <button onClick={onSelectClick}>
-        {isSelected ? "unselect" : "select"}
-      </button>
+      <div>{category.category.categoryName}</div>
       <div>subcategories: {getSubcategoriesString(category)}</div>
+
+      <SetupButtons
+        isSelected={isSelected}
+        permissions={category.permissions}
+        handleCopy={handleCopyClick}
+        handleSelect={handleSelectClick}
+        handleEdit={handleEditClick}
+        handleDelete={handleDeleteClick}
+      />
     </div>
   );
 };

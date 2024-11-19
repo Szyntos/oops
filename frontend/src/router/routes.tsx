@@ -11,6 +11,14 @@ import { ProtectedRoute } from "./protectedRoute";
 import { StudentsScreen } from "../screens/Students/StudentsScreen";
 import { EditionsScreen } from "../screens/Editions/EditionsScreen";
 import { EditionScreen } from "../screens/Edition/EditionScreen";
+import { CategoriesSection } from "../components/Edition/Sections/CategoriesSection/CategoriesSection";
+import { FilesSection } from "../components/Edition/Sections/FilesSection/FilesSection";
+import { AwardsSection } from "../components/Edition/Sections/AwardsSection/AwardsSection";
+import { LevelSetsSection } from "../components/Edition/Sections/LevelsSection/LevelSetsSection";
+import { GroupsSection } from "../components/Edition/Sections/GroupSection/GroupsSection";
+import { UsersSection } from "../components/Edition/Sections/UsersSection/UsersSection";
+import { GradingChecksSection } from "../components/Edition/Sections/GradingChecksSection/GradingChecksSection";
+import { ChestsSection } from "../components/Edition/Sections/ChestsSection/ChestsSection";
 
 const commonPaths = pathsWithParameters.common;
 const studentPaths = pathsWithParameters.student;
@@ -107,6 +115,89 @@ export const routes = createBrowserRouter([
             allowedRoles={coordinatorPaths.Edition.allowedRoles}
           />
         ),
+        children: [
+          {
+            index: true,
+            element: (
+              <ProtectedRoute
+                element={<CategoriesSection />}
+                allowedRoles={coordinatorPaths.Edition.allowedRoles}
+              />
+            ),
+          },
+          {
+            path: coordinatorPaths.Edition.children.Categories.path,
+            element: (
+              <ProtectedRoute
+                element={<CategoriesSection />}
+                allowedRoles={coordinatorPaths.Edition.allowedRoles}
+              />
+            ),
+          },
+          {
+            path: coordinatorPaths.Edition.children.Files.path,
+            element: (
+              <ProtectedRoute
+                element={<FilesSection />}
+                allowedRoles={coordinatorPaths.Edition.allowedRoles}
+              />
+            ),
+          },
+          {
+            path: coordinatorPaths.Edition.children.Awards.path,
+            element: (
+              <ProtectedRoute
+                element={<AwardsSection />}
+                allowedRoles={coordinatorPaths.Edition.allowedRoles}
+              />
+            ),
+          },
+          {
+            path: coordinatorPaths.Edition.children.Chests.path,
+            element: (
+              <ProtectedRoute
+                element={<ChestsSection />}
+                allowedRoles={coordinatorPaths.Edition.allowedRoles}
+              />
+            ),
+          },
+          {
+            path: coordinatorPaths.Edition.children.Levels.path,
+            element: (
+              <ProtectedRoute
+                element={<LevelSetsSection />}
+                allowedRoles={coordinatorPaths.Edition.allowedRoles}
+              />
+            ),
+          },
+          {
+            path: coordinatorPaths.Edition.children.Groups.path,
+            element: (
+              <ProtectedRoute
+                element={<GroupsSection />}
+                allowedRoles={coordinatorPaths.Edition.allowedRoles}
+              />
+            ),
+          },
+          {
+            path: coordinatorPaths.Edition.children.Users.path,
+            element: (
+              <ProtectedRoute
+                element={<UsersSection />}
+                allowedRoles={coordinatorPaths.Edition.allowedRoles}
+              />
+            ),
+          },
+          {
+            path: coordinatorPaths.Edition.children.GradingChecks.path,
+            element: (
+              <ProtectedRoute
+                element={<GradingChecksSection />}
+                allowedRoles={coordinatorPaths.Edition.allowedRoles}
+              />
+            ),
+          },
+        ],
       },
     ],
   },

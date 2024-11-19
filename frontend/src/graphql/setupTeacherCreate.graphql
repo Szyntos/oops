@@ -1,0 +1,17 @@
+mutation SetupTeacherCreate(
+  $firstName: String!
+  $secondName: String!
+  $email: String!
+) {
+  addTeacher(
+    firstName: $firstName
+    secondName: $secondName
+    email: $email
+    label: ""
+    createFirebaseUser: false
+    sendEmail: false
+  ) {
+    email
+    firstName
+  }
+}

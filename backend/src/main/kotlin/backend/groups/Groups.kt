@@ -18,7 +18,7 @@ class Groups(
     val groupsId: Long = 0,
 
     @Column(name = "group_name", nullable = true)
-    var groupName: String = "",
+    var groupName: String? = "",
 
     @Column(name = "generated_name", nullable = false)
     var generatedName: String,
@@ -27,7 +27,7 @@ class Groups(
     var usosId: Int,
 
     @Column(name = "label", nullable = true)
-    var label: String = "",
+    var label: String? = "",
 
     @ManyToOne
     @JoinColumn(name = "teacher_id", referencedColumnName = "user_id", nullable = false)

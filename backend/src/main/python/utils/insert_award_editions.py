@@ -11,7 +11,7 @@ def insert_award_editions(hasura_url, headers, editions, award_editions_type_map
         "last": [max(editions.keys())],
         "random": random.sample(list(editions.keys()), len(editions.keys()))
     }
-
+    award_id_to_edition_ids = {}
     # Process each award and add it to the specified editions
     for award_id, editions_type_and_name in award_editions_type_map.items():
         print(f"Processing award '{editions_type_and_name[1]}' with ID {award_id}")
@@ -52,5 +52,10 @@ def insert_award_editions(hasura_url, headers, editions, award_editions_type_map
                     inserted_award_edition = data["data"]["addAwardToEdition"]
                     print(
                         f"Successfully added award ID {inserted_award_edition['award']['awardId']} to edition ID {inserted_award_edition['edition']['editionId']}")
+                    if award_id in award_id_to_edition_ids:
+                        award_id_to_edition_ids[award_id].append(edition_id)
+                    else:
+                        award_id_to_edition_ids[award_id] = [edition_id]
 
     print("All award editions processed.")
+    return award_id_to_edition_ids

@@ -1,0 +1,9 @@
+query SetupGradingChecks($editionId: bigint!) {
+  gradingChecks(where: { editionId: { _eq: $editionId } }) {
+    endOfLabsDate
+    endOfLabsLevelsThreshold
+    projectPointsThreshold
+    projectId
+    gradingCheckId
+  }
+}

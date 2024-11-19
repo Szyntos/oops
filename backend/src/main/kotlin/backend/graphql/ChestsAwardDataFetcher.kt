@@ -1,7 +1,6 @@
 package backend.graphql
 
 import backend.award.AwardRepository
-import backend.awardEdition.AwardEdition
 import backend.bonuses.BonusesRepository
 import backend.categories.CategoriesRepository
 import backend.chestAward.ChestAward
@@ -11,21 +10,27 @@ import backend.chests.Chests
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.utils.PhotoAssigner
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.graphql.utils.PermissionService
 import backend.groups.GroupsRepository
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 
 @DgsComponent
 class ChestsAwardDataFetcher {
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
     @Autowired
     private lateinit var userMapper: UserMapper
 
@@ -71,29 +76,23 @@ class ChestsAwardDataFetcher {
     @DgsMutation
     @Transactional
     fun addAwardToChest(@InputArgument awardId: Long, @InputArgument chestId: Long): ChestAward {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add awards to chests")
+        val action = "addAwardToChest"
+        val arguments = mapOf(
+            "awardId" to awardId,
+            "chestId" to chestId
+        )
+
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         var chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
-
-        if (chest.edition.endDate.isBefore(LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        if (!chest.active){
-            throw IllegalArgumentException("Chest is not active")
-        }
-
-        if (award.awardEditions.none { it.edition == chest.edition }){
-            throw IllegalArgumentException("Award does not exist in this edition")
-        }
-
-        if (chestAwardRepository.existsByAwardAndChest(award, chest)){
-            throw IllegalArgumentException("Award already exists in this chest")
-        }
 
         if (chestHistoryRepository.findByChest(chest).any { it.opened }){
             chest.active = false
@@ -101,7 +100,7 @@ class ChestsAwardDataFetcher {
             val newChest = Chests(
                 chestType = chest.chestType,
                 label = chest.label,
-                edition = chest.edition
+                awardBundleCount = chest.awardBundleCount
             )
             newChest.imageFile = chest.imageFile
             chestsRepository.save(newChest)
@@ -133,25 +132,22 @@ class ChestsAwardDataFetcher {
     @DgsMutation
     @Transactional
     fun removeAwardFromChest(@InputArgument awardId: Long, @InputArgument chestId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove awards from chests")
+        val action = "removeAwardFromChest"
+        val arguments = mapOf(
+            "awardId" to awardId,
+            "chestId" to chestId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
         var chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
-
-        if (chest.edition.endDate.isBefore(LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
-
-        if (!chest.active){
-            throw IllegalArgumentException("Chest is not active")
-        }
-
-        if (!chestAwardRepository.existsByAwardAndChest(award, chest)){
-            throw IllegalArgumentException("This award does not exist in this chest")
-        }
 
         if (chestHistoryRepository.findByChest(chest).any { it.opened }){
             chest.active = false
@@ -159,7 +155,7 @@ class ChestsAwardDataFetcher {
             val newChest = Chests(
                 chestType = chest.chestType,
                 label = chest.label,
-                edition = chest.edition
+                awardBundleCount = chest.awardBundleCount
             )
             newChest.imageFile = chest.imageFile
             chestsRepository.save(newChest)

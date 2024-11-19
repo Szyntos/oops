@@ -1,0 +1,50 @@
+query SetupLevelSets($editionId: Int!) {
+  listSetupLevelSets(editionId: $editionId) {
+    levelSet {
+      levelSetId
+      levels {
+        grade
+        highest
+        label
+        levelId
+        maximumPoints
+        minimumPoints
+        ordinalNumber
+        levelName
+        imageFile {
+          fileId
+        }
+      }
+      levelSetName
+      edition {
+        editionId
+      }
+    }
+    permissions {
+      canAdd {
+        allow
+        reason
+      }
+      canCopy {
+        allow
+        reason
+      }
+      canEdit {
+        allow
+        reason
+      }
+      canRemove {
+        allow
+        reason
+      }
+      canSelect {
+        allow
+        reason
+      }
+      canUnselect {
+        allow
+        reason
+      }
+    }
+  }
+}

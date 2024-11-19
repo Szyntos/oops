@@ -24,7 +24,26 @@ export type ChestsToOpenQuery = {
       userId: string;
       chest: {
         __typename?: "Chests";
-        chestAwards: Array<{ __typename?: "ChestAward"; awardId: string }>;
+        active: boolean;
+        awardBundleCount: number;
+        imageFileId?: string | null;
+        label: string;
+        type: string;
+        chestAwards: Array<{
+          __typename?: "ChestAward";
+          award: {
+            __typename?: "Award";
+            awardId: string;
+            awardName: string;
+            awardType: string;
+            awardValue: string;
+            categoryId: string;
+            description: string;
+            imageFileId?: string | null;
+            label: string;
+            maxUsages: number;
+          };
+        }>;
       };
     }>;
   }>;
@@ -47,8 +66,23 @@ export const ChestsToOpenDocument = gql`
         userId
         chest {
           chestAwards {
-            awardId
+            award {
+              awardId
+              awardName
+              awardType
+              awardValue
+              categoryId
+              description
+              imageFileId
+              label
+              maxUsages
+            }
           }
+          active
+          awardBundleCount
+          imageFileId
+          label
+          type
         }
       }
     }

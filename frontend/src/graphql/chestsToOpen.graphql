@@ -14,8 +14,23 @@ query ChestsToOpen($userId: bigint!) {
       userId
       chest {
         chestAwards {
-          awardId
+          award {
+            awardId
+            awardName
+            awardType
+            awardValue
+            categoryId
+            description
+            imageFileId
+            label
+            maxUsages
+          }
         }
+        active
+        awardBundleCount
+        imageFileId
+        label
+        type
       }
     }
   }

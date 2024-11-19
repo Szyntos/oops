@@ -1,49 +1,46 @@
 import { useState } from "react";
-import { PointsItem } from "../../hooks/Group/useGroupScreenData";
 import { Styles } from "../../utils/Styles";
-import { PointsRow } from "./PointsRow";
+import { PointsRow, PointsRowData } from "./PointsRow";
+import { Subcategory } from "../../utils/utils";
 
 type GroupPointsForm = {
-  rows: PointsItem[];
-  handleAdd: (rows: PointsItem[]) => void;
+  initialRows: PointsRowData[];
+  handleAdd: (rows: PointsRowData[]) => void;
   formError?: string;
-  maxPoints: number;
-  subcategoryName: string;
+  subcategory: Subcategory;
 };
 
 export const GroupPointsForm = ({
   handleAdd,
-  rows,
+  initialRows,
   formError,
-  maxPoints,
-  subcategoryName,
+  subcategory,
 }: GroupPointsForm) => {
-  const [updatedRows, setUpdatedRows] = useState<PointsItem[]>(rows);
+  const [rows, setRows] = useState<PointsRowData[]>(initialRows);
 
-  const handlePointsChange = (studentId: string, newPoints: number | null) => {
-    const updatedList = updatedRows.map((row) =>
-      row.student.id === studentId
-        ? { ...row, points: newPoints ?? undefined }
+  const handlePointsChange = (data: PointsRowData) => {
+    const updatedRows = rows.map((row) =>
+      row.student.id === data.student.id
+        ? { ...row, points: data.points }
         : row,
     );
-    setUpdatedRows(updatedList);
+    setRows(updatedRows);
   };
 
   return (
     <div style={styles.container}>
       <div>
-        <div style={styles.title}>Add points to {subcategoryName}</div>
-        <div>max points: {maxPoints}</div>
+        <div style={styles.title}>Add points to {subcategory.name}</div>
+        <div>max points: {subcategory.maxPoints}</div>
       </div>
 
       <div style={styles.fieldsContainer}>
-        {updatedRows.map((row, index) => (
+        {rows.map((row, index) => (
           <PointsRow
             key={row.student.id}
-            student={row.student}
-            points={row.points}
-            onUpdate={handlePointsChange}
-            maxPoints={maxPoints}
+            data={row}
+            onPointsChange={handlePointsChange}
+            maxPoints={subcategory.maxPoints}
             ordinal={index + 1}
           />
         ))}
@@ -52,7 +49,7 @@ export const GroupPointsForm = ({
       {formError && <div style={styles.error}>Error: {formError}</div>}
       <button
         onClick={() => {
-          handleAdd(updatedRows);
+          handleAdd(rows);
         }}
       >
         Add
@@ -68,11 +65,15 @@ const styles: Styles = {
     gap: 24,
     padding: 20,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
-  fieldsContainer: {
+  title: {
+    fontWeight: "bold",
+  },
+  pointsRowContainer: {
     display: "flex",
     flexDirection: "column",
     gap: 4,
+  },
+  error: {
+    color: "red",
   },
 };

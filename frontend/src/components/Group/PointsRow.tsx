@@ -2,7 +2,7 @@ import { z, ZodError } from "zod";
 import { FormikErrors, useFormik } from "formik";
 import { TextField } from "@mui/material";
 import { Styles } from "../../utils/Styles";
-import { PointsItem } from "../../hooks/Group/useGroupScreenData";
+import { Student } from "../../hooks/Group/useGroupScreenData";
 
 const ValidationSchema = z.object({
   points: z.number().min(0, "<0").nullable(),
@@ -10,23 +10,26 @@ const ValidationSchema = z.object({
 
 export type SubcategoryPointsFormValues = z.infer<typeof ValidationSchema>;
 
-type SubcategoryPointsFormProps = {
+export type PointsRowData = {
+  student: Student;
   points: number | undefined;
-  student: PointsItem["student"];
-  maxPoints: number;
-  onUpdate: (studentId: string, points: number | null) => void;
+};
+
+type SubcategoryPointsFormProps = {
+  data: PointsRowData;
+  onPointsChange: (data: PointsRowData) => void;
   ordinal: number;
+  maxPoints: number;
 };
 
 export const PointsRow = ({
-  onUpdate,
-  points,
-  student,
+  onPointsChange: onUpdate,
+  data,
   maxPoints,
   ordinal,
 }: SubcategoryPointsFormProps) => {
   const formik = useFormik({
-    initialValues: { points: points ?? null },
+    initialValues: { points: data.points ?? null },
     validate: (values: SubcategoryPointsFormValues) => {
       const errors: FormikErrors<SubcategoryPointsFormValues> = {};
       try {
@@ -49,14 +52,14 @@ export const PointsRow = ({
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value === "" ? null : Number(e.target.value);
     formik.setFieldValue("points", newValue);
-    onUpdate(student.id, newValue);
+    onUpdate({ ...data, points: newValue ?? undefined });
   };
 
   return (
     <form onSubmit={formik.handleSubmit}>
       <div style={styles.container}>
         <div style={styles.text}>
-          {ordinal}. {student.fullName}
+          {ordinal}. {data.student.fullName}
         </div>
         <TextField
           style={styles.points}

@@ -6,16 +6,17 @@ import { useCreatePointsMutation } from "../../graphql/createPoints.graphql.type
 import { FormPoints } from "../../components/StudentProfile/PointsForm/types";
 import { useError } from "../common/useGlobalError";
 import { useAddPointsToGroupMutation } from "../../graphql/addPointsToSubcategory.graphql.types";
+import { PointsRowData } from "../../components/Group/PointsRow";
+
+export type Student = {
+  id: string;
+  fullName: string;
+  index: number;
+};
 
 export type GroupTableRow = {
   student: Student;
   subcategories: SubcategoryPoints[];
-};
-
-type Student = {
-  id: string;
-  fullName: string;
-  index: number;
 };
 
 export type SubcategoryPoints = {
@@ -26,12 +27,9 @@ export type SubcategoryPoints = {
 
 export type SubcategoryPointsAdd = {
   subcategory: Subcategory;
-  rows: PointsItem[];
+  rows: PointsRowData[];
 };
-export type PointsItem = {
-  student: Student;
-  points: number | undefined;
-};
+
 export const useGroupScreenData = (
   groupId: number | undefined,
   teacherId: string,
@@ -150,7 +148,7 @@ export const useGroupScreenData = (
   };
 
   const [addPointsToGroup] = useAddPointsToGroupMutation();
-  const handleAddPointsToGroup = async (rows: PointsItem[]) => {
+  const handleAddPointsToGroup = async (rows: PointsRowData[]) => {
     localErrorWrapper(setFormError, async () => {
       await addPointsToGroup({
         variables: {

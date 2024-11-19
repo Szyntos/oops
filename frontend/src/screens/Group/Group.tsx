@@ -71,11 +71,18 @@ export const Group = () => {
       <Dialog open={isSubcategoryOpen}>
         <CloseHeader onCloseClick={closeSubcategory} />
         <GroupPointsForm
-          rows={selectedSubcategory?.rows ?? []}
+          initialRows={selectedSubcategory?.rows ?? []}
           handleAdd={handleAddPointsToGroup}
           formError={formError}
-          maxPoints={selectedSubcategory?.subcategory.maxPoints as number}
-          subcategoryName={selectedSubcategory?.subcategory.name as string}
+          // clearing selected subcategory on submit take some time
+          // default values are necessary to avoid error
+          subcategory={
+            selectedSubcategory?.subcategory ?? {
+              id: "",
+              name: "",
+              maxPoints: -1,
+            }
+          }
         />
       </Dialog>
     </div>

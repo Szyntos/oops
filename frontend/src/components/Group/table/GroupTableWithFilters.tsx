@@ -2,12 +2,12 @@ import { Styles } from "../../../utils/Styles";
 import FilterMenu from "./FilterMenu";
 import { useState } from "react";
 import { GroupTable } from "./GroupTable";
+import { Category, Subcategory } from "../../../utils/utils";
 import {
   GroupTableRow,
   Student,
-  SubcategoryPoints,
-} from "../../../hooks/Group/useGroupScreenData";
-import { Category, Subcategory } from "../../../utils/utils";
+  SubcategoryPointsEntry,
+} from "../../../hooks/Group/useGroupTableData";
 
 type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
@@ -28,7 +28,7 @@ export const GroupTableWithFilters = ({
     return selectedCategoryIds.some((categoryId) => categoryId === category.id);
   };
 
-  const arePointsSelected = (points: SubcategoryPoints) => {
+  const arePointsSelected = (points: SubcategoryPointsEntry) => {
     return selectedCategoryIds.some(
       (categoryId) => categoryId === points.categoryId,
     );

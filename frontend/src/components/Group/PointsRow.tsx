@@ -2,7 +2,7 @@ import { z, ZodError } from "zod";
 import { FormikErrors, useFormik } from "formik";
 import { TextField } from "@mui/material";
 import { Styles } from "../../utils/Styles";
-import { Student } from "../../hooks/Group/useGroupScreenData";
+import { Student } from "../../hooks/Group/useGroupTableData";
 
 const ValidationSchema = z.object({
   points: z.number().min(0, "<0").nullable(),

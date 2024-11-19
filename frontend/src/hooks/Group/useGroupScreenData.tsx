@@ -1,31 +1,14 @@
 import { useState } from "react";
-import { useGroupPointsQuery } from "../../graphql/groupPoints.graphql.types";
-import { Category, Subcategory } from "../../utils/utils";
+import { Subcategory } from "../../utils/utils";
 import { useFormCategories } from "../common/useFormCategories";
 import { useCreatePointsMutation } from "../../graphql/createPoints.graphql.types";
 import { FormPoints } from "../../components/StudentProfile/PointsForm/types";
 import { useError } from "../common/useGlobalError";
 import { useAddPointsToGroupMutation } from "../../graphql/addPointsToSubcategory.graphql.types";
 import { PointsRowData } from "../../components/Group/PointsRow";
+import { Student, useGroupTableData } from "./useGroupTableData";
 
-export type Student = {
-  id: string;
-  fullName: string;
-  index: number;
-};
-
-export type GroupTableRow = {
-  student: Student;
-  subcategories: SubcategoryPoints[];
-};
-
-export type SubcategoryPoints = {
-  pure: number | undefined;
-  subcategoryId: string;
-  categoryId: string;
-};
-
-export type SubcategoryPointsAdd = {
+export type SubcategoryPointsFormData = {
   subcategory: Subcategory;
   rows: PointsRowData[];
 };
@@ -34,57 +17,8 @@ export const useGroupScreenData = (
   groupId: number | undefined,
   teacherId: string,
 ) => {
-  const { data, loading, error, refetch } = useGroupPointsQuery({
-    variables: { groupId: groupId as number },
-    skip: !groupId,
-  });
-
-  const categories: Category[] =
-    data?.getUsersInGroupWithPoints[0]?.categoriesPoints.map((item) => {
-      const category = item.category;
-      const subcategoryPoints = item.subcategoryPoints;
-      return {
-        id: category.categoryId,
-        name: category.categoryName,
-        subcategories:
-          subcategoryPoints.map((points) => {
-            return {
-              id: points.subcategory.subcategoryId,
-              name: points.subcategory.subcategoryName,
-              maxPoints: parseFloat(points.subcategory.maxPoints),
-            };
-          }) ?? [],
-      };
-    }) ?? [];
-
-  const rows: GroupTableRow[] =
-    data?.getUsersInGroupWithPoints.map((userPoints) => {
-      const user = userPoints?.user;
-      return {
-        student: {
-          id: user?.userId ?? "-1",
-          fullName: `${user?.firstName ?? "-"} ${user?.secondName ?? "-"}`,
-          index: user?.indexNumber ?? -1,
-        },
-        subcategories:
-          userPoints?.categoriesPoints.flatMap((catPoints) =>
-            catPoints.subcategoryPoints.map((subPoints) => {
-              return {
-                pure: subPoints.points?.value
-                  ? parseFloat(subPoints.points?.value)
-                  : undefined,
-                subcategoryId: subPoints.subcategory.subcategoryId,
-                categoryId: catPoints.category.categoryId,
-              };
-            }),
-          ) ?? [],
-      };
-    }) ?? [];
-
-  const [selectedStudent, setSelectedStudent] = useState<Student | undefined>(
-    undefined,
-  );
-  const [formError, setFormError] = useState<string | undefined>(undefined);
+  const { rows, categories, tableLoading, tableError, tableRefetch } =
+    useGroupTableData(groupId);
 
   const {
     formCategories,
@@ -93,8 +27,13 @@ export const useGroupScreenData = (
   } = useFormCategories();
 
   const { localErrorWrapper } = useError();
+  const [formError, setFormError] = useState<string | undefined>(undefined);
 
-  // ADD
+  // ADD POINTS TO STUDENT
+  const [selectedStudent, setSelectedStudent] = useState<Student | undefined>(
+    undefined,
+  );
+
   const [isStudentOpen, setIsStudentOpen] = useState<boolean>(false);
   const openStudent = (student: Student) => {
     setSelectedStudent(student);
@@ -105,6 +44,7 @@ export const useGroupScreenData = (
     setFormError(undefined);
     setIsStudentOpen(false);
   };
+
   const [createPoints] = useCreatePointsMutation();
   const handleAddPointsConfirmation = async (formPoints: FormPoints) => {
     localErrorWrapper(setFormError, async () => {
@@ -117,17 +57,18 @@ export const useGroupScreenData = (
         },
       });
       closeStudent();
-      refetch();
+      tableRefetch();
     });
   };
 
-  // ADD BY SUBCATEGORY
-  const [isSubcategoryOpen, setIsSubcategoryOpen] = useState<boolean>(false);
+  // ADD POINTS TO SUBCATEGORY
   const [selectedSubcategory, setSelectedSubcategory] = useState<
-    SubcategoryPointsAdd | undefined
+    SubcategoryPointsFormData | undefined
   >(undefined);
+
+  const [isSubcategoryOpen, setIsSubcategoryOpen] = useState<boolean>(false);
   const openSubcategory = (subcategory: Subcategory) => {
-    const subcategoryPoints: SubcategoryPointsAdd = {
+    const subcategoryPoints: SubcategoryPointsFormData = {
       subcategory,
       rows: rows.map((e) => {
         return {
@@ -164,15 +105,15 @@ export const useGroupScreenData = (
         },
       });
       closeSubcategory();
-      refetch();
+      tableRefetch();
     });
   };
 
   return {
     rows,
     categories,
-    loading: loading || formDataLoading,
-    error: error || formDataError,
+    loading: tableLoading || formDataLoading,
+    error: tableError || formDataError,
 
     selectedStudent,
     formError,

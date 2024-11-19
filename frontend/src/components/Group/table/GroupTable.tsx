@@ -9,10 +9,7 @@ import {
   TableRow,
   ThemeProvider,
 } from "@mui/material";
-import {
-  GroupTableRow,
-  Student,
-} from "../../../hooks/Group/useGroupScreenData";
+import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
 import { Styles } from "../../../utils/Styles";
 import { Subcategory } from "../../../utils/utils";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";

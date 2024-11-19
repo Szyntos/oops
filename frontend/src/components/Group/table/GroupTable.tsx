@@ -18,12 +18,14 @@ type GroupTableProps = {
   rows: GroupTableRow[];
   subcategories: Subcategory[];
   handleStudentClick: (id: string) => void;
+  handleSubcategoryClick: (id: string) => void;
 };
 
 export const GroupTable = ({
   rows,
   subcategories,
   handleStudentClick,
+  handleSubcategoryClick,
 }: GroupTableProps) => {
   const darkTheme = createTheme({
     palette: {
@@ -39,7 +41,11 @@ export const GroupTable = ({
             <TableRow>
               <TableCell style={styles.headerStudentCell}>Student</TableCell>
               {subcategories.map((subcategory) => (
-                <TableCell key={subcategory.id} style={styles.headerCell}>
+                <TableCell
+                  key={subcategory.id}
+                  onClick={() => handleSubcategoryClick(subcategory.id)}
+                  style={styles.headerCell}
+                >
                   {subcategory.name}
                 </TableCell>
               ))}

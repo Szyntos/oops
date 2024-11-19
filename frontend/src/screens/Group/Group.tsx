@@ -7,6 +7,7 @@ import { Dialog } from "@mui/material";
 import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { PointsForm } from "../../components/StudentProfile/PointsForm/PointsForm";
 import { useUser } from "../../hooks/common/useUser";
+import { GroupPointsForm } from "../../components/Group/GroupPointsForm";
 
 export const Group = () => {
   const navigate = useNavigate();
@@ -28,6 +29,12 @@ export const Group = () => {
     formCategories,
     closeStudent,
     handleAddPointsConfirmation,
+
+    isSubcategoryOpen,
+    openSubcategory,
+    closeSubcategory,
+    handleAddPointsToGroup,
+    selectedSubcategory,
   } = useGroupScreenData(groupId, teacherId);
 
   if (loading) return <div>loading...</div>;
@@ -46,6 +53,7 @@ export const Group = () => {
         rows={rows}
         categories={categories}
         handleStudentClick={openStudent}
+        handleSubcategoryClick={openSubcategory}
       />
 
       <Dialog open={isStudentOpen}>
@@ -57,6 +65,15 @@ export const Group = () => {
           initialValues={{ categoryId: "", subcategoryId: "", points: 0 }}
           variant="add"
           disableCategoryAndSubcategory={false}
+        />
+      </Dialog>
+
+      <Dialog open={isSubcategoryOpen}>
+        <CloseHeader onCloseClick={closeSubcategory} />
+        <GroupPointsForm
+          rows={selectedSubcategory?.rows ?? []}
+          handleAdd={handleAddPointsToGroup}
+          formError={formError}
         />
       </Dialog>
     </div>

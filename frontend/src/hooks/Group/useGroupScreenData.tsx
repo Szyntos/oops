@@ -5,6 +5,7 @@ import { useFormCategories } from "../common/useFormCategories";
 import { useCreatePointsMutation } from "../../graphql/createPoints.graphql.types";
 import { FormPoints } from "../../components/StudentProfile/PointsForm/types";
 import { useError } from "../common/useGlobalError";
+import { useAddPointsToGroupMutation } from "../../graphql/addPointsToSubcategory.graphql.types";
 
 export type GroupTableRow = {
   student: Student;
@@ -23,6 +24,14 @@ export type SubcategoryPoints = {
   categoryId: string;
 };
 
+export type SubcategoryPointsAdd = {
+  subcategoryId: string;
+  rows: PointsItem[];
+};
+export type PointsItem = {
+  student: Student;
+  points: number | undefined;
+};
 export const useGroupScreenData = (
   groupId: number | undefined,
   teacherId: string,
@@ -114,6 +123,49 @@ export const useGroupScreenData = (
     });
   };
 
+  // ADD BY SUBCATEGORY
+  const [isSubcategoryOpen, setIsSubcategoryOpen] = useState<boolean>(false);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<
+    SubcategoryPointsAdd | undefined
+  >(undefined);
+  const openSubcategory = (id: string) => {
+    const subcategoryPoints: SubcategoryPointsAdd = {
+      subcategoryId: id,
+      rows: rows.map((e) => {
+        return {
+          student: e.student,
+          points: e.subcategories.find((s) => s.subcategoryId === id)?.pure,
+        };
+      }),
+    };
+    setSelectedSubcategory(subcategoryPoints);
+    setIsSubcategoryOpen(true);
+  };
+  const closeSubcategory = () => {
+    setSelectedSubcategory(undefined);
+    setFormError(undefined);
+    setIsSubcategoryOpen(false);
+  };
+
+  const [addPointsToGroup] = useAddPointsToGroupMutation();
+  const handleAddPointsToGroup = async (rows: PointsItem[]) => {
+    localErrorWrapper(setFormError, async () => {
+      await addPointsToGroup({
+        variables: {
+          groupId: groupId as number,
+          subcategoryId: parseInt(selectedSubcategory?.subcategoryId as string),
+          teacherId: parseInt(teacherId),
+          values: rows.map((e) => ({
+            studentId: parseInt(e.student.id),
+            value: e.points ?? null,
+          })),
+        },
+      });
+      closeSubcategory();
+      refetch();
+    });
+  };
+
   return {
     rows,
     categories,
@@ -128,5 +180,11 @@ export const useGroupScreenData = (
 
     formCategories,
     handleAddPointsConfirmation,
+
+    handleAddPointsToGroup,
+    isSubcategoryOpen,
+    selectedSubcategory,
+    openSubcategory,
+    closeSubcategory,
   };
 };

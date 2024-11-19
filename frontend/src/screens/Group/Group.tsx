@@ -8,15 +8,21 @@ import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { PointsForm } from "../../components/StudentProfile/PointsForm/PointsForm";
 import { useUser } from "../../hooks/common/useUser";
 import { GroupPointsForm } from "../../components/Group/GroupPointsForm";
+import { NotEditableInfo } from "../../components/StudentProfile/NotEditableInfo";
+import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { useEditionSelection } from "../../hooks/common/useEditionSelection";
+import { isEditionActive } from "../../utils/utils";
 
 export const Group = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const groupId = params.id ? parseInt(params.id) : undefined;
+  const groupId = params.groupId ? parseInt(params.groupId) : undefined;
+  const teacherId = params.teacherId ?? undefined;
+  const { selectedEdition } = useEditionSelection();
 
   // TODO add rights
   const { user } = useUser();
-  const teacherId = user.userId;
+  const userId = user.userId;
 
   const {
     rows,
@@ -35,10 +41,20 @@ export const Group = () => {
     closeSubcategory,
     handleAddPointsToGroup,
     selectedSubcategory,
-  } = useGroupScreenData(groupId, teacherId);
+  } = useGroupScreenData(groupId, userId);
 
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
+  if (!teacherId) return <div>ERROR: something went worng</div>;
+
+  const hasEditableRights =
+    teacherId === userId || user.role === UsersRolesType.Coordinator;
+
+  const isSelectedEditionActive = Boolean(
+    selectedEdition && isEditionActive(selectedEdition),
+  );
+
+  const disableEditMode = !(isSelectedEditionActive && hasEditableRights);
 
   return (
     <div style={styles.screenContainer}>
@@ -49,11 +65,18 @@ export const Group = () => {
         <div>params - group id: {groupId}</div>
       </div>
 
+      {disableEditMode && (
+        <NotEditableInfo
+          hasEditableRights={hasEditableRights}
+          isSelectedEditionActive={isSelectedEditionActive}
+        />
+      )}
+
       <GroupTableWithFilters
         rows={rows}
         categories={categories}
-        handleStudentClick={openStudent}
-        handleSubcategoryClick={openSubcategory}
+        handleStudentClick={hasEditableRights ? openStudent : () => {}}
+        handleSubcategoryClick={hasEditableRights ? openSubcategory : () => {}}
       />
 
       <Dialog open={isStudentOpen}>

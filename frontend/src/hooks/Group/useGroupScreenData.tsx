@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useGroupPointsQuery } from "../../graphql/groupPoints.graphql.types";
-import { Category } from "../../utils/utils";
+import { Category, Subcategory } from "../../utils/utils";
 import { useFormCategories } from "../common/useFormCategories";
 import { useCreatePointsMutation } from "../../graphql/createPoints.graphql.types";
 import { FormPoints } from "../../components/StudentProfile/PointsForm/types";
@@ -25,7 +25,7 @@ export type SubcategoryPoints = {
 };
 
 export type SubcategoryPointsAdd = {
-  subcategory: Category["subcategories"][number];
+  subcategory: Subcategory;
   rows: PointsItem[];
 };
 export type PointsItem = {
@@ -128,7 +128,7 @@ export const useGroupScreenData = (
   const [selectedSubcategory, setSelectedSubcategory] = useState<
     SubcategoryPointsAdd | undefined
   >(undefined);
-  const openSubcategory = (subcategory: Category["subcategories"][number]) => {
+  const openSubcategory = (subcategory: Subcategory) => {
     const subcategoryPoints: SubcategoryPointsAdd = {
       subcategory,
       rows: rows.map((e) => {

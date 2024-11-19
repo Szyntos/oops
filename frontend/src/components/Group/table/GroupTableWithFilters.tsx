@@ -6,15 +6,13 @@ import {
   GroupTableRow,
   SubcategoryPoints,
 } from "../../../hooks/Group/useGroupScreenData";
-import { Category } from "../../../utils/utils";
+import { Category, Subcategory } from "../../../utils/utils";
 
 type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
   categories: Category[];
   handleStudentClick: (id: string) => void;
-  handleSubcategoryClick: (
-    subcategory: Category["subcategories"][number],
-  ) => void;
+  handleSubcategoryClick: (subcategory: Subcategory) => void;
 };
 
 export const GroupTableWithFilters = ({

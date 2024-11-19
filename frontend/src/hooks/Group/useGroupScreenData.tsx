@@ -25,7 +25,7 @@ export type SubcategoryPoints = {
 };
 
 export type SubcategoryPointsAdd = {
-  subcategoryId: string;
+  subcategory: Category["subcategories"][number];
   rows: PointsItem[];
 };
 export type PointsItem = {
@@ -128,13 +128,15 @@ export const useGroupScreenData = (
   const [selectedSubcategory, setSelectedSubcategory] = useState<
     SubcategoryPointsAdd | undefined
   >(undefined);
-  const openSubcategory = (id: string) => {
+  const openSubcategory = (subcategory: Category["subcategories"][number]) => {
     const subcategoryPoints: SubcategoryPointsAdd = {
-      subcategoryId: id,
+      subcategory,
       rows: rows.map((e) => {
         return {
           student: e.student,
-          points: e.subcategories.find((s) => s.subcategoryId === id)?.pure,
+          points: e.subcategories.find(
+            (s) => s.subcategoryId === subcategory.id,
+          )?.pure,
         };
       }),
     };
@@ -153,7 +155,9 @@ export const useGroupScreenData = (
       await addPointsToGroup({
         variables: {
           groupId: groupId as number,
-          subcategoryId: parseInt(selectedSubcategory?.subcategoryId as string),
+          subcategoryId: parseInt(
+            selectedSubcategory?.subcategory.id as string,
+          ),
           teacherId: parseInt(teacherId),
           values: rows.map((e) => ({
             studentId: parseInt(e.student.id),

@@ -13,31 +13,34 @@ export type SubcategoryPointsFormValues = z.infer<typeof ValidationSchema>;
 type SubcategoryPointsFormProps = {
   points: number | undefined;
   student: PointsItem["student"];
+  maxPoints: number;
   onUpdate: (studentId: string, points: number | null) => void;
-};
-
-const validate = (values: SubcategoryPointsFormValues) => {
-  const errors: FormikErrors<SubcategoryPointsFormValues> = {};
-  try {
-    ValidationSchema.parse(values);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      Object.assign(errors, error.formErrors.fieldErrors);
-    }
-  }
-
-  // max subcategory points
-  return errors;
 };
 
 export const PointsRow = ({
   onUpdate,
   points,
   student,
+  maxPoints,
 }: SubcategoryPointsFormProps) => {
   const formik = useFormik({
     initialValues: { points: points ?? null },
-    validate,
+    validate: (values: SubcategoryPointsFormValues) => {
+      const errors: FormikErrors<SubcategoryPointsFormValues> = {};
+      try {
+        ValidationSchema.parse(values);
+      } catch (error) {
+        if (error instanceof ZodError) {
+          Object.assign(errors, error.formErrors.fieldErrors);
+        }
+      }
+
+      // custom validation
+      if (values.points && values.points > maxPoints) {
+        errors.points = `Max points for this subcategory is ${maxPoints}`;
+      }
+      return errors;
+    },
     onSubmit: () => {},
   });
 

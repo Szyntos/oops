@@ -12,7 +12,9 @@ type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
   categories: Category[];
   handleStudentClick: (id: string) => void;
-  handleSubcategoryClick: (id: string) => void;
+  handleSubcategoryClick: (
+    subcategory: Category["subcategories"][number],
+  ) => void;
 };
 
 export const GroupTableWithFilters = ({

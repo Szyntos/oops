@@ -7,12 +7,14 @@ type GroupPointsForm = {
   rows: PointsItem[];
   handleAdd: (rows: PointsItem[]) => void;
   formError?: string;
+  maxPoints: number;
 };
 
 export const GroupPointsForm = ({
   handleAdd,
   rows,
   formError,
+  maxPoints,
 }: GroupPointsForm) => {
   const [updatedRows, setUpdatedRows] = useState<PointsItem[]>(rows);
 
@@ -33,6 +35,7 @@ export const GroupPointsForm = ({
           student={row.student}
           points={row.points}
           onUpdate={handlePointsChange}
+          maxPoints={maxPoints}
         />
       ))}
       {formError && <div style={styles.error}>Error: {formError}</div>}

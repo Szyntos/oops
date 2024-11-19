@@ -11,14 +11,16 @@ import {
 } from "@mui/material";
 import { GroupTableRow } from "../../../hooks/Group/useGroupScreenData";
 import { Styles } from "../../../utils/Styles";
-import { Subcategory } from "../../../utils/utils";
+import { Category, Subcategory } from "../../../utils/utils";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 
 type GroupTableProps = {
   rows: GroupTableRow[];
   subcategories: Subcategory[];
   handleStudentClick: (id: string) => void;
-  handleSubcategoryClick: (id: string) => void;
+  handleSubcategoryClick: (
+    subcategory: Category["subcategories"][number],
+  ) => void;
 };
 
 export const GroupTable = ({
@@ -43,7 +45,7 @@ export const GroupTable = ({
               {subcategories.map((subcategory) => (
                 <TableCell
                   key={subcategory.id}
-                  onClick={() => handleSubcategoryClick(subcategory.id)}
+                  onClick={() => handleSubcategoryClick(subcategory)}
                   style={styles.headerCell}
                 >
                   {subcategory.name}

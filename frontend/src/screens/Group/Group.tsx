@@ -75,6 +75,7 @@ export const Group = () => {
           handleAdd={handleAddPointsToGroup}
           formError={formError}
           maxPoints={selectedSubcategory?.subcategory.maxPoints as number}
+          subcategoryName={selectedSubcategory?.subcategory.name as string}
         />
       </Dialog>
     </div>

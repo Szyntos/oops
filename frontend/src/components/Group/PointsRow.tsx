@@ -5,7 +5,7 @@ import { Styles } from "../../utils/Styles";
 import { PointsItem } from "../../hooks/Group/useGroupScreenData";
 
 const ValidationSchema = z.object({
-  points: z.number().min(0).nullable(),
+  points: z.number().min(0, "<0").nullable(),
 });
 
 export type SubcategoryPointsFormValues = z.infer<typeof ValidationSchema>;
@@ -15,6 +15,7 @@ type SubcategoryPointsFormProps = {
   student: PointsItem["student"];
   maxPoints: number;
   onUpdate: (studentId: string, points: number | null) => void;
+  ordinal: number;
 };
 
 export const PointsRow = ({
@@ -22,6 +23,7 @@ export const PointsRow = ({
   points,
   student,
   maxPoints,
+  ordinal,
 }: SubcategoryPointsFormProps) => {
   const formik = useFormik({
     initialValues: { points: points ?? null },
@@ -37,7 +39,7 @@ export const PointsRow = ({
 
       // custom validation
       if (values.points && values.points > maxPoints) {
-        errors.points = `Max points for this subcategory is ${maxPoints}`;
+        errors.points = `>${maxPoints}`;
       }
       return errors;
     },
@@ -51,13 +53,14 @@ export const PointsRow = ({
   };
 
   return (
-    <div style={styles.container}>
-      <form onSubmit={formik.handleSubmit}>
-        <div>{student.fullName}</div>
+    <form onSubmit={formik.handleSubmit}>
+      <div style={styles.container}>
+        <div style={styles.text}>
+          {ordinal}. {student.fullName}
+        </div>
         <TextField
-          fullWidth
+          style={styles.points}
           name="points"
-          label="points"
           variant="outlined"
           type="number"
           value={formik.values.points || ""}
@@ -66,17 +69,24 @@ export const PointsRow = ({
           error={Boolean(formik.touched.points && formik.errors.points)}
           helperText={formik.touched.points && formik.errors.points}
         />
-      </form>
-    </div>
+      </div>
+    </form>
   );
 };
 
 const styles: Styles = {
   container: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     gap: 12,
-    padding: 12,
-    width: 500,
+    alignContent: "center",
+    justifyContent: "space-between",
+  },
+  text: {
+    display: "flex",
+    alignItems: "center",
+  },
+  points: {
+    width: 80,
   },
 };

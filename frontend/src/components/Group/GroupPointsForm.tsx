@@ -8,6 +8,7 @@ type GroupPointsForm = {
   handleAdd: (rows: PointsItem[]) => void;
   formError?: string;
   maxPoints: number;
+  subcategoryName: string;
 };
 
 export const GroupPointsForm = ({
@@ -15,6 +16,7 @@ export const GroupPointsForm = ({
   rows,
   formError,
   maxPoints,
+  subcategoryName,
 }: GroupPointsForm) => {
   const [updatedRows, setUpdatedRows] = useState<PointsItem[]>(rows);
 
@@ -29,15 +31,24 @@ export const GroupPointsForm = ({
 
   return (
     <div style={styles.container}>
-      {updatedRows.map((row) => (
-        <PointsRow
-          key={row.student.id}
-          student={row.student}
-          points={row.points}
-          onUpdate={handlePointsChange}
-          maxPoints={maxPoints}
-        />
-      ))}
+      <div>
+        <div style={styles.title}>Add points to {subcategoryName}</div>
+        <div>max points: {maxPoints}</div>
+      </div>
+
+      <div style={styles.fieldsContainer}>
+        {updatedRows.map((row, index) => (
+          <PointsRow
+            key={row.student.id}
+            student={row.student}
+            points={row.points}
+            onUpdate={handlePointsChange}
+            maxPoints={maxPoints}
+            ordinal={index + 1}
+          />
+        ))}
+      </div>
+
       {formError && <div style={styles.error}>Error: {formError}</div>}
       <button
         onClick={() => {
@@ -54,21 +65,14 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 12,
-  },
-  formContent: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
+    gap: 24,
+    padding: 20,
   },
   title: { fontWeight: "bold" },
   error: { color: "red" },
   fieldsContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     gap: 4,
-  },
-  blockedField: {
-    width: 60,
   },
 };

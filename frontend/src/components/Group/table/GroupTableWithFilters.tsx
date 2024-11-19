@@ -4,6 +4,7 @@ import { useState } from "react";
 import { GroupTable } from "./GroupTable";
 import {
   GroupTableRow,
+  Student,
   SubcategoryPoints,
 } from "../../../hooks/Group/useGroupScreenData";
 import { Category, Subcategory } from "../../../utils/utils";
@@ -11,7 +12,7 @@ import { Category, Subcategory } from "../../../utils/utils";
 type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
   categories: Category[];
-  handleStudentClick: (id: string) => void;
+  handleStudentClick: (student: Student) => void;
   handleSubcategoryClick: (subcategory: Subcategory) => void;
 };
 

@@ -9,7 +9,10 @@ import {
   TableRow,
   ThemeProvider,
 } from "@mui/material";
-import { GroupTableRow } from "../../../hooks/Group/useGroupScreenData";
+import {
+  GroupTableRow,
+  Student,
+} from "../../../hooks/Group/useGroupScreenData";
 import { Styles } from "../../../utils/Styles";
 import { Subcategory } from "../../../utils/utils";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
@@ -17,7 +20,7 @@ import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 type GroupTableProps = {
   rows: GroupTableRow[];
   subcategories: Subcategory[];
-  handleStudentClick: (id: string) => void;
+  handleStudentClick: (student: Student) => void;
   handleSubcategoryClick: (subcategory: Subcategory) => void;
 };
 
@@ -57,7 +60,7 @@ export const GroupTable = ({
               <TableRow key={row.student.id}>
                 <TableCell
                   style={styles.regularStudentCell}
-                  onClick={() => handleStudentClick(row.student.id)}
+                  onClick={() => handleStudentClick(row.student)}
                 >
                   {index + 1}. {row.student.fullName}
                 </TableCell>

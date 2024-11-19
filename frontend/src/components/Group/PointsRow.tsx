@@ -23,7 +23,7 @@ type SubcategoryPointsFormProps = {
 };
 
 export const PointsRow = ({
-  onPointsChange: onUpdate,
+  onPointsChange,
   data,
   maxPoints,
   ordinal,
@@ -39,8 +39,6 @@ export const PointsRow = ({
           Object.assign(errors, error.formErrors.fieldErrors);
         }
       }
-
-      // custom validation
       if (values.points && values.points > maxPoints) {
         errors.points = `>${maxPoints}`;
       }
@@ -50,9 +48,9 @@ export const PointsRow = ({
   });
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value === "" ? null : Number(e.target.value);
-    formik.setFieldValue("points", newValue);
-    onUpdate({ ...data, points: newValue ?? undefined });
+    const updatedPoints = e.target.value === "" ? null : Number(e.target.value);
+    formik.setFieldValue("points", updatedPoints);
+    onPointsChange({ ...data, points: updatedPoints ?? undefined });
   };
 
   return (

@@ -81,7 +81,7 @@ export const useGroupScreenData = (
       };
     }) ?? [];
 
-  const [selectedStudent, setSelectedStudent] = useState<string | undefined>(
+  const [selectedStudent, setSelectedStudent] = useState<Student | undefined>(
     undefined,
   );
   const [formError, setFormError] = useState<string | undefined>(undefined);
@@ -96,8 +96,8 @@ export const useGroupScreenData = (
 
   // ADD
   const [isStudentOpen, setIsStudentOpen] = useState<boolean>(false);
-  const openStudent = (id: string) => {
-    setSelectedStudent(id);
+  const openStudent = (student: Student) => {
+    setSelectedStudent(student);
     setIsStudentOpen(true);
   };
   const closeStudent = () => {
@@ -110,7 +110,7 @@ export const useGroupScreenData = (
     localErrorWrapper(setFormError, async () => {
       await createPoints({
         variables: {
-          studentId: parseInt(selectedStudent ?? "-1"),
+          studentId: parseInt(selectedStudent?.id ?? "-1"),
           subcategoryId: parseInt(formPoints.subcategoryId),
           teacherId: parseInt(teacherId),
           value: formPoints.points,

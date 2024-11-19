@@ -12,21 +12,23 @@ export type ChestsQuery = {
   chests: Array<{
     __typename?: "Chests";
     chestId: string;
-    editionId: string;
     imageFileId?: string | null;
     label: string;
     type: string;
+    chestEditions: Array<{ __typename?: "ChestEdition"; editionId: string }>;
   }>;
 };
 
 export const ChestsDocument = gql`
   query Chests($editionId: bigint!) {
-    chests(where: { editionId: { _eq: $editionId } }) {
+    chests(where: { chestEditions: { editionId: { _eq: $editionId } } }) {
       chestId
-      editionId
       imageFileId
       label
       type
+      chestEditions {
+        editionId
+      }
     }
   }
 `;

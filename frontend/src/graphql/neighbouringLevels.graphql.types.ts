@@ -32,8 +32,6 @@ export type NeighboringLevelsQuery = {
         fileType: string;
         label: string;
         pathToFile: string;
-        createdAt: string;
-        updatedAt: string;
       } | null;
     };
     nextLevel?: {
@@ -55,8 +53,6 @@ export type NeighboringLevelsQuery = {
         fileType: string;
         label: string;
         pathToFile: string;
-        createdAt: string;
-        updatedAt: string;
       } | null;
     } | null;
     prevLevel?: {
@@ -78,8 +74,6 @@ export type NeighboringLevelsQuery = {
         fileType: string;
         label: string;
         pathToFile: string;
-        createdAt: string;
-        updatedAt: string;
       } | null;
     } | null;
   };

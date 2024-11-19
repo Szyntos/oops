@@ -4,21 +4,23 @@ import { gql } from "@apollo/client";
 import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
 export type SelectAwardFromChestMutationVariables = Types.Exact<{
-  awardId: Types.Scalars["Int"]["input"];
+  awardIds:
+    | Array<Types.Scalars["Int"]["input"]>
+    | Types.Scalars["Int"]["input"];
   chestHistoryId: Types.Scalars["Int"]["input"];
 }>;
 
 export type SelectAwardFromChestMutation = {
   __typename?: "mutation_root";
-  addBonusMutation?: {
+  addBonus: Array<{
     __typename?: "AddBonusReturnType";
     bonus: { __typename?: "BonusType"; bonusId: string };
-  } | null;
+  }>;
 };
 
 export const SelectAwardFromChestDocument = gql`
-  mutation SelectAwardFromChest($awardId: Int!, $chestHistoryId: Int!) {
-    addBonusMutation(awardId: $awardId, chestHistoryId: $chestHistoryId) {
+  mutation SelectAwardFromChest($awardIds: [Int!]!, $chestHistoryId: Int!) {
+    addBonus(awardIds: $awardIds, chestHistoryId: $chestHistoryId) {
       bonus {
         bonusId
       }
@@ -43,7 +45,7 @@ export type SelectAwardFromChestMutationFn = Apollo.MutationFunction<
  * @example
  * const [selectAwardFromChestMutation, { data, loading, error }] = useSelectAwardFromChestMutation({
  *   variables: {
- *      awardId: // value for 'awardId'
+ *      awardIds: // value for 'awardIds'
  *      chestHistoryId: // value for 'chestHistoryId'
  *   },
  * });

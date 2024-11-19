@@ -48,7 +48,8 @@ export const Root = () => {
     try {
       await selectAwardFormChest({
         variables: {
-          awardId: parseInt(awardId),
+          // TODO update to multiple awards
+          awardIds: parseInt(awardId),
           chestHistoryId: parseInt(chestHistoryId),
         },
       });

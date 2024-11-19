@@ -1,9 +1,11 @@
 query Chests($editionId: bigint!) {
-  chests(where: { editionId: { _eq: $editionId } }) {
+  chests(where: { chestEditions: { editionId: { _eq: $editionId } } }) {
     chestId
-    editionId
     imageFileId
     label
     type
+    chestEditions {
+      editionId
+    }
   }
 }

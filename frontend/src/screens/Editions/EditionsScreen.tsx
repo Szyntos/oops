@@ -1,12 +1,9 @@
-import { EditionsQuery } from "../../graphql/editions.graphql.types";
 import { Styles } from "../../utils/Styles";
 import { Dialog } from "@mui/material";
 import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { AddEditionForm } from "../../components/Editions/AddEditionForm";
 import { EditionsList } from "../../components/Editions/EditionsList/EditionsList";
 import { useEditionsScreen } from "../../hooks/Editions/useEditionsScreen";
-
-export type Edition = EditionsQuery["edition"][number];
 
 export const EditionsScreen = () => {
   const {
@@ -57,8 +54,8 @@ export const EditionsScreen = () => {
           initialValues={
             selectedEdition
               ? {
-                  name: selectedEdition.name,
-                  year: selectedEdition.editionYear,
+                  name: selectedEdition.edition.editionName,
+                  year: selectedEdition.edition.editionYear,
                 }
               : undefined
           }
@@ -74,8 +71,8 @@ export const EditionsScreen = () => {
           initialValues={
             selectedEdition
               ? {
-                  name: selectedEdition.name,
-                  year: selectedEdition.editionYear,
+                  name: selectedEdition.edition.editionName,
+                  year: selectedEdition.edition.editionYear,
                 }
               : undefined
           }

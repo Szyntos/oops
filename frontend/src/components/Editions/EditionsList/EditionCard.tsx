@@ -1,23 +1,24 @@
 import { useNavigate } from "react-router-dom";
-import { Edition } from "../../../screens/Editions/EditionsScreen";
 import { Styles } from "../../../utils/Styles";
 import { pathsGenerator } from "../../../router/paths";
 import { SetupButtons } from "../../Edition/Sections/SetupButtons";
+import { Edition } from "../../../hooks/Editions/useEditionsScreen";
 
 type EditionCardProps = {
-  edition: Edition;
+  data: Edition;
   handleDeleteClick: () => void;
   handleCopyClick: () => void;
   handleEditClick: () => void;
 };
 
 export const EditionCard = ({
-  edition,
+  data,
   handleDeleteClick,
   handleCopyClick,
   handleEditClick,
 }: EditionCardProps) => {
   const navigate = useNavigate();
+  const { edition, permissions } = data;
 
   return (
     <div style={styles.card} key={edition.editionId}>
@@ -38,7 +39,7 @@ export const EditionCard = ({
         handleDelete={handleDeleteClick}
         handleCopy={handleCopyClick}
         handleEdit={handleEditClick}
-        //permissions={}
+        permissions={permissions}
       />
     </div>
   );

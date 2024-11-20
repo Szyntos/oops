@@ -1,4 +1,4 @@
-import { Edition } from "../../../screens/Editions/EditionsScreen";
+import { Edition } from "../../../hooks/Editions/useEditionsScreen";
 import { Styles } from "../../../utils/Styles";
 import { EditionCard } from "./EditionCard";
 
@@ -19,7 +19,7 @@ export const EditionsList = ({
     <div style={styles.container}>
       {editions.map((edition) => (
         <EditionCard
-          edition={edition}
+          data={edition}
           handleDeleteClick={() => handleDeleteClick(edition)}
           handleCopyClick={() => handleCopyClick(edition)}
           handleEditClick={() => handleEditClick(edition)}

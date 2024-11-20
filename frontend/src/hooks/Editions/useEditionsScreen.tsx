@@ -1,7 +1,3 @@
-import {
-  EditionsQuery,
-  useEditionsQuery,
-} from "../../graphql/editions.graphql.types";
 import { useState } from "react";
 import { EditionFormValues } from "../../components/Editions/AddEditionForm";
 import { useCreateEditionMutation } from "../../graphql/createEdition.graphql.types";
@@ -9,13 +5,17 @@ import { useDeleteEditionMutation } from "../../graphql/deleteEdition.graphql.ty
 import { useError } from "../common/useGlobalError";
 import { useCopyEditionMutation } from "../../graphql/copyEdition.graphql.types";
 import { useEditEditionMutation } from "../../graphql/editEdition.graphql.types";
+import {
+  SetupEditionsQuery,
+  useSetupEditionsQuery,
+} from "../../graphql/setupEditions.graphql.types";
 
-export type Edition = EditionsQuery["edition"][number];
+export type Edition = SetupEditionsQuery["listSetupEditions"][number];
 
 export const useEditionsScreen = () => {
   const { localErrorWrapper, globalErrorWrapper } = useError();
-  const { data, loading, error, refetch } = useEditionsQuery();
-  const editions: Edition[] = data?.edition ?? [];
+  const { data, loading, error, refetch } = useSetupEditionsQuery();
+  const editions: Edition[] = data?.listSetupEditions ?? [];
 
   const [formError, setFormError] = useState<string>();
   const [selectedEdition, setSelectedEdition] = useState<Edition | undefined>(
@@ -61,7 +61,7 @@ export const useEditionsScreen = () => {
     localErrorWrapper(setFormError, async () => {
       await copyEdition({
         variables: {
-          editionId: parseInt(selectedEdition?.editionId as string),
+          editionId: parseInt(selectedEdition?.edition.editionId as string),
           editionName: values.name,
           editionYear: values.year,
         },
@@ -87,7 +87,7 @@ export const useEditionsScreen = () => {
     localErrorWrapper(setFormError, async () => {
       await editEdition({
         variables: {
-          editionId: parseInt(selectedEdition?.editionId as string),
+          editionId: parseInt(selectedEdition?.edition.editionId as string),
           editionName: values.name,
           editionYear: values.year,
         },
@@ -102,7 +102,7 @@ export const useEditionsScreen = () => {
   const handleDeleteClick = async (edition: Edition) => {
     globalErrorWrapper(async () => {
       await deleteEdition({
-        variables: { editionId: parseInt(edition.editionId) },
+        variables: { editionId: parseInt(edition.edition.editionId) },
       });
       refetch();
     });

@@ -1,9 +1,0 @@
-query Editions {
-  edition {
-    editionId
-    startDate
-    endDate
-    editionYear
-    name
-  }
-}

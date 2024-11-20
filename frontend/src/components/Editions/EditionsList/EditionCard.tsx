@@ -23,7 +23,7 @@ export const EditionCard = ({
   return (
     <div style={styles.card} key={edition.editionId}>
       <div>
-        edition {edition.editionId},{" "}
+        {edition.editionName},{" "}
         {`${edition.startDate.slice(0, 4)}/${edition.endDate.slice(0, 4)}`}
       </div>
       <button

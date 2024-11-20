@@ -1,11 +1,6 @@
 import { useGroupPointsQuery } from "../../graphql/groupPoints.graphql.types";
 import { Category } from "../../utils/utils";
 
-export type Header = {
-  categoryId: string;
-  name: string;
-};
-
 export type GroupTableRow = {
   student: Student;
   categories: CategoryPointsEntry[];
@@ -108,25 +103,6 @@ export const useGroupTableData = (groupId: number | undefined) => {
         categories,
       };
     }) ?? [];
-
-  const headers: Header[] = [];
-  if (rows.length > 0) {
-    const row = rows[0];
-    for (const category of row.categories) {
-      for (const subcategory of category.subcategories) {
-        headers.push({
-          categoryId: category.categoryId,
-          name: subcategory.subcategoryName,
-        });
-      }
-      for (const award of category.awards) {
-        headers.push({
-          categoryId: category.categoryId,
-          name: award.name,
-        });
-      }
-    }
-  }
 
   return {
     rows,

@@ -32,7 +32,7 @@ export const Group = () => {
     formError,
     isStudentOpen,
     openStudent,
-    formCategories,
+    addChestCategories,
     closeStudent,
     handleAddPointsConfirmation,
 
@@ -82,7 +82,7 @@ export const Group = () => {
       <Dialog open={isStudentOpen}>
         <CloseHeader onCloseClick={closeStudent} />
         <PointsForm
-          categories={formCategories}
+          categories={addChestCategories}
           handleConfirmClick={handleAddPointsConfirmation}
           mutationError={formError}
           initialValues={{ categoryId: "", subcategoryId: "", points: 0 }}

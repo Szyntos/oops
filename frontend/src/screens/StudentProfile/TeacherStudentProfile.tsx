@@ -44,8 +44,9 @@ export function TeacherStudentProfile() {
   } = useStudentProfileData(studentId);
 
   const {
-    formCategories,
-    formInitialValues,
+    addPointsCategories,
+    addChestCategories,
+    addPointsFormInitialValues,
     loading: formDataLoading,
     error: formDataError,
   } = useFormCategories();
@@ -102,7 +103,7 @@ export function TeacherStudentProfile() {
         points: parseFloat(selectedPoints.points.purePoints?.value ?? "0"),
         subcategoryId: selectedPoints?.subcategory.subcategoryId,
       }
-    : formInitialValues;
+    : addPointsFormInitialValues;
 
   return (
     <div style={styles.container}>
@@ -157,7 +158,7 @@ export function TeacherStudentProfile() {
         <Dialog open={isAddDialogOpen}>
           <CloseHeader onCloseClick={closeAddDialog} />
           <PointsForm
-            categories={formCategories}
+            categories={addPointsCategories}
             handleConfirmClick={handleAddPointsConfirmation}
             mutationError={formError}
             variant="add"
@@ -169,7 +170,7 @@ export function TeacherStudentProfile() {
         <Dialog open={isEditDialogOpen}>
           <CloseHeader onCloseClick={closeEditDialog} />
           <PointsForm
-            categories={formCategories}
+            categories={addPointsCategories}
             handleConfirmClick={handleEditPointsConfirmation}
             mutationError={formError}
             initialValues={initialValues}
@@ -182,11 +183,11 @@ export function TeacherStudentProfile() {
           <CloseHeader onCloseClick={closeChestDialog} />
           <AddChestToUserForm
             handleConfirmClick={handleAddChestConfirmation}
-            categories={formCategories}
+            categories={addChestCategories}
             chests={chests}
             initialValues={{
-              categoryId: formCategories[0].id,
-              subcategoryId: formCategories[0]?.subcategories[0].id,
+              categoryId: addChestCategories[0].id,
+              subcategoryId: addChestCategories[0]?.subcategories[0].id,
               chestId: chests[0].chestId,
             }}
             formError={chestError}

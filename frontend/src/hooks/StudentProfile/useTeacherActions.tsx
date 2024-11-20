@@ -4,6 +4,7 @@ import { useEditPointsMutation } from "../../graphql/editPoints.graphql.types";
 import { useRemovePointsMutation } from "../../graphql/removePoints.graphql.types";
 import { FormPoints } from "../../components/StudentProfile/PointsForm/types";
 import { Points } from "./types";
+import { useError } from "../common/useGlobalError";
 
 // TODO: maybe this hook should be separated to 3: add, edit, delete
 export const useTeacherActions = (
@@ -11,17 +12,14 @@ export const useTeacherActions = (
   studentId: string,
   teacherId: string,
 ) => {
-  const [createPoints, { error: createError, reset: createErrorReset }] =
-    useCreatePointsMutation();
-  const [editPoints, { error: editError, reset: editErrorReset }] =
-    useEditPointsMutation();
-  const [removePoints, { error: removeError }] = useRemovePointsMutation();
+  const { localErrorWrapper, globalErrorWrapper } = useError();
 
   const [selectedPoints, setSelectedPoints] = useState<Points | undefined>(
     undefined,
   );
+  const [formError, setFormError] = useState<string | undefined>(undefined);
 
-  // add
+  // ADD
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const openAddDialog = (points?: Points) => {
     if (points) {
@@ -29,29 +27,30 @@ export const useTeacherActions = (
     }
     setIsAddDialogOpen(true);
   };
+
+  const [createPoints] = useCreatePointsMutation();
   const closeAddDialog = () => {
     setSelectedPoints(undefined);
-    createErrorReset();
+    setFormError(undefined);
     setIsAddDialogOpen(false);
   };
 
   const handleAddPointsConfirmation = async (formPoints: FormPoints) => {
-    await createPoints({
-      variables: {
-        studentId: parseInt(studentId),
-        subcategoryId: parseInt(formPoints.subcategoryId),
-        teacherId: parseInt(teacherId),
-        value: formPoints.points,
-      },
-    });
-
-    if (!createError) {
+    localErrorWrapper(setFormError, async () => {
+      await createPoints({
+        variables: {
+          studentId: parseInt(studentId),
+          subcategoryId: parseInt(formPoints.subcategoryId),
+          teacherId: parseInt(teacherId),
+          value: formPoints.points,
+        },
+      });
       closeAddDialog();
       refetchStudentScreenData();
-    }
+    });
   };
 
-  // edit
+  // EDIT
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const openEditDialog = (points: Points) => {
     setSelectedPoints(points);
@@ -59,48 +58,44 @@ export const useTeacherActions = (
   };
   const closeEditDialog = () => {
     setSelectedPoints(undefined);
-    editErrorReset();
+    setFormError(undefined);
     setIsEditDialogOpen(false);
   };
-
-  // delete
+  const [editPoints] = useEditPointsMutation();
   const handleEditPointsConfirmation = async (formPoints: FormPoints) => {
     if (!selectedPoints) {
       throw new Error("Points to edit are undefined.");
     }
-
     const pointsId = selectedPoints?.points.purePoints?.pointsId;
     if (!pointsId) {
       throw new Error("Pure points are undefined - use create instead.");
     }
 
-    await editPoints({
-      variables: {
-        pointsId: parseInt(pointsId),
-        teacherId: parseInt(teacherId),
-        value: formPoints.points,
-      },
-    });
-
-    if (!editError) {
+    localErrorWrapper(setFormError, async () => {
+      await editPoints({
+        variables: {
+          pointsId: parseInt(pointsId),
+          teacherId: parseInt(teacherId),
+          value: formPoints.points,
+        },
+      });
       closeEditDialog();
       refetchStudentScreenData();
-    }
+    });
   };
 
+  // DELETE
+  const [removePoints] = useRemovePointsMutation();
   const handleDeletePointsClick = async (pointsId: string) => {
-    await removePoints({ variables: { pointsId: parseInt(pointsId) } });
-
-    if (!removeError) {
+    globalErrorWrapper(async () => {
+      await removePoints({ variables: { pointsId: parseInt(pointsId) } });
       refetchStudentScreenData();
-    } else {
-      // TODO display error alert
-      throw new Error("Error: " + removeError.message);
-    }
+    });
   };
 
   return {
     selectedPoints,
+    formError,
 
     isAddDialogOpen,
     openAddDialog,
@@ -111,11 +106,7 @@ export const useTeacherActions = (
     closeEditDialog,
 
     handleAddPointsConfirmation,
-    addPointsError: createError,
-
     handleEditPointsConfirmation,
-    editPointsError: editError,
-
     handleDeletePointsClick,
   };
 };

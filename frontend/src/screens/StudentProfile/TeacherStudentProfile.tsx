@@ -52,6 +52,7 @@ export function TeacherStudentProfile() {
 
   const {
     selectedPoints,
+    formError,
     isAddDialogOpen,
     openAddDialog,
     closeAddDialog,
@@ -59,9 +60,7 @@ export function TeacherStudentProfile() {
     openEditDialog,
     closeEditDialog,
     handleAddPointsConfirmation,
-    addPointsError,
     handleEditPointsConfirmation,
-    editPointsError,
     handleDeletePointsClick,
   } = useTeacherActions(refetch, studentId as string, userId);
 
@@ -159,7 +158,7 @@ export function TeacherStudentProfile() {
           <PointsForm
             categories={formCategories}
             handleConfirmClick={handleAddPointsConfirmation}
-            mutationError={addPointsError?.message}
+            mutationError={formError}
             variant="add"
             initialValues={initialValues}
             disableCategoryAndSubcategory={!!selectedPoints}
@@ -171,7 +170,7 @@ export function TeacherStudentProfile() {
           <PointsForm
             categories={formCategories}
             handleConfirmClick={handleEditPointsConfirmation}
-            mutationError={editPointsError?.message}
+            mutationError={formError}
             initialValues={initialValues}
             variant="edit"
             disableCategoryAndSubcategory={true}

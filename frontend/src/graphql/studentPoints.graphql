@@ -62,6 +62,8 @@ query StudentPoints($editionId: Int!, $studentId: Int!) {
         category {
           categoryId
           categoryName
+          darkColor
+          lightColor
         }
         maxPoints
       }

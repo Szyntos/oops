@@ -117,8 +117,9 @@ export const StudentTable = ({
                 </TableCell>
                 <TableCell align="center">
                   <CategoryTag
-                    id={p.subcategory.category.categoryId}
                     name={p.subcategory.category.categoryName}
+                    darkColor={p.subcategory.category.darkColor}
+                    lightColor={p.subcategory.category.lightColor}
                   />
                 </TableCell>
                 <TableCell align="center">

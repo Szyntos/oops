@@ -86,6 +86,8 @@ export type StudentPointsQuery = {
           __typename?: "CategoryType";
           categoryId: string;
           categoryName: string;
+          darkColor: string;
+          lightColor: string;
         };
       };
       teacher: {
@@ -162,6 +164,8 @@ export const StudentPointsDocument = gql`
           category {
             categoryId
             categoryName
+            darkColor
+            lightColor
           }
           maxPoints
         }

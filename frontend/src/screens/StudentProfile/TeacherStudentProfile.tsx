@@ -72,6 +72,7 @@ export function TeacherStudentProfile() {
     closeAddDialog: closeChestDialog,
     openAddDialog: openChestDialog,
     handleAddChestConfirmation,
+    formError: chestError,
   } = useCoordinatorActions(studentId as string, userId);
 
   if (!studentId) return <p>StudentId is undefined</p>;
@@ -188,6 +189,7 @@ export function TeacherStudentProfile() {
               subcategoryId: formCategories[0]?.subcategories[0].id,
               chestId: chests[0].chestId,
             }}
+            formError={chestError}
           />
         </Dialog>
       </div>

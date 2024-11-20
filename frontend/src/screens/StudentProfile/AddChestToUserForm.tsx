@@ -21,14 +21,14 @@ type AddChestToUserFormProps = {
     subcategoryId: string;
     chestId: string;
   }) => void;
-  mutationError?: string;
   initialValues: ChestFormValues;
+  formError: string | undefined;
 };
 
 export const AddChestToUserForm = ({
   categories,
   handleConfirmClick,
-  mutationError,
+  formError,
   initialValues,
   chests,
 }: AddChestToUserFormProps) => {
@@ -117,7 +117,7 @@ export const AddChestToUserForm = ({
         />
         <button type="submit">Confirm</button>
       </form>
-      {mutationError && <p style={styles.error}>Error: {mutationError}</p>}
+      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
 };

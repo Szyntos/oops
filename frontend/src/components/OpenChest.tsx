@@ -55,7 +55,6 @@ export const OpenChest = ({
         onClick={() =>
           handleOpenChestClick(selectedAwards, chest.chestHistoryId)
         }
-        disabled={selectedAwards.length < chest.chest.awardBundleCount}
       >
         confirm
       </button>

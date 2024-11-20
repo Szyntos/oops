@@ -46,7 +46,7 @@ const teacherPaths = {
     allowedRoles: [UsersRolesType.Teacher, UsersRolesType.Coordinator],
   },
   Group: {
-    path: "/group/:id",
+    path: "/group/:groupId/:teacherId",
     allowedRoles: [UsersRolesType.Teacher, UsersRolesType.Coordinator],
   },
   Students: {
@@ -108,7 +108,8 @@ export const pathsGenerator = {
   ),
   teacher: {
     Groups: teacherPaths.Groups.path,
-    Group: (id: string) => `${teacherPaths.Group.path.replace(":id", id)}`,
+    Group: (groupId: string, teacherId: string) =>
+      `${teacherPaths.Group.path.replace(":groupId", groupId).replace(":teacherId", teacherId)}`,
     StudentProfile: (id: string) =>
       `${teacherPaths.StudentProfile.path.replace(":id", id)}`,
     Students: teacherPaths.Students.path,

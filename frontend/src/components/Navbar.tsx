@@ -6,6 +6,10 @@ import { useUser } from "../hooks/common/useUser";
 import { hasRole, isEditionActive } from "../utils/utils";
 import { useLogin } from "../hooks/auth/useLogin";
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
+import { useChests } from "../hooks/chest/useChests";
+import { Dialog } from "@mui/material";
+import { CloseHeader } from "./dialogs/CloseHeader";
+import { OpenChest } from "./OpenChest";
 
 export const NAV_BAR_HEIGHT = 52;
 
@@ -15,6 +19,15 @@ export const Navbar = () => {
   const { user } = useUser();
   const { logout } = useLogin();
   const location = useLocation();
+
+  const {
+    chestsToOpen,
+    isChestDialogOpen,
+    openChestDialog,
+    closeChestDialog,
+    handleOpenChestConfirm,
+    chestError,
+  } = useChests();
 
   return (
     <div style={styles.container}>
@@ -44,11 +57,26 @@ export const Navbar = () => {
         <div>no edition selected</div>
       )}
 
+      {user.role === UsersRolesType.Student && (
+        <button disabled={chestsToOpen.length === 0} onClick={openChestDialog}>
+          {chestsToOpen.length} chest(s) to open
+        </button>
+      )}
+
       {user.role !== UsersRolesType.UnauthenticatedUser && (
         <div onClick={async () => await logout()} style={styles.navbarItem}>
           Logout
         </div>
       )}
+
+      <Dialog open={isChestDialogOpen}>
+        <CloseHeader onCloseClick={closeChestDialog} />
+        <OpenChest
+          chest={chestsToOpen[0]}
+          handleOpenChestClick={handleOpenChestConfirm}
+          chestError={chestError}
+        />
+      </Dialog>
     </div>
   );
 };

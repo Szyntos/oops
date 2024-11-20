@@ -3,16 +3,58 @@ import { Styles } from "../../utils/Styles";
 import { pathsGenerator } from "../../router/paths";
 import { useGroupScreenData } from "../../hooks/Group/useGroupScreenData";
 import { GroupTableWithFilters } from "../../components/Group/table/GroupTableWithFilters";
+import { Dialog } from "@mui/material";
+import { CloseHeader } from "../../components/dialogs/CloseHeader";
+import { PointsForm } from "../../components/StudentProfile/PointsForm/PointsForm";
+import { useUser } from "../../hooks/common/useUser";
+import { GroupPointsForm } from "../../components/Group/GroupPointsForm";
+import { NotEditableInfo } from "../../components/StudentProfile/NotEditableInfo";
+import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { useEditionSelection } from "../../hooks/common/useEditionSelection";
+import { isEditionActive } from "../../utils/utils";
 
 export const Group = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const groupId = params.id ? parseInt(params.id) : undefined;
+  const groupId = params.groupId ? parseInt(params.groupId) : undefined;
+  const teacherId = params.teacherId ?? undefined;
+  const { selectedEdition } = useEditionSelection();
 
-  const { rows, categories, loading, error } = useGroupScreenData(groupId);
+  // TODO add rights
+  const { user } = useUser();
+  const userId = user.userId;
+
+  const {
+    rows,
+    categories,
+    loading,
+    error,
+    formError,
+    isStudentOpen,
+    openStudent,
+    addChestCategories,
+    closeStudent,
+    handleAddPointsConfirmation,
+
+    isSubcategoryOpen,
+    openSubcategory,
+    closeSubcategory,
+    handleAddPointsToGroup,
+    selectedSubcategory,
+  } = useGroupScreenData(groupId, userId);
 
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
+  if (!teacherId) return <div>ERROR: something went worng</div>;
+
+  const hasEditableRights =
+    teacherId === userId || user.role === UsersRolesType.Coordinator;
+
+  const isSelectedEditionActive = Boolean(
+    selectedEdition && isEditionActive(selectedEdition),
+  );
+
+  const disableEditMode = !(isSelectedEditionActive && hasEditableRights);
 
   return (
     <div style={styles.screenContainer}>
@@ -23,7 +65,49 @@ export const Group = () => {
         <div>params - group id: {groupId}</div>
       </div>
 
-      <GroupTableWithFilters rows={rows} categories={categories} />
+      {disableEditMode && (
+        <NotEditableInfo
+          hasEditableRights={hasEditableRights}
+          isSelectedEditionActive={isSelectedEditionActive}
+        />
+      )}
+
+      <GroupTableWithFilters
+        rows={rows}
+        categories={categories}
+        handleStudentClick={hasEditableRights ? openStudent : () => {}}
+        handleSubcategoryClick={hasEditableRights ? openSubcategory : () => {}}
+      />
+
+      <Dialog open={isStudentOpen}>
+        <CloseHeader onCloseClick={closeStudent} />
+        <PointsForm
+          categories={addChestCategories}
+          handleConfirmClick={handleAddPointsConfirmation}
+          mutationError={formError}
+          initialValues={{ categoryId: "", subcategoryId: "", points: 0 }}
+          variant="add"
+          disableCategoryAndSubcategory={false}
+        />
+      </Dialog>
+
+      <Dialog open={isSubcategoryOpen}>
+        <CloseHeader onCloseClick={closeSubcategory} />
+        <GroupPointsForm
+          initialRows={selectedSubcategory?.rows ?? []}
+          handleAdd={handleAddPointsToGroup}
+          formError={formError}
+          // clearing selected subcategory on submit take some time
+          // default values are necessary to avoid error
+          subcategory={
+            selectedSubcategory?.subcategory ?? {
+              id: "",
+              name: "",
+              maxPoints: -1,
+            }
+          }
+        />
+      </Dialog>
     </div>
   );
 };

@@ -9,7 +9,7 @@ import {
   TableRow,
   ThemeProvider,
 } from "@mui/material";
-import { GroupTableRow } from "../../../hooks/Group/useGroupScreenData";
+import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
 import { Styles } from "../../../utils/Styles";
 import { Subcategory } from "../../../utils/utils";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
@@ -17,9 +17,16 @@ import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 type GroupTableProps = {
   rows: GroupTableRow[];
   subcategories: Subcategory[];
+  handleStudentClick: (student: Student) => void;
+  handleSubcategoryClick: (subcategory: Subcategory) => void;
 };
 
-export const GroupTable = ({ rows, subcategories }: GroupTableProps) => {
+export const GroupTable = ({
+  rows,
+  subcategories,
+  handleStudentClick,
+  handleSubcategoryClick,
+}: GroupTableProps) => {
   const darkTheme = createTheme({
     palette: {
       mode: "dark",
@@ -34,7 +41,11 @@ export const GroupTable = ({ rows, subcategories }: GroupTableProps) => {
             <TableRow>
               <TableCell style={styles.headerStudentCell}>Student</TableCell>
               {subcategories.map((subcategory) => (
-                <TableCell key={subcategory.id} style={styles.headerCell}>
+                <TableCell
+                  key={subcategory.id}
+                  onClick={() => handleSubcategoryClick(subcategory)}
+                  style={styles.headerCell}
+                >
                   {subcategory.name}
                 </TableCell>
               ))}
@@ -44,7 +55,10 @@ export const GroupTable = ({ rows, subcategories }: GroupTableProps) => {
           <TableBody>
             {rows.map((row, index) => (
               <TableRow key={row.student.id}>
-                <TableCell style={styles.regularStudentCell}>
+                <TableCell
+                  style={styles.regularStudentCell}
+                  onClick={() => handleStudentClick(row.student)}
+                >
                   {index + 1}. {row.student.fullName}
                 </TableCell>
                 {row.subcategories.map((subcategory) => (

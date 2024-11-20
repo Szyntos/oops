@@ -17,6 +17,8 @@ import { isEditionActive } from "../../utils/utils";
 import { NotEditableInfo } from "../../components/StudentProfile/NotEditableInfo";
 import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { useCoordinatorActions } from "../../hooks/StudentProfile/useCoordinatorActions";
+import { AddChestToUserForm } from "./AddChestToUserForm";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -42,14 +44,16 @@ export function TeacherStudentProfile() {
   } = useStudentProfileData(studentId);
 
   const {
-    formCategories,
-    formInitialValues,
+    addPointsCategories,
+    addChestCategories,
+    addPointsFormInitialValues,
     loading: formDataLoading,
     error: formDataError,
   } = useFormCategories();
 
   const {
     selectedPoints,
+    formError,
     isAddDialogOpen,
     openAddDialog,
     closeAddDialog,
@@ -57,18 +61,28 @@ export function TeacherStudentProfile() {
     openEditDialog,
     closeEditDialog,
     handleAddPointsConfirmation,
-    addPointsError,
     handleEditPointsConfirmation,
-    editPointsError,
     handleDeletePointsClick,
   } = useTeacherActions(refetch, studentId as string, userId);
+
+  const {
+    chests,
+    loading: chestsLoading,
+    error: chestsError,
+    isDialogOpen: isChestDialogOpen,
+    closeAddDialog: closeChestDialog,
+    openAddDialog: openChestDialog,
+    handleAddChestConfirmation,
+    formError: chestError,
+  } = useCoordinatorActions(studentId as string, userId);
 
   if (!studentId) return <p>StudentId is undefined</p>;
   if (!userId) return <p>TeacherId is undefined</p>;
 
-  if (loading || formDataLoading) return <p>Loading...</p>;
+  if (loading || formDataLoading || chestsLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   if (formDataError) return <p>Error: {formDataError.message}</p>;
+  if (chestsError) return <p>Error: {chestsError.message}</p>;
 
   if (!studentData) return <p>Student is undefined</p>;
   if (!currLevel) return <p>Curr level is undefined</p>;
@@ -89,7 +103,7 @@ export function TeacherStudentProfile() {
         points: parseFloat(selectedPoints.points.purePoints?.value ?? "0"),
         subcategoryId: selectedPoints?.subcategory.subcategoryId,
       }
-    : formInitialValues;
+    : addPointsFormInitialValues;
 
   return (
     <div style={styles.container}>
@@ -110,37 +124,24 @@ export function TeacherStudentProfile() {
           />
         )}
 
-        <Dialog open={isAddDialogOpen}>
-          <CloseHeader onCloseClick={closeAddDialog} />
-          <PointsForm
-            categories={formCategories}
-            handleConfirmClick={handleAddPointsConfirmation}
-            mutationError={addPointsError?.message}
-            variant="add"
-            initialValues={initialValues}
-            disableCategoryAndSubcategory={!!selectedPoints}
-          />
-        </Dialog>
-
-        <Dialog open={isEditDialogOpen}>
-          <CloseHeader onCloseClick={closeEditDialog} />
-          <PointsForm
-            categories={formCategories}
-            handleConfirmClick={handleEditPointsConfirmation}
-            mutationError={editPointsError?.message}
-            initialValues={initialValues}
-            variant="edit"
-            disableCategoryAndSubcategory={true}
-          />
-        </Dialog>
-
-        <Button
-          onClick={openAddDialog}
-          color="lightblue"
-          disabled={disableEditMode}
-        >
-          Add Points
-        </Button>
+        <div style={styles.buttonsContainer}>
+          <Button
+            onClick={openAddDialog}
+            color="lightblue"
+            disabled={disableEditMode}
+          >
+            Add Points
+          </Button>
+          {user.role === UsersRolesType.Coordinator && (
+            <Button
+              onClick={openChestDialog}
+              color="lightblue"
+              disabled={disableEditMode}
+            >
+              Add Chest
+            </Button>
+          )}
+        </div>
 
         <StudentTableWithFilters
           points={points}
@@ -153,6 +154,45 @@ export function TeacherStudentProfile() {
           showActionButtons={true}
           blockActionButtons={disableEditMode}
         />
+
+        <Dialog open={isAddDialogOpen}>
+          <CloseHeader onCloseClick={closeAddDialog} />
+          <PointsForm
+            categories={addPointsCategories}
+            handleConfirmClick={handleAddPointsConfirmation}
+            mutationError={formError}
+            variant="add"
+            initialValues={initialValues}
+            disableCategoryAndSubcategory={!!selectedPoints}
+          />
+        </Dialog>
+
+        <Dialog open={isEditDialogOpen}>
+          <CloseHeader onCloseClick={closeEditDialog} />
+          <PointsForm
+            categories={addPointsCategories}
+            handleConfirmClick={handleEditPointsConfirmation}
+            mutationError={formError}
+            initialValues={initialValues}
+            variant="edit"
+            disableCategoryAndSubcategory={true}
+          />
+        </Dialog>
+
+        <Dialog open={isChestDialogOpen}>
+          <CloseHeader onCloseClick={closeChestDialog} />
+          <AddChestToUserForm
+            handleConfirmClick={handleAddChestConfirmation}
+            categories={addChestCategories}
+            chests={chests}
+            initialValues={{
+              categoryId: addChestCategories[0].id,
+              subcategoryId: addChestCategories[0]?.subcategories[0].id,
+              chestId: chests[0].chestId,
+            }}
+            formError={chestError}
+          />
+        </Dialog>
       </div>
     </div>
   );
@@ -169,5 +209,10 @@ const styles: Styles = {
     display: "flex",
     flexDirection: "column",
     gap: 24,
+  },
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 12,
   },
 };

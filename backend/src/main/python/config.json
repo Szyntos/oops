@@ -234,8 +234,8 @@
             }
         ],
         "subcategories_percentage": 0.6,
-        "chest_percentage": 1,
-        "open_chest_percentage": 0,
+        "chest_percentage": 0.6,
+        "open_chest_percentage": 0.2,
         "seed": 1234
     }
 }

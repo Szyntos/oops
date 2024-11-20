@@ -64,7 +64,7 @@ export const PointsRow = ({
           name="points"
           variant="outlined"
           type="number"
-          value={formik.values.points || ""}
+          value={formik.values.points !== null ? formik.values.points : ""}
           onChange={handleOnChange}
           onBlur={formik.handleBlur}
           error={Boolean(formik.touched.points && formik.errors.points)}

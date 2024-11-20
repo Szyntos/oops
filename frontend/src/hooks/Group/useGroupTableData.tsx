@@ -1,9 +1,14 @@
 import { useGroupPointsQuery } from "../../graphql/groupPoints.graphql.types";
 import { Category } from "../../utils/utils";
 
+export type Header = {
+  categoryId: string;
+  name: string;
+};
+
 export type GroupTableRow = {
   student: Student;
-  subcategories: SubcategoryPointsEntry[];
+  categories: CategoryPointsEntry[];
 };
 
 export type Student = {
@@ -12,10 +17,23 @@ export type Student = {
   index: number;
 };
 
+export type CategoryPointsEntry = {
+  categoryId: string;
+  subcategories: SubcategoryPointsEntry[];
+  awards: AwardsPointsEntry[];
+};
+
 export type SubcategoryPointsEntry = {
   pure: number | undefined;
   subcategoryId: string;
+  subcategoryName: string;
   categoryId: string;
+  maxPoints: number;
+};
+
+export type AwardsPointsEntry = {
+  value: number;
+  name: string;
 };
 
 export const useGroupTableData = (groupId: number | undefined) => {
@@ -39,6 +57,7 @@ export const useGroupTableData = (groupId: number | undefined) => {
         subcategories:
           subcategoryPoints.map((points) => {
             return {
+              categoryId: parseInt(category.categoryId),
               id: points.subcategory.subcategoryId,
               name: points.subcategory.subcategoryName,
               maxPoints: parseFloat(points.subcategory.maxPoints),
@@ -50,14 +69,15 @@ export const useGroupTableData = (groupId: number | undefined) => {
   const rows: GroupTableRow[] =
     data?.getUsersInGroupWithPoints.map((userPoints) => {
       const user = userPoints?.user;
-      return {
-        student: {
-          id: user?.userId ?? "-1",
-          fullName: `${user?.firstName ?? "-"} ${user?.secondName ?? "-"}`,
-          index: user?.indexNumber ?? -1,
-        },
-        subcategories:
-          userPoints?.categoriesPoints.flatMap((catPoints) =>
+      const student: Student = {
+        id: user?.userId ?? "-1",
+        fullName: `${user?.firstName ?? "-"} ${user?.secondName ?? "-"}`,
+        index: user?.indexNumber ?? -1,
+      };
+
+      const categories: CategoryPointsEntry[] =
+        userPoints?.categoriesPoints.map((catPoints) => {
+          const subcategories: SubcategoryPointsEntry[] =
             catPoints.subcategoryPoints.map((subPoints) => {
               return {
                 pure: subPoints.points?.value
@@ -65,11 +85,48 @@ export const useGroupTableData = (groupId: number | undefined) => {
                   : undefined,
                 subcategoryId: subPoints.subcategory.subcategoryId,
                 categoryId: catPoints.category.categoryId,
+                subcategoryName: subPoints.subcategory.subcategoryName,
+                maxPoints: parseInt(subPoints.subcategory.maxPoints),
               };
-            }),
-          ) ?? [],
+            }) ?? [];
+
+          const awards: AwardsPointsEntry[] =
+            catPoints.awardAggregate.map((a) => ({
+              value: a.sumOfAll,
+              name: a.award.awardName,
+            })) ?? [];
+
+          return {
+            categoryId: catPoints.category.categoryId,
+            subcategories,
+            awards,
+          };
+        }) ?? [];
+
+      return {
+        student,
+        categories,
       };
     }) ?? [];
+
+  const headers: Header[] = [];
+  if (rows.length > 0) {
+    const row = rows[0];
+    for (const category of row.categories) {
+      for (const subcategory of category.subcategories) {
+        headers.push({
+          categoryId: category.categoryId,
+          name: subcategory.subcategoryName,
+        });
+      }
+      for (const award of category.awards) {
+        headers.push({
+          categoryId: category.categoryId,
+          name: award.name,
+        });
+      }
+    }
+  }
 
   return {
     rows,

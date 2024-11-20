@@ -24,6 +24,7 @@ export const useFormCategories = () => {
               id: s.subcategoryId,
               name: s.subcategoryName,
               maxPoints: parseFloat(s.maxPoints),
+              categoryId: parseInt(c.categoryId),
             };
           }),
         };
@@ -41,6 +42,7 @@ export const useFormCategories = () => {
               id: s.subcategoryId,
               name: s.subcategoryName,
               maxPoints: parseFloat(s.maxPoints),
+              categoryId: parseInt(c.categoryId),
             };
           }),
         };

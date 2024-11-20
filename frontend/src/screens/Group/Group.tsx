@@ -101,6 +101,7 @@ export const Group = () => {
           // default values are necessary to avoid error
           subcategory={
             selectedSubcategory?.subcategory ?? {
+              categoryId: -1,
               id: "",
               name: "",
               maxPoints: -1,

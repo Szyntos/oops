@@ -24,6 +24,13 @@ query GroupPoints($groupId: Int!) {
           value
         }
       }
+      awardAggregate {
+        award {
+          awardId
+          awardName
+        }
+        sumOfAll
+      }
     }
   }
 }

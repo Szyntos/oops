@@ -20,7 +20,9 @@ export const GroupsList = ({ groups }: GroupsProps) => {
         <GroupCard
           key={group.id}
           group={group}
-          onClick={() => navigate(pathsGenerator.teacher.Group(group.id))}
+          onClick={() =>
+            navigate(pathsGenerator.teacher.Group(group.id, group.teacher.id))
+          }
           withEditableRights={
             group.teacher.id === user.user.userId ||
             user.user.role === UsersRolesType.Coordinator

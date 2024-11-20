@@ -149,7 +149,7 @@ class BonusPermissions {
             )
         }
 
-        if (chestHistory.chest.awardBundleCount != awards.size) {
+        if (chestHistory.chest.awardBundleCount > awards.size) {
             return Permission(
                 action = action,
                 arguments = arguments,

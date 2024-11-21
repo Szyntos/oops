@@ -15,7 +15,7 @@ export const GradingChecksSection = () => {
   const {
     gradingChecks,
     formCategories,
-    formLevelSet,
+    formLevels,
     loading,
     error,
 
@@ -32,11 +32,10 @@ export const GradingChecksSection = () => {
     handleEdit,
   } = useGradingChecksSection(editionId);
 
-  console.log(gradingChecks);
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
-  const level = formLevelSet.levelSet.levels.find(
+  const level = formLevels.find(
     (l) => l.levelId === gradingChecks?.endOfLabsLevelsThreshold,
   );
 
@@ -75,7 +74,7 @@ export const GradingChecksSection = () => {
           handleConfirm={handleAdd}
           categories={formCategories}
           title="Add Grading Checks"
-          levelSet={formLevelSet}
+          levels={formLevels}
         />
       </Dialog>
 
@@ -85,7 +84,7 @@ export const GradingChecksSection = () => {
           formError={formError}
           handleConfirm={handleEdit}
           categories={formCategories}
-          levelSet={formLevelSet}
+          levels={formLevels}
           initialValues={
             gradingChecks
               ? {

@@ -40,8 +40,27 @@ export const GroupTable = ({
       for (const award of category.awards) {
         values.push(award.value);
       }
+      for (const sum of category.sums) {
+        values.push(sum.value);
+      }
     }
+
+    // add overall bonuses / sums
+    const { bonuses, all } = getOverallSumValues(row);
+    values.push(bonuses);
+    values.push(all);
     return values;
+  };
+
+  const getOverallSumValues = (row: GroupTableRow) => {
+    let bonuses = 0;
+    let all = 0;
+    for (const category of row.categories) {
+      // TODO name props instead of sums[index]
+      bonuses += category.sums[0].value;
+      all += category.sums[1].value;
+    }
+    return { bonuses, all };
   };
 
   const getHeaderNames = () => {
@@ -64,8 +83,16 @@ export const GroupTable = ({
         for (const award of category.awards) {
           headers.push({ name: award.name, subcategory: undefined });
         }
+        for (const sum of category.sums) {
+          headers.push({ name: sum.name, subcategory: undefined });
+        }
       }
     }
+
+    // add overall bonuses / sums
+    headers.push({ name: "overall bonus", subcategory: undefined });
+    headers.push({ name: "overall", subcategory: undefined });
+
     return headers;
   };
 

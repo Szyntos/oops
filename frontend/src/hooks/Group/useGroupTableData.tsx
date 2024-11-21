@@ -1,4 +1,7 @@
-import { useGroupPointsQuery } from "../../graphql/groupPoints.graphql.types";
+import {
+  GroupPointsQuery,
+  useGroupPointsQuery,
+} from "../../graphql/groupPoints.graphql.types";
 import { Category } from "../../utils/utils";
 
 export type GroupTableRow = {
@@ -16,7 +19,7 @@ export type CategoryPointsEntry = {
   categoryId: string;
   subcategories: SubcategoryPointsEntry[];
   awards: AwardsPointsEntry[];
-  sums: { name: string; value: number }[];
+  sums: SumsType;
 };
 
 export type SubcategoryPointsEntry = {
@@ -31,6 +34,10 @@ export type AwardsPointsEntry = {
   value: number;
   name: string;
 };
+
+type SumsType = NonNullable<
+  GroupPointsQuery["getUsersInGroupWithPoints"][number]
+>["categoriesPoints"][number]["categoryAggregate"];
 
 export const useGroupTableData = (groupId: number | undefined) => {
   const {
@@ -96,16 +103,7 @@ export const useGroupTableData = (groupId: number | undefined) => {
             categoryId: catPoints.category.categoryId,
             subcategories,
             awards,
-            sums: [
-              {
-                name: "bonuses",
-                value: catPoints.categoryAggregate.sumOfBonuses,
-              },
-              {
-                name: "all",
-                value: catPoints.categoryAggregate.sumOfAll,
-              },
-            ],
+            sums: catPoints.categoryAggregate,
           };
         }) ?? [];
 

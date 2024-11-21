@@ -31,41 +31,49 @@ export const GroupTable = ({
     },
   });
 
+  // order: subcategories, pure points sum, awards, bonus points sum
   const getRowValues = (row: GroupTableRow) => {
+    // add subcategories, awards and sums
     const values: (number | undefined)[] = [];
     for (const category of row.categories) {
       for (const subcategory of category.subcategories) {
         values.push(subcategory.pure);
       }
+      values.push(category.sums.sumOfPurePoints);
       for (const award of category.awards) {
         values.push(award.value);
       }
-      for (const sum of category.sums) {
-        values.push(sum.value);
-      }
+      values.push(category.sums.sumOfBonuses);
     }
-
-    // add overall bonuses / sums
-    const { bonuses, all } = getOverallSumValues(row);
-    values.push(bonuses);
-    values.push(all);
+    // add aggregate values
+    const sums = getOverallSumValues(row);
+    values.push(sums.purePointsSum);
+    values.push(sums.bonusesSum);
+    values.push(sums.overallSum);
     return values;
   };
 
-  const getOverallSumValues = (row: GroupTableRow) => {
-    let bonuses = 0;
-    let all = 0;
+  const getOverallSumValues = (
+    row: GroupTableRow,
+  ): { purePointsSum: number; bonusesSum: number; overallSum: number } => {
+    let purePointsSum = 0;
+    let bonusesSum = 0;
+    let overallSum = 0;
     for (const category of row.categories) {
-      // TODO name props instead of sums[index]
-      bonuses += category.sums[0].value;
-      all += category.sums[1].value;
+      purePointsSum += category.sums.sumOfPurePoints;
+      bonusesSum += category.sums.sumOfBonuses;
+      overallSum += category.sums.sumOfAll;
     }
-    return { bonuses, all };
+    return { purePointsSum, bonusesSum, overallSum };
   };
 
   const getHeaderNames = () => {
-    const headers: { name: string; subcategory: Subcategory | undefined }[] =
-      [];
+    const headers: {
+      name: string;
+      subcategory?: Subcategory;
+      color?: string;
+    }[] = [];
+    // add subcategories, awards and sums
     if (rows.length > 0) {
       const row = rows[0];
       for (const category of row.categories) {
@@ -80,19 +88,17 @@ export const GroupTable = ({
             },
           });
         }
+        headers.push({ name: "sum of pure points", color: "blue" });
         for (const award of category.awards) {
-          headers.push({ name: award.name, subcategory: undefined });
+          headers.push({ name: award.name });
         }
-        for (const sum of category.sums) {
-          headers.push({ name: sum.name, subcategory: undefined });
-        }
+        headers.push({ name: "sum of bonuses", color: "blue" });
       }
     }
-
-    // add overall bonuses / sums
-    headers.push({ name: "overall bonus", subcategory: undefined });
-    headers.push({ name: "overall", subcategory: undefined });
-
+    // add aggregate values
+    headers.push({ name: "overall pure points", color: "blue" });
+    headers.push({ name: "overall bonuses", color: "blue" });
+    headers.push({ name: "overall", color: "blue" });
     return headers;
   };
 
@@ -111,7 +117,10 @@ export const GroupTable = ({
                       handleSubcategoryClick(entry.subcategory);
                     }
                   }}
-                  style={styles.headerCell}
+                  style={{
+                    ...styles.headerCell,
+                    color: entry.color,
+                  }}
                 >
                   {entry.name}
                 </TableCell>

@@ -1,27 +1,33 @@
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
 import { Image } from "../../../../images/Image";
+import { Permissions, SetupButtons } from "../../SetupButtons";
+
+export type FileItem = {
+  id: string;
+  permissions: Permissions;
+};
 
 type ImagesListProps = {
-  imageIds: string[];
+  files: FileItem[];
   title: string;
   handleDelete: (imageId: string) => void;
 };
 
-export const ImagesList = ({
-  imageIds,
-  title,
-  handleDelete,
-}: ImagesListProps) => {
+export const ImagesList = ({ files, title, handleDelete }: ImagesListProps) => {
   return (
     <div>
       <div style={styles.title}>{title}</div>
       <div style={styles.container}>
-        {imageIds.length !== 0
-          ? imageIds.map((id) => (
+        {files.length !== 0
+          ? files.map((entry) => (
               <div style={styles.imageContainer}>
-                <Image id={id} size={128} disabled={false} />
-                <button onClick={() => handleDelete(id)}>delete</button>
+                <Image id={entry.id} size={128} disabled={false} />
+                <SetupButtons
+                  permissions={entry.permissions}
+                  isSelected={false}
+                  handleDelete={() => handleDelete(entry.id)}
+                />
               </div>
             ))
           : EMPTY_FIELD_STRING}

@@ -3,7 +3,7 @@ import { useFilesLazyQuery } from "../../../../graphql/files.graphql.types";
 import { Styles } from "../../../../utils/Styles";
 import { useParams } from "react-router-dom";
 import { Folder, FolderNavbar } from "./FolderNavbar/FolderNavbar";
-import { ImagesList } from "./ImagesList/ImagesList";
+import { FileItem, ImagesList } from "./ImagesList/ImagesList";
 import { useError } from "../../../../hooks/common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../../../utils/constants";
 import { useDeleteFileMutation } from "../../../../graphql/deleteFile.graphql.types";
@@ -25,9 +25,9 @@ export const FilesSection = () => {
   const [activeFolder, setActiveFolder] = useState<Folder>(folders[0]);
   const [fetchFiles, { loading, error, data, refetch }] = useFilesLazyQuery();
 
-  const imagesIds: string[] =
+  const files: FileItem[] =
     data?.getFilesGroupedByTypeBySelectedTypes.flatMap((a) =>
-      a.files.map((f) => f.file.fileId),
+      a.files.map((f) => ({ id: f.file.fileId, permissions: f.permissions })),
     ) ?? [];
 
   useEffect(() => {
@@ -89,7 +89,7 @@ export const FilesSection = () => {
       />
 
       <ImagesList
-        imageIds={imagesIds}
+        files={files}
         title={`All ${activeFolder.title} files`}
         handleDelete={handleDelete}
       />

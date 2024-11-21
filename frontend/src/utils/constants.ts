@@ -3,7 +3,8 @@ import { GroupRadioFilterItem } from "../components/Groups/RadioFilterGroup";
 export const FETCH_FILES_URL = "http://localhost:9090/files/";
 export const UPLOAD_FILES_URL = "http://localhost:9090/files/upload";
 
-export const GRAPHQL_URI = "http://127.0.0.1:9191/v1/graphql";
+export const HTTP_GRAPHQL_URL = "http://127.0.0.1:9191/v1/graphql";
+export const WEB_SOCKET_GRAPHQL_URL = "ws://127.0.0.1:9191/v1/graphql";
 
 // TODO try to reuse it in hall of fame
 export const groupsRadioButtonOptions: GroupRadioFilterItem[] = [

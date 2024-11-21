@@ -7,7 +7,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { ReactNode } from "react";
-import { GRAPHQL_URI } from "../utils/constants";
+import { HTTP_GRAPHQL_URL } from "../utils/constants";
 import Cookies from "js-cookie";
 import { cookiesStrings } from "../hooks/auth/useLogin";
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
@@ -16,10 +16,10 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 
 const httpLink = createHttpLink({
-  uri: GRAPHQL_URI,
+  uri: HTTP_GRAPHQL_URL,
 });
 
-export const getHeaders = () => {
+const getHeaders = () => {
   const token = Cookies.get(cookiesStrings.token);
   const cookieUser = Cookies.get(cookiesStrings.user);
   const parsedUser = cookieUser ? JSON.parse(cookieUser) : undefined;
@@ -51,12 +51,11 @@ const createAuthLink = () =>
 
 const createWebSocketLink = () => {
   const wsClient = createClient({
-    url: GRAPHQL_URI.replace(/^http/, "ws"),
+    url: HTTP_GRAPHQL_URL,
     connectionParams: () => ({
       headers: getHeaders(),
     }),
   });
-
   return new GraphQLWsLink(wsClient);
 };
 

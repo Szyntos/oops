@@ -139,7 +139,7 @@ export const GroupTable = ({
                 </TableCell>
                 {getRowValues(row).map((value, index) => (
                   <TableCell key={`${index}`}>
-                    {value ?? EMPTY_FIELD_STRING}
+                    {value?.toFixed(2) ?? EMPTY_FIELD_STRING}
                   </TableCell>
                 ))}
               </TableRow>

@@ -740,7 +740,7 @@ type CategoryPointsType {
 
 type AwardAggregateType{
   award: AwardType!,
-  sumOfAll: Float!
+  sumOfAll: Float
 }
 
 

@@ -686,9 +686,14 @@ class GroupsDataFetcher {
                         ),
                         awardAggregate = awardTypes.map { awardType ->
                             val awardPoints = categoryBonuses.filter { it.award == awardType }.map { it.points }
+                            val awardPointsSum = if (awardPoints.isNotEmpty()) {
+                                awardPoints.sumOf { it.value }.toFloat()
+                            } else {
+                                null
+                            }
                             AwardAggregate(
                                 award = awardType,
-                                sumOfAll = awardPoints.sumOf { it.value }.toFloat()
+                                sumOfAll = awardPointsSum
                             )
                         }
                     )
@@ -824,7 +829,7 @@ data class CategoryPointsType(
 
 data class AwardAggregate(
     val award: Award,
-    val sumOfAll: Float
+    val sumOfAll: Float?
 )
 
 data class CategoryAggregate(

@@ -6,6 +6,7 @@ import { Folder, FolderNavbar } from "./FolderNavbar/FolderNavbar";
 import { ImagesList } from "./ImagesList/ImagesList";
 import { useError } from "../../../../hooks/common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../../../utils/constants";
+import { useDeleteFileMutation } from "../../../../graphql/deleteFile.graphql.types";
 
 const folders: Folder[] = [
   { title: "award", pathPrefix: `image/award` },
@@ -54,10 +55,18 @@ export const FilesSection = () => {
           body: formData,
         });
         if (!res.ok) throw new Error(`Error: ${res.statusText}`);
-        await refetch();
+        refetch();
         event.target.value = "";
       });
     }
+  };
+
+  const [deleteFile] = useDeleteFileMutation();
+  const handleDelete = (imageId: string) => {
+    globalErrorWrapper(async () => {
+      await deleteFile({ variables: { fileId: parseInt(imageId) } });
+      refetch();
+    });
   };
 
   if (loading) return <div>Loading...</div>;
@@ -82,6 +91,7 @@ export const FilesSection = () => {
       <ImagesList
         imageIds={imagesIds}
         title={`All ${activeFolder.title} files`}
+        handleDelete={handleDelete}
       />
     </div>
   );

@@ -140,9 +140,10 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                         false,
                         "Not applicable"),
                     additional = listOf(
-                        permissionService.checkPartialPermission(PermissionInput("overrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
-                        permissionService.checkPartialPermission(PermissionInput("turnOffOverrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
-                        )
+                        permissionService.checkPartialPermission(PermissionInput("overrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
+                        permissionService.checkPartialPermission(PermissionInput("turnOffOverrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
+                    )
+//                    additional = emptyList()
                 )
             )
         }.sortedBy { "${it.user.firstName} ${it.user.secondName}" }

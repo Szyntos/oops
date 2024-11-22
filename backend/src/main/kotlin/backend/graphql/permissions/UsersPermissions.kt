@@ -922,14 +922,13 @@ class UsersPermissions {
             reason = "Invalid or missing 'grade'"
         )
 
-        val user = usersRepository.findByUserId(userId).orElse(null)
+        val user = usersRepository.findById(userId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
                 reason = "Invalid user ID"
             )
-
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
@@ -937,12 +936,12 @@ class UsersPermissions {
                 allow = false,
                 reason = "Invalid edition ID"
             )
-        val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
+        val userLevel = user.userLevels.find { it.edition == edition }
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User has no user level"
+                reason = "User has no user level in this edition"
             )
         // grade should be 2.0 or 3.0 or 3.5 or 4.0 or 4.5 or 5.0
         if (grade != 2.0f && grade != 3.0f && grade != 3.5f && grade != 4.0f && grade != 4.5f && grade != 5.0f){
@@ -989,7 +988,7 @@ class UsersPermissions {
         )
 
 
-        val user = usersRepository.findByUserId(userId).orElse(null)
+        val user = usersRepository.findById(userId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
@@ -1003,12 +1002,12 @@ class UsersPermissions {
                 allow = false,
                 reason = "Invalid edition ID"
             )
-        val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
+        val userLevel = user.userLevels.find { it.edition == edition }
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User has no user level"
+                reason = "User has no user level in this edition"
             )
 
         return Permission(

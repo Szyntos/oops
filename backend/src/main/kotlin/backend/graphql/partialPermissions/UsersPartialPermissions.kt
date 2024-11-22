@@ -216,7 +216,7 @@ class UsersPartialPermissions {
         )
 
 
-        val user = usersRepository.findByUserId(userId).orElse(null)
+        val user = usersRepository.findById(userId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
@@ -231,12 +231,12 @@ class UsersPartialPermissions {
                 allow = false,
                 reason = "Invalid edition ID"
             )
-        val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
+        val userLevel = user.userLevels.find { it.edition == edition }
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User has no user level"
+                reason = "User has no user level in this edition"
             )
 
         return Permission(
@@ -274,7 +274,7 @@ class UsersPartialPermissions {
         )
 
 
-        val user = usersRepository.findByUserId(userId).orElse(null)
+        val user = usersRepository.findById(userId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
@@ -288,12 +288,12 @@ class UsersPartialPermissions {
                 allow = false,
                 reason = "Invalid edition ID"
             )
-        val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
+        val userLevel = user.userLevels.find { it.edition == edition }
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User has no user level"
+                reason = "User has no user level in this edition"
             )
 
         return Permission(

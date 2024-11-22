@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository
 interface UserLevelRepository : JpaRepository<UserLevel, Long> {
     fun deleteAllByUser_UserId(userId: Long)
     fun findByUserAndEdition(user: Users, edition: Edition): UserLevel?
+    fun findByUser_UserIdAndEdition_EditionId(userId: Long, editionId: Long): UserLevel?
 }

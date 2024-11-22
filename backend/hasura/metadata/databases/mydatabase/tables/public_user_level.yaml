@@ -15,9 +15,12 @@ select_permissions:
   - role: coordinator
     permission:
       columns:
+        - computed_grade
         - edition_id
+        - end_of_labs_levels_reached
         - label
         - level_id
+        - project_points_threshold_reached
         - user_id
         - user_level_id
       filter: {}
@@ -25,8 +28,11 @@ select_permissions:
   - role: student
     permission:
       columns:
+        - computed_grade
         - edition_id
+        - end_of_labs_levels_reached
         - level_id
+        - project_points_threshold_reached
         - user_id
         - user_level_id
       filter:
@@ -37,10 +43,13 @@ select_permissions:
     permission:
       columns:
         - edition_id
-        - label
         - level_id
         - user_id
         - user_level_id
+        - end_of_labs_levels_reached
+        - project_points_threshold_reached
+        - label
+        - computed_grade
       filter:
         edition:
           groups:

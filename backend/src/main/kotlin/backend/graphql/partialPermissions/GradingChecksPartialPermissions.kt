@@ -60,6 +60,69 @@ class GradingChecksPartialPermissions {
     @Autowired
     private lateinit var photoAssigner: PhotoAssigner
 
+    fun checkAddGradingCheckPermission(arguments: JsonNode): Permission {
+        val action = "addGradingCheck"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is not a coordinator"
+            )
+        }
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+
+        if (gradingChecksRepository.existsByEdition(edition)) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Grading checks for edition ${edition.editionName} already exist"
+            )
+        }
+
+        if (edition.endDate.isBefore(LocalDate.now())) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition has already ended"
+            )
+        }
+
+//        if (edition.startDate.isBefore(LocalDate.now())) {
+//            return Permission(
+//                action = action,
+//                arguments = arguments,
+//                allow = false,
+//                reason = "Edition has already started"
+//            )
+//        }
+
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
     fun checkEditGradingCheckPermission(arguments: JsonNode): Permission {
         val action = "editGradingCheck"
         val currentUser = userMapper.getCurrentUser()
@@ -99,12 +162,57 @@ class GradingChecksPartialPermissions {
             )
         }
 
-        if (edition.startDate.isBefore(LocalDate.now())) {
+//        if (edition.startDate.isBefore(LocalDate.now())) {
+//            return Permission(
+//                action = action,
+//                arguments = arguments,
+//                allow = false,
+//                reason = "Edition has already started"
+//            )
+//        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkRemoveGradingCheckPermission(arguments: JsonNode): Permission {
+        val action = "removeGradingCheck"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already started"
+                reason = "User is not a coordinator"
+            )
+        }
+
+        val gradingCheckId = arguments.getLongField("gradingCheckId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'gradingCheckId'"
+        )
+
+        val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
+            .orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Grading check not found"
+            )
+
+        if (gradingCheck.edition.endDate.isBefore(LocalDate.now())) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition has already ended"
             )
         }
 

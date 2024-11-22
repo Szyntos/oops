@@ -81,11 +81,7 @@ class GradingChecksDataFetcher {
         val gradingCheckPermissions = GradingCheckWithPermissions(
             gradingCheck = gradingCheck,
             permissions = ListPermissionsOutput(
-                canAdd = Permission(
-                    "addGradingCheck",
-                    objectMapper.createObjectNode(),
-                    false,
-                    "Not applicable"),
+                canAdd = permissionService.checkPartialPermission(PermissionInput("addGradingCheck", objectMapper.writeValueAsString(mapOf("editionId" to editionId)))),
                 canEdit = permissionService.checkPartialPermission(PermissionInput("editGradingCheck", objectMapper.writeValueAsString(mapOf("gradingCheckId" to gradingCheck?.gradingCheckId)))),
                 canCopy =
                 Permission(
@@ -93,12 +89,7 @@ class GradingChecksDataFetcher {
                     objectMapper.createObjectNode(),
                     false,
                     "Not applicable"),
-                canRemove =
-                Permission(
-                    "removeGradingCheck",
-                    objectMapper.createObjectNode(),
-                    false,
-                    "Not applicable"),
+                canRemove = permissionService.checkPartialPermission(PermissionInput("removeGradingCheck", objectMapper.writeValueAsString(mapOf("gradingCheckId" to gradingCheck?.gradingCheckId)))),
                 canSelect =
                 Permission(
                     "selectGradingCheck",

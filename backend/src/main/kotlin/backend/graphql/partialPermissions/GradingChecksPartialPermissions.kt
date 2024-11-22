@@ -158,7 +158,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition is already finished"
+                reason = "Edition has already ended"
             )
         }
 

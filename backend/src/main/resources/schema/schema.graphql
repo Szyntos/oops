@@ -384,6 +384,16 @@ type Mutation {
     userId: Int!
   ): Boolean
 
+  overrideComputedGradeForUser(
+    userId: Int!,
+    editionId: Int!,
+    grade: Float!
+  ): UserLevelType
+
+  turnOffOverrideComputedGradeForUser(
+    userId: Int!,
+    editionId: Int!
+  ): UserLevelType
 }
 
 type Query {
@@ -640,9 +650,10 @@ type UserLevelType {
   user: UserType!
   level: LevelType!
   edition: EditionType!
-  end_of_labs_levels_reached: Boolean!,
-  project_points_threshold_reached: Boolean!,
-  computed_grade: Float!
+  endOfLabsLevelsReached: Boolean!,
+  projectPointsThresholdReached: Boolean!,
+  coordinatorOverride: Boolean!,
+  computedGrade: Float!
   label: String!
   userLevelId: ID!
 }

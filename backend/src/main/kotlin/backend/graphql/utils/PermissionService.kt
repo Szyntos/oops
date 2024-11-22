@@ -219,6 +219,8 @@ class PermissionService {
             "markPassingStudentsFromEditionAsInactive" -> usersPermissions.checkMarkPassingStudentsFromEditionAsInactivePermission(jsonArguments)
             "markStudentAsInactive" -> usersPermissions.checkMarkStudentAsInactivePermission(jsonArguments)
             "markStudentAsActive" -> usersPermissions.checkMarkStudentAsActivePermission(jsonArguments)
+            "overrideComputedGradeForUser" -> usersPermissions.checkOverrideComputedGradeForUserPermission(jsonArguments)
+            "turnOffOverrideComputedGradeForUser" -> usersPermissions.checkTurnOffOverrideComputedGradeForUserPermission(jsonArguments)
             "getStudentPoints" -> usersPermissions.checkGetStudentPointsPermission(jsonArguments)
             "getSumOfPointsForStudentByCategory" -> usersPermissions.checkGetSumOfPointsForStudentByCategoryPermission(jsonArguments)
             "getCurrentUser" -> usersPermissions.checkGetCurrentUserPermission(jsonArguments)
@@ -278,6 +280,8 @@ class PermissionService {
             // UsersPermissions
             "removeUser" -> usersPartialPermissions.checkRemoveUserPermission(jsonArguments)
             "editUser" -> usersPartialPermissions.checkEditUserPermission(jsonArguments)
+            "overrideComputedGradeForUser" -> usersPartialPermissions.checkOverrideComputedGradeForUserPermission(jsonArguments)
+            "turnOffOverrideComputedGradeForUser" -> usersPartialPermissions.checkTurnOffOverrideComputedGradeForUserPermission(jsonArguments)
             else -> Permission(
                 action = input.action,
                 arguments = jsonArguments,

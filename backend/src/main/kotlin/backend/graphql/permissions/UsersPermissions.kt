@@ -5,23 +5,35 @@ import backend.files.FileEntityRepository
 import backend.graphql.utils.PhotoAssigner
 import backend.groups.GroupsRepository
 import backend.graphql.utils.Permission
+import backend.graphql.utils.PermissionDeniedException
+import backend.graphql.utils.PermissionInput
+import backend.userLevel.UserLevel
+import backend.userLevel.UserLevelRepository
 import backend.users.UsersRepository
 import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getBooleanField
+import backend.utils.JsonNodeExtensions.getDoubleField
+import backend.utils.JsonNodeExtensions.getFloatField
 import backend.utils.JsonNodeExtensions.getIntField
 import backend.utils.JsonNodeExtensions.getIntList
 import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.JsonNodeExtensions.getStringField
 import backend.utils.UserMapper
 import com.fasterxml.jackson.databind.JsonNode
+import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UsersPermissions {
+    @Autowired
+    private lateinit var userLevelRepository: UserLevelRepository
+
     @Autowired
     private lateinit var usersRepository: UsersRepository
 
@@ -868,6 +880,136 @@ class UsersPermissions {
                 reason = "User is already active"
             )
         }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkOverrideComputedGradeForUserPermission(arguments: JsonNode): Permission {
+        val action = "overrideComputedGradeForUser"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only a coordinator can override computed grade for a user"
+            )
+        }
+
+        val userId = arguments.getLongField("userId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'userId'"
+        )
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+        val grade = arguments.getFloatField("grade") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'grade'"
+        )
+
+        val user = usersRepository.findByUserId(userId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid user ID"
+            )
+
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+        val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User has no user level"
+            )
+        // grade should be 2.0 or 3.0 or 3.5 or 4.0 or 4.5 or 5.0
+        if (grade != 2.0f && grade != 3.0f && grade != 3.5f && grade != 4.0f && grade != 4.5f && grade != 5.0f){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid grade"
+            )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkTurnOffOverrideComputedGradeForUserPermission(arguments: JsonNode): Permission {
+        val action = "turnOffOverrideComputedGradeForUser"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only a coordinator can turn off override for computed grade for a user"
+            )
+        }
+
+        val userId = arguments.getLongField("userId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'userId'"
+        )
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+
+        val user = usersRepository.findByUserId(userId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid user ID"
+            )
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+        val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User has no user level"
+            )
 
         return Permission(
             action = action,

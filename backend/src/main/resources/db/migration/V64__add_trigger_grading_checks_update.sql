@@ -5,6 +5,8 @@ DROP TRIGGER IF EXISTS after_grading_checks_insert_update_delete ON grading_chec
 -- Create or replace the function to update user_level after grading_checks insert, update, or delete
 CREATE OR REPLACE FUNCTION update_user_levels_after_grading_check() RETURNS TRIGGER AS $$
 DECLARE
+    is_coordinator_override BOOLEAN;
+
     v_user_level RECORD;
     v_level_ordinal INT;
     v_level_grade DOUBLE PRECISION;
@@ -51,6 +53,11 @@ BEGIN
         FOR v_user_level IN
             SELECT * FROM user_level ul WHERE ul.edition_id = v_edition_id
             LOOP
+
+                SELECT ul.coordinator_override INTO is_coordinator_override
+                FROM user_level ul
+                WHERE ul.user_id = v_user_level.user_id;
+
                 -- Get user's level ordinal_number and grade
                 SELECT lvl.ordinal_number, lvl.grade
                 INTO v_level_ordinal, v_level_grade
@@ -125,9 +132,11 @@ BEGIN
                 END IF;
 
                 -- Update computed_grade in user_level
-                UPDATE user_level SET
-                    computed_grade = v_computed_grade
-                WHERE user_id = v_user_level.user_id AND edition_id = v_user_level.edition_id;
+                IF NOT is_coordinator_override THEN
+                    UPDATE user_level SET
+                        computed_grade = v_computed_grade
+                    WHERE user_id = v_user_level.user_id AND edition_id = v_user_level.edition_id;
+                END IF;
             END LOOP;
 
         RETURN NEW;

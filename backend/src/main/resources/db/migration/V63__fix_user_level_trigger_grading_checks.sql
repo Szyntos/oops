@@ -1,3 +1,6 @@
+ALTER TABLE user_level
+    ADD COLUMN coordinator_override BOOLEAN NOT NULL DEFAULT FALSE;
+
 -- Drop the existing trigger if it exists
 DO $$
     BEGIN
@@ -21,6 +24,8 @@ DECLARE
     user_label VARCHAR(256);
     current_user_id BIGINT;
     current_subcategory_id BIGINT;
+
+    is_coordinator_override BOOLEAN;
 
     v_level_ordinal INT;
     v_level_grade DOUBLE PRECISION;
@@ -131,6 +136,10 @@ BEGIN
     FROM user_level ul
     WHERE ul.user_id = current_user_id AND ul.edition_id = new_edition_id;
 
+    SELECT ul.coordinator_override INTO is_coordinator_override
+    FROM user_level ul
+    WHERE ul.user_id = current_user_id;
+
     -- Get user's level ordinal_number and grade
     SELECT lvl.ordinal_number, lvl.grade
     INTO v_level_ordinal, v_level_grade
@@ -211,9 +220,12 @@ BEGIN
     END IF;
 
     -- Update computed_grade in user_level
-    UPDATE user_level SET
-        computed_grade = v_computed_grade
-    WHERE user_id = current_user_id AND edition_id = new_edition_id;
+    IF NOT is_coordinator_override THEN
+        UPDATE user_level SET
+            computed_grade = v_computed_grade
+        WHERE user_id = current_user_id AND edition_id = new_edition_id;
+    END IF;
+
 
     RETURN NEW;
 END;

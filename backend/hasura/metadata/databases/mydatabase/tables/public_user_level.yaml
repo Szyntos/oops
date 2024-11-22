@@ -16,6 +16,7 @@ select_permissions:
     permission:
       columns:
         - computed_grade
+        - coordinator_override
         - edition_id
         - end_of_labs_levels_reached
         - label
@@ -29,6 +30,7 @@ select_permissions:
     permission:
       columns:
         - computed_grade
+        - coordinator_override
         - edition_id
         - end_of_labs_levels_reached
         - level_id
@@ -42,14 +44,15 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - computed_grade
+        - coordinator_override
         - edition_id
+        - end_of_labs_levels_reached
+        - label
         - level_id
+        - project_points_threshold_reached
         - user_id
         - user_level_id
-        - end_of_labs_levels_reached
-        - project_points_threshold_reached
-        - label
-        - computed_grade
       filter:
         edition:
           groups:

@@ -50,13 +50,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setEditions(user.editions);
       if (user.editions.length > 0) {
-        const activeEdtion = user.editions.filter((e) => isEditionActive(e))[0];
-        setSelectedEdition(activeEdtion ? activeEdtion : user.editions[0]);
+        const activeEdition = user.editions.filter((e) =>
+          isEditionActive(e),
+        )[0];
+        setSelectedEdition(activeEdition ? activeEdition : user.editions[0]);
       } else {
         setSelectedEdition(undefined);
       }
     }
-  }, [user, selectedEdition]);
+  }, [user]);
 
   return (
     <UserContext.Provider

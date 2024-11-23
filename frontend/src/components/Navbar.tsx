@@ -10,6 +10,8 @@ import { useChests } from "../hooks/chest/useChests";
 import { Dialog } from "@mui/material";
 import { CloseHeader } from "./dialogs/CloseHeader";
 import { OpenChest } from "./OpenChest";
+import { Settings } from "./Settings/Settings";
+import { useEffect, useState } from "react";
 
 export const NAV_BAR_HEIGHT = 52;
 
@@ -20,6 +22,8 @@ export const Navbar = () => {
   const { logout } = useLogin();
   const location = useLocation();
 
+  const { editions, setSelectedEdition } = useUser();
+
   const {
     chestsToOpen,
     isChestDialogOpen,
@@ -28,6 +32,23 @@ export const Navbar = () => {
     handleOpenChestConfirm,
     chestError,
   } = useChests();
+
+  const [AreSettingsOpen, setAreSettingsOpen] = useState(false);
+  const openSettings = () => {
+    setAreSettingsOpen(true);
+  };
+  const closeSettings = () => {
+    setAreSettingsOpen(false);
+  };
+
+  const handleChangeEditionConfirm = async (editionId: string) => {
+    const e = editions.find((ee) => ee.editionId === editionId);
+    setSelectedEdition(e);
+  };
+
+  useEffect(() => {
+    console.log(selectedEdition);
+  }, [selectedEdition]);
 
   return (
     <div style={styles.container}>
@@ -64,9 +85,14 @@ export const Navbar = () => {
       )}
 
       {user.role !== UsersRolesType.UnauthenticatedUser && (
-        <div onClick={async () => await logout()} style={styles.navbarItem}>
-          Logout
-        </div>
+        <>
+          <div onClick={async () => await logout()} style={styles.navbarItem}>
+            Logout
+          </div>
+          <div onClick={openSettings} style={styles.navbarItem}>
+            settings
+          </div>
+        </>
       )}
 
       <Dialog open={isChestDialogOpen}>
@@ -75,6 +101,14 @@ export const Navbar = () => {
           chest={chestsToOpen[0]}
           handleOpenChestClick={handleOpenChestConfirm}
           chestError={chestError}
+        />
+      </Dialog>
+
+      <Dialog open={AreSettingsOpen}>
+        <CloseHeader onCloseClick={closeSettings} />
+        <Settings
+          editions={editions}
+          handleChangeEditionConfirm={handleChangeEditionConfirm}
         />
       </Dialog>
     </div>

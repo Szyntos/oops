@@ -1,4 +1,4 @@
-import { Edition } from "../../hooks/Editions/useEditionScreen";
+import { Edition } from "../../contexts/userContext";
 import { Styles } from "../../utils/Styles";
 import { ChangeEditionForm } from "./ChangeEditionForm";
 

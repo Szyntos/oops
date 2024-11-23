@@ -8,7 +8,6 @@ import {
 } from "react";
 import { defaultUnauthenticatedUser } from "../utils/types";
 import Cookies from "js-cookie";
-import { Edition } from "../hooks/common/useGroupsData";
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
 import { isEditionActive } from "../utils/utils";
 
@@ -17,6 +16,15 @@ export type User = {
   role: UsersRolesType;
   userId: string;
   editions: Edition[];
+};
+
+export type Edition = {
+  editionId: string;
+  editionYear: number;
+  label: string;
+  name: string;
+  startDate: string;
+  endDate: string;
 };
 
 type UserContextType = {

@@ -1,7 +1,7 @@
 import { z, ZodError } from "zod";
 import { FormikErrors, useFormik } from "formik";
 import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
-import { Edition } from "../../screens/Editions/EditionsScreen";
+import { Edition } from "../../contexts/userContext";
 
 const ValidationSchema = z.object({
   editionId: z.string().min(1),

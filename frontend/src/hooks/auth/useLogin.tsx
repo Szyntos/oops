@@ -10,6 +10,7 @@ import { useUser } from "../common/useUser";
 import { useApolloClient } from "@apollo/client";
 import { UserFromList } from "../../components/Welcome/UsersListWithFilter/UsersListWithFilter";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { useResetPasswordByEmailMutation } from "../../graphql/resetPasswordByEmail.graphql.types";
 
 export const cookiesStrings = {
   token: "token",
@@ -25,6 +26,19 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const { setUser } = useUser();
   const apolloClient = useApolloClient();
+  const [resetPasswordByEmail] = useResetPasswordByEmailMutation();
+  const resetPassword = async (userEmail: string) => {
+    const { errors } = await resetPasswordByEmail({
+      variables: {
+        email: userEmail,
+      },
+    });
+
+    if (errors) {
+      await logout();
+      throw new Error(errors[0]?.message ?? "Error reseting password.");
+    }
+  };
 
   const [fetchCurrentUser] = useCurrentUserLazyQuery();
 
@@ -152,5 +166,6 @@ export const useLogin = () => {
     loginWithUserSelect,
     loginWithCredentials,
     logout,
+    resetPassword,
   };
 };

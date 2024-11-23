@@ -25,7 +25,7 @@ export const useGroupScreenData = (
     useGroupTableData(groupId);
 
   const {
-    addChestCategories,
+    addPointsCategories,
     loading: formDataLoading,
     error: formDataError,
   } = useFormCategories();
@@ -136,7 +136,7 @@ export const useGroupScreenData = (
     openStudent,
     closeStudent,
 
-    addChestCategories,
+    addPointsCategories,
     handleAddPointsConfirmation,
 
     handleAddPointsToGroup,

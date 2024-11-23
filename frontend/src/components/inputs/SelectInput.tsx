@@ -27,7 +27,7 @@ export const SelectInput = ({
   name,
   label,
   optionItems,
-  withEmpty = false,
+  withEmpty = true,
   disabled,
 }: SelectInputProps) => {
   return (

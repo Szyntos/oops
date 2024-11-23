@@ -77,6 +77,7 @@ export const Group = () => {
         categories={categories}
         handleStudentClick={hasEditableRights ? openStudent : () => {}}
         handleSubcategoryClick={hasEditableRights ? openSubcategory : () => {}}
+        editable={!disableEditMode}
       />
 
       <Dialog open={isStudentOpen}>

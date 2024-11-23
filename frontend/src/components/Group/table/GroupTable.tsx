@@ -18,12 +18,14 @@ type GroupTableProps = {
   rows: GroupTableRow[];
   handleStudentClick: (student: Student) => void;
   handleSubcategoryClick: (subcategory: Subcategory) => void;
+  editable: boolean;
 };
 
 export const GroupTable = ({
   rows,
   handleStudentClick,
   handleSubcategoryClick,
+  editable,
 }: GroupTableProps) => {
   const darkTheme = createTheme({
     palette: {
@@ -113,7 +115,7 @@ export const GroupTable = ({
                 <TableCell
                   key={index}
                   onClick={() => {
-                    if (entry.subcategory) {
+                    if (entry.subcategory && editable) {
                       handleSubcategoryClick(entry.subcategory);
                     }
                   }}
@@ -133,7 +135,11 @@ export const GroupTable = ({
               <TableRow key={row.student.id}>
                 <TableCell
                   style={styles.regularStudentCell}
-                  onClick={() => handleStudentClick(row.student)}
+                  onClick={() => {
+                    if (editable) {
+                      handleStudentClick(row.student);
+                    }
+                  }}
                 >
                   {index + 1}. {row.student.fullName}
                 </TableCell>

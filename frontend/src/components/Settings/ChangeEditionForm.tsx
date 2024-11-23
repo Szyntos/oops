@@ -2,6 +2,7 @@ import { z, ZodError } from "zod";
 import { FormikErrors, useFormik } from "formik";
 import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { Edition } from "../../contexts/userContext";
+import { Styles } from "../../utils/Styles";
 
 const ValidationSchema = z.object({
   editionId: z.string().min(1),
@@ -43,8 +44,8 @@ export const ChangeEditionForm = ({
   });
 
   return (
-    <div>
-      <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={formik.handleSubmit}>
+      <div style={styles.container}>
         <FormControl fullWidth>
           <InputLabel>Edition</InputLabel>
           <Select
@@ -66,7 +67,14 @@ export const ChangeEditionForm = ({
           )}
         </FormControl>
         <button type="submit">confirm</button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
+};
+
+const styles: Styles = {
+  container: {
+    display: "flex",
+    gap: 4,
+  },
 };

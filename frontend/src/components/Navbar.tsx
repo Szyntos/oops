@@ -11,7 +11,7 @@ import { Dialog } from "@mui/material";
 import { CloseHeader } from "./dialogs/CloseHeader";
 import { OpenChest } from "./OpenChest";
 import { Settings } from "./Settings/Settings";
-import { useEffect, useState } from "react";
+import { useSettings } from "../hooks/useSettings";
 
 export const NAV_BAR_HEIGHT = 52;
 
@@ -22,8 +22,6 @@ export const Navbar = () => {
   const { logout } = useLogin();
   const location = useLocation();
 
-  const { editions, setSelectedEdition } = useUser();
-
   const {
     chestsToOpen,
     isChestDialogOpen,
@@ -33,22 +31,13 @@ export const Navbar = () => {
     chestError,
   } = useChests();
 
-  const [AreSettingsOpen, setAreSettingsOpen] = useState(false);
-  const openSettings = () => {
-    setAreSettingsOpen(true);
-  };
-  const closeSettings = () => {
-    setAreSettingsOpen(false);
-  };
-
-  const handleChangeEditionConfirm = async (editionId: string) => {
-    const e = editions.find((ee) => ee.editionId === editionId);
-    setSelectedEdition(e);
-  };
-
-  useEffect(() => {
-    console.log(selectedEdition);
-  }, [selectedEdition]);
+  const {
+    editions,
+    AreSettingsOpen,
+    openSettings,
+    closeSettings,
+    handleChangeEditionConfirm,
+  } = useSettings();
 
   return (
     <div style={styles.container}>

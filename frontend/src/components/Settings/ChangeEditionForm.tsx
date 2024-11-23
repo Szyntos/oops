@@ -2,7 +2,6 @@ import { z, ZodError } from "zod";
 import { FormikErrors, useFormik } from "formik";
 import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { Edition } from "../../screens/Editions/EditionsScreen";
-import { Styles } from "../../utils/Styles";
 
 const ValidationSchema = z.object({
   editionId: z.string().min(1),
@@ -10,9 +9,8 @@ const ValidationSchema = z.object({
 
 export type ChangeEditionFormValues = z.infer<typeof ValidationSchema>;
 
-type AddAwardFormProps = {
+type ChangeEditionFormProps = {
   handleConfirm: (editionId: string) => void;
-  formError?: string;
   editions: Edition[];
   initialValues?: ChangeEditionFormValues;
 };
@@ -23,10 +21,9 @@ const defaultInitialValues: ChangeEditionFormValues = {
 
 export const ChangeEditionForm = ({
   handleConfirm,
-  formError,
   editions,
   initialValues = defaultInitialValues,
-}: AddAwardFormProps) => {
+}: ChangeEditionFormProps) => {
   const formik = useFormik({
     initialValues,
     validate: (values: ChangeEditionFormValues) => {
@@ -70,18 +67,6 @@ export const ChangeEditionForm = ({
         </FormControl>
         <button type="submit">confirm</button>
       </form>
-      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    width: 500,
-  },
-  error: { color: "red" },
 };

@@ -12,15 +12,6 @@ export type Group = {
   imageId?: string;
 };
 
-export type Edition = {
-  editionId: string;
-  editionYear: number;
-  label: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-};
-
 export type Weekday = {
   id: string;
   name: string;

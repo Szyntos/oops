@@ -10,6 +10,8 @@ import { useChests } from "../hooks/chest/useChests";
 import { Dialog } from "@mui/material";
 import { CloseHeader } from "./dialogs/CloseHeader";
 import { OpenChest } from "./OpenChest";
+import { Settings } from "./Settings/Settings";
+import { useSettings } from "../hooks/useSettings";
 
 export const NAV_BAR_HEIGHT = 52;
 
@@ -28,6 +30,14 @@ export const Navbar = () => {
     handleOpenChestConfirm,
     chestError,
   } = useChests();
+
+  const {
+    editions,
+    AreSettingsOpen,
+    openSettings,
+    closeSettings,
+    handleChangeEditionConfirm,
+  } = useSettings();
 
   return (
     <div style={styles.container}>
@@ -64,9 +74,14 @@ export const Navbar = () => {
       )}
 
       {user.role !== UsersRolesType.UnauthenticatedUser && (
-        <div onClick={async () => await logout()} style={styles.navbarItem}>
-          Logout
-        </div>
+        <>
+          <div onClick={async () => await logout()} style={styles.navbarItem}>
+            Logout
+          </div>
+          <div onClick={openSettings} style={styles.navbarItem}>
+            settings
+          </div>
+        </>
       )}
 
       <Dialog open={isChestDialogOpen}>
@@ -75,6 +90,14 @@ export const Navbar = () => {
           chest={chestsToOpen[0]}
           handleOpenChestClick={handleOpenChestConfirm}
           chestError={chestError}
+        />
+      </Dialog>
+
+      <Dialog open={AreSettingsOpen}>
+        <CloseHeader onCloseClick={closeSettings} />
+        <Settings
+          editions={editions}
+          handleChangeEditionConfirm={handleChangeEditionConfirm}
         />
       </Dialog>
     </div>

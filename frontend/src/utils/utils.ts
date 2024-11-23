@@ -16,6 +16,7 @@ export type Subcategory = {
   id: string;
   name: string;
   maxPoints: number;
+  categoryId: number;
 };
 
 export const hasRole = (user: User, allowedRoles: UsersRolesType[]) => {

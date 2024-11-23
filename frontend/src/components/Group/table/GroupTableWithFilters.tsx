@@ -3,11 +3,7 @@ import FilterMenu from "./FilterMenu";
 import { useState } from "react";
 import { GroupTable } from "./GroupTable";
 import { Category, Subcategory } from "../../../utils/utils";
-import {
-  GroupTableRow,
-  Student,
-  SubcategoryPointsEntry,
-} from "../../../hooks/Group/useGroupTableData";
+import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
 
 type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
@@ -24,31 +20,18 @@ export const GroupTableWithFilters = ({
 }: GroupTableWithFiltersProps) => {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
 
-  const isCategorySelected = (category: Category) => {
-    return selectedCategoryIds.some((categoryId) => categoryId === category.id);
-  };
-
-  const arePointsSelected = (points: SubcategoryPointsEntry) => {
-    return selectedCategoryIds.some(
-      (categoryId) => categoryId === points.categoryId,
-    );
-  };
-
   const applyFilters = selectedCategoryIds.length !== 0;
 
-  const subcategoriesToDisplay = (
-    applyFilters ? categories.filter(isCategorySelected) : categories
-  )
-    .map((category) => category.subcategories)
-    .flat();
-
   const rowsToDisplay: GroupTableRow[] = rows.map((row) => {
-    return {
-      ...row,
-      subcategories: applyFilters
-        ? row.subcategories.filter(arePointsSelected)
-        : row.subcategories,
+    const filteredRow: GroupTableRow = {
+      student: row.student,
+      categories: applyFilters
+        ? row.categories.filter((c) =>
+            selectedCategoryIds.some((id) => id === c.categoryId),
+          )
+        : row.categories,
     };
+    return filteredRow;
   });
 
   return (
@@ -64,7 +47,6 @@ export const GroupTableWithFilters = ({
       />
       <GroupTable
         rows={rowsToDisplay}
-        subcategories={subcategoriesToDisplay}
         handleStudentClick={handleStudentClick}
         handleSubcategoryClick={handleSubcategoryClick}
       />

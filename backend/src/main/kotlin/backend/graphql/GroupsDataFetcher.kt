@@ -660,14 +660,14 @@ class GroupsDataFetcher {
         return users.map { user ->
             UserPointsType(
                 user = user,
-                categoriesPoints = categories.map { category ->
+                categoriesPoints = categories.filter { it.canAddPoints }.map { category ->
                     val categoryPurePoints = purePointsByUserAndCategory[user.userId]?.get(category.categoryId) ?: emptyList()
                     val categoryBonuses = bonusesByUserAndCategory[user.userId]?.get(category.categoryId) ?: emptyList()
                     val awardTypes = allAvailableAwards.filter { it.category == category }
 
                     CategoryPointsType(
                         category = category,
-                        subcategoryPoints = subcategories.filter { it.category == category }.map { subcategory ->
+                        subcategoryPoints = subcategories.filter { it.category == category }.sortedBy{ it.ordinalNumber }.map { subcategory ->
                             val subcategoryPurePoints = categoryPurePoints.firstOrNull { it.subcategory == subcategory }
                             SubcategoryPointsGroupType(
                                 subcategory = subcategory,
@@ -697,7 +697,7 @@ class GroupsDataFetcher {
                             )
                         }
                     )
-                }
+                }.sortedBy { it.category.categoryId }
             )
         }
     }

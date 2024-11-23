@@ -35,18 +35,18 @@ export const useLogin = () => {
     const { data, error } = await fetchCurrentUser();
     const user: User | undefined = data?.getCurrentUser
       ? {
-          nick: data?.getCurrentUser.nick,
-          role: data?.getCurrentUser.role.toUpperCase() as UsersRolesType,
-          userId: data?.getCurrentUser.userId,
+          nick: data?.getCurrentUser.user.nick,
+          role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
+          userId: data?.getCurrentUser.user.userId,
           editions:
-            data?.getCurrentUser.userGroups.map((group) => {
+            data?.getCurrentUser.editions.map((edition) => {
               return {
-                name: group?.group.edition.editionName as string,
-                editionId: group?.group.edition.editionId as string,
-                editionYear: group?.group.edition.editionYear as number,
-                endDate: group?.group.edition.endDate as string,
-                label: group?.group.edition.label as string,
-                startDate: group?.group.edition.startDate as string,
+                name: edition?.editionName as string,
+                editionId: edition?.editionId as string,
+                editionYear: edition?.editionYear as number,
+                endDate: edition?.endDate as string,
+                label: edition?.label as string,
+                startDate: edition?.startDate as string,
               };
             }) ?? [],
         }
@@ -82,18 +82,18 @@ export const useLogin = () => {
     const { data, error } = await fetchCurrentUser();
     const user: User | undefined = data?.getCurrentUser
       ? {
-          nick: data?.getCurrentUser.nick,
-          role: data?.getCurrentUser.role.toUpperCase() as UsersRolesType,
-          userId: data?.getCurrentUser.userId,
+          nick: data?.getCurrentUser.user.nick,
+          role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
+          userId: data?.getCurrentUser.user.userId,
           editions:
-            data?.getCurrentUser.userGroups.map((group) => {
+            data?.getCurrentUser.editions.map((edition) => {
               return {
-                name: group?.group.edition.editionName as string,
-                editionId: group?.group.edition.editionId as string,
-                editionYear: group?.group.edition.editionYear as number,
-                endDate: group?.group.edition.endDate as string,
-                label: group?.group.edition.label as string,
-                startDate: group?.group.edition.startDate as string,
+                name: edition?.editionName as string,
+                editionId: edition?.editionId as string,
+                editionYear: edition?.editionYear as number,
+                endDate: edition?.endDate as string,
+                label: edition?.label as string,
+                startDate: edition?.startDate as string,
               };
             }) ?? [],
         }

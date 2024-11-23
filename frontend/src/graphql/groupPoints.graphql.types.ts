@@ -40,7 +40,7 @@ export type GroupPointsQuery = {
       }>;
       awardAggregate: Array<{
         __typename?: "AwardAggregateType";
-        sumOfAll: number;
+        sumOfAll?: number | null;
         award: { __typename?: "AwardType"; awardId: string; awardName: string };
       }>;
       categoryAggregate: {

@@ -31,7 +31,7 @@ export type SubcategoryPointsEntry = {
 };
 
 export type AwardsPointsEntry = {
-  value: number;
+  value: number | undefined;
   name: string;
 };
 
@@ -95,7 +95,7 @@ export const useGroupTableData = (groupId: number | undefined) => {
 
           const awards: AwardsPointsEntry[] =
             catPoints.awardAggregate.map((a) => ({
-              value: a.sumOfAll,
+              value: a.sumOfAll ?? undefined,
               name: a.award.awardName,
             })) ?? [];
 

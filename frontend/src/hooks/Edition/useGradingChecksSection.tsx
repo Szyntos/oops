@@ -101,7 +101,7 @@ export const useGradingChecksSection = (editionId: number) => {
   return {
     gradingChecks,
     formCategories: selectedCategories,
-    formLevelSet: selectedLevelSet,
+    formLevels: selectedLevelSet ? selectedLevelSet.levelSet.levels : [],
     loading: loading || categoriesLoading || levelsLoading,
     error: error || categoriesError || levelsError,
 

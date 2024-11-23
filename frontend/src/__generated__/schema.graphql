@@ -276,7 +276,7 @@ input AwardAggregateOrderBy {
 
 type AwardAggregateType {
   award: AwardType!
-  sumOfAll: Float!
+  sumOfAll: Float
 }
 
 """

@@ -19,6 +19,8 @@ import { GroupsSection } from "../components/Edition/Sections/GroupSection/Group
 import { UsersSection } from "../components/Edition/Sections/UsersSection/UsersSection";
 import { GradingChecksSection } from "../components/Edition/Sections/GradingChecksSection/GradingChecksSection";
 import { ChestsSection } from "../components/Edition/Sections/ChestsSection/ChestsSection";
+import { AvatarAndNickScreen } from "../screens/AvatarAndNick/AvatarAndNickScreen";
+import { LoginScreen } from "../screens/Login/LoginScreen";
 
 const commonPaths = pathsWithParameters.common;
 const studentPaths = pathsWithParameters.student;
@@ -31,6 +33,7 @@ export const routes = createBrowserRouter([
     element: <Root />,
     children: [
       {
+        //TODO: in the future this should lead to LoginScreen
         path: commonPaths.Default.path,
         element: <Welcome />,
         index: true,
@@ -45,10 +48,28 @@ export const routes = createBrowserRouter([
         ),
       },
       {
+        path: commonPaths.Login.path,
+        element: (
+          <ProtectedRoute
+            element={<LoginScreen />}
+            allowedRoles={commonPaths.Login.allowedRoles}
+          />
+        ),
+      },
+      {
         path: studentPaths.StudentProfile.path,
         element: (
           <ProtectedRoute
             element={<StudentProfile />}
+            allowedRoles={studentPaths.StudentProfile.allowedRoles}
+          />
+        ),
+      },
+      {
+        path: studentPaths.ChoosingAvatarAndNick.path,
+        element: (
+          <ProtectedRoute
+            element={<AvatarAndNickScreen />}
             allowedRoles={studentPaths.StudentProfile.allowedRoles}
           />
         ),

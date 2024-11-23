@@ -12,6 +12,8 @@ export type CurrentUserQuery = {
     nick: string;
     role: Types.UsersRolesType;
     userId: string;
+    avatarSetByUser: boolean;
+    nickSetByUser: boolean;
     userGroups: Array<{
       __typename?: "UserGroupType";
       group: {
@@ -36,6 +38,8 @@ export const CurrentUserDocument = gql`
       nick
       role
       userId
+      avatarSetByUser
+      nickSetByUser
       userGroups {
         group {
           edition {

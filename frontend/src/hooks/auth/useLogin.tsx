@@ -52,6 +52,8 @@ export const useLogin = () => {
           nick: data?.getCurrentUser.nick,
           role: data?.getCurrentUser.role.toUpperCase() as UsersRolesType,
           userId: data?.getCurrentUser.userId,
+          avatarSetByUser: data?.getCurrentUser.avatarSetByUser,
+          nickSetByUser: data?.getCurrentUser.nickSetByUser,
           editions:
             data?.getCurrentUser.userGroups.map((group) => {
               return {
@@ -99,6 +101,8 @@ export const useLogin = () => {
           nick: data?.getCurrentUser.nick,
           role: data?.getCurrentUser.role.toUpperCase() as UsersRolesType,
           userId: data?.getCurrentUser.userId,
+          avatarSetByUser: data?.getCurrentUser.avatarSetByUser,
+          nickSetByUser: data?.getCurrentUser.nickSetByUser,
           editions:
             data?.getCurrentUser.userGroups.map((group) => {
               return {
@@ -121,7 +125,11 @@ export const useLogin = () => {
     // set cookie user
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
     setUser(user);
-    navigateToStartScreen(user);
+    if (user.avatarSetByUser && user.nickSetByUser) {
+      navigateToStartScreen(user);
+    } else {
+      navigateToChoosingAvatarAndNickScreen(user);
+    }
   };
 
   const getFirebaseToken = async (credentials: LoginCredentials) => {
@@ -146,6 +154,20 @@ export const useLogin = () => {
         break;
       case UsersRolesType.Student:
         navigate(pathsGenerator.student.StudentProfile);
+        break;
+      default:
+        throw new Error("should never happen.");
+    }
+  };
+
+  const navigateToChoosingAvatarAndNickScreen = (user: User) => {
+    switch (user.role) {
+      case UsersRolesType.Coordinator:
+      case UsersRolesType.Teacher:
+        navigate(pathsGenerator.teacher.Groups);
+        break;
+      case UsersRolesType.Student:
+        navigate(pathsGenerator.student.ChoosingAvatarAndNick);
         break;
       default:
         throw new Error("should never happen.");

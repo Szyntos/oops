@@ -27,11 +27,24 @@ const commonPaths = {
       UsersRolesType.Coordinator,
     ],
   },
+  Login: {
+    path: "/login",
+    allowedRoles: [
+      UsersRolesType.UnauthenticatedUser,
+      UsersRolesType.Student,
+      UsersRolesType.Teacher,
+      UsersRolesType.Coordinator,
+    ],
+  },
 };
 
 const studentPaths = {
   StudentProfile: {
     path: "/student-profile",
+    allowedRoles: [UsersRolesType.Student],
+  },
+  ChoosingAvatarAndNick: {
+    path: "/avatar-and-nick",
     allowedRoles: [UsersRolesType.Student],
   },
 };

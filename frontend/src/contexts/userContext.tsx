@@ -17,6 +17,8 @@ export type User = {
   role: UsersRolesType;
   userId: string;
   editions: Edition[];
+  avatarSetByUser: boolean;
+  nickSetByUser: boolean;
 };
 
 type UserContextType = {

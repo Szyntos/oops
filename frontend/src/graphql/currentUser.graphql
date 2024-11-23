@@ -3,6 +3,8 @@ query CurrentUser {
     nick
     role
     userId
+    avatarSetByUser
+    nickSetByUser
     userGroups {
       group {
         edition {

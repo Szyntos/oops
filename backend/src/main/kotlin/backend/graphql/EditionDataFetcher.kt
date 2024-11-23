@@ -3,14 +3,17 @@ package backend.graphql
 import backend.award.AwardRepository
 import backend.awardEdition.AwardEditionRepository
 import backend.bonuses.BonusesRepository
+import backend.categories.Categories
 import backend.categories.CategoriesRepository
 import backend.chests.ChestsRepository
 import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.gradingChecks.GradingChecks
 import backend.gradingChecks.GradingChecksRepository
 import backend.graphql.utils.*
 import backend.groups.GroupsRepository
+import backend.levels.Levels
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
@@ -307,6 +310,23 @@ class EditionDataFetcher {
 
         chests.forEach {
             chestEditionDataFetcher.addChestToEditionHelper(it.chestId, resultEdition.editionId)
+        }
+
+        val gradingCheck = gradingChecksRepository.findByEdition(edition).getOrNull()
+
+        if (gradingCheck != null){
+            val newEndOfLabsDate = gradingCheck.endOfLabsDate.withYear(
+                editionYear + gradingCheck.endOfLabsDate.year - edition.editionYear
+            )
+
+            val newGradingCheck = GradingChecks(
+                endOfLabsDate = newEndOfLabsDate,
+                endOfLabsLevelsThreshold = gradingCheck.endOfLabsLevelsThreshold,
+                projectPointsThreshold = gradingCheck.projectPointsThreshold,
+                project = gradingCheck.project,
+                edition = resultEdition
+            )
+            gradingChecksRepository.save(newGradingCheck)
         }
 
         return resultEdition

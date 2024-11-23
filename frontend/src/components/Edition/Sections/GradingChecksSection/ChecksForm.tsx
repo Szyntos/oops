@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { Styles } from "../../../../utils/Styles";
 import { Category } from "../../../../hooks/Edition/categories/useCategoriesSection";
-import { LevelSet } from "../../../../hooks/Edition/useLevelSetsSection";
+import { Level } from "../../../../hooks/Edition/useLevelSetsSection";
 
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // 'YYYY-MM-DD'
 
@@ -28,7 +28,7 @@ export type GradingChecksFormValues = z.infer<typeof ValidationSchema>;
 type GradingChecksFormProps = {
   handleConfirm: (values: GradingChecksFormValues) => void;
   formError?: string;
-  levelSet: LevelSet;
+  levels: Level[];
   initialValues?: GradingChecksFormValues;
   title: string;
   categories: Category[];
@@ -43,7 +43,7 @@ const defaultInitialValues: GradingChecksFormValues = {
 
 export const ChecksForm = ({
   handleConfirm,
-  levelSet,
+  levels,
   formError,
   initialValues = defaultInitialValues,
   title,
@@ -100,7 +100,7 @@ export const ChecksForm = ({
                   formik.errors.endOfLabsLevelsThreshold,
               )}
             >
-              {levelSet.levelSet.levels.map((level) => (
+              {levels.map((level) => (
                 <MenuItem key={level.levelName} value={level.levelId}>
                   {level.levelName}
                 </MenuItem>

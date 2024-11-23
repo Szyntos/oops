@@ -16,14 +16,12 @@ import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 
 type GroupTableProps = {
   rows: GroupTableRow[];
-  subcategories: Subcategory[];
   handleStudentClick: (student: Student) => void;
   handleSubcategoryClick: (subcategory: Subcategory) => void;
 };
 
 export const GroupTable = ({
   rows,
-  subcategories,
   handleStudentClick,
   handleSubcategoryClick,
 }: GroupTableProps) => {
@@ -33,6 +31,77 @@ export const GroupTable = ({
     },
   });
 
+  // order: subcategories, pure points sum, awards, bonus points sum
+  const getRowValues = (row: GroupTableRow) => {
+    // add subcategories, awards and sums
+    const values: (number | undefined)[] = [];
+    for (const category of row.categories) {
+      for (const subcategory of category.subcategories) {
+        values.push(subcategory.pure);
+      }
+      values.push(category.sums.sumOfPurePoints);
+      for (const award of category.awards) {
+        values.push(award.value);
+      }
+      values.push(category.sums.sumOfBonuses);
+    }
+    // add aggregate values
+    const sums = getOverallSumValues(row);
+    values.push(sums.purePointsSum);
+    values.push(sums.bonusesSum);
+    values.push(sums.overallSum);
+    return values;
+  };
+
+  const getOverallSumValues = (
+    row: GroupTableRow,
+  ): { purePointsSum: number; bonusesSum: number; overallSum: number } => {
+    let purePointsSum = 0;
+    let bonusesSum = 0;
+    let overallSum = 0;
+    for (const category of row.categories) {
+      purePointsSum += category.sums.sumOfPurePoints;
+      bonusesSum += category.sums.sumOfBonuses;
+      overallSum += category.sums.sumOfAll;
+    }
+    return { purePointsSum, bonusesSum, overallSum };
+  };
+
+  const getHeaderNames = () => {
+    const headers: {
+      name: string;
+      subcategory?: Subcategory;
+      color?: string;
+    }[] = [];
+    // add subcategories, awards and sums
+    if (rows.length > 0) {
+      const row = rows[0];
+      for (const category of row.categories) {
+        for (const subcategory of category.subcategories) {
+          headers.push({
+            name: subcategory.subcategoryName,
+            subcategory: {
+              name: subcategory.subcategoryName,
+              id: subcategory.subcategoryId,
+              maxPoints: subcategory.maxPoints,
+              categoryId: parseInt(subcategory.categoryId),
+            },
+          });
+        }
+        headers.push({ name: "sum of pure points", color: "blue" });
+        for (const award of category.awards) {
+          headers.push({ name: award.name });
+        }
+        headers.push({ name: "sum of bonuses", color: "blue" });
+      }
+    }
+    // add aggregate values
+    headers.push({ name: "overall pure points", color: "blue" });
+    headers.push({ name: "overall bonuses", color: "blue" });
+    headers.push({ name: "overall", color: "blue" });
+    return headers;
+  };
+
   return (
     <ThemeProvider theme={darkTheme}>
       <TableContainer component={Paper} sx={{ maxHeight: 560 }}>
@@ -40,13 +109,20 @@ export const GroupTable = ({
           <TableHead>
             <TableRow>
               <TableCell style={styles.headerStudentCell}>Student</TableCell>
-              {subcategories.map((subcategory) => (
+              {getHeaderNames().map((entry, index) => (
                 <TableCell
-                  key={subcategory.id}
-                  onClick={() => handleSubcategoryClick(subcategory)}
-                  style={styles.headerCell}
+                  key={index}
+                  onClick={() => {
+                    if (entry.subcategory) {
+                      handleSubcategoryClick(entry.subcategory);
+                    }
+                  }}
+                  style={{
+                    ...styles.headerCell,
+                    color: entry.color,
+                  }}
                 >
-                  {subcategory.name}
+                  {entry.name}
                 </TableCell>
               ))}
             </TableRow>
@@ -61,11 +137,9 @@ export const GroupTable = ({
                 >
                   {index + 1}. {row.student.fullName}
                 </TableCell>
-                {row.subcategories.map((subcategory) => (
-                  <TableCell
-                    key={`${row.student.id}-${subcategory.subcategoryId}`}
-                  >
-                    {subcategory.pure ?? EMPTY_FIELD_STRING}
+                {getRowValues(row).map((value, index) => (
+                  <TableCell key={`${index}`}>
+                    {value?.toFixed(2) ?? EMPTY_FIELD_STRING}
                   </TableCell>
                 ))}
               </TableRow>

@@ -11,6 +11,32 @@ query Files($paths: [String!]!) {
         pathToFile
         updatedAt
       }
+      permissions {
+        canAdd {
+          allow
+          reason
+        }
+        canCopy {
+          allow
+          reason
+        }
+        canEdit {
+          allow
+          reason
+        }
+        canRemove {
+          allow
+          reason
+        }
+        canSelect {
+          allow
+          reason
+        }
+        canUnselect {
+          allow
+          reason
+        }
+      }
     }
   }
 }

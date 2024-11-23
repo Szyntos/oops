@@ -14,6 +14,7 @@ import { AddedLevel } from "../../components/Edition/Sections/LevelsSection/AddS
 import { useCopyLevelSetMutation } from "../../graphql/copyLevelSet.graphql.types";
 
 export type LevelSet = SetupLevelSetsQuery["listSetupLevelSets"][number];
+export type Level = LevelSet["levelSet"]["levels"][number];
 
 export const useLevelSetsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();

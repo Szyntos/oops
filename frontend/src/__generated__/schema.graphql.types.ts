@@ -175,7 +175,7 @@ export type AwardAggregateOrderBy = {
 export type AwardAggregateType = {
   __typename?: "AwardAggregateType";
   award: AwardType;
-  sumOfAll: Scalars["Float"]["output"];
+  sumOfAll?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** input type for inserting array relation for remote table "award" */

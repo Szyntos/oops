@@ -1,0 +1,13 @@
+mutation EditEdition(
+  $editionId: Int!
+  $editionName: String!
+  $editionYear: Int!
+) {
+  editEdition(
+    editionId: $editionId
+    editionName: $editionName
+    editionYear: $editionYear
+  ) {
+    editionId
+  }
+}

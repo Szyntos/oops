@@ -366,6 +366,15 @@ class LevelSetPermissions {
                     reason = "Edition already has users assigned to the selected level set"
                 )
             }
+
+            if (edition.gradingChecks.any { it.endOfLabsLevelsThreshold.levelSet == edition.levelSet }) {
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Edition has grading checks using the selected level set"
+                )
+            }
         }
 
         return Permission(
@@ -433,6 +442,15 @@ class LevelSetPermissions {
                 arguments = arguments,
                 allow = false,
                 reason = "Edition has already started"
+            )
+        }
+
+        if (edition.gradingChecks.any { it.endOfLabsLevelsThreshold.levelSet == levelSet }) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Edition has grading checks using the level set"
             )
         }
 

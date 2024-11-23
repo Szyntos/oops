@@ -4,6 +4,7 @@ import backend.award.AwardType
 import backend.bonuses.BonusesRepository
 import backend.categories.Categories
 import backend.categories.CategoriesRepository
+import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.files.FileRetrievalService
@@ -146,7 +147,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     }
 
 
-        @DgsMutation
+    @DgsMutation
     @Transactional
     fun assignPhotoToUser(@InputArgument userId: Long, @InputArgument fileId: Long?): Boolean {
         val action = "assignPhotoToUser"
@@ -168,7 +169,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         val result = photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", userId, fileId)
 
         if (result){
-            if (getCurrentUser().userId == userId){
+            if (userMapper.getCurrentUser().userId == userId){
                 user.avatarSetByUser = true
                 usersRepository.save(user)
             }
@@ -255,7 +256,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
 
         user.nick = nick
-        if (getCurrentUser().userId == userId){
+        if (userMapper.getCurrentUser().userId == userId){
             user.nickSetByUser = true
         }
 
@@ -735,7 +736,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     }
     @DgsQuery
     @Transactional
-    fun getCurrentUser(): Users {
+    fun getCurrentUser(): UserWithEditions {
         val action = "getCurrentUser"
         val arguments = mapOf<String, Any>()
         val permissionInput = PermissionInput(
@@ -746,8 +747,13 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         if (!permission.allow) {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
-
-        return userMapper.getCurrentUser()
+        val user = userMapper.getCurrentUser()
+        val editions = if (user.role == UsersRoles.COORDINATOR){
+            editionRepository.findAll()
+        } else {
+            editionRepository.findAllByGroups_UserGroups_User(user)
+        }
+        return UserWithEditions(user, editions)
     }
 
     fun isValidEmail(email: String): Boolean {
@@ -856,5 +862,10 @@ data class NotValidUser(
 data class UserWithPermissions(
     val user: Users,
     val permissions: ListPermissionsOutput
+)
+
+data class UserWithEditions(
+    val user: Users,
+    val editions: List<Edition>
 )
 

@@ -3,61 +3,61 @@ import * as Types from "../__generated__/schema.graphql.types";
 import { gql } from "@apollo/client";
 import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
-export type MarkPAssingStudentsInactiveMutationVariables = Types.Exact<{
+export type MarkPassingStudentsInactiveMutationVariables = Types.Exact<{
   editionId: Types.Scalars["Int"]["input"];
 }>;
 
-export type MarkPAssingStudentsInactiveMutation = {
+export type MarkPassingStudentsInactiveMutation = {
   __typename?: "mutation_root";
   markPassingStudentsFromEditionAsInactive?: boolean | null;
 };
 
-export const MarkPAssingStudentsInactiveDocument = gql`
-  mutation MarkPAssingStudentsInactive($editionId: Int!) {
+export const MarkPassingStudentsInactiveDocument = gql`
+  mutation MarkPassingStudentsInactive($editionId: Int!) {
     markPassingStudentsFromEditionAsInactive(editionId: $editionId)
   }
 `;
-export type MarkPAssingStudentsInactiveMutationFn = Apollo.MutationFunction<
-  MarkPAssingStudentsInactiveMutation,
-  MarkPAssingStudentsInactiveMutationVariables
+export type MarkPassingStudentsInactiveMutationFn = Apollo.MutationFunction<
+  MarkPassingStudentsInactiveMutation,
+  MarkPassingStudentsInactiveMutationVariables
 >;
 
 /**
- * __useMarkPAssingStudentsInactiveMutation__
+ * __useMarkPassingStudentsInactiveMutation__
  *
- * To run a mutation, you first call `useMarkPAssingStudentsInactiveMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMarkPAssingStudentsInactiveMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useMarkPassingStudentsInactiveMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMarkPassingStudentsInactiveMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [markPAssingStudentsInactiveMutation, { data, loading, error }] = useMarkPAssingStudentsInactiveMutation({
+ * const [markPassingStudentsInactiveMutation, { data, loading, error }] = useMarkPassingStudentsInactiveMutation({
  *   variables: {
  *      editionId: // value for 'editionId'
  *   },
  * });
  */
-export function useMarkPAssingStudentsInactiveMutation(
+export function useMarkPassingStudentsInactiveMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    MarkPAssingStudentsInactiveMutation,
-    MarkPAssingStudentsInactiveMutationVariables
+    MarkPassingStudentsInactiveMutation,
+    MarkPassingStudentsInactiveMutationVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    MarkPAssingStudentsInactiveMutation,
-    MarkPAssingStudentsInactiveMutationVariables
-  >(MarkPAssingStudentsInactiveDocument, options);
+    MarkPassingStudentsInactiveMutation,
+    MarkPassingStudentsInactiveMutationVariables
+  >(MarkPassingStudentsInactiveDocument, options);
 }
-export type MarkPAssingStudentsInactiveMutationHookResult = ReturnType<
-  typeof useMarkPAssingStudentsInactiveMutation
+export type MarkPassingStudentsInactiveMutationHookResult = ReturnType<
+  typeof useMarkPassingStudentsInactiveMutation
 >;
-export type MarkPAssingStudentsInactiveMutationResult =
-  Apollo.MutationResult<MarkPAssingStudentsInactiveMutation>;
-export type MarkPAssingStudentsInactiveMutationOptions =
+export type MarkPassingStudentsInactiveMutationResult =
+  Apollo.MutationResult<MarkPassingStudentsInactiveMutation>;
+export type MarkPassingStudentsInactiveMutationOptions =
   Apollo.BaseMutationOptions<
-    MarkPAssingStudentsInactiveMutation,
-    MarkPAssingStudentsInactiveMutationVariables
+    MarkPassingStudentsInactiveMutation,
+    MarkPassingStudentsInactiveMutationVariables
   >;

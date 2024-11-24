@@ -11,6 +11,8 @@ import { TeacherFormValues } from "../../../components/Edition/Sections/UsersSec
 import { useSEtupUserEditMutation } from "../../../graphql/setupUserEdit.graphql.types";
 import { useDeleteUserMutation } from "../../../graphql/deleteUser.graphql.types";
 import { useError } from "../../common/useGlobalError";
+import { useMakeStudentActiveMutation } from "../../../graphql/makeStudentActive.graphql.types";
+import { useMakeStudentInactiveMutation } from "../../../graphql/markStudentInactive.graphql.types";
 
 export type User = SetupUsersQuery["listSetupUsers"][number];
 
@@ -106,6 +108,30 @@ export const useUsersSection = (editionId: number) => {
     setFormError(undefined);
   };
 
+  const [deleteUser] = useDeleteUserMutation();
+  const handleDeleteConfirm = (u: User) => {
+    globalErrorWrapper(async () => {
+      await deleteUser({
+        variables: { userId: parseInt(u.user.userId) },
+      });
+      refetch();
+    });
+  };
+
+  const [makeActive] = useMakeStudentActiveMutation();
+  const [makeInactive] = useMakeStudentInactiveMutation();
+  const handleStudentActiveness = (user: User) => {
+    globalErrorWrapper(async () => {
+      const variables = { variables: { userId: parseInt(user.user.userId) } };
+      if (user.user.active) {
+        await makeInactive(variables);
+      } else {
+        await makeActive(variables);
+      }
+      refetch();
+    });
+  };
+
   // COMMON -------------------------------------------------
   const [editUser] = useSEtupUserEditMutation();
   const handleEditUserConfirm = (
@@ -133,16 +159,6 @@ export const useUsersSection = (editionId: number) => {
 
       refetch();
       props.type === "student" ? closeEditStudent() : closeEditTeacher();
-    });
-  };
-
-  const [deleteUser] = useDeleteUserMutation();
-  const handleDeleteConfirm = (u: User) => {
-    globalErrorWrapper(async () => {
-      await deleteUser({
-        variables: { userId: parseInt(u.user.userId) },
-      });
-      refetch();
     });
   };
 
@@ -182,5 +198,6 @@ export const useUsersSection = (editionId: number) => {
         formValues: values,
       });
     },
+    handleStudentActiveness,
   };
 };

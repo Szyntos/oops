@@ -6,24 +6,35 @@ type GroupCardProps = {
   user: User;
   handleEditClick: () => void;
   handleDeleteClick: () => void;
+  handleStudentActiveness?: (user: User) => void;
 };
 
 export const UserCard = ({
   user,
   handleDeleteClick,
   handleEditClick,
+  handleStudentActiveness,
 }: GroupCardProps) => {
   return (
     <div style={styles.card}>
       <div>
         [{user.user.userId}] {user.user.firstName} {user.user.secondName}
       </div>
-      <SetupButtons
-        isSelected={false}
-        permissions={user.permissions}
-        handleDelete={handleDeleteClick}
-        handleEdit={handleEditClick}
-      />
+      {handleStudentActiveness ? (
+        <SetupButtons
+          permissions={user.permissions}
+          handleDelete={handleDeleteClick}
+          handleEdit={handleEditClick}
+          isActive={user.user.active}
+          handleMarkActiveness={() => handleStudentActiveness(user)}
+        />
+      ) : (
+        <SetupButtons
+          permissions={user.permissions}
+          handleDelete={handleDeleteClick}
+          handleEdit={handleEditClick}
+        />
+      )}
     </div>
   );
 };

@@ -11,7 +11,9 @@ type SetupButtonsProps = {
   handleEdit?: () => void;
   handleDelete?: () => void;
   handleCopy?: () => void;
-  isSelected: boolean;
+  handleMarkActiveness?: () => void;
+  isSelected?: boolean;
+  isActive?: boolean;
 };
 
 export const SetupButtons = ({
@@ -20,11 +22,10 @@ export const SetupButtons = ({
   handleDelete,
   handleCopy,
   handleEdit,
+  handleMarkActiveness,
   isSelected,
+  isActive,
 }: SetupButtonsProps) => {
-  if (!permissions) {
-    return <></>;
-  }
   const copy: SetupButtonProps | undefined = handleCopy
     ? {
         handleClick: handleCopy,
@@ -65,12 +66,22 @@ export const SetupButtons = ({
       }
     : undefined;
 
+  const activeness: SetupButtonProps | undefined = handleMarkActiveness
+    ? {
+        handleClick: handleMarkActiveness,
+        isClickable: true,
+        reason: undefined,
+        title: isActive ? "make inactive" : "make active",
+      }
+    : undefined;
+
   return (
     <div style={styles.buttonsContainer}>
       {select && <SetupButton {...select} />}
       {copy && <SetupButton {...copy} />}
       {edit && <SetupButton {...edit} />}
       {remove && <SetupButton {...remove} />}
+      {activeness && <SetupButton {...activeness} />}
     </div>
   );
 };

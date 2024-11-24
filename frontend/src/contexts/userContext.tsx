@@ -9,13 +9,14 @@ import {
 import { defaultUnauthenticatedUser } from "../utils/types";
 import Cookies from "js-cookie";
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
-import { isEditionActive } from "../utils/utils";
+import { cookiesStrings } from "../hooks/auth/useLogin";
 
 export type User = {
   nick: string;
   role: UsersRolesType;
   userId: string;
   editions: Edition[];
+  selectedEdition: Edition | undefined;
 };
 
 export type Edition = {
@@ -31,9 +32,9 @@ type UserContextType = {
   user: User;
   setUser: Dispatch<SetStateAction<User>>;
   selectedEdition?: Edition;
-  setSelectedEdition: Dispatch<SetStateAction<Edition | undefined>>;
   editions: Edition[];
   setEditions: Dispatch<SetStateAction<Edition[]>>;
+  changeSelectedEdition: (edition: Edition | undefined) => void;
 };
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -57,16 +58,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       setSelectedEdition(undefined);
     } else {
       setEditions(user.editions);
-      if (user.editions.length > 0) {
-        const activeEdition = user.editions.filter((e) =>
-          isEditionActive(e),
-        )[0];
-        setSelectedEdition(activeEdition ? activeEdition : user.editions[0]);
-      } else {
-        setSelectedEdition(undefined);
-      }
+      setSelectedEdition(user.selectedEdition);
     }
   }, [user]);
+
+  const changeSelectedEdition = (edition: Edition | undefined) => {
+    setSelectedEdition(edition);
+    const updatedUser = { ...user, selectedEdition: edition };
+    Cookies.set(cookiesStrings.user, JSON.stringify(updatedUser));
+  };
 
   return (
     <UserContext.Provider
@@ -74,9 +74,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         user,
         setUser,
         selectedEdition,
-        setSelectedEdition,
         editions,
         setEditions,
+        changeSelectedEdition,
       }}
     >
       {children}

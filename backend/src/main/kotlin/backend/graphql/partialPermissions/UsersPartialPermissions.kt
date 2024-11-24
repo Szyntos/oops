@@ -183,4 +183,110 @@ class UsersPartialPermissions {
             reason = null
         )
     }
+
+    fun checkMarkStudentAsInactivePermission(arguments: JsonNode): Permission{
+        val action = "markStudentAsInactive"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only a coordinator can mark student as inactive"
+            )
+        }
+
+        val userId = arguments.getLongField("userId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'userId'"
+        )
+
+        val user = usersRepository.findById(userId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid user ID"
+            )
+
+        if (user.role != UsersRoles.STUDENT){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is not a student"
+            )
+        }
+
+        if (!user.active){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is already inactive"
+            )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkMarkStudentAsActivePermission(arguments: JsonNode): Permission{
+        val action = "markStudentAsActive"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only a coordinator can mark student as active"
+            )
+        }
+
+        val userId = arguments.getLongField("userId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'userId'"
+        )
+
+        val user = usersRepository.findById(userId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid user ID"
+            )
+
+        if (user.role != UsersRoles.STUDENT){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is not a student"
+            )
+        }
+
+        if (user.active){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is already active"
+            )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
 }

@@ -139,7 +139,10 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                         objectMapper.createObjectNode(),
                         false,
                         "Not applicable"),
-                    additional = emptyList()
+                    additional = listOf(
+                        permissionService.checkPartialPermission(PermissionInput("markStudentAsInactive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
+                        permissionService.checkPartialPermission(PermissionInput("markStudentAsActive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
+                        )
                 )
             )
         }.sortedBy { "${it.user.firstName} ${it.user.secondName}" }

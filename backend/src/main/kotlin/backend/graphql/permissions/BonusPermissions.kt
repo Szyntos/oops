@@ -149,12 +149,12 @@ class BonusPermissions {
             )
         }
 
-        if (chestHistory.chest.awardBundleCount > awards.size) {
+        if (chestHistory.chest.awardBundleCount < awards.size) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid number of awards - expected ${chestHistory.chest.awardBundleCount}"
+                reason = "Invalid number of awards - expected ${chestHistory.chest.awardBundleCount} or less"
             )
         }
 

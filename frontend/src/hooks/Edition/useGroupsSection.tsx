@@ -20,6 +20,7 @@ import { useDeleteGroupMutation } from "../../graphql/deleteGroup.graphql.types"
 import { useError } from "../common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../utils/constants";
 import { mockPermissions } from "../../utils/utils";
+import { useMarkPAssingStudentsInactiveMutation } from "../../graphql/markPassingStudentsInactive.graphql.types";
 
 export type Group = SetupGroupsQuery["listSetupGroups"][number];
 
@@ -221,6 +222,17 @@ export const useGroupsSection = (editionId: number) => {
     // TODO change user group
   };
 
+  // MARK PASSING STUDENTS AS INACTIVE
+  const [markPassingStudentsActive] = useMarkPAssingStudentsInactiveMutation();
+  const handleMarkAllPassingStudents = () => {
+    globalErrorWrapper(async () => {
+      await markPassingStudentsActive({
+        variables: { editionId },
+      });
+      refetch();
+    });
+  };
+
   return {
     groups,
     weekdays,
@@ -246,5 +258,7 @@ export const useGroupsSection = (editionId: number) => {
 
     variant,
     selectedGroup,
+
+    handleMarkAllPassingStudents,
   };
 };

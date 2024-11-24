@@ -2,11 +2,17 @@ import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { Styles } from "../../utils/Styles";
 import { pathsGenerator } from "../../router/paths";
 import { SectionsBar } from "../../components/Edition/SectionsBar";
+import { Dialog } from "@mui/material";
+import { CloseHeader } from "../../components/dialogs/CloseHeader";
+import { ShowEntryContent } from "../../components/Edition/ShowEntryContent";
+import { useEdition } from "../../hooks/common/useEdition";
 
 export const EditionScreen = () => {
   const navigate = useNavigate();
   const params = useParams();
   const editionId = params.id ? parseInt(params.id) : -1;
+
+  const { isShowDialogOpen, closeShowDialog, selectedEntry } = useEdition();
 
   return (
     <div style={styles.screenContainer}>
@@ -17,6 +23,10 @@ export const EditionScreen = () => {
         <div>params - edition id: {editionId}</div>
       </div>
       <SectionsBar editionId={editionId} />
+      <Dialog open={isShowDialogOpen}>
+        <CloseHeader onCloseClick={closeShowDialog} />
+        <ShowEntryContent selectedEntry={selectedEntry} />
+      </Dialog>
       <Outlet />
     </div>
   );

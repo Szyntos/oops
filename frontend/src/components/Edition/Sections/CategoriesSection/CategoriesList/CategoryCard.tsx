@@ -9,6 +9,7 @@ type CategoryCardProps = {
   handleEditClick: () => void;
   handleDeleteClick: () => void;
   handleCopyClick: () => void;
+  openShowDialog: () => void;
 };
 
 export const CategoryCard = ({
@@ -18,6 +19,7 @@ export const CategoryCard = ({
   handleEditClick,
   handleDeleteClick,
   handleCopyClick,
+  openShowDialog,
 }: CategoryCardProps) => {
   const getSubcategoriesString = (category: Category) => {
     const subcategoryNames = category.category.subcategories.map(
@@ -44,6 +46,7 @@ export const CategoryCard = ({
         handleSelect={handleSelectClick}
         handleEdit={handleEditClick}
         handleDelete={handleDeleteClick}
+        handleShow={openShowDialog}
       />
     </div>
   );

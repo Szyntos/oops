@@ -1,3 +1,4 @@
+import { ShowEntryType } from "../../../../../contexts/editionContext";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
@@ -10,6 +11,7 @@ type CategoriesListProps = {
   handleEditClick: (category: Category) => void;
   handleDeleteClick: (category: Category) => void;
   handleCopyClick: (category: Category) => void;
+  openShowDialog: (entry: ShowEntryType) => void;
   title: string;
 };
 
@@ -20,6 +22,7 @@ export const CategoriesList = ({
   handleEditClick,
   handleDeleteClick,
   handleCopyClick,
+  openShowDialog,
   title,
 }: CategoriesListProps) => {
   return (
@@ -40,6 +43,7 @@ export const CategoriesList = ({
                 handleEditClick={() => handleEditClick(category)}
                 handleDeleteClick={() => handleDeleteClick(category)}
                 handleCopyClick={() => handleCopyClick(category)}
+                openShowDialog={() => openShowDialog(category)}
               />
             ))
           : EMPTY_FIELD_STRING}

@@ -273,6 +273,8 @@ class PermissionService {
             // UsersPermissions
             "removeUser" -> usersPartialPermissions.checkRemoveUserPermission(jsonArguments)
             "editUser" -> usersPartialPermissions.checkEditUserPermission(jsonArguments)
+            "markStudentAsInactive" -> usersPartialPermissions.checkMarkStudentAsInactivePermission(jsonArguments)
+            "markStudentAsActive" -> usersPartialPermissions.checkMarkStudentAsActivePermission(jsonArguments)
             else -> Permission(
                 action = input.action,
                 arguments = jsonArguments,

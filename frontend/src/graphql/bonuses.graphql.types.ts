@@ -24,6 +24,7 @@ export type BonusesQuery = {
       imageFileId?: string | null;
       description: string;
     };
+    point: { __typename?: "Points"; value: string };
   }>;
 };
 
@@ -48,6 +49,9 @@ export const BonusesDocument = gql`
       }
       updatedAt
       createdAt
+      point {
+        value
+      }
     }
   }
 `;

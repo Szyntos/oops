@@ -5,14 +5,15 @@ import { SectionsBar } from "../../components/Edition/SectionsBar";
 import { Dialog } from "@mui/material";
 import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { ShowEntryContent } from "../../components/Edition/ShowEntryContent";
-import { useEdition } from "../../hooks/common/useEdition";
+import { useEditionSections } from "../../hooks/common/useEditionSection";
 
 export const EditionScreen = () => {
   const navigate = useNavigate();
   const params = useParams();
   const editionId = params.id ? parseInt(params.id) : -1;
 
-  const { isShowDialogOpen, closeShowDialog, selectedEntry } = useEdition();
+  const { isShowDialogOpen, closeShowDialog, selectedEntry } =
+    useEditionSections();
 
   return (
     <div style={styles.screenContainer}>

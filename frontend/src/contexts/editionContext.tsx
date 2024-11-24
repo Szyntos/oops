@@ -3,18 +3,22 @@ import { Category } from "../hooks/Edition/categories/useCategoriesSection";
 
 export type ShowEntryType = Category;
 
-type EditionContextType = {
+type EditionSectionsContextType = {
   selectedEntry: ShowEntryType | undefined;
   isShowDialogOpen: boolean;
   openShowDialog: (entry: ShowEntryType) => void;
   closeShowDialog: () => void;
 };
 
-export const EditionContext = createContext<EditionContextType | undefined>(
-  undefined,
-);
+export const EditionSectionsContext = createContext<
+  EditionSectionsContextType | undefined
+>(undefined);
 
-export const EditionProvider = ({ children }: { children: ReactNode }) => {
+export const EditionSectionsProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const [selectedEntry, setSelectedEntry] = useState<ShowEntryType | undefined>(
     undefined,
   );
@@ -32,7 +36,7 @@ export const EditionProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <EditionContext.Provider
+    <EditionSectionsContext.Provider
       value={{
         selectedEntry,
         isShowDialogOpen,
@@ -41,6 +45,6 @@ export const EditionProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
-    </EditionContext.Provider>
+    </EditionSectionsContext.Provider>
   );
 };

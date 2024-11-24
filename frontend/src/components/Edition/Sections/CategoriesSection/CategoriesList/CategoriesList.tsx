@@ -1,4 +1,4 @@
-import { ShowEntryType } from "../../../../../contexts/editionContext";
+import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
@@ -11,7 +11,6 @@ type CategoriesListProps = {
   handleEditClick: (category: Category) => void;
   handleDeleteClick: (category: Category) => void;
   handleCopyClick: (category: Category) => void;
-  openShowDialog: (entry: ShowEntryType) => void;
   title: string;
 };
 
@@ -22,9 +21,10 @@ export const CategoriesList = ({
   handleEditClick,
   handleDeleteClick,
   handleCopyClick,
-  openShowDialog,
   title,
 }: CategoriesListProps) => {
+  const { openShowDialog } = useEditionSections();
+
   return (
     <div>
       <div style={styles.title}>{title}</div>

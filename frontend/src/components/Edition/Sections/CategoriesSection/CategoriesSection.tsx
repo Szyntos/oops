@@ -5,7 +5,6 @@ import { CategoriesList } from "./CategoriesList/CategoriesList";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useCategoriesSection } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { useParams } from "react-router-dom";
-import { useEdition } from "../../../../hooks/common/useEdition";
 
 export const CategoriesSection = () => {
   const params = useParams();
@@ -31,8 +30,6 @@ export const CategoriesSection = () => {
     handleCopyCategory,
   } = useCategoriesSection(editionId);
 
-  const { openShowDialog } = useEdition();
-
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
@@ -48,7 +45,6 @@ export const CategoriesSection = () => {
         handleDeleteClick={handleDeleteCategory}
         handleCopyClick={handleCopyCategory}
         title="Selected categories"
-        openShowDialog={openShowDialog}
       />
       <CategoriesList
         categories={categories}
@@ -58,7 +54,6 @@ export const CategoriesSection = () => {
         handleDeleteClick={handleDeleteCategory}
         handleCopyClick={handleCopyCategory}
         title="All categories"
-        openShowDialog={openShowDialog}
       />
 
       <Dialog open={isAddCategory}>

@@ -1,3 +1,4 @@
+import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { LevelSet } from "../../../../../hooks/Edition/useLevelSetsSection";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
@@ -20,6 +21,8 @@ export const LevelSetCard = ({
   onDeleteClick,
   onCopyClick,
 }: LevelSetCardProps) => {
+  const { openShowDialog } = useEditionSections();
+
   return (
     <div
       style={{
@@ -47,6 +50,7 @@ export const LevelSetCard = ({
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
+        handleShow={() => openShowDialog(levelSet)}
       />
     </div>
   );

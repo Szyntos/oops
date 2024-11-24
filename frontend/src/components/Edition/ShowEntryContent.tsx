@@ -1,13 +1,15 @@
-import { ShowEntryType } from "../../contexts/editionContext";
+import { Entry } from "../../contexts/editionContext";
+import { EMPTY_FIELD_STRING } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
 
 export type ShowEntryContentProps = {
-  selectedEntry?: ShowEntryType;
+  selectedEntry?: Entry;
 };
+
 export const ShowEntryContent = ({ selectedEntry }: ShowEntryContentProps) => {
   return (
     <div style={styles.container}>
-      <div>{selectedEntry?.__typename ?? "---"}</div>
+      <pre>{JSON.stringify(selectedEntry, null, 2) ?? EMPTY_FIELD_STRING}</pre>
     </div>
   );
 };
@@ -15,6 +17,5 @@ export const ShowEntryContent = ({ selectedEntry }: ShowEntryContentProps) => {
 const styles: Styles = {
   container: {
     padding: 50,
-    backgroundColor: "pink",
   },
 };

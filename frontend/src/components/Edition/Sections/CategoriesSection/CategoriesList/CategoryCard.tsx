@@ -1,3 +1,4 @@
+import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
 import { Styles } from "../../../../../utils/Styles";
 import { SetupButtons } from "../../SetupButtons";
@@ -9,7 +10,6 @@ type CategoryCardProps = {
   handleEditClick: () => void;
   handleDeleteClick: () => void;
   handleCopyClick: () => void;
-  openShowDialog: () => void;
 };
 
 export const CategoryCard = ({
@@ -19,8 +19,9 @@ export const CategoryCard = ({
   handleEditClick,
   handleDeleteClick,
   handleCopyClick,
-  openShowDialog,
 }: CategoryCardProps) => {
+  const { openShowDialog } = useEditionSections();
+
   const getSubcategoriesString = (category: Category) => {
     const subcategoryNames = category.category.subcategories.map(
       (subcategory) => subcategory.subcategoryName,
@@ -46,7 +47,7 @@ export const CategoryCard = ({
         handleSelect={handleSelectClick}
         handleEdit={handleEditClick}
         handleDelete={handleDeleteClick}
-        handleShow={openShowDialog}
+        handleShow={() => openShowDialog(category)}
       />
     </div>
   );

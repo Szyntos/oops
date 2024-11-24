@@ -1,4 +1,3 @@
-import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
@@ -23,8 +22,6 @@ export const CategoriesList = ({
   handleCopyClick,
   title,
 }: CategoriesListProps) => {
-  const { openShowDialog } = useEditionSections();
-
   return (
     <div>
       <div style={styles.title}>{title}</div>
@@ -43,7 +40,6 @@ export const CategoriesList = ({
                 handleEditClick={() => handleEditClick(category)}
                 handleDeleteClick={() => handleDeleteClick(category)}
                 handleCopyClick={() => handleCopyClick(category)}
-                openShowDialog={() => openShowDialog(category)}
               />
             ))
           : EMPTY_FIELD_STRING}

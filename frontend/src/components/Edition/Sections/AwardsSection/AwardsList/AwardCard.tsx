@@ -1,3 +1,4 @@
+import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
 import { Styles } from "../../../../../utils/Styles";
 import { AwardImage } from "../../../../images/AwardImage";
@@ -20,6 +21,8 @@ export const AwardCard = ({
   onDeleteClick,
   onCopyClick,
 }: AwardCardProps) => {
+  const { openShowDialog } = useEditionSections();
+
   return (
     <div
       style={{
@@ -37,6 +40,7 @@ export const AwardCard = ({
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
+        handleShow={() => openShowDialog(award)}
         permissions={award.permissions}
       />
     </div>

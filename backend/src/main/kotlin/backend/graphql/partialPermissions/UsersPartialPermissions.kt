@@ -5,9 +5,11 @@ import backend.files.FileEntityRepository
 import backend.graphql.utils.PhotoAssigner
 import backend.groups.GroupsRepository
 import backend.graphql.utils.Permission
+import backend.userLevel.UserLevelRepository
 import backend.users.UsersRepository
 import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getBooleanField
+import backend.utils.JsonNodeExtensions.getFloatField
 import backend.utils.JsonNodeExtensions.getIntField
 import backend.utils.JsonNodeExtensions.getIntList
 import backend.utils.JsonNodeExtensions.getLongField
@@ -22,6 +24,9 @@ import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UsersPartialPermissions {
+    @Autowired
+    private lateinit var userLevelRepository: UserLevelRepository
+
     @Autowired
     private lateinit var usersRepository: UsersRepository
 
@@ -175,6 +180,227 @@ class UsersPartialPermissions {
             )
         }
 
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkMarkStudentAsInactivePermission(arguments: JsonNode): Permission{
+        val action = "markStudentAsInactive"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only a coordinator can mark student as inactive"
+            )
+        }
+
+        val userId = arguments.getLongField("userId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'userId'"
+        )
+
+        val user = usersRepository.findById(userId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid user ID"
+            )
+
+        if (user.role != UsersRoles.STUDENT){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is not a student"
+            )
+        }
+
+        if (!user.active){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is already inactive"
+            )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkMarkStudentAsActivePermission(arguments: JsonNode): Permission{
+        val action = "markStudentAsActive"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only a coordinator can mark student as active"
+            )
+        }
+
+        val userId = arguments.getLongField("userId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'userId'"
+        )
+
+        val user = usersRepository.findById(userId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid user ID"
+            )
+
+        if (user.role != UsersRoles.STUDENT){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is not a student"
+            )
+        }
+
+        if (user.active){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is already active"
+            )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkOverrideComputedGradeForUserPermission(arguments: JsonNode): Permission {
+        val action = "overrideComputedGradeForUser"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only a coordinator can override computed grade for a user"
+            )
+        }
+
+        val userId = arguments.getLongField("userId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'userId'"
+        )
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+
+        val user = usersRepository.findById(userId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid user ID"
+            )
+
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+        val userLevel = user.userLevels.find { it.edition == edition }
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User has no user level in this edition"
+            )
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkTurnOffOverrideComputedGradeForUserPermission(arguments: JsonNode): Permission {
+        val action = "turnOffOverrideComputedGradeForUser"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only a coordinator can turn off override for computed grade for a user"
+            )
+        }
+
+        val userId = arguments.getLongField("userId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'userId'"
+        )
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+
+        val user = usersRepository.findById(userId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid user ID"
+            )
+        val edition = editionRepository.findById(editionId).orElse(null)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Invalid edition ID"
+            )
+        val userLevel = user.userLevels.find { it.edition == edition }
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User has no user level in this edition"
+            )
 
         return Permission(
             action = action,

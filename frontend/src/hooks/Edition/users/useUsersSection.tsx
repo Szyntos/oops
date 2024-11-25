@@ -11,6 +11,7 @@ import { TeacherFormValues } from "../../../components/Edition/Sections/UsersSec
 import { useSEtupUserEditMutation } from "../../../graphql/setupUserEdit.graphql.types";
 import { useDeleteUserMutation } from "../../../graphql/deleteUser.graphql.types";
 import { useError } from "../../common/useGlobalError";
+import { useConfirmPopup } from "../../common/useConfrimPopup";
 
 export type User = SetupUsersQuery["listSetupUsers"][number];
 
@@ -136,13 +137,16 @@ export const useUsersSection = (editionId: number) => {
     });
   };
 
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteUser] = useDeleteUserMutation();
   const handleDeleteConfirm = (u: User) => {
-    globalErrorWrapper(async () => {
-      await deleteUser({
-        variables: { userId: parseInt(u.user.userId) },
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteUser({
+          variables: { userId: parseInt(u.user.userId) },
+        });
+        refetch();
       });
-      refetch();
     });
   };
 

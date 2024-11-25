@@ -12,6 +12,7 @@ import { useDeleteLevelSetMutation } from "../../graphql/deleteLevelSet.graphql.
 import { useFilesQuery } from "../../graphql/files.graphql.types";
 import { AddedLevel } from "../../components/Edition/Sections/LevelsSection/AddSetForm/LevelRow";
 import { useCopyLevelSetMutation } from "../../graphql/copyLevelSet.graphql.types";
+import { useConfirmPopup } from "../common/useConfrimPopup";
 
 export type LevelSet = SetupLevelSetsQuery["listSetupLevelSets"][number];
 export type Level = LevelSet["levelSet"]["levels"][number];
@@ -124,13 +125,16 @@ export const useLevelSetsSection = (editionId: number) => {
   };
 
   // DELETE
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteSet] = useDeleteLevelSetMutation();
   const handleDeleteSet = (set: LevelSet) => {
-    globalErrorWrapper(async () => {
-      await deleteSet({
-        variables: { levelSetId: parseInt(set.levelSet.levelSetId) },
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteSet({
+          variables: { levelSetId: parseInt(set.levelSet.levelSetId) },
+        });
+        refetch();
       });
-      refetch();
     });
   };
 

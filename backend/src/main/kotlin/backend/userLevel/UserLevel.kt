@@ -36,6 +36,9 @@ class UserLevel(
 
     @Column(name = "label", nullable = false, length = 256)
     var label: String,
+
+    @Column(name = "coordinator_override", nullable = false)
+    var coordinatorOverride: Boolean = false,
 ) {
     constructor() : this(
         user = Users(),

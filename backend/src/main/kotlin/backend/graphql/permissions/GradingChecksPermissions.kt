@@ -174,22 +174,22 @@ class GradingChecksPermissions {
                     reason = "Edition has already ended"
                 )
             }
-            if (edition.startDate.isBefore(LocalDate.now())) {
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "Edition has already started"
-                )
-            }
-            if (endOfLabsDateParsed.isBefore(LocalDate.now())) {
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "End of labs date must be in the future"
-                )
-            }
+//            if (edition.startDate.isBefore(LocalDate.now())) {
+//                return Permission(
+//                    action = action,
+//                    arguments = arguments,
+//                    allow = false,
+//                    reason = "Edition has already started"
+//                )
+//            }
+//            if (endOfLabsDateParsed.isBefore(LocalDate.now())) {
+//                return Permission(
+//                    action = action,
+//                    arguments = arguments,
+//                    allow = false,
+//                    reason = "End of labs date must be in the future"
+//                )
+//            }
         }
 
         if (endOfLabsDateParsed.isBefore(edition.startDate) || endOfLabsDateParsed.isAfter(edition.endDate)) {
@@ -279,18 +279,18 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition is already finished"
+                reason = "Edition has already ended"
             )
         }
 
-        if (edition.startDate.isBefore(LocalDate.now())) {
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Edition has already started"
-            )
-        }
+//        if (edition.startDate.isBefore(LocalDate.now())) {
+//            return Permission(
+//                action = action,
+//                arguments = arguments,
+//                allow = false,
+//                reason = "Edition has already started"
+//            )
+//        }
 
         val endOfLabsDate = arguments.getStringField("endOfLabsDate")
         val endOfLabsLevelsThreshold = arguments.getLongField("endOfLabsLevelsThreshold")
@@ -319,14 +319,14 @@ class GradingChecksPermissions {
                     reason = "Edition has already ended"
                 )
             }
-            if (endOfLabsDateParsed.isBefore(LocalDate.now())) {
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "End of labs date must be in the future"
-                )
-            }
+//            if (endOfLabsDateParsed.isBefore(LocalDate.now())) {
+//                return Permission(
+//                    action = action,
+//                    arguments = arguments,
+//                    allow = false,
+//                    reason = "End of labs date must be in the future"
+//                )
+//            }
 
             if (endOfLabsDateParsed.isBefore(edition.startDate) || endOfLabsDateParsed.isAfter(edition.endDate)) {
                 return Permission(

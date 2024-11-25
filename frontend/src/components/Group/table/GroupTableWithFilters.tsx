@@ -10,6 +10,7 @@ type GroupTableWithFiltersProps = {
   categories: Category[];
   handleStudentClick: (student: Student) => void;
   handleSubcategoryClick: (subcategory: Subcategory) => void;
+  editable: boolean;
 };
 
 export const GroupTableWithFilters = ({
@@ -17,6 +18,7 @@ export const GroupTableWithFilters = ({
   categories,
   handleStudentClick,
   handleSubcategoryClick,
+  editable,
 }: GroupTableWithFiltersProps) => {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
 
@@ -49,6 +51,7 @@ export const GroupTableWithFilters = ({
         rows={rowsToDisplay}
         handleStudentClick={handleStudentClick}
         handleSubcategoryClick={handleSubcategoryClick}
+        editable={editable}
       />
     </div>
   );

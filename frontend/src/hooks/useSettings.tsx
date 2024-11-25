@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useUser } from "./common/useUser";
 
 export const useSettings = () => {
-  const { editions, setSelectedEdition } = useUser();
+  const { editions, changeSelectedEdition } = useUser();
 
   const [AreSettingsOpen, setAreSettingsOpen] = useState(false);
   const openSettings = () => {
@@ -14,7 +14,7 @@ export const useSettings = () => {
 
   const handleChangeEditionConfirm = async (editionId: string) => {
     const e = editions.find((ee) => ee.editionId === editionId);
-    setSelectedEdition(e);
+    changeSelectedEdition(e);
   };
 
   return {

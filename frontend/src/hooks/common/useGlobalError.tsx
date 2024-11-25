@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const useError = () => {
   const [globalError, setGlobalError] = useState<string | undefined>(undefined);
@@ -10,29 +10,37 @@ export const useError = () => {
     }
   }, [globalError]);
 
-  const globalErrorWrapper = async (foo: () => Promise<void> | void) => {
-    try {
-      await foo();
-    } catch (err) {
-      console.error(err);
-      setGlobalError(
-        err instanceof Error ? err.message : "Unexpected error received.",
-      );
-    }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapError = (err: any): string => {
+    return err instanceof Error ? err.message : "Unexpected error received.";
   };
 
-  const localErrorWrapper = async (
-    setError: (text: string) => void,
-    foo: () => Promise<void> | void,
-  ) => {
-    try {
-      await foo();
-    } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Unexpected error received.",
-      );
-    }
-  };
+  const globalErrorWrapper = useCallback(
+    async (foo: () => Promise<void> | void) => {
+      try {
+        await foo();
+      } catch (err) {
+        console.error(err);
+        setGlobalError(mapError(err));
+      }
+    },
+    [],
+  );
+
+  const localErrorWrapper = useCallback(
+    async (
+      setError: (text: string) => void,
+      foo: () => Promise<void> | void,
+    ) => {
+      try {
+        await foo();
+      } catch (err) {
+        console.error(err);
+        setError(mapError(err));
+      }
+    },
+    [],
+  );
 
   return { globalErrorWrapper, localErrorWrapper };
 };

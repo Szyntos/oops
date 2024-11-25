@@ -4,7 +4,34 @@ subscription SubscribeChestToOpen($userId: bigint!) {
       where: { opened: { _eq: false }, userId: { _eq: $userId } }
     ) {
       chestHistoryId
+      chestId
+      createdAt
+      label
       opened
+      subcategoryId
+      updatedAt
+      teacherId
+      userId
+      chest {
+        chestAwards {
+          award {
+            awardId
+            awardName
+            awardType
+            awardValue
+            categoryId
+            description
+            imageFileId
+            label
+            maxUsages
+          }
+        }
+        active
+        awardBundleCount
+        imageFileId
+        label
+        type
+      }
     }
   }
 }

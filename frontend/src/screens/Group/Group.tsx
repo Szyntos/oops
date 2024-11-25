@@ -31,10 +31,9 @@ export const Group = () => {
     formError,
     isStudentOpen,
     openStudent,
-    addChestCategories,
     closeStudent,
     handleAddPointsConfirmation,
-
+    addPointsCategories,
     isSubcategoryOpen,
     openSubcategory,
     closeSubcategory,
@@ -76,12 +75,13 @@ export const Group = () => {
         categories={categories}
         handleStudentClick={hasEditableRights ? openStudent : () => {}}
         handleSubcategoryClick={hasEditableRights ? openSubcategory : () => {}}
+        editable={!disableEditMode}
       />
 
       <Dialog open={isStudentOpen}>
         <CloseHeader onCloseClick={closeStudent} />
         <PointsForm
-          categories={addChestCategories}
+          categories={addPointsCategories}
           handleConfirmClick={handleAddPointsConfirmation}
           mutationError={formError}
           initialValues={{ categoryId: "", subcategoryId: "", points: 0 }}

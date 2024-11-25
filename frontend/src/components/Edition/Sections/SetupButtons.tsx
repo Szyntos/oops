@@ -11,6 +11,7 @@ type SetupButtonsProps = {
   handleEdit?: () => void;
   handleDelete?: () => void;
   handleCopy?: () => void;
+  handleShow?: () => void;
   isSelected: boolean;
 };
 
@@ -20,6 +21,7 @@ export const SetupButtons = ({
   handleDelete,
   handleCopy,
   handleEdit,
+  handleShow,
   isSelected,
 }: SetupButtonsProps) => {
   if (!permissions) {
@@ -65,12 +67,22 @@ export const SetupButtons = ({
       }
     : undefined;
 
+  const show: SetupButtonProps | undefined = handleShow
+    ? {
+        handleClick: handleShow,
+        isClickable: true,
+        reason: undefined,
+        title: "show",
+      }
+    : undefined;
+
   return (
     <div style={styles.buttonsContainer}>
       {select && <SetupButton {...select} />}
       {copy && <SetupButton {...copy} />}
       {edit && <SetupButton {...edit} />}
       {remove && <SetupButton {...remove} />}
+      {show && <SetupButton {...show} />}
     </div>
   );
 };

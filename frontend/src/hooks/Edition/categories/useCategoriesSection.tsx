@@ -13,11 +13,14 @@ import { useError } from "../../common/useGlobalError";
 import { useSetupCategoryEditMutation } from "../../../graphql/setupCategoryEdit.graphql.types";
 import { useDeleteCategoryMutation } from "../../../graphql/deleteCategory.graphql.types";
 import { useCopyCategoryMutation } from "../../../graphql/copyCategory.graphql.types";
+import { useConfirmPopup } from "../../common/useConfrimPopup";
 
 export type Category = SetupCategoriesQuery["listSetupCategories"][number];
 
 export const useCategoriesSection = (editionId: number) => {
   const { localErrorWrapper, globalErrorWrapper } = useError();
+
+  const { openConfirmPopup, closeConfirmPopup } = useConfirmPopup();
 
   const { data, loading, error, refetch } = useSetupCategoriesQuery({
     variables: { editionId },
@@ -100,7 +103,6 @@ export const useCategoriesSection = (editionId: number) => {
     setFormError(undefined);
   };
 
-  // EDIT
   const [editCategory] = useSetupCategoryEditMutation();
   const handleEditCategory = (
     values: CategoriesFormValues,
@@ -132,11 +134,14 @@ export const useCategoriesSection = (editionId: number) => {
   // DELETE
   const [deleteCategory] = useDeleteCategoryMutation();
   const handleDeleteCategory = (category: Category) => {
-    globalErrorWrapper(async () => {
-      await deleteCategory({
-        variables: { categoryId: parseInt(category.category.categoryId) },
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteCategory({
+          variables: { categoryId: parseInt(category.category.categoryId) },
+        });
+        refetch();
+        closeConfirmPopup();
       });
-      refetch();
     });
   };
 

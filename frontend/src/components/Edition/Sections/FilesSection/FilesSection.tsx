@@ -24,7 +24,9 @@ export const FilesSection = () => {
   const { globalErrorWrapper } = useError();
 
   const [activeFolder, setActiveFolder] = useState<Folder>(folders[0]);
-  const [fetchFiles, { loading, error, data, refetch }] = useFilesLazyQuery();
+  const [fetchFiles, { loading, error, data, refetch }] = useFilesLazyQuery({
+    fetchPolicy: "no-cache",
+  });
 
   const files: FileItem[] =
     data?.getFilesGroupedByTypeBySelectedTypes.flatMap((a) =>

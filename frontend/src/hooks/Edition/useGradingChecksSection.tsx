@@ -17,6 +17,7 @@ export const useGradingChecksSection = (editionId: number) => {
 
   const { data, loading, error, refetch } = useSetupGradingChecksQuery({
     variables: { editionId: editionId.toString() },
+    fetchPolicy: "no-cache",
   });
 
   const [gradingChecks, setGradingChecks] = useState<GradingChecks | undefined>(

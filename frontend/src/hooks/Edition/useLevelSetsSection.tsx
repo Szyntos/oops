@@ -22,6 +22,7 @@ export const useLevelSetsSection = (editionId: number) => {
 
   const { data, loading, error, refetch } = useSetupLevelSetsQuery({
     variables: { editionId },
+    fetchPolicy: "no-cache",
   });
 
   const levelSets: LevelSet[] = data?.listSetupLevelSets ?? [];
@@ -34,7 +35,10 @@ export const useLevelSetsSection = (editionId: number) => {
     data: imageData,
     loading: imageLoading,
     error: imageError,
-  } = useFilesQuery({ variables: { paths: ["image/level"] } });
+  } = useFilesQuery({
+    variables: { paths: ["image/level"] },
+    fetchPolicy: "no-cache",
+  });
 
   const imageIds: string[] =
     imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>

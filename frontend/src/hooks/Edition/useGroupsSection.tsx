@@ -46,6 +46,7 @@ export const useGroupsSection = (editionId: number) => {
 
   const { data, loading, error, refetch } = useSetupGroupsQuery({
     variables: { editionId },
+    fetchPolicy: "no-cache",
   });
 
   const groups: Group[] = data?.listSetupGroups ?? [];
@@ -60,7 +61,7 @@ export const useGroupsSection = (editionId: number) => {
     data: usersData,
     loading: usersLoading,
     error: UsersError,
-  } = useSetupUsersQuery({ variables: { editionId } });
+  } = useSetupUsersQuery({ variables: { editionId }, fetchPolicy: "no-cache" });
 
   const teachers: Teacher[] =
     usersData?.listSetupUsers.filter(

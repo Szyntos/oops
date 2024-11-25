@@ -45,7 +45,10 @@ export const useAwardsSection = (editionId: number) => {
     data: imageData,
     loading: imageLoading,
     error: imageError,
-  } = useFilesQuery({ variables: { paths: ["image/award"] } });
+  } = useFilesQuery({
+    variables: { paths: ["image/award"] },
+    fetchPolicy: "no-cache",
+  });
 
   const imageIds: string[] =
     imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>

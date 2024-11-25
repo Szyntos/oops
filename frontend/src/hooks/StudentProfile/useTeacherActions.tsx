@@ -14,7 +14,7 @@ export const useTeacherActions = (
   teacherId: string,
 ) => {
   const { localErrorWrapper, globalErrorWrapper } = useError();
-  const { openConfirmPopup, closeConfirmPopup } = useConfirmPopup();
+  const { openConfirmPopup } = useConfirmPopup();
 
   const [selectedPoints, setSelectedPoints] = useState<Points | undefined>(
     undefined,
@@ -93,7 +93,6 @@ export const useTeacherActions = (
       globalErrorWrapper(async () => {
         await removePoints({ variables: { pointsId: parseInt(pointsId) } });
         refetchStudentScreenData();
-        closeConfirmPopup();
       });
     });
   };

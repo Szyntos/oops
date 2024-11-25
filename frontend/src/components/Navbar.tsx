@@ -40,7 +40,7 @@ export const Navbar = () => {
     handleChangeEditionConfirm,
   } = useSettings();
 
-  const { isConfirmOpen, closeConfirmPopup, handleConfirm } = useConfirmPopup();
+  const { isConfirmOpen, handleConfirm, closeConfirmPopup } = useConfirmPopup();
 
   return (
     <div style={styles.container}>

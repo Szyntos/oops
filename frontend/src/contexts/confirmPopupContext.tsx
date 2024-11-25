@@ -1,37 +1,42 @@
 import { createContext, useState, ReactNode } from "react";
 
-type ConfirmPopupType = {
+type ConfirmPopupContextType = {
   isConfirmOpen: boolean;
+  handleConfirm: () => void;
   openConfirmPopup: (onConfirm: () => void) => void;
   closeConfirmPopup: () => void;
-  handleConfirm: () => void;
 };
 
-export const ConfirmPopupContext = createContext<ConfirmPopupType | undefined>(
-  undefined,
-);
+export const ConfirmPopupContext = createContext<
+  ConfirmPopupContextType | undefined
+>(undefined);
 
 export const ConfirmPopupProvider = ({ children }: { children: ReactNode }) => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [handleConfirm, setHandleConfirm] = useState<() => void>(() => {});
+  const [onConfirm, setOnConfirm] = useState<() => void>(() => {});
 
-  const openConfirmPopup = (handleConfirm: () => void) => {
+  const openConfirmPopup = (onConfirm: () => void) => {
     setIsConfirmOpen(true);
-    setHandleConfirm(() => handleConfirm);
+    setOnConfirm(() => onConfirm);
   };
 
   const closeConfirmPopup = () => {
     setIsConfirmOpen(false);
-    setHandleConfirm(() => {});
+    setOnConfirm(() => {});
+  };
+
+  const handleConfirm = () => {
+    onConfirm();
+    closeConfirmPopup();
   };
 
   return (
     <ConfirmPopupContext.Provider
       value={{
         isConfirmOpen,
+        handleConfirm,
         openConfirmPopup,
         closeConfirmPopup,
-        handleConfirm,
       }}
     >
       {children}

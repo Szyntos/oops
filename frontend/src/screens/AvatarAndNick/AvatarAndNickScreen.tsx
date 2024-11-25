@@ -3,13 +3,17 @@ import { useStudentsScreenData } from "../../hooks/Students/useStudentsScreenDat
 import { useState } from "react";
 import { useSetStudentNickMutation } from "../../graphql/setStudentNick.graphql.types";
 import { useUser } from "../../hooks/common/useUser";
-//import { SelectImage } from "../../components/inputs/SelectImage";
+import { useSetStudentAvatarMutation } from "../../graphql/setStudentAvatar.graphql.types";
+import { useFilesQuery } from "../../graphql/files.graphql.types";
+import { SelectImage } from "../../components/inputs/SelectImage";
 
 export const AvatarAndNickScreen = () => {
   const [nick, setNick] = useState("");
-  const [loginError, setNickError] = useState("");
+  const [nickError, setNickError] = useState("");
   const { user } = useUser();
   const [setStudentNick] = useSetStudentNickMutation();
+  const [setStudentAvatar] = useSetStudentAvatarMutation();
+
   const setUserNick = async (userNick: string, userId: number) => {
     const { errors } = await setStudentNick({
       variables: {
@@ -19,7 +23,20 @@ export const AvatarAndNickScreen = () => {
     });
 
     if (errors) {
-      throw new Error(errors[0]?.message ?? "Error setting a.");
+      throw new Error(errors[0]?.message ?? "Error setting a nick.");
+    }
+  };
+
+  const setUserAvatar = async (userId: number, fileId: number) => {
+    const { errors } = await setStudentAvatar({
+      variables: {
+        fileId: fileId,
+        userId: userId,
+      },
+    });
+
+    if (errors) {
+      throw new Error(errors[0]?.message ?? "Error setting avatar.");
     }
   };
 
@@ -35,10 +52,18 @@ export const AvatarAndNickScreen = () => {
     }
   };
 
+  const {
+    data: imageData,
+    loading: imageLoading,
+    error: imageError,
+  } = useFilesQuery({ variables: { paths: ["image/user"] } });
   const { loading, error } = useStudentsScreenData();
 
-  if (loading) return <div>loading...</div>;
-  if (error) return <div>ERROR: {error?.message}</div>;
+  if (imageLoading) return <div>Loading...</div>;
+  if (imageError) return <div>ERROR: {imageError.message}</div>;
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>ERROR: {error.message}</div>;
 
   return (
     <div style={styles.container}>
@@ -53,25 +78,26 @@ export const AvatarAndNickScreen = () => {
           />
         </div>
 
-        {loginError && <p className="error">{loginError}</p>}
-        <button type="submit">Login</button>
+        {nickError && <p className="error">{nickError}</p>}
+        <button type="submit">Set Nick</button>
       </form>
 
-      {/* <SelectImage
-            type="withoutTooltip"
-            options={imageIds}
-            selectedIds={[formik.values.fileId.toString()]}
-            onSelectClick={(updatedIds: string[]) =>
-              formik.setValues({
-                ...formik.values,
-                fileId: updatedIds.length > 0 ? updatedIds[0] : "",
-              })
-            }
-            error={formik.errors.fileId as string}
-            touched={formik.touched.fileId}
-            selectVariant={"single"}
-            title="select image:"
-          /> */}
+      <SelectImage
+        type="avatar"
+        options={
+          imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((e) =>
+            e.files.map((e2) => e2.file.fileId),
+          ) ?? []
+        }
+        selectedIds={[]}
+        onSelectClick={(updatedIds: string[]) =>
+          setUserAvatar(parseInt(user.userId), parseInt(updatedIds[0]))
+        }
+        error={undefined}
+        touched={undefined}
+        selectVariant={"single"}
+        title="Select Image:"
+      />
     </div>
   );
 };

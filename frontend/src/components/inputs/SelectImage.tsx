@@ -12,7 +12,7 @@ type SelectImageProps = {
   touched: boolean | undefined;
   selectVariant: "multiple" | "single";
   title: string;
-} & (AwardProps | WithoutTooltip);
+} & (AwardProps | WithoutTooltip | AvatarProps);
 
 type AwardProps = {
   type: "award";
@@ -21,6 +21,12 @@ type AwardProps = {
 
 type WithoutTooltip = {
   type: "withoutTooltip";
+  // ids of images
+  options: string[];
+};
+
+type AvatarProps = {
+  type: "avatar";
   // ids of images
   options: string[];
 };
@@ -74,6 +80,19 @@ export const SelectImage = ({
           </div>
         ));
       case "withoutTooltip":
+        return options.map((imageId) => (
+          <div
+            style={styles.imageWrapper}
+            onClick={() => handleSelect(imageId)}
+          >
+            <Image
+              id={imageId}
+              size={64}
+              disabled={!selectedIds.some((id) => id === imageId)}
+            />
+          </div>
+        ));
+      case "avatar":
         return options.map((imageId) => (
           <div
             style={styles.imageWrapper}

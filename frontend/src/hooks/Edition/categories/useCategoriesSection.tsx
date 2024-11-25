@@ -20,8 +20,6 @@ export type Category = SetupCategoriesQuery["listSetupCategories"][number];
 export const useCategoriesSection = (editionId: number) => {
   const { localErrorWrapper, globalErrorWrapper } = useError();
 
-  const { openConfirmPopup, closeConfirmPopup } = useConfirmPopup();
-
   const { data, loading, error, refetch } = useSetupCategoriesQuery({
     variables: { editionId },
   });
@@ -132,6 +130,7 @@ export const useCategoriesSection = (editionId: number) => {
   };
 
   // DELETE
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteCategory] = useDeleteCategoryMutation();
   const handleDeleteCategory = (category: Category) => {
     openConfirmPopup(() => {
@@ -140,7 +139,6 @@ export const useCategoriesSection = (editionId: number) => {
           variables: { categoryId: parseInt(category.category.categoryId) },
         });
         refetch();
-        closeConfirmPopup();
       });
     });
   };

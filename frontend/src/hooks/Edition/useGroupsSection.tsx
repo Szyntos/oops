@@ -20,6 +20,7 @@ import { useDeleteGroupMutation } from "../../graphql/deleteGroup.graphql.types"
 import { useError } from "../common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../utils/constants";
 import { mockPermissions } from "../../utils/utils";
+import { useConfirmPopup } from "../common/useConfrimPopup";
 
 export type Group = SetupGroupsQuery["listSetupGroups"][number];
 
@@ -152,13 +153,16 @@ export const useGroupsSection = (editionId: number) => {
   };
 
   // DELETE
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteGroup] = useDeleteGroupMutation();
   const handleDeleteGroup = async (group: Group) => {
-    globalErrorWrapper(async () => {
-      await deleteGroup({
-        variables: { groupId: parseInt(group.group.groupsId) },
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteGroup({
+          variables: { groupId: parseInt(group.group.groupsId) },
+        });
+        refetch();
       });
-      refetch();
     });
   };
 

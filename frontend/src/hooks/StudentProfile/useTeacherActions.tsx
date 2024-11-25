@@ -14,7 +14,6 @@ export const useTeacherActions = (
   teacherId: string,
 ) => {
   const { localErrorWrapper, globalErrorWrapper } = useError();
-  const { openConfirmPopup } = useConfirmPopup();
 
   const [selectedPoints, setSelectedPoints] = useState<Points | undefined>(
     undefined,
@@ -87,6 +86,7 @@ export const useTeacherActions = (
   };
 
   // DELETE
+  const { openConfirmPopup } = useConfirmPopup();
   const [removePoints] = useRemovePointsMutation();
   const handleDeletePointsClick = async (pointsId: string) => {
     openConfirmPopup(() => {

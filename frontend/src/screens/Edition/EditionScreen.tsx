@@ -4,7 +4,7 @@ import { pathsGenerator } from "../../router/paths";
 import { SectionsBar } from "../../components/Edition/SectionsBar";
 import { Dialog } from "@mui/material";
 import { CloseHeader } from "../../components/dialogs/CloseHeader";
-import { ShowEntryContent } from "../../components/Edition/ShowEntryContent";
+import { ShowEntryContent } from "../../components/Edition/ShowEntryContent/ShowEntryContent";
 import { useEditionSections } from "../../hooks/common/useEditionSection";
 
 export const EditionScreen = () => {

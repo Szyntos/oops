@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { User } from "../../contexts/userContext";
+import { Edition, User } from "../../contexts/userContext";
 import { useCurrentUserLazyQuery } from "../../graphql/currentUser.graphql.types";
 import { pathsGenerator } from "../../router/paths";
 import { defaultUnauthenticatedUser } from "../../utils/types";
@@ -10,6 +10,7 @@ import { useUser } from "../common/useUser";
 import { useApolloClient } from "@apollo/client";
 import { UserFromList } from "../../components/Welcome/UsersListWithFilter/UsersListWithFilter";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { isEditionActive } from "../../utils/utils";
 
 export const cookiesStrings = {
   token: "token",
@@ -33,22 +34,26 @@ export const useLogin = () => {
     Cookies.set(cookiesStrings.token, token);
 
     const { data, error } = await fetchCurrentUser();
+
+    const editions: Edition[] =
+      data?.getCurrentUser.editions.map((edition) => {
+        return {
+          name: edition?.editionName as string,
+          editionId: edition?.editionId as string,
+          editionYear: edition?.editionYear as number,
+          endDate: edition?.endDate as string,
+          label: edition?.label as string,
+          startDate: edition?.startDate as string,
+        };
+      }) ?? [];
+
     const user: User | undefined = data?.getCurrentUser
       ? {
-          nick: data?.getCurrentUser.nick,
-          role: data?.getCurrentUser.role.toUpperCase() as UsersRolesType,
-          userId: data?.getCurrentUser.userId,
-          editions:
-            data?.getCurrentUser.userGroups.map((group) => {
-              return {
-                name: group?.group.edition.editionName as string,
-                editionId: group?.group.edition.editionId as string,
-                editionYear: group?.group.edition.editionYear as number,
-                endDate: group?.group.edition.endDate as string,
-                label: group?.group.edition.label as string,
-                startDate: group?.group.edition.startDate as string,
-              };
-            }) ?? [],
+          nick: data?.getCurrentUser.user.nick,
+          role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
+          userId: data?.getCurrentUser.user.userId,
+          selectedEdition: getInitSelectedEdition(editions),
+          editions,
         }
       : undefined;
 
@@ -80,22 +85,25 @@ export const useLogin = () => {
 
     // fetch currently logged in user data
     const { data, error } = await fetchCurrentUser();
+
+    const editions: Edition[] =
+      data?.getCurrentUser.editions.map((edition) => {
+        return {
+          name: edition?.editionName as string,
+          editionId: edition?.editionId as string,
+          editionYear: edition?.editionYear as number,
+          endDate: edition?.endDate as string,
+          label: edition?.label as string,
+          startDate: edition?.startDate as string,
+        };
+      }) ?? [];
     const user: User | undefined = data?.getCurrentUser
       ? {
-          nick: data?.getCurrentUser.nick,
-          role: data?.getCurrentUser.role.toUpperCase() as UsersRolesType,
-          userId: data?.getCurrentUser.userId,
-          editions:
-            data?.getCurrentUser.userGroups.map((group) => {
-              return {
-                name: group?.group.edition.editionName as string,
-                editionId: group?.group.edition.editionId as string,
-                editionYear: group?.group.edition.editionYear as number,
-                endDate: group?.group.edition.endDate as string,
-                label: group?.group.edition.label as string,
-                startDate: group?.group.edition.startDate as string,
-              };
-            }) ?? [],
+          nick: data?.getCurrentUser.user.nick,
+          role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
+          userId: data?.getCurrentUser.user.userId,
+          selectedEdition: getInitSelectedEdition(editions),
+          editions,
         }
       : undefined;
 
@@ -103,7 +111,6 @@ export const useLogin = () => {
       await logout();
       throw new Error(error?.message ?? "Fetched current user is undefined");
     }
-
     // set cookie user
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
     setUser(user);
@@ -153,4 +160,12 @@ export const useLogin = () => {
     loginWithCredentials,
     logout,
   };
+};
+
+const getInitSelectedEdition = (editions: Edition[]) => {
+  const selectedEdition =
+    editions.length > 0
+      ? editions.filter((e) => isEditionActive(e))[0]
+      : undefined;
+  return selectedEdition;
 };

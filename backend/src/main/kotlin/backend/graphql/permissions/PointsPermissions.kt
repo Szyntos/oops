@@ -493,6 +493,14 @@ class PointsPermissions {
                 reason = "Value cannot be negative"
             )
         }
+        if (value > subcategory.maxPoints.toFloat()) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Student cannot have more than ${subcategory.maxPoints} points in this subcategory"
+            )
+        }
         val studentPoints = student.getPointsBySubcategory(subcategoryId, pointsRepository)
         val studentPointsWithoutBonuses = studentPoints.filter { bonusesRepository.findByPoints(it).isEmpty() }
         if (studentPointsWithoutBonuses.isNotEmpty()) {

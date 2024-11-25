@@ -38,6 +38,17 @@ export type GroupPointsQuery = {
         };
         points?: { __typename?: "PointType"; value: string } | null;
       }>;
+      awardAggregate: Array<{
+        __typename?: "AwardAggregateType";
+        sumOfAll?: number | null;
+        award: { __typename?: "AwardType"; awardId: string; awardName: string };
+      }>;
+      categoryAggregate: {
+        __typename?: "CategoryAggregate";
+        sumOfAll: number;
+        sumOfBonuses: number;
+        sumOfPurePoints: number;
+      };
     }>;
   } | null>;
 };
@@ -68,6 +79,18 @@ export const GroupPointsDocument = gql`
           points {
             value
           }
+        }
+        awardAggregate {
+          award {
+            awardId
+            awardName
+          }
+          sumOfAll
+        }
+        categoryAggregate {
+          sumOfAll
+          sumOfBonuses
+          sumOfPurePoints
         }
       }
     }

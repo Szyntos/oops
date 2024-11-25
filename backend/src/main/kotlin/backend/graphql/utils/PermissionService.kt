@@ -280,6 +280,8 @@ class PermissionService {
             // UsersPermissions
             "removeUser" -> usersPartialPermissions.checkRemoveUserPermission(jsonArguments)
             "editUser" -> usersPartialPermissions.checkEditUserPermission(jsonArguments)
+            "markStudentAsInactive" -> usersPartialPermissions.checkMarkStudentAsInactivePermission(jsonArguments)
+            "markStudentAsActive" -> usersPartialPermissions.checkMarkStudentAsActivePermission(jsonArguments)
             "overrideComputedGradeForUser" -> usersPartialPermissions.checkOverrideComputedGradeForUserPermission(jsonArguments)
             "turnOffOverrideComputedGradeForUser" -> usersPartialPermissions.checkTurnOffOverrideComputedGradeForUserPermission(jsonArguments)
             else -> Permission(

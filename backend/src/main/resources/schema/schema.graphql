@@ -408,7 +408,7 @@ type Query {
   getPossibleGroupDates(editionId: Int!): [GroupDateType!]!
   getNeighboringLevels(studentId: Int!, editionId: Int!): NeighboringLevelsType!
   getGroupsInEdition(editionId: Int!, teacherId: Int!): [GroupTeacherType!]!
-  getCurrentUser: UserType!
+  getCurrentUser: UserWithEditionsType!
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
@@ -900,6 +900,11 @@ type ListPermissionsOutputType{
   canSelect: PermissionType!
   canUnselect: PermissionType!
   additional: [PermissionType!]!
+}
+
+type UserWithEditionsType{
+  user: UserType!,
+  editions: [EditionType!]!
 }
 
 input SubcategoryInputType {

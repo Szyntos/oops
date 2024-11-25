@@ -6,7 +6,11 @@ import { FormPoints } from "../../components/StudentProfile/PointsForm/types";
 import { useError } from "../common/useGlobalError";
 import { useAddPointsToGroupMutation } from "../../graphql/addPointsToSubcategory.graphql.types";
 import { PointsRowData } from "../../components/Group/PointsRow";
-import { Student, useGroupTableData } from "./useGroupTableData";
+import {
+  Student,
+  SubcategoryPointsEntry,
+  useGroupTableData,
+} from "./useGroupTableData";
 
 export type SubcategoryPointsFormData = {
   subcategory: Subcategory;
@@ -21,7 +25,7 @@ export const useGroupScreenData = (
     useGroupTableData(groupId);
 
   const {
-    addChestCategories,
+    addPointsCategories,
     loading: formDataLoading,
     error: formDataError,
   } = useFormCategories();
@@ -68,18 +72,29 @@ export const useGroupScreenData = (
 
   const [isSubcategoryOpen, setIsSubcategoryOpen] = useState<boolean>(false);
   const openSubcategory = (subcategory: Subcategory) => {
-    const subcategoryPoints: SubcategoryPointsFormData = {
+    const pointsRowData: PointsRowData[] = rows.map((row) => {
+      const category =
+        row.categories.filter(
+          (c) => c.categoryId === subcategory.categoryId.toString(),
+        )[0] ?? undefined;
+
+      const ss: SubcategoryPointsEntry =
+        category.subcategories.filter(
+          (s) => s.subcategoryId === subcategory.id,
+        )[0] ?? [];
+
+      return {
+        student: row.student,
+        points: ss.pure,
+      };
+    });
+
+    const sp: SubcategoryPointsFormData = {
       subcategory,
-      rows: rows.map((e) => {
-        return {
-          student: e.student,
-          points: e.subcategories.find(
-            (s) => s.subcategoryId === subcategory.id,
-          )?.pure,
-        };
-      }),
+      rows: pointsRowData,
     };
-    setSelectedSubcategory(subcategoryPoints);
+
+    setSelectedSubcategory(sp);
     setIsSubcategoryOpen(true);
   };
   const closeSubcategory = () => {
@@ -121,7 +136,7 @@ export const useGroupScreenData = (
     openStudent,
     closeStudent,
 
-    addChestCategories,
+    addPointsCategories,
     handleAddPointsConfirmation,
 
     handleAddPointsToGroup,

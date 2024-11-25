@@ -1,19 +1,17 @@
 query CurrentUser {
   getCurrentUser {
-    nick
-    role
-    userId
-    userGroups {
-      group {
-        edition {
-          editionId
-          editionName
-          editionYear
-          endDate
-          label
-          startDate
-        }
-      }
+    editions {
+      editionName
+      editionId
+      editionYear
+      endDate
+      label
+      startDate
+    }
+    user {
+      nick
+      role
+      userId
     }
   }
 }

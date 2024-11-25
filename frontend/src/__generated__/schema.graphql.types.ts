@@ -175,7 +175,7 @@ export type AwardAggregateOrderBy = {
 export type AwardAggregateType = {
   __typename?: "AwardAggregateType";
   award: AwardType;
-  sumOfAll: Scalars["Float"]["output"];
+  sumOfAll?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** input type for inserting array relation for remote table "award" */
@@ -10085,6 +10085,12 @@ export type UserType = {
   userLevels: Array<Maybe<UserLevelType>>;
 };
 
+export type UserWithEditionsType = {
+  __typename?: "UserWithEditionsType";
+  editions: Array<EditionType>;
+  user: UserType;
+};
+
 export type UserWithPermissionsType = {
   __typename?: "UserWithPermissionsType";
   permissions: ListPermissionsOutputType;
@@ -13290,7 +13296,7 @@ export type Query_Root = {
   flywaySchemaHistoryAggregate: FlywaySchemaHistoryAggregate;
   /** fetch data from the table: "flyway_schema_history" using primary key columns */
   flywaySchemaHistoryByPk?: Maybe<FlywaySchemaHistory>;
-  getCurrentUser: UserType;
+  getCurrentUser: UserWithEditionsType;
   getFilesGroupedByType: Array<FileGroupType>;
   getFilesGroupedByTypeBySelectedTypes: Array<FileGroupType>;
   getGroupsInEdition: Array<GroupTeacherType>;

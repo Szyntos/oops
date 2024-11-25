@@ -1,10 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import { Styles } from "../utils/Styles";
-import { ChestsToOpenQuery } from "../graphql/chestsToOpen.graphql.types";
-
-export type Chest =
-  ChestsToOpenQuery["users"][number]["chestHistories"][number];
 
 export const Root = () => {
   return (

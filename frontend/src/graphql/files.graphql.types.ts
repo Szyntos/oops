@@ -26,6 +26,39 @@ export type FilesQuery = {
         pathToFile: string;
         updatedAt: string;
       };
+      permissions: {
+        __typename?: "ListPermissionsOutputType";
+        canAdd: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canCopy: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canEdit: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canRemove: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canSelect: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canUnselect: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+      };
     }>;
   }>;
 };
@@ -43,6 +76,32 @@ export const FilesDocument = gql`
           label
           pathToFile
           updatedAt
+        }
+        permissions {
+          canAdd {
+            allow
+            reason
+          }
+          canCopy {
+            allow
+            reason
+          }
+          canEdit {
+            allow
+            reason
+          }
+          canRemove {
+            allow
+            reason
+          }
+          canSelect {
+            allow
+            reason
+          }
+          canUnselect {
+            allow
+            reason
+          }
         }
       }
     }

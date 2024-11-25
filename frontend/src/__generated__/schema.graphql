@@ -276,7 +276,7 @@ input AwardAggregateOrderBy {
 
 type AwardAggregateType {
   award: AwardType!
-  sumOfAll: Float!
+  sumOfAll: Float
 }
 
 """
@@ -14019,6 +14019,11 @@ type UserType {
   userLevels: [UserLevelType]!
 }
 
+type UserWithEditionsType {
+  editions: [EditionType!]!
+  user: UserType!
+}
+
 type UserWithPermissionsType {
   permissions: ListPermissionsOutputType!
   user: UserType!
@@ -19138,7 +19143,7 @@ type query_root {
   fetch data from the table: "flyway_schema_history" using primary key columns
   """
   flywaySchemaHistoryByPk(installedRank: Int!): FlywaySchemaHistory
-  getCurrentUser: UserType!
+  getCurrentUser: UserWithEditionsType!
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   getGroupsInEdition(editionId: Int!, teacherId: Int!): [GroupTeacherType!]!

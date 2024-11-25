@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Styles } from "../utils/Styles";
-import { Chest } from "./Root";
 import { AwardImage } from "./images/AwardImage";
+import { Chest } from "../hooks/chest/useChests";
 
 type OpenChestProps = {
   chest: Chest;

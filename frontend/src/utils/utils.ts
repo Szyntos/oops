@@ -1,6 +1,6 @@
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
-import { Edition } from "../hooks/common/useGroupsData";
 import { Permissions } from "../components/Edition/Sections/SetupButtons";
+import { Edition } from "../contexts/userContext";
 
 type User = {
   role: string;
@@ -16,6 +16,7 @@ export type Subcategory = {
   id: string;
   name: string;
   maxPoints: number;
+  categoryId: number;
 };
 
 export const hasRole = (user: User, allowedRoles: UsersRolesType[]) => {

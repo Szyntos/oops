@@ -29,7 +29,6 @@ const getSpecificContent = (entry: Entry) => {
   }
 };
 
-// TODO display separate component for every entry type
 export const ShowEntryContent = ({ selectedEntry }: ShowEntryContentProps) => {
   return (
     <div style={styles.container}>

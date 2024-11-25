@@ -9,6 +9,7 @@ import {
   SetupEditionsQuery,
   useSetupEditionsQuery,
 } from "../../graphql/setupEditions.graphql.types";
+import { useConfirmPopup } from "../common/useConfrimPopup";
 
 export type Edition = SetupEditionsQuery["listSetupEditions"][number];
 
@@ -98,13 +99,17 @@ export const useEditionsScreen = () => {
   };
 
   // DELETE
+  // TODO this confrim can be moved to setup buttons
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteEdition] = useDeleteEditionMutation();
   const handleDeleteClick = async (edition: Edition) => {
-    globalErrorWrapper(async () => {
-      await deleteEdition({
-        variables: { editionId: parseInt(edition.edition.editionId) },
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteEdition({
+          variables: { editionId: parseInt(edition.edition.editionId) },
+        });
+        refetch();
       });
-      refetch();
     });
   };
 

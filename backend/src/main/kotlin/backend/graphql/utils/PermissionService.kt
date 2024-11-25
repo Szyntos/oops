@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service
 class PermissionService {
 
     @Autowired
+    private lateinit var gradingChecksPartialPermissions: GradingChecksPartialPermissions
+
+    @Autowired
     private lateinit var filePartialPermissions: FilePartialPermissions
 
     @Autowired
@@ -216,6 +219,8 @@ class PermissionService {
             "markPassingStudentsFromEditionAsInactive" -> usersPermissions.checkMarkPassingStudentsFromEditionAsInactivePermission(jsonArguments)
             "markStudentAsInactive" -> usersPermissions.checkMarkStudentAsInactivePermission(jsonArguments)
             "markStudentAsActive" -> usersPermissions.checkMarkStudentAsActivePermission(jsonArguments)
+            "overrideComputedGradeForUser" -> usersPermissions.checkOverrideComputedGradeForUserPermission(jsonArguments)
+            "turnOffOverrideComputedGradeForUser" -> usersPermissions.checkTurnOffOverrideComputedGradeForUserPermission(jsonArguments)
             "getStudentPoints" -> usersPermissions.checkGetStudentPointsPermission(jsonArguments)
             "getSumOfPointsForStudentByCategory" -> usersPermissions.checkGetSumOfPointsForStudentByCategoryPermission(jsonArguments)
             "getCurrentUser" -> usersPermissions.checkGetCurrentUserPermission(jsonArguments)
@@ -260,7 +265,9 @@ class PermissionService {
             // FilePermissions
             "removeFile" -> filePartialPermissions.checkRemoveFilePermission(jsonArguments)
             // GradingChecksPermissions
-            "editGradingCheck" -> gradingChecksPermissions.checkEditGradingCheckPermission(jsonArguments)
+            "addGradingCheck" -> gradingChecksPartialPermissions.checkAddGradingCheckPermission(jsonArguments)
+            "editGradingCheck" -> gradingChecksPartialPermissions.checkEditGradingCheckPermission(jsonArguments)
+            "removeGradingCheck" -> gradingChecksPartialPermissions.checkRemoveGradingCheckPermission(jsonArguments)
             // GroupsPermissions
             "editGroupWithUsers" -> groupsPartialPermissions.checkEditGroupWithUsersPermission(jsonArguments)
             "removeGroup" -> groupsPartialPermissions.checkRemoveGroupPermission(jsonArguments)
@@ -275,6 +282,8 @@ class PermissionService {
             "editUser" -> usersPartialPermissions.checkEditUserPermission(jsonArguments)
             "markStudentAsInactive" -> usersPartialPermissions.checkMarkStudentAsInactivePermission(jsonArguments)
             "markStudentAsActive" -> usersPartialPermissions.checkMarkStudentAsActivePermission(jsonArguments)
+            "overrideComputedGradeForUser" -> usersPartialPermissions.checkOverrideComputedGradeForUserPermission(jsonArguments)
+            "turnOffOverrideComputedGradeForUser" -> usersPartialPermissions.checkTurnOffOverrideComputedGradeForUserPermission(jsonArguments)
             else -> Permission(
                 action = input.action,
                 arguments = jsonArguments,

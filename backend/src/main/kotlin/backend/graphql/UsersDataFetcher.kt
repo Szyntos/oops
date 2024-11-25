@@ -17,6 +17,7 @@ import backend.levels.Levels
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.userGroups.UserGroupsRepository
+import backend.userLevel.UserLevel
 import backend.userLevel.UserLevelRepository
 import backend.users.FirebaseUserService
 import backend.users.UsersRepository
@@ -120,13 +121,13 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                         objectMapper.createObjectNode(),
                         false,
                         "Not applicable"),
-                    canEdit = permissionService.checkPartialPermission(PermissionInput("editUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
                     canCopy = Permission(
                         "copyUser",
                         objectMapper.createObjectNode(),
                         false,
                         "Not applicable"),
-                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId))),),
                     canSelect =
                     Permission(
                         "selectUser",
@@ -140,6 +141,8 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                         false,
                         "Not applicable"),
                     additional = listOf(
+                        permissionService.checkPartialPermission(PermissionInput("overrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
+                        permissionService.checkPartialPermission(PermissionInput("turnOffOverrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
                         permissionService.checkPartialPermission(PermissionInput("markStudentAsInactive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
                         permissionService.checkPartialPermission(PermissionInput("markStudentAsActive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
                         )
@@ -529,6 +532,69 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         return true
     }
 
+    @DgsMutation
+    @Transactional
+    fun overrideComputedGradeForUser(@InputArgument userId: Long, @InputArgument editionId: Long,
+                              @InputArgument grade: Float): UserLevel {
+        val action = "overrideComputedGradeForUser"
+        val arguments = mapOf(
+            "userId" to userId,
+            "editionId" to editionId,
+            "grade" to grade
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
+            ?: throw IllegalArgumentException("User has no levels for this edition")
+
+        userLevel.coordinatorOverride = true
+        userLevelRepository.save(userLevel)
+
+        userLevel.computedGrade = grade.toDouble()
+        return userLevelRepository.save(userLevel)
+    }
+
+    @DgsMutation
+    @Transactional
+    fun turnOffOverrideComputedGradeForUser(@InputArgument userId: Long, @InputArgument editionId: Long): UserLevel {
+        val action = "turnOffOverrideComputedGradeForUser"
+        val arguments = mapOf(
+            "userId" to userId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
+            ?: throw IllegalArgumentException("User has no levels for this edition")
+
+        userLevel.coordinatorOverride = false
+        userLevelRepository.save(userLevel)
+
+        if (userLevel.endOfLabsLevelsReached && userLevel.projectPointsThresholdReached){
+            userLevel.computedGrade = userLevel.level.grade.toDouble()
+        } else {
+            userLevel.computedGrade = 2.0
+        }
+        return userLevelRepository.save(userLevel)
+    }
 
     @DgsQuery
     @Transactional

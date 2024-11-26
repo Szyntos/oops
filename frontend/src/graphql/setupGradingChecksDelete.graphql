@@ -1,0 +1,3 @@
+mutation SetupGradingChecksDelete($gradingChecksId: Int!) {
+  removeGradingCheck(gradingCheckId: $gradingChecksId)
+}

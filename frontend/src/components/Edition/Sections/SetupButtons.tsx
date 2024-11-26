@@ -71,9 +71,15 @@ export const SetupButtons = ({
   const activeness: SetupButtonProps | undefined = handleMarkActiveness
     ? {
         handleClick: handleMarkActiveness,
-        isClickable: true,
-        reason: undefined,
-        title: isActive ? "make inactive" : "make active",
+        isClickable: Boolean(
+          isActive
+            ? permissions.canMarkAsInactive?.allow
+            : permissions.canMarkAsActive?.allow,
+        ),
+        reason: isActive
+          ? permissions.canMarkAsActive?.reason
+          : permissions.canMarkAsInactive?.reason,
+        title: isActive ? "deactivate" : "activate",
       }
     : undefined;
 

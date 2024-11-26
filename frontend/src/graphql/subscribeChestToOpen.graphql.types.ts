@@ -4,7 +4,7 @@ import { gql } from "@apollo/client";
 import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
 export type SubscribeChestToOpenSubscriptionVariables = Types.Exact<{
-  userId?: Types.InputMaybe<Types.Scalars["bigint"]["input"]>;
+  userId: Types.Scalars["bigint"]["input"];
 }>;
 
 export type SubscribeChestToOpenSubscription = {
@@ -50,7 +50,7 @@ export type SubscribeChestToOpenSubscription = {
 };
 
 export const SubscribeChestToOpenDocument = gql`
-  subscription SubscribeChestToOpen($userId: bigint) {
+  subscription SubscribeChestToOpen($userId: bigint!) {
     users(where: { userId: { _eq: $userId } }) {
       chestHistories(
         where: { opened: { _eq: false }, userId: { _eq: $userId } }
@@ -106,10 +106,14 @@ export const SubscribeChestToOpenDocument = gql`
  * });
  */
 export function useSubscribeChestToOpenSubscription(
-  baseOptions?: Apollo.SubscriptionHookOptions<
+  baseOptions: Apollo.SubscriptionHookOptions<
     SubscribeChestToOpenSubscription,
     SubscribeChestToOpenSubscriptionVariables
-  >,
+  > &
+    (
+      | { variables: SubscribeChestToOpenSubscriptionVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSubscription<

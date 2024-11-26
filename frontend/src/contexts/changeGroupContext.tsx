@@ -2,7 +2,7 @@ import { createContext, useState, ReactNode } from "react";
 import { useChangeGroupMutation } from "../graphql/changeGroup.graphql.types";
 import { useError } from "../hooks/common/useGlobalError";
 import { useApolloClient } from "@apollo/client";
-import { ChangeGroupFormValues } from "../components/dialogs/ChangeGroupContent/ChangeGroupForm";
+import { ChangeGroupFormValues } from "../components/dialogs/ChangeGroupDialog/ChangeGroupForm";
 
 type ChangeGroupContextType = {
   isChangeGroupOpen: boolean;
@@ -24,7 +24,7 @@ type Data = {
 };
 
 export const ChangeGroupProvider = ({ children }: { children: ReactNode }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isChangeGroupOpen, setIdChangeGroupOpen] = useState(false);
 
   const [data, setData] = useState<Data | undefined>(undefined);
 
@@ -32,13 +32,13 @@ export const ChangeGroupProvider = ({ children }: { children: ReactNode }) => {
 
   const client = useApolloClient();
 
-  const open = (initData: Data) => {
-    setIsOpen(true);
+  const openChangeGroup = (initData: Data) => {
+    setIdChangeGroupOpen(true);
     setData(initData);
   };
 
-  const close = () => {
-    setIsOpen(false);
+  const closeChangeGroup = () => {
+    setIdChangeGroupOpen(false);
     setData(undefined);
     setFormError(undefined);
   };
@@ -56,16 +56,16 @@ export const ChangeGroupProvider = ({ children }: { children: ReactNode }) => {
       await client.refetchQueries({
         include: "active",
       });
-      close();
+      closeChangeGroup();
     });
   };
 
   return (
     <ChangeGroupContext.Provider
       value={{
-        isChangeGroupOpen: isOpen,
-        openChangeGroup: open,
-        closeChangeGroup: close,
+        isChangeGroupOpen,
+        openChangeGroup,
+        closeChangeGroup,
         data,
         handleChangeGroupConfirm,
         formError,

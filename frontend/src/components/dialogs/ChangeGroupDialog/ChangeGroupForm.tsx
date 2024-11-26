@@ -1,8 +1,8 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { Group } from "./ChangeGroupContent";
 import { Styles } from "../../../utils/Styles";
+import { Group } from "./ChangeGroupDialog";
 
 export type ChangeGroupFormValues = z.infer<typeof ValidationSchema>;
 

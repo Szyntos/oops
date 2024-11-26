@@ -1,14 +1,18 @@
+import { Dialog } from "@mui/material";
+import { useChangeGroup } from "../../../hooks/common/useChangeGroup";
+import { CloseHeader } from "../CloseHeader";
 import {
   GroupsQuery,
   useGroupsQuery,
 } from "../../../graphql/groups.graphql.types";
-import { useChangeGroup } from "../../../hooks/common/useChangeGroup";
 import { ChangeGroupForm } from "./ChangeGroupForm";
 
 export type Group = NonNullable<GroupsQuery["editionByPk"]>["groups"][number];
 
-export const ChangeGroupContent = () => {
+export const ChangeGroupDialog = () => {
   const {
+    isChangeGroupOpen,
+    closeChangeGroup,
     handleChangeGroupConfirm,
     data: initData,
     formError,
@@ -27,7 +31,8 @@ export const ChangeGroupContent = () => {
   if (!initData) return <div>something went wrong...</div>;
 
   return (
-    <div>
+    <Dialog open={isChangeGroupOpen}>
+      <CloseHeader onCloseClick={closeChangeGroup} />
       <ChangeGroupForm
         handleConfirm={handleChangeGroupConfirm}
         title={"Change student group"}
@@ -35,6 +40,6 @@ export const ChangeGroupContent = () => {
         initGroupId={initData.groupId}
         formError={formError}
       />
-    </div>
+    </Dialog>
   );
 };

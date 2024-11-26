@@ -149,12 +149,16 @@ export function TeacherStudentProfile() {
               onClick={() =>
                 openChangeGroup({
                   studentId,
-                  groupId: studentData.group?.id ?? "",
-                  editionId: selectedEdition?.editionId ?? "",
+                  groupId: studentData.group?.id as string,
+                  editionId: selectedEdition?.editionId as string,
                 })
               }
               color="lightblue"
-              disabled={disableEditMode}
+              disabled={
+                disableEditMode ||
+                !studentData.group?.id ||
+                !selectedEdition?.editionId
+              }
             >
               Change group
             </Button>

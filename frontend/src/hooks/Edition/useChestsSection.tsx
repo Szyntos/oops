@@ -27,13 +27,19 @@ export const useChestsSection = (editionId: number) => {
     loading: chestsLoading,
     error: chestsError,
     refetch,
-  } = useSetupChestsQuery({ variables: { editionId } });
+  } = useSetupChestsQuery({
+    variables: { editionId },
+    fetchPolicy: "no-cache",
+  });
 
   const {
     data: imageData,
     loading: imageLoading,
     error: imageError,
-  } = useFilesQuery({ variables: { paths: ["image/chest"] } });
+  } = useFilesQuery({
+    variables: { paths: ["image/chest"] },
+    fetchPolicy: "no-cache",
+  });
 
   const imageIds: string[] =
     imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>

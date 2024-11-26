@@ -18,7 +18,8 @@ export const useGradingChecksSection = (editionId: number) => {
   const { localErrorWrapper, globalErrorWrapper } = useError();
 
   const { data, loading, error, refetch } = useSetupGradingChecksQuery({
-    variables: { editionId },
+    variables: { editionId: editionId.toString() },
+    fetchPolicy: "no-cache",
   });
 
   const gradingChecks: GradingChecks | undefined = data?.listSetupGradingChecks;

@@ -155,30 +155,28 @@ export function TeacherStudentProfile() {
                   })
                 }
                 color="lightblue"
-                disabled={disableEditMode}
+                disabled={disableEditMode || !selectedEdition?.editionId}
               >
                 Override Grade
               </Button>
+              <Button
+                onClick={() =>
+                  openChangeGroup({
+                    studentId,
+                    groupId: studentData.group?.id as string,
+                    editionId: selectedEdition?.editionId as string,
+                  })
+                }
+                color="lightblue"
+                disabled={
+                  disableEditMode ||
+                  !studentData.group?.id ||
+                  !selectedEdition?.editionId
+                }
+              >
+                Change group
+              </Button>
             </>
-          )}
-          {user.role === UsersRolesType.Coordinator && (
-            <Button
-              onClick={() =>
-                openChangeGroup({
-                  studentId,
-                  groupId: studentData.group?.id as string,
-                  editionId: selectedEdition?.editionId as string,
-                })
-              }
-              color="lightblue"
-              disabled={
-                disableEditMode ||
-                !studentData.group?.id ||
-                !selectedEdition?.editionId
-              }
-            >
-              Change group
-            </Button>
           )}
         </div>
 

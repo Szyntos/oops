@@ -25,14 +25,11 @@ export const ChangeGroupDialog = () => {
 
   const groups: Group[] = data?.editionByPk?.groups ?? [];
 
-  if (error) return <div>Error: {error.message}</div>;
-  if (loading) return <div>Loading</div>;
-
-  if (!initData) return <div>something went wrong...</div>;
-
-  return (
-    <Dialog open={isChangeGroupOpen}>
-      <CloseHeader onCloseClick={closeChangeGroup} />
+  const getDialogContent = () => {
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>ERROR: {error.message}</div>;
+    if (!data || !initData) return <div>something went wrong...</div>;
+    return (
       <ChangeGroupForm
         handleConfirm={handleChangeGroupConfirm}
         title={"Change student group"}
@@ -40,6 +37,13 @@ export const ChangeGroupDialog = () => {
         initGroupId={initData.groupId}
         formError={formError}
       />
+    );
+  };
+
+  return (
+    <Dialog open={isChangeGroupOpen}>
+      <CloseHeader onCloseClick={closeChangeGroup} />
+      {getDialogContent()}
     </Dialog>
   );
 };

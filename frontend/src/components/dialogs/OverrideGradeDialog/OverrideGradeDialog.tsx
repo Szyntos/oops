@@ -15,17 +15,19 @@ export const OverrideGradeDialog = () => {
     formError,
   } = useOverrideGrade();
 
-  if (!data) return <div>something went wrong...</div>;
-
   return (
     <Dialog open={isOverrideGradeOpen}>
       <CloseHeader onCloseClick={closeOverrideGrade} />
-      <OverrideGradeForm
-        handleConfirm={handleOverrideGradeConfirm}
-        title={"Override student grade"}
-        initGrade={data.grade}
-        formError={formError}
-      />
+      {data ? (
+        <OverrideGradeForm
+          handleConfirm={handleOverrideGradeConfirm}
+          title={"Override student grade"}
+          initGrade={data.grade}
+          formError={formError}
+        />
+      ) : (
+        <div>something went wrong...</div>
+      )}
     </Dialog>
   );
 };

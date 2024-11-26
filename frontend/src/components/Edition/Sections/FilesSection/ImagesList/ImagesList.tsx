@@ -25,7 +25,6 @@ export const ImagesList = ({ files, title, handleDelete }: ImagesListProps) => {
                 <Image id={entry.id} size={128} disabled={false} />
                 <SetupButtons
                   permissions={entry.permissions}
-                  isSelected={false}
                   handleDelete={() => handleDelete(entry.id)}
                 />
               </div>

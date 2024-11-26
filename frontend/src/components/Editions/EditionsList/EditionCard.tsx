@@ -35,7 +35,6 @@ export const EditionCard = ({
         show
       </button>
       <SetupButtons
-        isSelected={false}
         handleDelete={handleDeleteClick}
         handleCopy={handleCopyClick}
         handleEdit={handleEditClick}

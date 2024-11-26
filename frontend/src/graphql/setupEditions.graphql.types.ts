@@ -49,6 +49,26 @@ export type SetupEditionsQuery = {
         allow: boolean;
         reason?: string | null;
       };
+      canMarkAsActive?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canMarkAsInactive?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canOverride?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canTurnOffOverride?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
     };
   }>;
 };
@@ -85,6 +105,22 @@ export const SetupEditionsDocument = gql`
           reason
         }
         canUnselect {
+          allow
+          reason
+        }
+        canMarkAsActive {
+          allow
+          reason
+        }
+        canMarkAsInactive {
+          allow
+          reason
+        }
+        canOverride {
+          allow
+          reason
+        }
+        canTurnOffOverride {
           allow
           reason
         }

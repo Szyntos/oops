@@ -32,6 +32,7 @@ export const GroupsSection = () => {
     // handleStudentGroupChange,
     variant,
     selectedGroup,
+    handleMarkAllPassingStudents,
   } = useGroupsSection(editionId);
 
   if (loading) return <div>loading...</div>;
@@ -42,6 +43,9 @@ export const GroupsSection = () => {
       <div>
         <button onClick={() => openAddGroup("select")}>add group</button>
         <button onClick={() => openAddGroup("import")}>import group</button>
+        <button onClick={handleMarkAllPassingStudents}>
+          mark all passing students as inactive
+        </button>
       </div>
       <GroupsList
         groups={groups}

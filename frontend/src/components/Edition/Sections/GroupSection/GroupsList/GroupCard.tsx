@@ -28,7 +28,6 @@ export const GroupCard = ({
       </div>
       <SetupButtons
         permissions={group.permissions}
-        isSelected={false}
         handleEdit={editClick}
         handleDelete={deleteClick}
         handleShow={() => openShowDialog(group)}

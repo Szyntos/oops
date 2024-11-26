@@ -7446,8 +7446,12 @@ export type ListPermissionsOutputType = {
   canAdd: PermissionType;
   canCopy: PermissionType;
   canEdit: PermissionType;
+  canMarkAsActive?: Maybe<PermissionType>;
+  canMarkAsInactive?: Maybe<PermissionType>;
+  canOverride?: Maybe<PermissionType>;
   canRemove: PermissionType;
   canSelect: PermissionType;
+  canTurnOffOverride?: Maybe<PermissionType>;
   canUnselect: PermissionType;
 };
 
@@ -9534,6 +9538,7 @@ export type UserIdsType = {
 export type UserLevel = {
   __typename?: "UserLevel";
   computedGrade: Scalars["float8"]["output"];
+  coordinatorOverride: Scalars["Boolean"]["output"];
   /** An object relationship */
   edition: Edition;
   editionId: Scalars["bigint"]["output"];
@@ -9639,6 +9644,7 @@ export type UserLevelBoolExp = {
   _not?: InputMaybe<UserLevelBoolExp>;
   _or?: InputMaybe<Array<UserLevelBoolExp>>;
   computedGrade?: InputMaybe<Float8ComparisonExp>;
+  coordinatorOverride?: InputMaybe<BooleanComparisonExp>;
   edition?: InputMaybe<EditionBoolExp>;
   editionId?: InputMaybe<BigintComparisonExp>;
   endOfLabsLevelsReached?: InputMaybe<BooleanComparisonExp>;
@@ -9671,6 +9677,7 @@ export type UserLevelIncInput = {
 /** input type for inserting data into table "user_level" */
 export type UserLevelInsertInput = {
   computedGrade?: InputMaybe<Scalars["float8"]["input"]>;
+  coordinatorOverride?: InputMaybe<Scalars["Boolean"]["input"]>;
   edition?: InputMaybe<EditionObjRelInsertInput>;
   editionId?: InputMaybe<Scalars["bigint"]["input"]>;
   endOfLabsLevelsReached?: InputMaybe<Scalars["Boolean"]["input"]>;
@@ -9744,6 +9751,7 @@ export type UserLevelOnConflict = {
 /** Ordering options when selecting data from "user_level". */
 export type UserLevelOrderBy = {
   computedGrade?: InputMaybe<OrderBy>;
+  coordinatorOverride?: InputMaybe<OrderBy>;
   edition?: InputMaybe<EditionOrderBy>;
   editionId?: InputMaybe<OrderBy>;
   endOfLabsLevelsReached?: InputMaybe<OrderBy>;
@@ -9766,6 +9774,8 @@ export type UserLevelPkColumnsInput = {
 export enum UserLevelSelectColumn {
   /** column name */
   ComputedGrade = "computedGrade",
+  /** column name */
+  CoordinatorOverride = "coordinatorOverride",
   /** column name */
   EditionId = "editionId",
   /** column name */
@@ -9791,6 +9801,8 @@ export enum UserLevelSelectColumnUserLevelAggregateBoolExpAvgArgumentsColumns {
 /** select "userLevelAggregateBoolExpBool_andArgumentsColumns" columns of table "user_level" */
 export enum UserLevelSelectColumnUserLevelAggregateBoolExpBool_AndArgumentsColumns {
   /** column name */
+  CoordinatorOverride = "coordinatorOverride",
+  /** column name */
   EndOfLabsLevelsReached = "endOfLabsLevelsReached",
   /** column name */
   ProjectPointsThresholdReached = "projectPointsThresholdReached",
@@ -9798,6 +9810,8 @@ export enum UserLevelSelectColumnUserLevelAggregateBoolExpBool_AndArgumentsColum
 
 /** select "userLevelAggregateBoolExpBool_orArgumentsColumns" columns of table "user_level" */
 export enum UserLevelSelectColumnUserLevelAggregateBoolExpBool_OrArgumentsColumns {
+  /** column name */
+  CoordinatorOverride = "coordinatorOverride",
   /** column name */
   EndOfLabsLevelsReached = "endOfLabsLevelsReached",
   /** column name */
@@ -9849,6 +9863,7 @@ export enum UserLevelSelectColumnUserLevelAggregateBoolExpVar_SampArgumentsColum
 /** input type for updating data in table "user_level" */
 export type UserLevelSetInput = {
   computedGrade?: InputMaybe<Scalars["float8"]["input"]>;
+  coordinatorOverride?: InputMaybe<Scalars["Boolean"]["input"]>;
   editionId?: InputMaybe<Scalars["bigint"]["input"]>;
   endOfLabsLevelsReached?: InputMaybe<Scalars["Boolean"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
@@ -9926,6 +9941,7 @@ export type UserLevelStreamCursorInput = {
 /** Initial value of the column from where the streaming should start */
 export type UserLevelStreamCursorValueInput = {
   computedGrade?: InputMaybe<Scalars["float8"]["input"]>;
+  coordinatorOverride?: InputMaybe<Scalars["Boolean"]["input"]>;
   editionId?: InputMaybe<Scalars["bigint"]["input"]>;
   endOfLabsLevelsReached?: InputMaybe<Scalars["Boolean"]["input"]>;
   label?: InputMaybe<Scalars["String"]["input"]>;
@@ -9956,12 +9972,13 @@ export type UserLevelSumOrderBy = {
 
 export type UserLevelType = {
   __typename?: "UserLevelType";
-  computed_grade: Scalars["Float"]["output"];
+  computedGrade: Scalars["Float"]["output"];
+  coordinatorOverride: Scalars["Boolean"]["output"];
   edition: EditionType;
-  end_of_labs_levels_reached: Scalars["Boolean"]["output"];
+  endOfLabsLevelsReached: Scalars["Boolean"]["output"];
   label: Scalars["String"]["output"];
   level: LevelType;
-  project_points_threshold_reached: Scalars["Boolean"]["output"];
+  projectPointsThresholdReached: Scalars["Boolean"]["output"];
   user: UserType;
   userLevelId: Scalars["ID"]["output"];
 };
@@ -9970,6 +9987,8 @@ export type UserLevelType = {
 export enum UserLevelUpdateColumn {
   /** column name */
   ComputedGrade = "computedGrade",
+  /** column name */
+  CoordinatorOverride = "coordinatorOverride",
   /** column name */
   EditionId = "editionId",
   /** column name */
@@ -10056,6 +10075,7 @@ export type UserPointsType = {
   __typename?: "UserPointsType";
   categoriesPoints: Array<CategoryPointsType>;
   user: UserType;
+  userLevel: UserLevelType;
 };
 
 export type UserType = {
@@ -11593,6 +11613,7 @@ export type Mutation_Root = {
   >;
   markStudentAsActive?: Maybe<Scalars["Boolean"]["output"]>;
   markStudentAsInactive?: Maybe<Scalars["Boolean"]["output"]>;
+  overrideComputedGradeForUser?: Maybe<UserLevelType>;
   parseUsersFromCsv: ParsedUsersTypeType;
   removeAward?: Maybe<Scalars["Boolean"]["output"]>;
   removeAwardFromChest?: Maybe<Scalars["Boolean"]["output"]>;
@@ -11615,6 +11636,7 @@ export type Mutation_Root = {
   resetPassword?: Maybe<Scalars["Boolean"]["output"]>;
   resetPasswordByEmail?: Maybe<Scalars["Boolean"]["output"]>;
   setStudentNick?: Maybe<UserType>;
+  turnOffOverrideComputedGradeForUser?: Maybe<UserLevelType>;
   /** update data of the table: "award" */
   updateAward?: Maybe<AwardMutationResponse>;
   /** update single row of the table: "award" */
@@ -12651,6 +12673,13 @@ export type Mutation_RootMarkStudentAsInactiveArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootOverrideComputedGradeForUserArgs = {
+  editionId: Scalars["Int"]["input"];
+  grade: Scalars["Float"]["input"];
+  userId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
 export type Mutation_RootParseUsersFromCsvArgs = {
   editionId: Scalars["Int"]["input"];
   fileId: Scalars["Int"]["input"];
@@ -12765,6 +12794,12 @@ export type Mutation_RootResetPasswordByEmailArgs = {
 /** mutation root */
 export type Mutation_RootSetStudentNickArgs = {
   nick: Scalars["String"]["input"];
+  userId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootTurnOffOverrideComputedGradeForUserArgs = {
+  editionId: Scalars["Int"]["input"];
   userId: Scalars["Int"]["input"];
 };
 

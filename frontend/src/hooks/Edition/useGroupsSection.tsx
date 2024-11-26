@@ -20,6 +20,8 @@ import { useDeleteGroupMutation } from "../../graphql/deleteGroup.graphql.types"
 import { useError } from "../common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../utils/constants";
 import { mockPermissions } from "../../utils/utils";
+import { useApolloClient } from "@apollo/client";
+import { useMarkPassingStudentsInactiveMutation } from "../../graphql/markPassingStudentsInactive.graphql.types";
 import { useConfirmPopup } from "../common/useConfrimPopup";
 
 export type Group = SetupGroupsQuery["listSetupGroups"][number];
@@ -31,6 +33,7 @@ export type GroupStudent = Student["user"];
 
 export const useGroupsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();
+  const client = useApolloClient();
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
@@ -225,6 +228,19 @@ export const useGroupsSection = (editionId: number) => {
     // TODO change user group
   };
 
+  // MARK PASSING STUDENTS AS INACTIVE
+  const [markPassingStudentsActive] = useMarkPassingStudentsInactiveMutation();
+  const handleMarkAllPassingStudents = () => {
+    globalErrorWrapper(async () => {
+      await markPassingStudentsActive({
+        variables: { editionId },
+      });
+      client.refetchQueries({
+        include: "active",
+      });
+    });
+  };
+
   return {
     groups,
     weekdays,
@@ -250,5 +266,7 @@ export const useGroupsSection = (editionId: number) => {
 
     variant,
     selectedGroup,
+
+    handleMarkAllPassingStudents,
   };
 };

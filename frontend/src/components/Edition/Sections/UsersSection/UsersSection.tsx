@@ -49,6 +49,7 @@ export const UsersSection = () => {
     closeEditTeacher,
     openEditTeacher,
     handleEditTeacherConfirm,
+    handleStudentActiveness,
   } = useUsersSection(editionId);
 
   const [input, setInput] = useState("");
@@ -109,6 +110,7 @@ export const UsersSection = () => {
           title="STUDENTS"
           handleDeleteClick={handleDeleteConfirm}
           handleEditClick={openEditStudent}
+          handleStudentActiveness={handleStudentActiveness}
         />
       </div>
 

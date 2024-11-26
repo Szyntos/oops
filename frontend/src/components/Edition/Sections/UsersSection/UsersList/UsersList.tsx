@@ -8,6 +8,7 @@ type UsersListProps = {
   title: string;
   handleDeleteClick: (user: User) => void;
   handleEditClick: (user: User) => void;
+  handleStudentActiveness?: (user: User) => void;
 };
 
 export const UsersList = ({
@@ -15,6 +16,7 @@ export const UsersList = ({
   title,
   handleDeleteClick,
   handleEditClick,
+  handleStudentActiveness,
 }: UsersListProps) => {
   return (
     <div style={styles.wrap}>
@@ -26,6 +28,7 @@ export const UsersList = ({
               user={user}
               handleDeleteClick={() => handleDeleteClick(user)}
               handleEditClick={() => handleEditClick(user)}
+              handleStudentActiveness={handleStudentActiveness}
             />
           ))}
         </div>

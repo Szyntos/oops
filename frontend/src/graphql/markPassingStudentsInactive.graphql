@@ -1,0 +1,3 @@
+mutation MarkPassingStudentsInactive($editionId: Int!) {
+  markPassingStudentsFromEditionAsInactive(editionId: $editionId)
+}

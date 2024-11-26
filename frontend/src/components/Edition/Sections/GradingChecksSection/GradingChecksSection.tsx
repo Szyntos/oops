@@ -7,6 +7,7 @@ import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { ChecksForm } from "./ChecksForm";
 import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { Category } from "../../../../hooks/Edition/categories/useCategoriesSection";
+import { SetupButtons } from "../SetupButtons";
 
 export const GradingChecksSection = () => {
   const params = useParams();
@@ -30,30 +31,41 @@ export const GradingChecksSection = () => {
     openEdit,
     closeEdit,
     handleEdit,
+
+    handleDelete,
   } = useGradingChecksSection(editionId);
 
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
+  if (!gradingChecks) return <div>something went wrong...</div>;
 
   const level = formLevels.find(
-    (l) => l.levelId === gradingChecks?.endOfLabsLevelsThreshold,
+    (l) =>
+      l.levelId ===
+      gradingChecks.gradingCheck?.endOfLabsLevelsThreshold.levelId,
   );
 
   const category: Category | undefined = formCategories.find(
-    (c) => c.category.categoryId === gradingChecks?.projectId,
+    (c) =>
+      c.category.categoryId === gradingChecks.gradingCheck?.project.categoryId,
   );
 
   return (
     <div style={styles.container}>
       <div>grading checks: {editionId}</div>
 
-      <button onClick={gradingChecks ? openEdit : openAdd}>
-        {gradingChecks ? "edit checks" : "add checks"}
-      </button>
+      <SetupButtons
+        permissions={gradingChecks.permissions}
+        isSelected={false}
+        handleDelete={handleDelete}
+        handleEdit={openEdit}
+        handleAdd={openAdd}
+      />
 
       <div>
         <div>
-          endOfLabsDate: {gradingChecks?.endOfLabsDate ?? EMPTY_FIELD_STRING}
+          endOfLabsDate:{" "}
+          {gradingChecks.gradingCheck?.endOfLabsDate ?? EMPTY_FIELD_STRING}
         </div>
         <div>
           endOfLabsLevelsThreshold: {level?.levelName ?? EMPTY_FIELD_STRING}
@@ -63,7 +75,8 @@ export const GradingChecksSection = () => {
         </div>
         <div>
           projectPointsThreshold:{" "}
-          {gradingChecks?.projectPointsThreshold ?? EMPTY_FIELD_STRING}
+          {gradingChecks.gradingCheck?.projectPointsThreshold ??
+            EMPTY_FIELD_STRING}
         </div>
       </div>
 
@@ -86,15 +99,14 @@ export const GradingChecksSection = () => {
           categories={formCategories}
           levels={formLevels}
           initialValues={
-            gradingChecks
+            gradingChecks.gradingCheck
               ? {
-                  endOfLabsDate: gradingChecks.endOfLabsDate,
+                  endOfLabsDate: gradingChecks.gradingCheck.endOfLabsDate,
                   endOfLabsLevelsThreshold:
-                    gradingChecks.endOfLabsLevelsThreshold,
-                  projectPointsThreshold: parseInt(
-                    gradingChecks.projectPointsThreshold as unknown as string,
-                  ),
-                  projectId: gradingChecks.projectId,
+                    gradingChecks.gradingCheck.endOfLabsLevelsThreshold.levelId,
+                  projectPointsThreshold:
+                    gradingChecks.gradingCheck.projectPointsThreshold,
+                  projectId: gradingChecks.gradingCheck.project.categoryId,
                 }
               : undefined
           }

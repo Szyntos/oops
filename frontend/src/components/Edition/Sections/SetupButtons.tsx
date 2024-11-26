@@ -13,6 +13,7 @@ type SetupButtonsProps = {
   handleCopy?: () => void;
   handleMarkActiveness?: () => void;
   handleShow?: () => void;
+  handleAdd?: () => void;
   isSelected?: boolean;
   isActive?: boolean;
 };
@@ -25,6 +26,7 @@ export const SetupButtons = ({
   handleEdit,
   handleMarkActiveness,
   handleShow,
+  handleAdd,
   isSelected,
   isActive,
 }: SetupButtonsProps) => {
@@ -92,8 +94,18 @@ export const SetupButtons = ({
       }
     : undefined;
 
+  const add: SetupButtonProps | undefined = handleAdd
+    ? {
+        handleClick: handleAdd,
+        isClickable: permissions.canAdd.allow,
+        reason: permissions.canAdd.reason,
+        title: "add",
+      }
+    : undefined;
+
   return (
     <div style={styles.buttonsContainer}>
+      {add && <SetupButton {...add} />}
       {select && <SetupButton {...select} />}
       {copy && <SetupButton {...copy} />}
       {edit && <SetupButton {...edit} />}

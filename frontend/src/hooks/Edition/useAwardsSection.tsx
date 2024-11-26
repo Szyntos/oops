@@ -14,6 +14,7 @@ import { useError } from "../common/useGlobalError";
 import { useFilesQuery } from "../../graphql/files.graphql.types";
 import { useDeleteAwardMutation } from "../../graphql/deleteAward.graphql.types";
 import { useCopyAwardMutation } from "../../graphql/copyAward.graphql.types";
+import { useConfirmPopup } from "../common/useConfrimPopup";
 
 export type Award = SetupAwardsQuery["listSetupAwards"][number];
 
@@ -35,7 +36,10 @@ export const useAwardsSection = (editionId: number) => {
     loading: awardsLoading,
     error: awardsError,
     refetch,
-  } = useSetupAwardsQuery({ variables: { editionId } });
+  } = useSetupAwardsQuery({
+    variables: { editionId },
+    fetchPolicy: "no-cache",
+  });
 
   const {
     data: imageData,
@@ -134,15 +138,18 @@ export const useAwardsSection = (editionId: number) => {
   };
 
   // DELETE
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteAward] = useDeleteAwardMutation();
   const handleDeleteAward = (award: Award) => {
-    globalErrorWrapper(async () => {
-      await deleteAward({
-        variables: {
-          awardId: parseInt(award.award.awardId),
-        },
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteAward({
+          variables: {
+            awardId: parseInt(award.award.awardId),
+          },
+        });
+        refetch();
       });
-      refetch();
     });
   };
 

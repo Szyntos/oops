@@ -13,6 +13,7 @@ import { useDeleteUserMutation } from "../../../graphql/deleteUser.graphql.types
 import { useError } from "../../common/useGlobalError";
 import { useMakeStudentActiveMutation } from "../../../graphql/makeStudentActive.graphql.types";
 import { useMakeStudentInactiveMutation } from "../../../graphql/markStudentInactive.graphql.types";
+import { useConfirmPopup } from "../../common/useConfrimPopup";
 
 export type User = SetupUsersQuery["listSetupUsers"][number];
 
@@ -108,16 +109,6 @@ export const useUsersSection = (editionId: number) => {
     setFormError(undefined);
   };
 
-  const [deleteUser] = useDeleteUserMutation();
-  const handleDeleteConfirm = (u: User) => {
-    globalErrorWrapper(async () => {
-      await deleteUser({
-        variables: { userId: parseInt(u.user.userId) },
-      });
-      refetch();
-    });
-  };
-
   const [makeActive] = useMakeStudentActiveMutation();
   const [makeInactive] = useMakeStudentInactiveMutation();
   const handleStudentActiveness = (user: User) => {
@@ -159,6 +150,19 @@ export const useUsersSection = (editionId: number) => {
 
       refetch();
       props.type === "student" ? closeEditStudent() : closeEditTeacher();
+    });
+  };
+
+  const { openConfirmPopup } = useConfirmPopup();
+  const [deleteUser] = useDeleteUserMutation();
+  const handleDeleteConfirm = (u: User) => {
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteUser({
+          variables: { userId: parseInt(u.user.userId) },
+        });
+        refetch();
+      });
     });
   };
 

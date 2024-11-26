@@ -1,3 +1,4 @@
+import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { User } from "../../../../../hooks/Edition/users/useUsersSection";
 import { Styles } from "../../../../../utils/Styles";
 import { SetupButtons } from "../../SetupButtons";
@@ -15,6 +16,8 @@ export const UserCard = ({
   handleEditClick,
   handleStudentActiveness,
 }: GroupCardProps) => {
+  const { openShowDialog } = useEditionSections();
+
   return (
     <div style={styles.card}>
       <div>
@@ -33,6 +36,7 @@ export const UserCard = ({
           permissions={user.permissions}
           handleDelete={handleDeleteClick}
           handleEdit={handleEditClick}
+          handleShow={() => openShowDialog(user)}
         />
       )}
     </div>

@@ -15,6 +15,7 @@ import {
 import { ChestFormValues } from "../../components/Edition/Sections/ChestsSection/AddChestForm/AddChestForm";
 import { useAwardsSection } from "./useAwardsSection";
 import { useSetupChestCreateMutation } from "../../graphql/setupChestCreate.graphql.types";
+import { useConfirmPopup } from "../common/useConfrimPopup";
 
 export type Chest = SetupChestsQuery["listSetupChests"][number];
 
@@ -138,15 +139,18 @@ export const useChestsSection = (editionId: number) => {
   };
 
   // DELETE CHEST
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteChest] = useDeleteChestMutation();
   const handleDeleteChest = (chest: Chest) => {
-    globalErrorWrapper(async () => {
-      await deleteChest({
-        variables: {
-          chestId: parseInt(chest.chest.chestId),
-        },
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteChest({
+          variables: {
+            chestId: parseInt(chest.chest.chestId),
+          },
+        });
+        refetch();
       });
-      refetch();
     });
   };
 

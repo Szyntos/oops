@@ -7,6 +7,7 @@ import { FileItem, ImagesList } from "./ImagesList/ImagesList";
 import { useError } from "../../../../hooks/common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../../../utils/constants";
 import { useDeleteFileMutation } from "../../../../graphql/deleteFile.graphql.types";
+import { useConfirmPopup } from "../../../../hooks/common/useConfrimPopup";
 
 const folders: Folder[] = [
   { title: "award", pathPrefix: `image/award` },
@@ -61,11 +62,14 @@ export const FilesSection = () => {
     }
   };
 
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteFile] = useDeleteFileMutation();
   const handleDelete = (imageId: string) => {
-    globalErrorWrapper(async () => {
-      await deleteFile({ variables: { fileId: parseInt(imageId) } });
-      refetch();
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteFile({ variables: { fileId: parseInt(imageId) } });
+        refetch();
+      });
     });
   };
 

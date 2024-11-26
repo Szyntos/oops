@@ -1,3 +1,4 @@
+import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
 import { Styles } from "../../../../../utils/Styles";
 import { Image } from "../../../../images/Image";
@@ -20,6 +21,8 @@ export const ChestCard = ({
   onDeleteClick,
   onCopyClick,
 }: ChestCardProps) => {
+  const { openShowDialog } = useEditionSections();
+
   return (
     <div
       style={{
@@ -42,6 +45,7 @@ export const ChestCard = ({
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
+        handleShow={() => openShowDialog(chest)}
       />
     </div>
   );

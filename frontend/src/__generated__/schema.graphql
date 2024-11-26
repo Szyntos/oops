@@ -13289,6 +13289,7 @@ columns and relationships of "user_level"
 """
 type UserLevel {
   computedGrade: float8!
+  coordinatorOverride: Boolean!
 
   """
   An object relationship
@@ -13411,6 +13412,7 @@ input UserLevelBoolExp {
   _not: UserLevelBoolExp
   _or: [UserLevelBoolExp!]
   computedGrade: Float8ComparisonExp
+  coordinatorOverride: BooleanComparisonExp
   edition: EditionBoolExp
   editionId: BigintComparisonExp
   endOfLabsLevelsReached: BooleanComparisonExp
@@ -13454,6 +13456,7 @@ input type for inserting data into table "user_level"
 """
 input UserLevelInsertInput {
   computedGrade: float8
+  coordinatorOverride: Boolean
   edition: EditionObjRelInsertInput
   editionId: bigint
   endOfLabsLevelsReached: Boolean
@@ -13543,6 +13546,7 @@ Ordering options when selecting data from "user_level".
 """
 input UserLevelOrderBy {
   computedGrade: OrderBy
+  coordinatorOverride: OrderBy
   edition: EditionOrderBy
   editionId: OrderBy
   endOfLabsLevelsReached: OrderBy
@@ -13571,6 +13575,11 @@ enum UserLevelSelectColumn {
   column name
   """
   computedGrade
+
+  """
+  column name
+  """
+  coordinatorOverride
 
   """
   column name
@@ -13625,6 +13634,11 @@ enum UserLevelSelectColumnUserLevelAggregateBoolExpBool_andArgumentsColumns {
   """
   column name
   """
+  coordinatorOverride
+
+  """
+  column name
+  """
   endOfLabsLevelsReached
 
   """
@@ -13637,6 +13651,11 @@ enum UserLevelSelectColumnUserLevelAggregateBoolExpBool_andArgumentsColumns {
 select "userLevelAggregateBoolExpBool_orArgumentsColumns" columns of table "user_level"
 """
 enum UserLevelSelectColumnUserLevelAggregateBoolExpBool_orArgumentsColumns {
+  """
+  column name
+  """
+  coordinatorOverride
+
   """
   column name
   """
@@ -13723,6 +13742,7 @@ input type for updating data in table "user_level"
 """
 input UserLevelSetInput {
   computedGrade: float8
+  coordinatorOverride: Boolean
   editionId: bigint
   endOfLabsLevelsReached: Boolean
   label: String
@@ -13818,6 +13838,7 @@ Initial value of the column from where the streaming should start
 """
 input UserLevelStreamCursorValueInput {
   computedGrade: float8
+  coordinatorOverride: Boolean
   editionId: bigint
   endOfLabsLevelsReached: Boolean
   label: String
@@ -13850,12 +13871,13 @@ input UserLevelSumOrderBy {
 }
 
 type UserLevelType {
-  computed_grade: Float!
+  computedGrade: Float!
+  coordinatorOverride: Boolean!
   edition: EditionType!
-  end_of_labs_levels_reached: Boolean!
+  endOfLabsLevelsReached: Boolean!
   label: String!
   level: LevelType!
-  project_points_threshold_reached: Boolean!
+  projectPointsThresholdReached: Boolean!
   user: UserType!
   userLevelId: ID!
 }
@@ -13868,6 +13890,11 @@ enum UserLevelUpdateColumn {
   column name
   """
   computedGrade
+
+  """
+  column name
+  """
+  coordinatorOverride
 
   """
   column name
@@ -17261,6 +17288,11 @@ type mutation_root {
   markPassingStudentsFromEditionAsInactive(editionId: Int!): Boolean
   markStudentAsActive(userId: Int!): Boolean
   markStudentAsInactive(userId: Int!): Boolean
+  overrideComputedGradeForUser(
+    editionId: Int!
+    grade: Float!
+    userId: Int!
+  ): UserLevelType
   parseUsersFromCsv(editionId: Int!, fileId: Int!): ParsedUsersTypeType!
   removeAward(awardId: Int!): Boolean
   removeAwardFromChest(awardId: Int!, chestId: Int!): Boolean
@@ -17283,6 +17315,10 @@ type mutation_root {
   resetPassword(userId: Int!): Boolean
   resetPasswordByEmail(email: String!): Boolean
   setStudentNick(nick: String!, userId: Int!): UserType
+  turnOffOverrideComputedGradeForUser(
+    editionId: Int!
+    userId: Int!
+  ): UserLevelType
 
   """
   update data of the table: "award"

@@ -13,6 +13,8 @@ import { OpenChest } from "./OpenChest";
 import { Settings } from "./Settings/Settings";
 import { useSettings } from "../hooks/useSettings";
 import { useConfirmPopup } from "../hooks/common/useConfrimPopup";
+import { useChangeGroup } from "../hooks/common/useChangeGroup";
+import { ChangeGroup } from "./ChangeGroup";
 
 export const NAV_BAR_HEIGHT = 52;
 
@@ -41,6 +43,7 @@ export const Navbar = () => {
   } = useSettings();
 
   const { isConfirmOpen, handleConfirm, closeConfirmPopup } = useConfirmPopup();
+  const { isChangeGroupOpen, closeChangeGroup } = useChangeGroup();
 
   return (
     <div style={styles.container}>
@@ -110,6 +113,11 @@ export const Navbar = () => {
           <button onClick={handleConfirm}>yes</button>
           <button onClick={closeConfirmPopup}>no</button>
         </div>
+      </Dialog>
+
+      <Dialog open={isChangeGroupOpen}>
+        <CloseHeader onCloseClick={closeChangeGroup} />
+        <ChangeGroup />
       </Dialog>
     </div>
   );

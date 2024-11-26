@@ -14,7 +14,7 @@ import { Settings } from "./Settings/Settings";
 import { useSettings } from "../hooks/useSettings";
 import { useConfirmPopup } from "../hooks/common/useConfrimPopup";
 import { useChangeGroup } from "../hooks/common/useChangeGroup";
-import { ChangeGroup } from "./ChangeGroup";
+import { ChangeGroupContent } from "./dialogs/ChangeGroupContent/ChangeGroupContent";
 
 export const NAV_BAR_HEIGHT = 52;
 
@@ -117,7 +117,7 @@ export const Navbar = () => {
 
       <Dialog open={isChangeGroupOpen}>
         <CloseHeader onCloseClick={closeChangeGroup} />
-        <ChangeGroup />
+        <ChangeGroupContent />
       </Dialog>
     </div>
   );

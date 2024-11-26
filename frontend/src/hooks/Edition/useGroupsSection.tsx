@@ -21,7 +21,6 @@ import { useError } from "../common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../utils/constants";
 import { mockPermissions } from "../../utils/utils";
 import { useConfirmPopup } from "../common/useConfrimPopup";
-import { useChangeGroupMutation } from "../../graphql/changeGroup.graphql.types";
 
 export type Group = SetupGroupsQuery["listSetupGroups"][number];
 
@@ -216,36 +215,6 @@ export const useGroupsSection = (editionId: number) => {
     }
   };
 
-  // GROUP CHANGE
-  const [isChangeGroupOpen, setIsChangeGroupOpen] = useState(false);
-  const [changeGroupStudentId, setChangeGroupStudentId] = useState<
-    string | undefined
-  >(undefined);
-  const openChangeGroup = (studentId: string) => {
-    setChangeGroupStudentId(studentId);
-    setIsChangeGroupOpen(true);
-  };
-  const closeChangeGroup = () => {
-    setChangeGroupStudentId(undefined);
-    setFormError(undefined);
-    setIsChangeGroupOpen(false);
-  };
-
-  const [changeGroup] = useChangeGroupMutation();
-  const handleStudentGroupChange = (
-    userId: string,
-    groupId: string | undefined,
-  ) => {
-    localErrorWrapper(setFormError, async () => {
-      await changeGroup({
-        variables: {
-          groupId: parseInt(groupId as string),
-          userId: parseInt(userId),
-        },
-      });
-    });
-  };
-
   return {
     groups,
     weekdays,
@@ -270,11 +239,5 @@ export const useGroupsSection = (editionId: number) => {
 
     variant,
     selectedGroup,
-
-    isChangeGroupOpen,
-    openChangeGroup,
-    closeChangeGroup,
-    changeGroupStudentId,
-    handleStudentGroupChange,
   };
 };

@@ -147,11 +147,11 @@ export function TeacherStudentProfile() {
           {user.role === UsersRolesType.Coordinator && (
             <Button
               onClick={() =>
-                openChangeGroup(
+                openChangeGroup({
                   studentId,
-                  studentData.group?.id ?? "",
-                  selectedEdition?.editionId ?? "",
-                )
+                  groupId: studentData.group?.id ?? "",
+                  editionId: selectedEdition?.editionId ?? "",
+                })
               }
               color="lightblue"
               disabled={disableEditMode}

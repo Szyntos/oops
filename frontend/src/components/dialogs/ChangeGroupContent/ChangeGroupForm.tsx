@@ -1,8 +1,8 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { Group } from "./ChangeGroup";
-import { Styles } from "../utils/Styles";
+import { Group } from "./ChangeGroupContent";
+import { Styles } from "../../../utils/Styles";
 
 export type ChangeGroupFormValues = z.infer<typeof ValidationSchema>;
 
@@ -11,9 +11,9 @@ const ValidationSchema = z.object({
 });
 
 type ChangeGroupFormProps = {
-  handleConfirm: (groupId: string) => void;
+  handleConfirm: (values: ChangeGroupFormValues) => void;
   formError: string | undefined;
-  groupId: string;
+  initGroupId: string;
   title: string;
   groups: Group[];
 };
@@ -23,7 +23,7 @@ export const ChangeGroupForm = ({
   formError,
   title,
   groups,
-  groupId,
+  initGroupId: groupId,
 }: ChangeGroupFormProps) => {
   const formik = useFormik({
     initialValues: {
@@ -39,7 +39,7 @@ export const ChangeGroupForm = ({
       }
     },
     onSubmit: (values: ChangeGroupFormValues) => {
-      handleConfirm(values.groupId);
+      handleConfirm(values);
     },
   });
 
@@ -47,31 +47,27 @@ export const ChangeGroupForm = ({
     <div style={styles.container}>
       <div style={styles.title}>{title}</div>
       <form onSubmit={formik.handleSubmit}>
-        <div>
-          <FormControl fullWidth>
-            <InputLabel>Group</InputLabel>
-            <Select
-              name="groupId"
-              value={formik.values.groupId}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={Boolean(formik.touched.groupId && formik.errors.groupId)}
-            >
-              {groups.map((group) => (
-                <MenuItem key={group.groupsId} value={group.groupsId}>
-                  {group.generatedName}
-                </MenuItem>
-              ))}
-            </Select>
-            {formik.touched.groupId && formik.errors.groupId && (
-              <div style={{ color: "red" }}>{formik.errors.groupId}</div>
-            )}
-          </FormControl>
-        </div>
-
+        <FormControl fullWidth>
+          <InputLabel>Group</InputLabel>
+          <Select
+            name="groupId"
+            value={formik.values.groupId}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={Boolean(formik.touched.groupId && formik.errors.groupId)}
+          >
+            {groups.map((group) => (
+              <MenuItem key={group.groupsId} value={group.groupsId}>
+                {group.generatedName}
+              </MenuItem>
+            ))}
+          </Select>
+          {formik.touched.groupId && formik.errors.groupId && (
+            <div style={{ color: "red" }}>{formik.errors.groupId}</div>
+          )}
+        </FormControl>
         <button type="submit">confirm</button>
       </form>
-
       {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );

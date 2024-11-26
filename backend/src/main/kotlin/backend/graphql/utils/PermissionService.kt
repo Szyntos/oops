@@ -320,5 +320,9 @@ data class ListPermissionsOutput(
     val canRemove: Permission,
     val canSelect: Permission,
     val canUnselect: Permission,
-    val additional: List<Permission>
+    val additional: List<Permission>,
+    val canOverride: Permission? = null,
+    val canTurnOffOverride: Permission? = null,
+    val canMarkAsActive: Permission? = null,
+    val canMarkAsInactive: Permission? = null
 )

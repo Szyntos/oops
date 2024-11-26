@@ -900,6 +900,10 @@ type ListPermissionsOutputType{
   canSelect: PermissionType!
   canUnselect: PermissionType!
   additional: [PermissionType!]!
+  canOverride: PermissionType
+  canTurnOffOverride: PermissionType
+  canMarkAsActive: PermissionType
+  canMarkAsInactive: PermissionType
 }
 
 type UserWithEditionsType{

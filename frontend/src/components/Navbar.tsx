@@ -12,8 +12,8 @@ import { CloseHeader } from "./dialogs/CloseHeader";
 import { OpenChest } from "./OpenChest";
 import { Settings } from "./Settings/Settings";
 import { useSettings } from "../hooks/useSettings";
-import { useConfirmPopup } from "../hooks/common/useConfrimPopup";
 import { ChangeGroupDialog } from "./dialogs/ChangeGroupDialog/ChangeGroupDialog";
+import { ConfirmPopupDialog } from "./dialogs/ConfirmPopupDialog/ConfirmPopupDialog";
 
 export const NAV_BAR_HEIGHT = 52;
 
@@ -40,8 +40,6 @@ export const Navbar = () => {
     closeSettings,
     handleChangeEditionConfirm,
   } = useSettings();
-
-  const { isConfirmOpen, handleConfirm, closeConfirmPopup } = useConfirmPopup();
 
   return (
     <div style={styles.container}>
@@ -105,14 +103,7 @@ export const Navbar = () => {
         />
       </Dialog>
 
-      <Dialog open={isConfirmOpen}>
-        <div>
-          <div>are you sure you want to delete this item?</div>
-          <button onClick={handleConfirm}>yes</button>
-          <button onClick={closeConfirmPopup}>no</button>
-        </div>
-      </Dialog>
-
+      <ConfirmPopupDialog />
       <ChangeGroupDialog />
     </div>
   );

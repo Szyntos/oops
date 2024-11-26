@@ -20,7 +20,7 @@ import { useDeleteGroupMutation } from "../../graphql/deleteGroup.graphql.types"
 import { useError } from "../common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../utils/constants";
 import { mockPermissions } from "../../utils/utils";
-import { useConfirmPopup } from "../common/useConfrimPopup";
+import { useConfirmPopup } from "../common/useConfirmPopup";
 
 export type Group = SetupGroupsQuery["listSetupGroups"][number];
 

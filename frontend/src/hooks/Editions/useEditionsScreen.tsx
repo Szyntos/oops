@@ -9,7 +9,7 @@ import {
   SetupEditionsQuery,
   useSetupEditionsQuery,
 } from "../../graphql/setupEditions.graphql.types";
-import { useConfirmPopup } from "../common/useConfrimPopup";
+import { useConfirmPopup } from "../common/useConfirmPopup";
 
 export type Edition = SetupEditionsQuery["listSetupEditions"][number];
 

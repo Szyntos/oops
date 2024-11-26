@@ -5,7 +5,7 @@ import { useRemovePointsMutation } from "../../graphql/removePoints.graphql.type
 import { FormPoints } from "../../components/StudentProfile/PointsForm/types";
 import { Points } from "./types";
 import { useError } from "../common/useGlobalError";
-import { useConfirmPopup } from "../common/useConfrimPopup";
+import { useConfirmPopup } from "../common/useConfirmPopup";
 
 // TODO: maybe this hook should be separated to 3: add, edit, delete
 export const useTeacherActions = (

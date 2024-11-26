@@ -12,7 +12,7 @@ import { useDeleteLevelSetMutation } from "../../graphql/deleteLevelSet.graphql.
 import { useFilesQuery } from "../../graphql/files.graphql.types";
 import { AddedLevel } from "../../components/Edition/Sections/LevelsSection/AddSetForm/LevelRow";
 import { useCopyLevelSetMutation } from "../../graphql/copyLevelSet.graphql.types";
-import { useConfirmPopup } from "../common/useConfrimPopup";
+import { useConfirmPopup } from "../common/useConfirmPopup";
 
 export type LevelSet = SetupLevelSetsQuery["listSetupLevelSets"][number];
 export type Level = LevelSet["levelSet"]["levels"][number];

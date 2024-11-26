@@ -11,7 +11,7 @@ import { TeacherFormValues } from "../../../components/Edition/Sections/UsersSec
 import { useSEtupUserEditMutation } from "../../../graphql/setupUserEdit.graphql.types";
 import { useDeleteUserMutation } from "../../../graphql/deleteUser.graphql.types";
 import { useError } from "../../common/useGlobalError";
-import { useConfirmPopup } from "../../common/useConfrimPopup";
+import { useConfirmPopup } from "../../common/useConfirmPopup";
 
 export type User = SetupUsersQuery["listSetupUsers"][number];
 

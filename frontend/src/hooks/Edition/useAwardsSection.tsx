@@ -14,7 +14,7 @@ import { useError } from "../common/useGlobalError";
 import { useFilesQuery } from "../../graphql/files.graphql.types";
 import { useDeleteAwardMutation } from "../../graphql/deleteAward.graphql.types";
 import { useCopyAwardMutation } from "../../graphql/copyAward.graphql.types";
-import { useConfirmPopup } from "../common/useConfrimPopup";
+import { useConfirmPopup } from "../common/useConfirmPopup";
 
 export type Award = SetupAwardsQuery["listSetupAwards"][number];
 

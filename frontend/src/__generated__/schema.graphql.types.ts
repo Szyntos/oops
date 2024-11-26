@@ -7446,8 +7446,12 @@ export type ListPermissionsOutputType = {
   canAdd: PermissionType;
   canCopy: PermissionType;
   canEdit: PermissionType;
+  canMarkAsActive?: Maybe<PermissionType>;
+  canMarkAsInactive?: Maybe<PermissionType>;
+  canOverride?: Maybe<PermissionType>;
   canRemove: PermissionType;
   canSelect: PermissionType;
+  canTurnOffOverride?: Maybe<PermissionType>;
   canUnselect: PermissionType;
 };
 
@@ -10071,6 +10075,7 @@ export type UserPointsType = {
   __typename?: "UserPointsType";
   categoriesPoints: Array<CategoryPointsType>;
   user: UserType;
+  userLevel: UserLevelType;
 };
 
 export type UserType = {

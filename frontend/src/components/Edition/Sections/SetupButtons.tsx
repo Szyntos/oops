@@ -11,8 +11,10 @@ type SetupButtonsProps = {
   handleEdit?: () => void;
   handleDelete?: () => void;
   handleCopy?: () => void;
+  handleMarkActiveness?: () => void;
   handleShow?: () => void;
-  isSelected: boolean;
+  isSelected?: boolean;
+  isActive?: boolean;
 };
 
 export const SetupButtons = ({
@@ -21,12 +23,11 @@ export const SetupButtons = ({
   handleDelete,
   handleCopy,
   handleEdit,
+  handleMarkActiveness,
   handleShow,
   isSelected,
+  isActive,
 }: SetupButtonsProps) => {
-  if (!permissions) {
-    return <></>;
-  }
   const copy: SetupButtonProps | undefined = handleCopy
     ? {
         handleClick: handleCopy,
@@ -67,6 +68,21 @@ export const SetupButtons = ({
       }
     : undefined;
 
+  const activeness: SetupButtonProps | undefined = handleMarkActiveness
+    ? {
+        handleClick: handleMarkActiveness,
+        isClickable: Boolean(
+          isActive
+            ? permissions.canMarkAsInactive?.allow
+            : permissions.canMarkAsActive?.allow,
+        ),
+        reason: isActive
+          ? permissions.canMarkAsActive?.reason
+          : permissions.canMarkAsInactive?.reason,
+        title: isActive ? "deactivate" : "activate",
+      }
+    : undefined;
+
   const show: SetupButtonProps | undefined = handleShow
     ? {
         handleClick: handleShow,
@@ -82,6 +98,7 @@ export const SetupButtons = ({
       {copy && <SetupButton {...copy} />}
       {edit && <SetupButton {...edit} />}
       {remove && <SetupButton {...remove} />}
+      {activeness && <SetupButton {...activeness} />}
       {show && <SetupButton {...show} />}
     </div>
   );

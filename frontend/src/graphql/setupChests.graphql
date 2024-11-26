@@ -57,6 +57,22 @@ query SetupChests($editionId: Int!) {
         allow
         reason
       }
+      canMarkAsActive {
+        allow
+        reason
+      }
+      canMarkAsInactive {
+        allow
+        reason
+      }
+      canOverride {
+        allow
+        reason
+      }
+      canTurnOffOverride {
+        allow
+        reason
+      }
     }
   }
 }

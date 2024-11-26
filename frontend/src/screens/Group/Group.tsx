@@ -20,7 +20,6 @@ export const Group = () => {
   const teacherId = params.teacherId ?? undefined;
   const { selectedEdition } = useEditionSelection();
 
-  // TODO add rights
   const { user } = useUser();
   const userId = user.userId;
 

@@ -11,6 +11,8 @@ import { TeacherFormValues } from "../../../components/Edition/Sections/UsersSec
 import { useSEtupUserEditMutation } from "../../../graphql/setupUserEdit.graphql.types";
 import { useDeleteUserMutation } from "../../../graphql/deleteUser.graphql.types";
 import { useError } from "../../common/useGlobalError";
+import { useMakeStudentActiveMutation } from "../../../graphql/makeStudentActive.graphql.types";
+import { useMakeStudentInactiveMutation } from "../../../graphql/markStudentInactive.graphql.types";
 import { useConfirmPopup } from "../../common/useConfirmPopup";
 
 export type User = SetupUsersQuery["listSetupUsers"][number];
@@ -107,6 +109,20 @@ export const useUsersSection = (editionId: number) => {
     setFormError(undefined);
   };
 
+  const [makeActive] = useMakeStudentActiveMutation();
+  const [makeInactive] = useMakeStudentInactiveMutation();
+  const handleStudentActiveness = (user: User) => {
+    globalErrorWrapper(async () => {
+      const variables = { variables: { userId: parseInt(user.user.userId) } };
+      if (user.user.active) {
+        await makeInactive(variables);
+      } else {
+        await makeActive(variables);
+      }
+      refetch();
+    });
+  };
+
   // COMMON -------------------------------------------------
   const [editUser] = useSEtupUserEditMutation();
   const handleEditUserConfirm = (
@@ -186,5 +202,6 @@ export const useUsersSection = (editionId: number) => {
         formValues: values,
       });
     },
+    handleStudentActiveness,
   };
 };

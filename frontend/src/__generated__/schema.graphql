@@ -10477,8 +10477,12 @@ type ListPermissionsOutputType {
   canAdd: PermissionType!
   canCopy: PermissionType!
   canEdit: PermissionType!
+  canMarkAsActive: PermissionType
+  canMarkAsInactive: PermissionType
+  canOverride: PermissionType
   canRemove: PermissionType!
   canSelect: PermissionType!
+  canTurnOffOverride: PermissionType
   canUnselect: PermissionType!
 }
 
@@ -14018,6 +14022,7 @@ input UserLevelVarianceOrderBy {
 type UserPointsType {
   categoriesPoints: [CategoryPointsType!]!
   user: UserType!
+  userLevel: UserLevelType!
 }
 
 type UserType {

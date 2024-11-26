@@ -140,12 +140,11 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                         objectMapper.createObjectNode(),
                         false,
                         "Not applicable"),
-                    additional = listOf(
-                        permissionService.checkPartialPermission(PermissionInput("overrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
-                        permissionService.checkPartialPermission(PermissionInput("turnOffOverrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
-                        permissionService.checkPartialPermission(PermissionInput("markStudentAsInactive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
-                        permissionService.checkPartialPermission(PermissionInput("markStudentAsActive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
-                        )
+                    additional = emptyList(),
+                    canOverride = permissionService.checkPartialPermission(PermissionInput("overrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
+                    canTurnOffOverride =  permissionService.checkPartialPermission(PermissionInput("turnOffOverrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
+                    canMarkAsInactive = permissionService.checkPartialPermission(PermissionInput("markStudentAsInactive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
+                    canMarkAsActive =  permissionService.checkPartialPermission(PermissionInput("markStudentAsActive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
                 )
             )
         }.sortedBy { "${it.user.firstName} ${it.user.secondName}" }

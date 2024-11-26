@@ -20,6 +20,7 @@ import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useCoordinatorActions } from "../../hooks/StudentProfile/useCoordinatorActions";
 import { AddChestToUserForm } from "./AddChestToUserForm";
 import { useChangeGroup } from "../../hooks/common/useChangeGroup";
+import { useOverrideGrade } from "../../hooks/common/useOverrideGrade";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -78,6 +79,7 @@ export function TeacherStudentProfile() {
   } = useCoordinatorActions(studentId as string, userId);
 
   const { openChangeGroup } = useChangeGroup();
+  const { openOverrideGrade } = useOverrideGrade();
 
   if (!studentId) return <p>StudentId is undefined</p>;
   if (!userId) return <p>TeacherId is undefined</p>;
@@ -136,13 +138,28 @@ export function TeacherStudentProfile() {
             Add Points
           </Button>
           {user.role === UsersRolesType.Coordinator && (
-            <Button
-              onClick={openChestDialog}
-              color="lightblue"
-              disabled={disableEditMode}
-            >
-              Add Chest
-            </Button>
+            <>
+              <Button
+                onClick={openChestDialog}
+                color="lightblue"
+                disabled={disableEditMode}
+              >
+                Add Chest
+              </Button>
+              <Button
+                onClick={() =>
+                  openOverrideGrade({
+                    studentId,
+                    editionId: selectedEdition?.editionId as string,
+                    grade: studentData.grade,
+                  })
+                }
+                color="lightblue"
+                disabled={disableEditMode}
+              >
+                Override Grade
+              </Button>
+            </>
           )}
           {user.role === UsersRolesType.Coordinator && (
             <Button

@@ -14,6 +14,7 @@ import { Settings } from "./Settings/Settings";
 import { useSettings } from "../hooks/useSettings";
 import { ChangeGroupDialog } from "./dialogs/ChangeGroupDialog/ChangeGroupDialog";
 import { ConfirmPopupDialog } from "./dialogs/ConfirmPopupDialog/ConfirmPopupDialog";
+import { OverrideGradeDialog } from "./dialogs/OverrideGradeDialog/OverrideGradeDialog";
 
 export const NAV_BAR_HEIGHT = 52;
 
@@ -105,6 +106,7 @@ export const Navbar = () => {
 
       <ConfirmPopupDialog />
       <ChangeGroupDialog />
+      <OverrideGradeDialog />
     </div>
   );
 };

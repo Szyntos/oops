@@ -6,18 +6,21 @@ import { ApolloClientProvider } from "./contexts/apolloClientContext.tsx";
 import { EditionSectionsProvider } from "./contexts/editionContext.tsx";
 import { ConfirmPopupProvider } from "./contexts/confirmPopupContext.tsx";
 import { ChangeGroupProvider } from "./contexts/changeGroupContext.tsx";
+import { OverrideGradeProvider } from "./contexts/overrideGradeContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloClientProvider>
       <UserProvider>
-        <ConfirmPopupProvider>
-          <ChangeGroupProvider>
-            <EditionSectionsProvider>
-              <App />
-            </EditionSectionsProvider>
-          </ChangeGroupProvider>
-        </ConfirmPopupProvider>
+        <EditionSectionsProvider>
+          <ConfirmPopupProvider>
+            <ChangeGroupProvider>
+              <OverrideGradeProvider>
+                <App />
+              </OverrideGradeProvider>
+            </ChangeGroupProvider>
+          </ConfirmPopupProvider>
+        </EditionSectionsProvider>
       </UserProvider>
     </ApolloClientProvider>
   </React.StrictMode>,

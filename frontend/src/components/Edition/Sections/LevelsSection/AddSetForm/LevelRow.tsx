@@ -7,7 +7,7 @@ import {
   Select,
 } from "@mui/material";
 import { Image } from "../../../../images/Image";
-import { grades } from "./AddLevelForm";
+import { GRADE_STRINGS } from "../../../../../utils/utils";
 
 export type AddedLevel = {
   name: string;
@@ -80,7 +80,7 @@ export const LevelRow = ({
       <FormControl fullWidth style={styles.number} disabled>
         <InputLabel>Grade</InputLabel>
         <Select value={level.grade} label="Grade">
-          {grades.map((gradeOption) => (
+          {GRADE_STRINGS.map((gradeOption) => (
             <MenuItem key={gradeOption} value={gradeOption}>
               {gradeOption}
             </MenuItem>

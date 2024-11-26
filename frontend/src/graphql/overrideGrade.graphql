@@ -1,0 +1,9 @@
+mutation OverrideGrade($editionId: Int!, $grade: Float!, $userId: Int!) {
+  overrideComputedGradeForUser(
+    editionId: $editionId
+    grade: $grade
+    userId: $userId
+  ) {
+    computedGrade
+  }
+}

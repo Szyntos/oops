@@ -17,6 +17,7 @@ export type StudentCardData = {
   };
   totalPoints: number;
   avatarId: string | undefined;
+  grade: string;
 };
 
 export const useStudentData = (props: {
@@ -41,6 +42,11 @@ export const useStudentData = (props: {
         id: user.userId.toString(),
         displayName: `${user.firstName} ${user.secondName}`,
         index: user.indexNumber,
+        grade:
+          user.userLevels
+            .find((l) => l?.edition.editionId)
+            ?.computedGrade.toFixed(1)
+            .toString() ?? "",
         group: user.userGroups[0]
           ? {
               name: user.userGroups[0].group.generatedName,

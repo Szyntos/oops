@@ -732,6 +732,7 @@ type AddBonusReturnType {
 
 type UserPointsType {
   user: UserType!
+  userLevel: UserLevelType!
   categoriesPoints: [CategoryPointsType!]!
 }
 

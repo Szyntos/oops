@@ -7,6 +7,18 @@ query GroupPoints($groupId: Int!) {
       indexNumber
       nick
     }
+    userLevel {
+      computedGrade
+      endOfLabsLevelsReached
+      projectPointsThresholdReached
+      level {
+        grade
+        levelName
+        imageFile {
+          fileId
+        }
+      }
+    }
     categoriesPoints {
       category {
         categoryId

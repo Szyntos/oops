@@ -19,6 +19,18 @@ export type GroupPointsQuery = {
       indexNumber: number;
       nick: string;
     };
+    userLevel: {
+      __typename?: "UserLevelType";
+      computedGrade: number;
+      endOfLabsLevelsReached: boolean;
+      projectPointsThresholdReached: boolean;
+      level: {
+        __typename?: "LevelType";
+        grade: string;
+        levelName: string;
+        imageFile?: { __typename?: "FileType"; fileId: string } | null;
+      };
+    };
     categoriesPoints: Array<{
       __typename?: "CategoryPointsType";
       category: {
@@ -62,6 +74,18 @@ export const GroupPointsDocument = gql`
         userId
         indexNumber
         nick
+      }
+      userLevel {
+        computedGrade
+        endOfLabsLevelsReached
+        projectPointsThresholdReached
+        level {
+          grade
+          levelName
+          imageFile {
+            fileId
+          }
+        }
       }
       categoriesPoints {
         category {

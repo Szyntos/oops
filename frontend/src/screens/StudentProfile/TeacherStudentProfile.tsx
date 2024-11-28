@@ -76,6 +76,7 @@ export function TeacherStudentProfile() {
     openAddDialog: openChestDialog,
     handleAddChestConfirmation,
     formError: chestError,
+    handleRegenerateGrade,
   } = useCoordinatorActions(studentId as string, userId);
 
   const { openChangeGroup } = useChangeGroup();
@@ -158,6 +159,13 @@ export function TeacherStudentProfile() {
                 disabled={disableEditMode || !selectedEdition?.editionId}
               >
                 Override Grade
+              </Button>
+              <Button
+                onClick={() => handleRegenerateGrade(studentId)}
+                color="lightblue"
+                disabled={disableEditMode || !selectedEdition?.editionId}
+              >
+                Regenerate Grade
               </Button>
               <Button
                 onClick={() =>

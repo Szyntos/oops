@@ -13,6 +13,7 @@ export type Student = {
   id: string;
   fullName: string;
   index: number;
+  computedValues: ComputedValues;
 };
 
 export type CategoryPointsEntry = {
@@ -38,6 +39,10 @@ export type AwardsPointsEntry = {
 type SumsType = NonNullable<
   GroupPointsQuery["getUsersInGroupWithPoints"][number]
 >["categoriesPoints"][number]["categoryAggregate"];
+
+type ComputedValues = NonNullable<
+  GroupPointsQuery["getUsersInGroupWithPoints"][number]
+>["userLevel"];
 
 export const useGroupTableData = (groupId: number | undefined) => {
   const {
@@ -76,6 +81,7 @@ export const useGroupTableData = (groupId: number | undefined) => {
         id: user?.userId ?? "-1",
         fullName: `${user?.firstName ?? "-"} ${user?.secondName ?? "-"}`,
         index: user?.indexNumber ?? -1,
+        computedValues: userPoints?.userLevel as ComputedValues,
       };
 
       const categories: CategoryPointsEntry[] =

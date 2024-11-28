@@ -36,7 +36,7 @@ export const GroupTable = ({
   // order: subcategories, pure points sum, awards, bonus points sum
   const getRowValues = (row: GroupTableRow) => {
     // add subcategories, awards and sums
-    const values: (number | undefined)[] = [];
+    const values: (number | string | boolean | undefined)[] = [];
     for (const category of row.categories) {
       for (const subcategory of category.subcategories) {
         values.push(subcategory.pure);
@@ -52,6 +52,16 @@ export const GroupTable = ({
     values.push(sums.purePointsSum);
     values.push(sums.bonusesSum);
     values.push(sums.overallSum);
+    // add grade values
+    values.push(row.student.computedValues.level.levelName);
+    values.push(row.student.computedValues.level.grade);
+    values.push(
+      row.student.computedValues.endOfLabsLevelsReached ? "tak" : "nie",
+    );
+    values.push(
+      row.student.computedValues.projectPointsThresholdReached ? "tak" : "nie",
+    );
+    values.push(row.student.computedValues.computedGrade.toFixed(1));
     return values;
   };
 
@@ -101,6 +111,12 @@ export const GroupTable = ({
     headers.push({ name: "overall pure points", color: "blue" });
     headers.push({ name: "overall bonuses", color: "blue" });
     headers.push({ name: "overall", color: "blue" });
+    // levels...
+    headers.push({ name: "level", color: "blue" });
+    headers.push({ name: "level grade", color: "blue" });
+    headers.push({ name: "endOfLabs", color: "blue" });
+    headers.push({ name: "projectPoints", color: "blue" });
+    headers.push({ name: "computed grade", color: "blue" });
     return headers;
   };
 
@@ -145,7 +161,7 @@ export const GroupTable = ({
                 </TableCell>
                 {getRowValues(row).map((value, index) => (
                   <TableCell key={`${index}`}>
-                    {value?.toFixed(2) ?? EMPTY_FIELD_STRING}
+                    {value ?? EMPTY_FIELD_STRING}
                   </TableCell>
                 ))}
               </TableRow>

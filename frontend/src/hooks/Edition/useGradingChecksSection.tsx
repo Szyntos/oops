@@ -9,7 +9,7 @@ import {
 } from "../../graphql/setupGradingChecks.graphql.types";
 import { useSetupGradingChecksEditMutation } from "../../graphql/setupGradingChecksEdit.graphql.types";
 import { GradingChecksFormValues } from "../../components/Edition/Sections/GradingChecksSection/ChecksForm";
-import { useConfirmPopup } from "../common/useConfrimPopup";
+import { useConfirmPopup } from "../common/useConfirmPopup";
 import { useSetupGradingChecksDeleteMutation } from "../../graphql/setupGradingChecksDelete.graphql.types";
 
 export type GradingChecks = SetupGradingChecksQuery["listSetupGradingChecks"];
@@ -18,7 +18,7 @@ export const useGradingChecksSection = (editionId: number) => {
   const { localErrorWrapper, globalErrorWrapper } = useError();
 
   const { data, loading, error, refetch } = useSetupGradingChecksQuery({
-    variables: { editionId: editionId.toString() },
+    variables: { editionId: editionId },
     fetchPolicy: "no-cache",
   });
 

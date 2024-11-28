@@ -22,7 +22,7 @@ import { UPLOAD_FILES_URL } from "../../utils/constants";
 import { mockPermissions } from "../../utils/utils";
 import { useApolloClient } from "@apollo/client";
 import { useMarkPassingStudentsInactiveMutation } from "../../graphql/markPassingStudentsInactive.graphql.types";
-import { useConfirmPopup } from "../common/useConfrimPopup";
+import { useConfirmPopup } from "../common/useConfirmPopup";
 
 export type Group = SetupGroupsQuery["listSetupGroups"][number];
 
@@ -219,16 +219,6 @@ export const useGroupsSection = (editionId: number) => {
     }
   };
 
-  // GROUP CHANGE
-  const handleStudentGroupChange = (
-    userId: string,
-    groupId: string | undefined,
-  ) => {
-    console.log(userId);
-    console.log(groupId);
-    // TODO change user group
-  };
-
   // MARK PASSING STUDENTS AS INACTIVE
   const [markPassingStudentsActive] = useMarkPassingStudentsInactiveMutation();
   const handleMarkAllPassingStudents = () => {
@@ -263,7 +253,6 @@ export const useGroupsSection = (editionId: number) => {
     handleDeleteGroup,
 
     handleUploadStudents,
-    handleStudentGroupChange,
 
     variant,
     selectedGroup,

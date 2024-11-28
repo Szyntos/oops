@@ -7,7 +7,7 @@ import { FileItem, ImagesList } from "./ImagesList/ImagesList";
 import { useError } from "../../../../hooks/common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../../../utils/constants";
 import { useDeleteFileMutation } from "../../../../graphql/deleteFile.graphql.types";
-import { useConfirmPopup } from "../../../../hooks/common/useConfrimPopup";
+import { useConfirmPopup } from "../../../../hooks/common/useConfirmPopup";
 
 const folders: Folder[] = [
   { title: "award", pathPrefix: `image/award` },

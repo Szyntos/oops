@@ -49,3 +49,5 @@ export const mockPermissions = {
     allow: false,
   },
 } as Permissions;
+
+export const GRADE_STRINGS = ["2.0", "3.0", "3.5", "4.0", "4.5", "5.0"];

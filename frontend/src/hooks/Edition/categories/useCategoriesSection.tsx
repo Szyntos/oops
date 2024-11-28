@@ -13,7 +13,7 @@ import { useError } from "../../common/useGlobalError";
 import { useSetupCategoryEditMutation } from "../../../graphql/setupCategoryEdit.graphql.types";
 import { useDeleteCategoryMutation } from "../../../graphql/deleteCategory.graphql.types";
 import { useCopyCategoryMutation } from "../../../graphql/copyCategory.graphql.types";
-import { useConfirmPopup } from "../../common/useConfrimPopup";
+import { useConfirmPopup } from "../../common/useConfirmPopup";
 
 export type Category = SetupCategoriesQuery["listSetupCategories"][number];
 

@@ -15,7 +15,7 @@ import {
 import { ChestFormValues } from "../../components/Edition/Sections/ChestsSection/AddChestForm/AddChestForm";
 import { useAwardsSection } from "./useAwardsSection";
 import { useSetupChestCreateMutation } from "../../graphql/setupChestCreate.graphql.types";
-import { useConfirmPopup } from "../common/useConfrimPopup";
+import { useConfirmPopup } from "../common/useConfirmPopup";
 
 export type Chest = SetupChestsQuery["listSetupChests"][number];
 

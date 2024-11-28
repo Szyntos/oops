@@ -10,6 +10,7 @@ export function StudentCard({
   totalPoints,
   avatarId,
   id,
+  grade,
 }: StudentCardData) {
   return (
     <div style={styles.container}>
@@ -17,6 +18,7 @@ export function StudentCard({
       <div>ID: {id}</div>
       <div style={styles.studentName}>{displayName}</div>
       <div>indeks: {index}</div>
+      <div>ocena: {grade}</div>
       <div>
         grupa:{" "}
         {group

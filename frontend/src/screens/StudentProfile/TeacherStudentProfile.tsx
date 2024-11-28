@@ -19,6 +19,8 @@ import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useCoordinatorActions } from "../../hooks/StudentProfile/useCoordinatorActions";
 import { AddChestToUserForm } from "./AddChestToUserForm";
+import { useChangeGroup } from "../../hooks/common/useChangeGroup";
+import { useOverrideGrade } from "../../hooks/common/useOverrideGrade";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -74,7 +76,11 @@ export function TeacherStudentProfile() {
     openAddDialog: openChestDialog,
     handleAddChestConfirmation,
     formError: chestError,
+    handleRegenerateGrade,
   } = useCoordinatorActions(studentId as string, userId);
+
+  const { openChangeGroup } = useChangeGroup();
+  const { openOverrideGrade } = useOverrideGrade();
 
   if (!studentId) return <p>StudentId is undefined</p>;
   if (!userId) return <p>TeacherId is undefined</p>;
@@ -133,13 +139,52 @@ export function TeacherStudentProfile() {
             Add Points
           </Button>
           {user.role === UsersRolesType.Coordinator && (
-            <Button
-              onClick={openChestDialog}
-              color="lightblue"
-              disabled={disableEditMode}
-            >
-              Add Chest
-            </Button>
+            <>
+              <Button
+                onClick={openChestDialog}
+                color="lightblue"
+                disabled={disableEditMode}
+              >
+                Add Chest
+              </Button>
+              <Button
+                onClick={() =>
+                  openOverrideGrade({
+                    studentId,
+                    editionId: selectedEdition?.editionId as string,
+                    grade: studentData.grade,
+                  })
+                }
+                color="lightblue"
+                disabled={disableEditMode || !selectedEdition?.editionId}
+              >
+                Override Grade
+              </Button>
+              <Button
+                onClick={() => handleRegenerateGrade(studentId)}
+                color="lightblue"
+                disabled={disableEditMode || !selectedEdition?.editionId}
+              >
+                Regenerate Grade
+              </Button>
+              <Button
+                onClick={() =>
+                  openChangeGroup({
+                    studentId,
+                    groupId: studentData.group?.id as string,
+                    editionId: selectedEdition?.editionId as string,
+                  })
+                }
+                color="lightblue"
+                disabled={
+                  disableEditMode ||
+                  !studentData.group?.id ||
+                  !selectedEdition?.editionId
+                }
+              >
+                Change group
+              </Button>
+            </>
           )}
         </div>
 

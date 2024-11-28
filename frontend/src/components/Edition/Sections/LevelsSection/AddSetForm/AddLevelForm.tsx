@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { WithAddedLevelsValidateErrors } from "./AddSetForm";
 import { SelectImage } from "../../../../inputs/SelectImage";
+import { GRADE_STRINGS } from "../../../../../utils/utils";
 
 const ValidationSchema = z.object({
   name: z.string().min(1),
@@ -37,8 +38,6 @@ const defaultInitialValues: LevelFormValues = {
   grade: "2.0",
   imageId: "",
 };
-
-export const grades = ["2.0", "3.0", "3.5", "4.0", "4.5", "5.0"];
 
 export const AddLevelForm = ({
   handleAdd,
@@ -135,7 +134,7 @@ export const AddLevelForm = ({
                 onBlur={formik.handleBlur}
                 error={Boolean(formik.touched.grade && formik.errors.grade)}
               >
-                {grades.map((g) => (
+                {GRADE_STRINGS.map((g) => (
                   <MenuItem key={g} value={g}>
                     {g}
                   </MenuItem>

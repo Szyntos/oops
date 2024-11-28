@@ -13,7 +13,7 @@ import { useDeleteUserMutation } from "../../../graphql/deleteUser.graphql.types
 import { useError } from "../../common/useGlobalError";
 import { useMakeStudentActiveMutation } from "../../../graphql/makeStudentActive.graphql.types";
 import { useMakeStudentInactiveMutation } from "../../../graphql/markStudentInactive.graphql.types";
-import { useConfirmPopup } from "../../common/useConfrimPopup";
+import { useConfirmPopup } from "../../common/useConfirmPopup";
 
 export type User = SetupUsersQuery["listSetupUsers"][number];
 

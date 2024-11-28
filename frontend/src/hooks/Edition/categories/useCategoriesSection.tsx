@@ -22,6 +22,7 @@ export const useCategoriesSection = (editionId: number) => {
 
   const { data, loading, error, refetch } = useSetupCategoriesQuery({
     variables: { editionId },
+    fetchPolicy: "no-cache",
   });
 
   const categories: Category[] = data?.listSetupCategories ?? [];

@@ -46,7 +46,10 @@ export default function HallOfFame() {
     <div style={styles.container}>
       <div style={styles.leftSide}>
         <Podium students={displayStudents} />
-        <StatisticsBox />
+        <StatisticsBox
+          students={displayStudents}
+          highlightedStudent={highlightedStudent}
+        />
       </div>
 
       <div style={styles.sideBarContainer}>

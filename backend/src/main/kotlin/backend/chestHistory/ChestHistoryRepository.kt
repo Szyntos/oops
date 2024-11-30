@@ -12,4 +12,5 @@ interface ChestHistoryRepository : JpaRepository<ChestHistory, Long> {
     fun findByChest(chest: Chests) : List<ChestHistory>
     fun existsByChest(chest: Chests) : Boolean
     fun existsByChestAndSubcategory_Edition(chest: Chests, edition: Edition) : Boolean
+    fun findByChest_AndOpened(chest: Chests, opened: Boolean) : List<ChestHistory>
 }

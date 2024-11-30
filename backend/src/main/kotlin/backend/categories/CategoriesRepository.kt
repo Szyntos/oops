@@ -9,4 +9,5 @@ interface CategoriesRepository: JpaRepository<Categories, Long> {
     fun findAllByCategoryName(categoryName:String) : List<Categories>
 
     fun findByCategoryEdition_Edition(edition: Edition): List<Categories>
+    fun findByCategoryEdition_EditionAndCanAddPoints(edition: Edition, canAddPoints: Boolean): List<Categories>
 }

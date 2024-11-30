@@ -36,6 +36,7 @@ import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.transaction.annotation.Transactional
 import java.sql.Time
 import java.time.LocalDateTime
@@ -627,6 +628,7 @@ class GroupsDataFetcher {
 
     @DgsQuery
     @Transactional
+    @Cacheable("usersInGroupWithPoints")
     fun getUsersInGroupWithPoints(@InputArgument groupId: Long): List<UserPointsType> {
         val action = "getUsersInGroupWithPoints"
         val arguments = mapOf(
@@ -649,9 +651,12 @@ class GroupsDataFetcher {
 
         val points = pointsRepository.findByStudent_UserIdInAndSubcategory_Edition(userIds, group.edition)
         val bonuses = bonusesRepository.findByChestHistory_User_UserIdInAndPoints_Subcategory_Edition(userIds, group.edition)
-        val categories = categoriesRepository.findByCategoryEdition_Edition(group.edition)
+        val categories = categoriesRepository.findByCategoryEdition_EditionAndCanAddPoints(group.edition, true)
         val subcategories = subcategoriesRepository.findByEdition_EditionId(group.edition.editionId)
+        val subcategoriesByCategory = subcategories.groupBy { it.category.categoryId }
         val allAvailableAwards = awardRepository.findByAwardEditions_Edition(group.edition).distinctBy { it.awardId }
+        val awardsByCategory = allAvailableAwards.groupBy { it.category.categoryId }
+
 
         // Pre-process data into maps
         val purePointsByUserAndCategory = points.filter { it.bonuses == null }.groupBy { it.student.userId }
@@ -663,14 +668,15 @@ class GroupsDataFetcher {
             UserPointsType(
                 user = user,
                 userLevel = user.userLevels.find { it.edition == group.edition } ?: UserLevel(),
-                categoriesPoints = categories.filter { it.canAddPoints }.map { category ->
+                categoriesPoints = categories.map { category ->
                     val categoryPurePoints = purePointsByUserAndCategory[user.userId]?.get(category.categoryId) ?: emptyList()
                     val categoryBonuses = bonusesByUserAndCategory[user.userId]?.get(category.categoryId) ?: emptyList()
-                    val awardTypes = allAvailableAwards.filter { it.category == category }
+                    val categoryBonusesByAward = categoryBonuses.groupBy { it.award }
+                    val awardTypes = awardsByCategory[category.categoryId] ?: emptyList()
 
                     CategoryPointsType(
                         category = category,
-                        subcategoryPoints = subcategories.filter { it.category == category }.sortedBy{ it.ordinalNumber }.map { subcategory ->
+                        subcategoryPoints = subcategoriesByCategory[category.categoryId]?.sortedBy{ it.ordinalNumber }?.map { subcategory ->
                             val subcategoryPurePoints = categoryPurePoints.firstOrNull { it.subcategory == subcategory }
                             SubcategoryPointsGroupType(
                                 subcategory = subcategory,
@@ -679,7 +685,7 @@ class GroupsDataFetcher {
                                 createdAt = subcategoryPurePoints?.createdAt ?: LocalDateTime.now(),
                                 updatedAt = subcategoryPurePoints?.updatedAt ?: LocalDateTime.now()
                             )
-                        },
+                        } ?: emptyList(),
                         categoryAggregate = CategoryAggregate(
                             category = category,
                             sumOfPurePoints = categoryPurePoints.sumOf { it.value }.toFloat(),
@@ -688,7 +694,7 @@ class GroupsDataFetcher {
                                     categoryBonuses.sumOf { it.points.value }.toFloat(),
                         ),
                         awardAggregate = awardTypes.map { awardType ->
-                            val awardPoints = categoryBonuses.filter { it.award == awardType }.map { it.points }
+                            val awardPoints = categoryBonusesByAward[awardType]?.map { it.points } ?: emptyList()
                             val awardPointsSum = if (awardPoints.isNotEmpty()) {
                                 awardPoints.sumOf { it.value }.toFloat()
                             } else {

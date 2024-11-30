@@ -79,7 +79,7 @@ class ChestsPartialPermissions {
             )
         }
 
-        if (chestHistoryRepository.findByChest(chest).any {it.opened}) {
+        if (chestHistoryRepository.findByChest_AndOpened(chest, true).isNotEmpty()) {
             return Permission(
                 action = action,
                 arguments = arguments,

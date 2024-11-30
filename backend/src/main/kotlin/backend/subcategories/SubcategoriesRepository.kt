@@ -32,4 +32,5 @@ interface SubcategoriesRepository : JpaRepository<Subcategories, Long> {
         edition: Edition,
         ordinalNumber: Int
     ): List<Subcategories>
+    fun findAllByEdition(edition: Edition): List<Subcategories>
 }

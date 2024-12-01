@@ -134,6 +134,8 @@ class PermissionService {
             // ChestEditionPermissions
             "addChestToEdition" -> chestEditionPermissions.checkAddChestToEditionPermission(jsonArguments)
             "removeChestFromEdition" -> chestEditionPermissions.checkRemoveChestFromEditionPermission(jsonArguments)
+            "activateChestInEdition" -> chestEditionPermissions.checkActivateChestInEditionPermission(jsonArguments)
+            "deactivateChestInEdition" -> chestEditionPermissions.checkDeactivateChestInEditionPermission(jsonArguments)
             // ChestHistoryPermissions
             "addChestToUser" -> chestHistoryPermissions.checkAddChestToUserPermission(jsonArguments)
             "editChestHistory" -> chestHistoryPermissions.checkEditChestHistoryPermission(jsonArguments)
@@ -254,6 +256,8 @@ class PermissionService {
             // ChestEditionPermissions
             "addChestToEdition" -> chestEditionPartialPermissions.checkAddChestToEditionPermission(jsonArguments)
             "removeChestFromEdition" -> chestEditionPartialPermissions.checkRemoveChestFromEditionPermission(jsonArguments)
+            "activateChestInEdition" -> chestEditionPartialPermissions.checkActivateChestInEditionPermission(jsonArguments)
+            "deactivateChestInEdition" -> chestEditionPartialPermissions.checkDeactivateChestInEditionPermission(jsonArguments)
             // ChestsPermissions
             "editChest" -> chestsPartialPermissions.checkEditChestPermission(jsonArguments)
             "removeChest" -> chestsPartialPermissions.checkRemoveChestPermission(jsonArguments)

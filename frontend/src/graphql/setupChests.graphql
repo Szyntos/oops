@@ -1,7 +1,6 @@
 query SetupChests($editionId: Int!) {
   listSetupChests(editionId: $editionId) {
     chest {
-      active
       awardBundleCount
       chestId
       imageFile {

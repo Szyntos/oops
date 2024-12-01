@@ -91,15 +91,6 @@ class ChestsAwardPermissions {
             )
         }
 
-        if (!chest.active){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Chest is not active"
-            )
-        }
-
         if (award.awardEditions.none { it.edition in chestEditions }){
             return Permission(
                 action = action,
@@ -176,15 +167,6 @@ class ChestsAwardPermissions {
                 arguments = arguments,
                 allow = false,
                 reason = "Edition with this chest has already ended"
-            )
-        }
-
-        if (!chest.active){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Chest is not active"
             )
         }
 

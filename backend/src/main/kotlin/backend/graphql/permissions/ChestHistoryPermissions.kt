@@ -149,15 +149,6 @@ class ChestHistoryPermissions {
                 reason = "Invalid chest ID"
             )
 
-        if (!chest.active){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Chest is not active"
-            )
-        }
-
         val chestEditions = chest.chestEdition.map { it.edition }
 
         if (userEditions.none { it in chestEditions }) {
@@ -236,6 +227,16 @@ class ChestHistoryPermissions {
                 arguments = arguments,
                 allow = false,
                 reason = "Subcategory and chest must have the same edition"
+            )
+        }
+
+        val editionToAdd = subcategory.edition
+        if (chest.chestEdition.filter { it.edition == editionToAdd }.none { it.active }) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Chest must be active in this edition"
             )
         }
 
@@ -416,12 +417,13 @@ class ChestHistoryPermissions {
                     reason = "Chest and user must have the same edition"
                 )
             }
-            if (!chest.active){
+            // check if chest is active in this edition
+            if (chest.chestEdition.filter { it.edition == chestHistory.subcategory.edition }.none { it.active }) {
                 return Permission(
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Chest is not active"
+                    reason = "Chest must be active in this edition"
                 )
             }
             chestHistory.chest = chest

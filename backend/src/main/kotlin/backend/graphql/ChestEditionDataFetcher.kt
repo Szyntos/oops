@@ -137,4 +137,50 @@ class ChestEditionDataFetcher {
         chestEditionRepository.deleteByChestAndEdition(chest, edition)
         return true
     }
+
+    @DgsMutation
+    @Transactional
+    fun activateChestInEdition(@InputArgument chestId: Long, @InputArgument editionId: Long): Boolean {
+        val action = "activateChestInEdition"
+        val arguments = mapOf(
+            "chestId" to chestId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+        val chestEdition = chestEditionRepository.findByChest_ChestIdAndEdition_EditionId(chestId, editionId) ?: throw IllegalArgumentException("ChestEdition not found")
+
+        chestEdition.active = true
+        chestEditionRepository.save(chestEdition)
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
+    fun deactivateChestInEdition(@InputArgument chestId: Long, @InputArgument editionId: Long): Boolean {
+        val action = "deactivateChestInEdition"
+        val arguments = mapOf(
+            "chestId" to chestId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+        val chestEdition = chestEditionRepository.findByChest_ChestIdAndEdition_EditionId(chestId, editionId) ?: throw IllegalArgumentException("ChestEdition not found")
+
+        chestEdition.active = false
+        chestEditionRepository.save(chestEdition)
+        return true
+    }
 }

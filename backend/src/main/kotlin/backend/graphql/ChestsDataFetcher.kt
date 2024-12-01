@@ -1,6 +1,5 @@
 package backend.graphql
 
-import backend.award.Award
 import backend.award.AwardRepository
 import backend.awardEdition.AwardEditionRepository
 import backend.categories.CategoriesRepository
@@ -205,7 +204,7 @@ class ChestsDataFetcher {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
-        var chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
+        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
 
         chestType?.let {
             chest.chestType = it
@@ -233,31 +232,6 @@ class ChestsDataFetcher {
 
         toRemove.forEach { awardId ->
             val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
-            if (chestHistoryRepository.findByChest(chest).any { it.opened }) {
-                chest.active = false
-                chestsRepository.save(chest)
-                val newChest = Chests(
-                    chestType = chest.chestType,
-                    label = chest.label,
-                    awardBundleCount = chest.awardBundleCount
-                )
-                newChest.imageFile = chest.imageFile
-                chestsRepository.save(newChest)
-                chestAwardRepository.findByChest(chest).forEach {
-                    chestAwardRepository.save(
-                        ChestAward(
-                            award = it.award,
-                            chest = newChest,
-                            label = it.label
-                        )
-                    )
-                }
-                chestHistoryRepository.findByChest(chest).filter { !it.opened }.forEach {
-                    it.chest = newChest
-                    chestHistoryRepository.save(it)
-                }
-                chest = newChest
-            }
             chestAwardRepository.findByChestAndAward(chest, award)?.let {
                 chestAwardRepository.delete(it)
             }
@@ -265,31 +239,6 @@ class ChestsDataFetcher {
 
         toAdd.forEach { awardId ->
             val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
-            if (chestHistoryRepository.findByChest(chest).any { it.opened }) {
-                chest.active = false
-                chestsRepository.save(chest)
-                val newChest = Chests(
-                    chestType = chest.chestType,
-                    label = chest.label,
-                    awardBundleCount = chest.awardBundleCount
-                )
-                newChest.imageFile = chest.imageFile
-                chestsRepository.save(newChest)
-                chestAwardRepository.findByChest(chest).forEach {
-                    chestAwardRepository.save(
-                        ChestAward(
-                            award = it.award,
-                            chest = newChest,
-                            label = it.label
-                        )
-                    )
-                }
-                chestHistoryRepository.findByChest(chest).filter { !it.opened }.forEach {
-                    it.chest = newChest
-                    chestHistoryRepository.save(it)
-                }
-                chest = newChest
-            }
             val chestAward = ChestAward(
                 chest = chest,
                 award = award,

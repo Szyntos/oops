@@ -328,5 +328,7 @@ data class ListPermissionsOutput(
     val canOverride: Permission? = null,
     val canTurnOffOverride: Permission? = null,
     val canMarkAsActive: Permission? = null,
-    val canMarkAsInactive: Permission? = null
+    val canMarkAsInactive: Permission? = null,
+    val canActivate: Permission? = null,
+    val canDeactivate: Permission? = null
 )

@@ -103,7 +103,9 @@ class ChestsDataFetcher {
                     canRemove = permissionService.checkPartialPermission(PermissionInput("removeChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
                     canSelect = permissionService.checkPartialPermission(PermissionInput("addChestToEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
                     canUnselect = permissionService.checkPartialPermission(PermissionInput("removeChestFromEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
-                    additional = emptyList()
+                    additional = emptyList(),
+                    canActivate = permissionService.checkPartialPermission(PermissionInput("activateChestInEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
+                    canDeactivate = permissionService.checkPartialPermission(PermissionInput("deactivateChestInEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId))))
                 )
             )
         }

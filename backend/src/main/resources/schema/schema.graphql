@@ -915,6 +915,8 @@ type ListPermissionsOutputType{
   canTurnOffOverride: PermissionType
   canMarkAsActive: PermissionType
   canMarkAsInactive: PermissionType
+  canActivate: PermissionType
+  canDeactivate: PermissionType
 }
 
 type UserWithEditionsType{

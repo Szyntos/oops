@@ -6,4 +6,6 @@ export const defaultUnauthenticatedUser: User = {
   role: UsersRolesType.UnauthenticatedUser,
   userId: "unauthenticated",
   editions: [],
+  avatarSetByUser: false,
+  nickSetByUser: false,
 };

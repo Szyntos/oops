@@ -28,8 +28,8 @@ export const UserCard = ({
           permissions={user.permissions}
           handleDelete={handleDeleteClick}
           handleEdit={handleEditClick}
-          isActive={user.user.active}
-          handleMarkActiveness={() => handleStudentActiveness(user)}
+          isStudentActive={user.user.active}
+          handleMarkChestActiveness={() => handleStudentActiveness(user)}
         />
       ) : (
         <SetupButtons

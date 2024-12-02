@@ -13,6 +13,7 @@ type ChestCardProps = {
   onEditClick: () => void;
   onDeleteClick: () => void;
   onCopyClick: () => void;
+  onChestActivateClick: () => void;
 };
 
 export const ChestCard = ({
@@ -22,6 +23,7 @@ export const ChestCard = ({
   onEditClick,
   onDeleteClick,
   onCopyClick,
+  onChestActivateClick,
 }: ChestCardProps) => {
   const { openShowDialog } = useEditionSections();
   const { selectedEdition } = useEditionSelection();
@@ -49,18 +51,15 @@ export const ChestCard = ({
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
         handleShow={() => openShowDialog(chest)}
-      />
-      <button>
-        {isChestActive(
+        handleMarkChestActiveness={onChestActivateClick}
+        isChestActive={isChestActive(
           chest.chest.chestEdition.map((e) => ({
             id: e?.edition.editionId ?? "-1",
             active: Boolean(e?.active),
           })),
           selectedEdition?.editionId ?? "",
-        )
-          ? "active"
-          : "not active"}
-      </button>
+        )}
+      />
     </div>
   );
 };

@@ -69,6 +69,16 @@ export type SetupEditionsQuery = {
         allow: boolean;
         reason?: string | null;
       } | null;
+      canActivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canDeactivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
     };
   }>;
 };
@@ -121,6 +131,14 @@ export const SetupEditionsDocument = gql`
           reason
         }
         canTurnOffOverride {
+          allow
+          reason
+        }
+        canActivate {
+          allow
+          reason
+        }
+        canDeactivate {
           allow
           reason
         }

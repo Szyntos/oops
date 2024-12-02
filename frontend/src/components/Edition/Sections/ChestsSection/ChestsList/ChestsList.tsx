@@ -6,10 +6,11 @@ import { ChestCard } from "./ChestCard";
 type ChestsListProps = {
   chests: Chest[];
   selectedChests: Chest[];
-  handleSelectChest: (award: Chest) => void;
-  handleEditChest: (award: Chest) => void;
-  handleDeleteChest: (award: Chest) => void;
-  handleCopyChest: (award: Chest) => void;
+  handleSelectChest: (chest: Chest) => void;
+  handleEditChest: (chest: Chest) => void;
+  handleDeleteChest: (chest: Chest) => void;
+  handleCopyChest: (chest: Chest) => void;
+  handleActivateChest: (chest: Chest) => void;
   title: string;
 };
 
@@ -20,6 +21,7 @@ export const ChestsList = ({
   handleEditChest,
   handleDeleteChest,
   handleCopyChest,
+  handleActivateChest,
   title,
 }: ChestsListProps) => {
   return (
@@ -38,6 +40,7 @@ export const ChestsList = ({
                 onEditClick={() => handleEditChest(chest)}
                 onDeleteClick={() => handleDeleteChest(chest)}
                 onCopyClick={() => handleCopyChest(chest)}
+                onChestActivateClick={() => handleActivateChest(chest)}
               />
             ))
           : EMPTY_FIELD_STRING}

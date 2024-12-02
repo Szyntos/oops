@@ -2524,6 +2524,7 @@ export type ChestAwardVarianceOrderBy = {
 /** columns and relationships of "chest_edition" */
 export type ChestEdition = {
   __typename?: "ChestEdition";
+  active: Scalars["Boolean"]["output"];
   /** An object relationship */
   chest: Chests;
   chestEditionId: Scalars["bigint"]["output"];
@@ -2542,6 +2543,8 @@ export type ChestEditionAggregate = {
 };
 
 export type ChestEditionAggregateBoolExp = {
+  bool_and?: InputMaybe<ChestEditionAggregateBoolExpBool_And>;
+  bool_or?: InputMaybe<ChestEditionAggregateBoolExpBool_Or>;
   count?: InputMaybe<ChestEditionAggregateBoolExpCount>;
 };
 
@@ -2609,6 +2612,7 @@ export type ChestEditionBoolExp = {
   _and?: InputMaybe<Array<ChestEditionBoolExp>>;
   _not?: InputMaybe<ChestEditionBoolExp>;
   _or?: InputMaybe<Array<ChestEditionBoolExp>>;
+  active?: InputMaybe<BooleanComparisonExp>;
   chest?: InputMaybe<ChestsBoolExp>;
   chestEditionId?: InputMaybe<BigintComparisonExp>;
   chestId?: InputMaybe<BigintComparisonExp>;
@@ -2634,6 +2638,7 @@ export type ChestEditionIncInput = {
 
 /** input type for inserting data into table "chest_edition" */
 export type ChestEditionInsertInput = {
+  active?: InputMaybe<Scalars["Boolean"]["input"]>;
   chest?: InputMaybe<ChestsObjRelInsertInput>;
   chestEditionId?: InputMaybe<Scalars["bigint"]["input"]>;
   chestId?: InputMaybe<Scalars["bigint"]["input"]>;
@@ -2694,6 +2699,7 @@ export type ChestEditionOnConflict = {
 
 /** Ordering options when selecting data from "chest_edition". */
 export type ChestEditionOrderBy = {
+  active?: InputMaybe<OrderBy>;
   chest?: InputMaybe<ChestsOrderBy>;
   chestEditionId?: InputMaybe<OrderBy>;
   chestId?: InputMaybe<OrderBy>;
@@ -2711,6 +2717,8 @@ export type ChestEditionPkColumnsInput = {
 /** select columns of table "chest_edition" */
 export enum ChestEditionSelectColumn {
   /** column name */
+  Active = "active",
+  /** column name */
   ChestEditionId = "chestEditionId",
   /** column name */
   ChestId = "chestId",
@@ -2720,8 +2728,21 @@ export enum ChestEditionSelectColumn {
   Label = "label",
 }
 
+/** select "chestEditionAggregateBoolExpBool_andArgumentsColumns" columns of table "chest_edition" */
+export enum ChestEditionSelectColumnChestEditionAggregateBoolExpBool_AndArgumentsColumns {
+  /** column name */
+  Active = "active",
+}
+
+/** select "chestEditionAggregateBoolExpBool_orArgumentsColumns" columns of table "chest_edition" */
+export enum ChestEditionSelectColumnChestEditionAggregateBoolExpBool_OrArgumentsColumns {
+  /** column name */
+  Active = "active",
+}
+
 /** input type for updating data in table "chest_edition" */
 export type ChestEditionSetInput = {
+  active?: InputMaybe<Scalars["Boolean"]["input"]>;
   chestEditionId?: InputMaybe<Scalars["bigint"]["input"]>;
   chestId?: InputMaybe<Scalars["bigint"]["input"]>;
   editionId?: InputMaybe<Scalars["bigint"]["input"]>;
@@ -2783,6 +2804,7 @@ export type ChestEditionStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type ChestEditionStreamCursorValueInput = {
+  active?: InputMaybe<Scalars["Boolean"]["input"]>;
   chestEditionId?: InputMaybe<Scalars["bigint"]["input"]>;
   chestId?: InputMaybe<Scalars["bigint"]["input"]>;
   editionId?: InputMaybe<Scalars["bigint"]["input"]>;
@@ -2806,6 +2828,7 @@ export type ChestEditionSumOrderBy = {
 
 export type ChestEditionType = {
   __typename?: "ChestEditionType";
+  active: Scalars["Boolean"]["output"];
   chest: ChestType;
   chestEditionId: Scalars["ID"]["output"];
   edition: EditionType;
@@ -2814,6 +2837,8 @@ export type ChestEditionType = {
 
 /** update columns of table "chest_edition" */
 export enum ChestEditionUpdateColumn {
+  /** column name */
+  Active = "active",
   /** column name */
   ChestEditionId = "chestEditionId",
   /** column name */
@@ -3397,7 +3422,6 @@ export type ChestHistoryVarianceOrderBy = {
 
 export type ChestType = {
   __typename?: "ChestType";
-  active: Scalars["Boolean"]["output"];
   awardBundleCount: Scalars["Int"]["output"];
   chestAward: Array<ChestAwardType>;
   chestEdition: Array<Maybe<ChestEditionType>>;
@@ -3417,7 +3441,6 @@ export type ChestWithPermissionsType = {
 /** columns and relationships of "chests" */
 export type Chests = {
   __typename?: "Chests";
-  active: Scalars["Boolean"]["output"];
   awardBundleCount: Scalars["Int"]["output"];
   /** An array relationship */
   chestAwards: Array<ChestAward>;
@@ -3501,8 +3524,6 @@ export type ChestsAggregate = {
 };
 
 export type ChestsAggregateBoolExp = {
-  bool_and?: InputMaybe<ChestsAggregateBoolExpBool_And>;
-  bool_or?: InputMaybe<ChestsAggregateBoolExpBool_Or>;
   count?: InputMaybe<ChestsAggregateBoolExpCount>;
 };
 
@@ -3570,7 +3591,6 @@ export type ChestsBoolExp = {
   _and?: InputMaybe<Array<ChestsBoolExp>>;
   _not?: InputMaybe<ChestsBoolExp>;
   _or?: InputMaybe<Array<ChestsBoolExp>>;
-  active?: InputMaybe<BooleanComparisonExp>;
   awardBundleCount?: InputMaybe<IntComparisonExp>;
   chestAwards?: InputMaybe<ChestAwardBoolExp>;
   chestAwardsAggregate?: InputMaybe<ChestAwardAggregateBoolExp>;
@@ -3600,7 +3620,6 @@ export type ChestsIncInput = {
 
 /** input type for inserting data into table "chests" */
 export type ChestsInsertInput = {
-  active?: InputMaybe<Scalars["Boolean"]["input"]>;
   awardBundleCount?: InputMaybe<Scalars["Int"]["input"]>;
   chestAwards?: InputMaybe<ChestAwardArrRelInsertInput>;
   chestEditions?: InputMaybe<ChestEditionArrRelInsertInput>;
@@ -3675,7 +3694,6 @@ export type ChestsOnConflict = {
 
 /** Ordering options when selecting data from "chests". */
 export type ChestsOrderBy = {
-  active?: InputMaybe<OrderBy>;
   awardBundleCount?: InputMaybe<OrderBy>;
   chestAwardsAggregate?: InputMaybe<ChestAwardAggregateOrderBy>;
   chestEditionsAggregate?: InputMaybe<ChestEditionAggregateOrderBy>;
@@ -3695,8 +3713,6 @@ export type ChestsPkColumnsInput = {
 /** select columns of table "chests" */
 export enum ChestsSelectColumn {
   /** column name */
-  Active = "active",
-  /** column name */
   AwardBundleCount = "awardBundleCount",
   /** column name */
   ChestId = "chestId",
@@ -3708,21 +3724,8 @@ export enum ChestsSelectColumn {
   Type = "type",
 }
 
-/** select "chestsAggregateBoolExpBool_andArgumentsColumns" columns of table "chests" */
-export enum ChestsSelectColumnChestsAggregateBoolExpBool_AndArgumentsColumns {
-  /** column name */
-  Active = "active",
-}
-
-/** select "chestsAggregateBoolExpBool_orArgumentsColumns" columns of table "chests" */
-export enum ChestsSelectColumnChestsAggregateBoolExpBool_OrArgumentsColumns {
-  /** column name */
-  Active = "active",
-}
-
 /** input type for updating data in table "chests" */
 export type ChestsSetInput = {
-  active?: InputMaybe<Scalars["Boolean"]["input"]>;
   awardBundleCount?: InputMaybe<Scalars["Int"]["input"]>;
   chestId?: InputMaybe<Scalars["bigint"]["input"]>;
   imageFileId?: InputMaybe<Scalars["bigint"]["input"]>;
@@ -3785,7 +3788,6 @@ export type ChestsStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type ChestsStreamCursorValueInput = {
-  active?: InputMaybe<Scalars["Boolean"]["input"]>;
   awardBundleCount?: InputMaybe<Scalars["Int"]["input"]>;
   chestId?: InputMaybe<Scalars["bigint"]["input"]>;
   imageFileId?: InputMaybe<Scalars["bigint"]["input"]>;
@@ -3810,8 +3812,6 @@ export type ChestsSumOrderBy = {
 
 /** update columns of table "chests" */
 export enum ChestsUpdateColumn {
-  /** column name */
-  Active = "active",
   /** column name */
   AwardBundleCount = "awardBundleCount",
   /** column name */
@@ -11219,6 +11219,20 @@ export type ChestAwardAggregateBoolExpCount = {
   predicate: IntComparisonExp;
 };
 
+export type ChestEditionAggregateBoolExpBool_And = {
+  arguments: ChestEditionSelectColumnChestEditionAggregateBoolExpBool_AndArgumentsColumns;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<ChestEditionBoolExp>;
+  predicate: BooleanComparisonExp;
+};
+
+export type ChestEditionAggregateBoolExpBool_Or = {
+  arguments: ChestEditionSelectColumnChestEditionAggregateBoolExpBool_OrArgumentsColumns;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<ChestEditionBoolExp>;
+  predicate: BooleanComparisonExp;
+};
+
 export type ChestEditionAggregateBoolExpCount = {
   arguments?: InputMaybe<Array<ChestEditionSelectColumn>>;
   distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
@@ -11245,20 +11259,6 @@ export type ChestHistoryAggregateBoolExpCount = {
   distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
   filter?: InputMaybe<ChestHistoryBoolExp>;
   predicate: IntComparisonExp;
-};
-
-export type ChestsAggregateBoolExpBool_And = {
-  arguments: ChestsSelectColumnChestsAggregateBoolExpBool_AndArgumentsColumns;
-  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
-  filter?: InputMaybe<ChestsBoolExp>;
-  predicate: BooleanComparisonExp;
-};
-
-export type ChestsAggregateBoolExpBool_Or = {
-  arguments: ChestsSelectColumnChestsAggregateBoolExpBool_OrArgumentsColumns;
-  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
-  filter?: InputMaybe<ChestsBoolExp>;
-  predicate: BooleanComparisonExp;
 };
 
 export type ChestsAggregateBoolExpCount = {
@@ -11379,6 +11379,7 @@ export type LevelsAggregateBoolExpCount = {
 /** mutation root */
 export type Mutation_Root = {
   __typename?: "mutation_root";
+  activateChestInEdition?: Maybe<Scalars["Boolean"]["output"]>;
   addAward?: Maybe<AwardType>;
   addAwardToChest?: Maybe<ChestAwardType>;
   addAwardToEdition?: Maybe<AwardEditionType>;
@@ -11411,6 +11412,7 @@ export type Mutation_Root = {
   copyChest?: Maybe<ChestType>;
   copyEdition?: Maybe<EditionType>;
   copyLevelSet: LevelSetType;
+  deactivateChestInEdition?: Maybe<Scalars["Boolean"]["output"]>;
   /** delete data from the table: "award" */
   deleteAward?: Maybe<AwardMutationResponse>;
   /** delete single row from the table: "award" */
@@ -11782,6 +11784,12 @@ export type Mutation_Root = {
 };
 
 /** mutation root */
+export type Mutation_RootActivateChestInEditionArgs = {
+  chestId: Scalars["Int"]["input"];
+  editionId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
 export type Mutation_RootAddAwardArgs = {
   awardName: Scalars["String"]["input"];
   awardType: Scalars["String"]["input"];
@@ -12016,6 +12024,12 @@ export type Mutation_RootCopyEditionArgs = {
 /** mutation root */
 export type Mutation_RootCopyLevelSetArgs = {
   levelSetId: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootDeactivateChestInEditionArgs = {
+  chestId: Scalars["Int"]["input"];
+  editionId: Scalars["Int"]["input"];
 };
 
 /** mutation root */

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository
 interface ChestEditionRepository: JpaRepository<ChestEdition, Long> {
     fun existsByChest_ChestTypeAndEdition(chestType: String, edition: Edition): Boolean
     fun existsByChestAndEdition(chest: Chests, edition: Edition): Boolean
+    fun findByChest_ChestIdAndEdition_EditionId(chestId: Long, editionId: Long): ChestEdition?
     fun deleteByChestAndEdition(chest: Chests, edition: Edition)
     fun deleteByChest(chest: Chests)
 

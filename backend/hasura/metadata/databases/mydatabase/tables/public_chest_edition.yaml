@@ -15,6 +15,7 @@ select_permissions:
         - chest_edition_id
         - chest_id
         - edition_id
+        - active
         - label
       filter: {}
       allow_aggregations: true
@@ -25,6 +26,7 @@ select_permissions:
         - chest_edition_id
         - chest_id
         - edition_id
+        - active
         - label
       filter:
         edition:
@@ -37,6 +39,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - active
         - chest_edition_id
         - chest_id
         - edition_id

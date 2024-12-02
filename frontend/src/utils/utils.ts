@@ -51,3 +51,14 @@ export const mockPermissions = {
 } as Permissions;
 
 export const GRADE_STRINGS = ["2.0", "3.0", "3.5", "4.0", "4.5", "5.0"];
+
+type ChestEdition = {
+  id: string;
+  active: boolean;
+};
+export const isChestActive = (
+  editions: ChestEdition[],
+  selectedEditionId: string,
+) => {
+  return Boolean(editions.find((e) => e.id === selectedEditionId && e.active));
+};

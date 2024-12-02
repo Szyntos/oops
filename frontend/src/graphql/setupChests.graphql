@@ -12,6 +12,7 @@ query SetupChests($editionId: Int!) {
         edition {
           editionId
         }
+        active
       }
       chestAward {
         award {

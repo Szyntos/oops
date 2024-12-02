@@ -1,6 +1,8 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
+import { useEditionSelection } from "../../../../../hooks/common/useEditionSelection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
 import { Styles } from "../../../../../utils/Styles";
+import { isChestActive } from "../../../../../utils/utils";
 import { Image } from "../../../../images/Image";
 import { SetupButtons } from "../../SetupButtons";
 
@@ -22,6 +24,7 @@ export const ChestCard = ({
   onCopyClick,
 }: ChestCardProps) => {
   const { openShowDialog } = useEditionSections();
+  const { selectedEdition } = useEditionSelection();
 
   return (
     <div
@@ -47,6 +50,17 @@ export const ChestCard = ({
         handleCopy={onCopyClick}
         handleShow={() => openShowDialog(chest)}
       />
+      <button>
+        {isChestActive(
+          chest.chest.chestEdition.map((e) => ({
+            id: e?.edition.editionId ?? "-1",
+            active: Boolean(e?.active),
+          })),
+          selectedEdition?.editionId ?? "",
+        )
+          ? "active"
+          : "not active"}
+      </button>
     </div>
   );
 };

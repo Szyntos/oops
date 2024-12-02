@@ -10475,8 +10475,10 @@ input LevelsVarianceOrderBy {
 
 type ListPermissionsOutputType {
   additional: [PermissionType!]!
+  canActivate: PermissionType
   canAdd: PermissionType!
   canCopy: PermissionType!
+  canDeactivate: PermissionType
   canEdit: PermissionType!
   canMarkAsActive: PermissionType
   canMarkAsInactive: PermissionType

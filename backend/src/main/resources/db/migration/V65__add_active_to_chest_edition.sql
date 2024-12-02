@@ -1,0 +1,5 @@
+ALTER TABLE chest_edition
+    ADD COLUMN active BOOLEAN NOT NULL DEFAULT TRUE;
+
+ALTER TABLE chests
+    DROP COLUMN active;

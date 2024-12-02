@@ -3446,6 +3446,8 @@ input ChestAwardVarianceOrderBy {
 columns and relationships of "chest_edition"
 """
 type ChestEdition {
+  active: Boolean!
+
   """
   An object relationship
   """
@@ -3470,6 +3472,8 @@ type ChestEditionAggregate {
 }
 
 input ChestEditionAggregateBoolExp {
+  bool_and: chestEditionAggregateBoolExpBool_and
+  bool_or: chestEditionAggregateBoolExpBool_or
   count: chestEditionAggregateBoolExpCount
 }
 
@@ -3544,6 +3548,7 @@ input ChestEditionBoolExp {
   _and: [ChestEditionBoolExp!]
   _not: ChestEditionBoolExp
   _or: [ChestEditionBoolExp!]
+  active: BooleanComparisonExp
   chest: ChestsBoolExp
   chestEditionId: BigintComparisonExp
   chestId: BigintComparisonExp
@@ -3580,6 +3585,7 @@ input ChestEditionIncInput {
 input type for inserting data into table "chest_edition"
 """
 input ChestEditionInsertInput {
+  active: Boolean
   chest: ChestsObjRelInsertInput
   chestEditionId: bigint
   chestId: bigint
@@ -3656,6 +3662,7 @@ input ChestEditionOnConflict {
 Ordering options when selecting data from "chest_edition".
 """
 input ChestEditionOrderBy {
+  active: OrderBy
   chest: ChestsOrderBy
   chestEditionId: OrderBy
   chestId: OrderBy
@@ -3679,6 +3686,11 @@ enum ChestEditionSelectColumn {
   """
   column name
   """
+  active
+
+  """
+  column name
+  """
   chestEditionId
 
   """
@@ -3698,9 +3710,30 @@ enum ChestEditionSelectColumn {
 }
 
 """
+select "chestEditionAggregateBoolExpBool_andArgumentsColumns" columns of table "chest_edition"
+"""
+enum ChestEditionSelectColumnChestEditionAggregateBoolExpBool_andArgumentsColumns {
+  """
+  column name
+  """
+  active
+}
+
+"""
+select "chestEditionAggregateBoolExpBool_orArgumentsColumns" columns of table "chest_edition"
+"""
+enum ChestEditionSelectColumnChestEditionAggregateBoolExpBool_orArgumentsColumns {
+  """
+  column name
+  """
+  active
+}
+
+"""
 input type for updating data in table "chest_edition"
 """
 input ChestEditionSetInput {
+  active: Boolean
   chestEditionId: bigint
   chestId: bigint
   editionId: bigint
@@ -3780,6 +3813,7 @@ input ChestEditionStreamCursorInput {
 Initial value of the column from where the streaming should start
 """
 input ChestEditionStreamCursorValueInput {
+  active: Boolean
   chestEditionId: bigint
   chestId: bigint
   editionId: bigint
@@ -3805,6 +3839,7 @@ input ChestEditionSumOrderBy {
 }
 
 type ChestEditionType {
+  active: Boolean!
   chest: ChestType!
   chestEditionId: ID!
   edition: EditionType!
@@ -3815,6 +3850,11 @@ type ChestEditionType {
 update columns of table "chest_edition"
 """
 enum ChestEditionUpdateColumn {
+  """
+  column name
+  """
+  active
+
   """
   column name
   """
@@ -4617,7 +4657,6 @@ input ChestHistoryVarianceOrderBy {
 }
 
 type ChestType {
-  active: Boolean!
   awardBundleCount: Int!
   chestAward: [ChestAwardType!]!
   chestEdition: [ChestEditionType]!
@@ -4637,7 +4676,6 @@ type ChestWithPermissionsType {
 columns and relationships of "chests"
 """
 type Chests {
-  active: Boolean!
   awardBundleCount: Int!
 
   """
@@ -4839,8 +4877,6 @@ type ChestsAggregate {
 }
 
 input ChestsAggregateBoolExp {
-  bool_and: chestsAggregateBoolExpBool_and
-  bool_or: chestsAggregateBoolExpBool_or
   count: chestsAggregateBoolExpCount
 }
 
@@ -4915,7 +4951,6 @@ input ChestsBoolExp {
   _and: [ChestsBoolExp!]
   _not: ChestsBoolExp
   _or: [ChestsBoolExp!]
-  active: BooleanComparisonExp
   awardBundleCount: IntComparisonExp
   chestAwards: ChestAwardBoolExp
   chestAwardsAggregate: ChestAwardAggregateBoolExp
@@ -4953,7 +4988,6 @@ input ChestsIncInput {
 input type for inserting data into table "chests"
 """
 input ChestsInsertInput {
-  active: Boolean
   awardBundleCount: Int
   chestAwards: ChestAwardArrRelInsertInput
   chestEditions: ChestEditionArrRelInsertInput
@@ -5049,7 +5083,6 @@ input ChestsOnConflict {
 Ordering options when selecting data from "chests".
 """
 input ChestsOrderBy {
-  active: OrderBy
   awardBundleCount: OrderBy
   chestAwardsAggregate: ChestAwardAggregateOrderBy
   chestEditionsAggregate: ChestEditionAggregateOrderBy
@@ -5072,11 +5105,6 @@ input ChestsPkColumnsInput {
 select columns of table "chests"
 """
 enum ChestsSelectColumn {
-  """
-  column name
-  """
-  active
-
   """
   column name
   """
@@ -5104,30 +5132,9 @@ enum ChestsSelectColumn {
 }
 
 """
-select "chestsAggregateBoolExpBool_andArgumentsColumns" columns of table "chests"
-"""
-enum ChestsSelectColumnChestsAggregateBoolExpBool_andArgumentsColumns {
-  """
-  column name
-  """
-  active
-}
-
-"""
-select "chestsAggregateBoolExpBool_orArgumentsColumns" columns of table "chests"
-"""
-enum ChestsSelectColumnChestsAggregateBoolExpBool_orArgumentsColumns {
-  """
-  column name
-  """
-  active
-}
-
-"""
 input type for updating data in table "chests"
 """
 input ChestsSetInput {
-  active: Boolean
   awardBundleCount: Int
   chestId: bigint
   imageFileId: bigint
@@ -5208,7 +5215,6 @@ input ChestsStreamCursorInput {
 Initial value of the column from where the streaming should start
 """
 input ChestsStreamCursorValueInput {
-  active: Boolean
   awardBundleCount: Int
   chestId: bigint
   imageFileId: bigint
@@ -5238,11 +5244,6 @@ input ChestsSumOrderBy {
 update columns of table "chests"
 """
 enum ChestsUpdateColumn {
-  """
-  column name
-  """
-  active
-
   """
   column name
   """
@@ -15866,6 +15867,20 @@ input chestAwardAggregateBoolExpCount {
   predicate: IntComparisonExp!
 }
 
+input chestEditionAggregateBoolExpBool_and {
+  arguments: ChestEditionSelectColumnChestEditionAggregateBoolExpBool_andArgumentsColumns!
+  distinct: Boolean
+  filter: ChestEditionBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input chestEditionAggregateBoolExpBool_or {
+  arguments: ChestEditionSelectColumnChestEditionAggregateBoolExpBool_orArgumentsColumns!
+  distinct: Boolean
+  filter: ChestEditionBoolExp
+  predicate: BooleanComparisonExp!
+}
+
 input chestEditionAggregateBoolExpCount {
   arguments: [ChestEditionSelectColumn!]
   distinct: Boolean
@@ -15892,20 +15907,6 @@ input chestHistoryAggregateBoolExpCount {
   distinct: Boolean
   filter: ChestHistoryBoolExp
   predicate: IntComparisonExp!
-}
-
-input chestsAggregateBoolExpBool_and {
-  arguments: ChestsSelectColumnChestsAggregateBoolExpBool_andArgumentsColumns!
-  distinct: Boolean
-  filter: ChestsBoolExp
-  predicate: BooleanComparisonExp!
-}
-
-input chestsAggregateBoolExpBool_or {
-  arguments: ChestsSelectColumnChestsAggregateBoolExpBool_orArgumentsColumns!
-  distinct: Boolean
-  filter: ChestsBoolExp
-  predicate: BooleanComparisonExp!
 }
 
 input chestsAggregateBoolExpCount {
@@ -16031,6 +16032,7 @@ input levelsAggregateBoolExpCount {
 mutation root
 """
 type mutation_root {
+  activateChestInEdition(chestId: Int!, editionId: Int!): Boolean
   addAward(
     awardName: String!
     awardType: String!
@@ -16157,6 +16159,7 @@ type mutation_root {
     editionYear: Int!
   ): EditionType
   copyLevelSet(levelSetId: Int!): LevelSetType!
+  deactivateChestInEdition(chestId: Int!, editionId: Int!): Boolean
 
   """
   delete data from the table: "award"

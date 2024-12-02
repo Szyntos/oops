@@ -24,7 +24,6 @@ export type SubscribeChestToOpenSubscription = {
       userId: string;
       chest: {
         __typename?: "Chests";
-        active: boolean;
         awardBundleCount: number;
         imageFileId?: string | null;
         label: string;
@@ -78,7 +77,6 @@ export const SubscribeChestToOpenDocument = gql`
               maxUsages
             }
           }
-          active
           awardBundleCount
           imageFileId
           label

@@ -13,7 +13,6 @@ export type SetupChestsQuery = {
     __typename?: "ChestWithPermissionsType";
     chest: {
       __typename?: "ChestType";
-      active: boolean;
       awardBundleCount: number;
       chestId: string;
       label: string;
@@ -99,7 +98,6 @@ export const SetupChestsDocument = gql`
   query SetupChests($editionId: Int!) {
     listSetupChests(editionId: $editionId) {
       chest {
-        active
         awardBundleCount
         chestId
         imageFile {

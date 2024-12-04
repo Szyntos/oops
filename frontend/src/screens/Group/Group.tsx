@@ -41,9 +41,9 @@ export const Group = () => {
     selectedSubcategory,
   } = useGroupScreenData(groupId, userId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
-  if (!teacherId) return <div>ERROR: something went worng</div>;
+  if (!teacherId) return <div>ERROR: coś posxło nie tak</div>;
 
   const hasEditableRights =
     teacherId === userId || user.role === UsersRolesType.Coordinator;
@@ -58,9 +58,9 @@ export const Group = () => {
     <div style={styles.screenContainer}>
       <div style={styles.header}>
         <button onClick={() => navigate(pathsGenerator.teacher.Groups)}>
-          go back to groups list
+          Powrót do listy grup
         </button>
-        <div>params - group id: {groupId}</div>
+        <div>params - id grupy: {groupId}</div>
       </div>
 
       {disableEditMode && (

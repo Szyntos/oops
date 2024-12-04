@@ -12,7 +12,7 @@ export const useError = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapError = (err: any): string => {
-    return err instanceof Error ? err.message : "Unexpected error received.";
+    return err instanceof Error ? err.message : "Niespodziewany error.";
   };
 
   const globalErrorWrapper = useCallback(

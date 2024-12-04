@@ -211,9 +211,9 @@ export const useGroupsSection = (editionId: number) => {
 
       return uploadedStudents;
     } catch (error) {
-      console.error("Failed to upload file", error);
+      console.error("Błąd ładowania pliku", error);
       setFormError(
-        error instanceof Error ? error.message : "Failed to upload file.",
+        error instanceof Error ? error.message : "Błąd załadowania pliku.",
       );
       return [];
     }

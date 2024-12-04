@@ -65,11 +65,11 @@ export const useTeacherActions = (
   const [editPoints] = useEditPointsMutation();
   const handleEditPointsConfirmation = async (formPoints: FormPoints) => {
     if (!selectedPoints) {
-      throw new Error("Points to edit are undefined.");
+      throw new Error("Punkty do zedytowania nie są zdefiniowane.");
     }
     const pointsId = selectedPoints?.points.purePoints?.pointsId;
     if (!pointsId) {
-      throw new Error("Pure points are undefined - use create instead.");
+      throw new Error("`Czyste` punkty nie są zdeifniowane - użyj stwórz.");
     }
 
     localErrorWrapper(setFormError, async () => {

@@ -82,16 +82,16 @@ export function TeacherStudentProfile() {
   const { openChangeGroup } = useChangeGroup();
   const { openOverrideGrade } = useOverrideGrade();
 
-  if (!studentId) return <p>StudentId is undefined</p>;
-  if (!userId) return <p>TeacherId is undefined</p>;
+  if (!studentId) return <p>Id studentanie jest zdefiniowany</p>;
+  if (!userId) return <p>Id nayczyciela nie jest zdefiniowany</p>;
 
-  if (loading || formDataLoading || chestsLoading) return <p>Loading...</p>;
+  if (loading || formDataLoading || chestsLoading) return <p>Ładowanie..</p>;
   if (error) return <p>Error: {error.message}</p>;
   if (formDataError) return <p>Error: {formDataError.message}</p>;
   if (chestsError) return <p>Error: {chestsError.message}</p>;
 
-  if (!studentData) return <p>Student is undefined</p>;
-  if (!currLevel) return <p>Curr level is undefined</p>;
+  if (!studentData) return <p>Student nie jest zdefiniowany</p>;
+  if (!currLevel) return <p>Obecny poziom nie jest zdefiniowany</p>;
 
   const hasEditableRights =
     studentData.group?.teacherId === userId ||
@@ -136,7 +136,7 @@ export function TeacherStudentProfile() {
             color="lightblue"
             disabled={disableEditMode}
           >
-            Add Points
+            Dodaj punkty
           </Button>
           {user.role === UsersRolesType.Coordinator && (
             <>
@@ -145,7 +145,7 @@ export function TeacherStudentProfile() {
                 color="lightblue"
                 disabled={disableEditMode}
               >
-                Add Chest
+                Dodaj skrzynkę
               </Button>
               <Button
                 onClick={() =>
@@ -158,14 +158,14 @@ export function TeacherStudentProfile() {
                 color="lightblue"
                 disabled={disableEditMode || !selectedEdition?.editionId}
               >
-                Override Grade
+                Nadpisz ocenę
               </Button>
               <Button
                 onClick={() => handleRegenerateGrade(studentId)}
                 color="lightblue"
                 disabled={disableEditMode || !selectedEdition?.editionId}
               >
-                Regenerate Grade
+                Wygeneruj ocenę ponownie
               </Button>
               <Button
                 onClick={() =>
@@ -182,7 +182,7 @@ export function TeacherStudentProfile() {
                   !selectedEdition?.editionId
                 }
               >
-                Change group
+                Zmień grupę
               </Button>
             </>
           )}

@@ -32,7 +32,7 @@ export const ChangeGroupDialog = () => {
     return (
       <ChangeGroupForm
         handleConfirm={handleChangeGroupConfirm}
-        title={"Change student group"}
+        title={"Zmiana grupy studenta"}
         groups={groups}
         initGroupId={initData.groupId}
         formError={formError}

@@ -26,12 +26,12 @@ export const HallOfFameMenu = ({
           <button onClick={scrollToStudent}>znajdź swoją pozycję</button>
           <HallOfFameStudentSearcher onInputChange={onSearchChange} />
           <FilterButton
-            option={"moja grupa"}
+            option={"Moja grupa"}
             isActive={!showStudentsFromAllGroups}
             onClick={() => onShowStudentsFromAllGroupsChange(false)}
           />
           <FilterButton
-            option={"wszystkie grupy"}
+            option={"Wszystkie grupy"}
             isActive={showStudentsFromAllGroups}
             onClick={() => onShowStudentsFromAllGroupsChange(true)}
           />

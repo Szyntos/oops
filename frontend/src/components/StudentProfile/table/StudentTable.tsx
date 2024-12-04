@@ -36,13 +36,13 @@ type HeaderTitle = {
 };
 
 const headerTitles: HeaderTitle[] = [
-  { name: "nazwa", align: "center" },
-  { name: "bonusy", align: "center" },
-  { name: "kategoria", align: "center" },
-  { name: "punkty", align: "center" },
-  { name: "max punktów", align: "center" },
-  { name: "data", align: "center" },
-  { name: "prowadzący", align: "center" },
+  { name: "Nazwa", align: "center" },
+  { name: "Bonusy", align: "center" },
+  { name: "Kategoria", align: "center" },
+  { name: "Punkty", align: "center" },
+  { name: "Max punktów", align: "center" },
+  { name: "Data", align: "center" },
+  { name: "Prowadzący", align: "center" },
 ];
 
 export const StudentTable = ({
@@ -59,7 +59,7 @@ export const StudentTable = ({
 
   if (showActionButtons && !editFunctions) {
     throw new Error(
-      "Invalid arguments passed - handleEditClick or handleDeleteClick is undefined.",
+      "Niepoprawne dane - handleEditClick lub handleDeleteClick niepodane.",
     );
   }
 

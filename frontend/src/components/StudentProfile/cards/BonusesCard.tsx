@@ -10,7 +10,7 @@ type BonusesCardProps = {
 export const BonusesCard = ({ bonuses }: BonusesCardProps) => {
   return (
     <div style={styles.card}>
-      <div style={styles.title}>Bonuses</div>
+      <div style={styles.title}>Bonusy</div>
       <div style={styles.bonusesContainer}>
         {bonuses.length === 0 && <div>{EMPTY_FIELD_STRING}</div>}
         {bonuses.map((bonus) => (

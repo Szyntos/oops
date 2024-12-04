@@ -108,7 +108,7 @@ export const AddCategoryForm = ({
           <TextField
             fullWidth
             name="categoryName"
-            label="nazwa"
+            label="Nazwa"
             variant="outlined"
             value={formik.values.categoryName}
             onChange={formik.handleChange}
@@ -132,7 +132,7 @@ export const AddCategoryForm = ({
                 onBlur={formik.handleBlur}
               />
             }
-            label="dodawanie punktów"
+            label="Dodawanie punktów"
           />
 
           <SubcategoryRows

@@ -100,23 +100,23 @@ export const GroupTable = ({
             },
           });
         }
-        headers.push({ name: "sum of pure points", color: "blue" });
+        headers.push({ name: "Suma `czystych` punktów", color: "blue" });
         for (const award of category.awards) {
           headers.push({ name: award.name });
         }
-        headers.push({ name: "sum of bonuses", color: "blue" });
+        headers.push({ name: "Suma bonusów", color: "blue" });
       }
     }
     // add aggregate values
-    headers.push({ name: "overall pure points", color: "blue" });
-    headers.push({ name: "overall bonuses", color: "blue" });
-    headers.push({ name: "overall", color: "blue" });
+    headers.push({ name: "Zagregowane `czyste` punkty", color: "blue" });
+    headers.push({ name: "Zagregowane bonusy", color: "blue" });
+    headers.push({ name: "Zagregowane", color: "blue" });
     // levels...
-    headers.push({ name: "level", color: "blue" });
-    headers.push({ name: "level grade", color: "blue" });
-    headers.push({ name: "endOfLabs", color: "blue" });
-    headers.push({ name: "projectPoints", color: "blue" });
-    headers.push({ name: "computed grade", color: "blue" });
+    headers.push({ name: "Poziom", color: "blue" });
+    headers.push({ name: "Ocena za poziom", color: "blue" });
+    headers.push({ name: "Koniec laboratoriów", color: "blue" });
+    headers.push({ name: "Punkty za projekt", color: "blue" });
+    headers.push({ name: "Wyliczona ocena", color: "blue" });
     return headers;
   };
 

@@ -18,7 +18,7 @@ export const GroupCard = ({
     <div style={styles.container} onClick={onClick}>
       <img
         src={`${FETCH_FILES_URL}${group.imageId}`}
-        alt={`img id ${group.imageId}`}
+        alt={`id obrazka ${group.imageId}`}
         style={styles.img}
       />
       <div style={styles.title}>{group.name}</div>

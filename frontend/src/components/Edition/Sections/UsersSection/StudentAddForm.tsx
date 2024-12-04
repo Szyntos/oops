@@ -56,7 +56,7 @@ export const AddStudentForm = ({
           <TextField
             fullWidth
             name="firstName"
-            label="firstName"
+            label="Imię"
             variant="outlined"
             value={formik.values.firstName}
             onChange={formik.handleChange}
@@ -68,7 +68,7 @@ export const AddStudentForm = ({
           <TextField
             fullWidth
             name="secondName"
-            label="secondName"
+            label="Nazwisko"
             variant="outlined"
             value={formik.values.secondName}
             onChange={formik.handleChange}
@@ -82,7 +82,7 @@ export const AddStudentForm = ({
           <TextField
             fullWidth
             name="nick"
-            label="nick"
+            label="Nick"
             variant="outlined"
             value={formik.values.nick}
             onChange={formik.handleChange}
@@ -94,7 +94,7 @@ export const AddStudentForm = ({
           <TextField
             fullWidth
             name="indexNumber"
-            label="indexNumber"
+            label="Numer indeksu"
             variant="outlined"
             type="number"
             value={formik.values.indexNumber}
@@ -110,7 +110,7 @@ export const AddStudentForm = ({
             disabled={true}
             fullWidth
             name="email"
-            label="email"
+            label="Email"
             variant="outlined"
             value={`${formik.values.indexNumber}@student.agh.edu.pl`}
           />

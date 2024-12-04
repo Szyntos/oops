@@ -40,12 +40,12 @@ export const LevelSetsSection = () => {
     handleCopySet,
   } = useLevelSetsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddSet}>add level set</button>
+      <button onClick={openAddSet}>Dodaj zbiór poziomów</button>
 
       <div>
         <div>Selected Set:</div>
@@ -71,7 +71,7 @@ export const LevelSetsSection = () => {
         handleEdit={openEditSet}
         handleDelete={handleDeleteSet}
         handleCopy={handleCopySet}
-        title={"All level sets"}
+        title={"Dodaj zbiór poziomów"}
       />
 
       <Dialog open={isAddSetOpen} maxWidth={"lg"}>

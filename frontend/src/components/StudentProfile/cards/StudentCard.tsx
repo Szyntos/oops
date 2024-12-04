@@ -17,10 +17,10 @@ export function StudentCard({
       <Avatar id={avatarId} size="l" />
       <div>ID: {id}</div>
       <div style={styles.studentName}>{displayName}</div>
-      <div>indeks: {index}</div>
-      <div>ocena: {grade}</div>
+      <div>Indeks: {index}</div>
+      <div>Ocena: {grade}</div>
       <div>
-        grupa:{" "}
+        Grupa:{" "}
         {group
           ? `${group.name}, ${group.weekday.name} ${group.time.start}-${group.time.end}`
           : "brak"}

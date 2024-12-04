@@ -11,12 +11,12 @@ type LevelsSectionProps = {
 export const LevelsSection = ({ studentLevel }: LevelsSectionProps) => {
   const { levels, loading, error } = useLevelsData();
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>All levels</div>
+      <div style={styles.title}>Wszystkie poziomy</div>
       {levels.length > 0 ? (
         <div style={styles.levelsContainer}>
           {levels?.map((level) => (

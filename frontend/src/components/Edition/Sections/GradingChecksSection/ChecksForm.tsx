@@ -16,11 +16,11 @@ const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // 'YYYY-MM-DD'
 const ValidationSchema = z.object({
   endOfLabsDate: z
     .string()
-    .min(1, "Date is required")
-    .regex(dateRegex, "Invalid date format, expected YYYY-MM-DD"),
-  endOfLabsLevelsThreshold: z.string().min(1, "Threshold is required"),
-  projectPointsThreshold: z.number().min(1, "Points threshold is required"),
-  projectId: z.string().min(1, "Project ID is required"),
+    .min(1, "Data jest wymagana")
+    .regex(dateRegex, "Zły format daty, wymagany format: YYYY-MM-DD"),
+  endOfLabsLevelsThreshold: z.string().min(1, "Próg jest wymagany"),
+  projectPointsThreshold: z.number().min(1, "Próg punktowy jest wymagany"),
+  projectId: z.string().min(1, "Project ID jest wymagane"),
 });
 
 export type GradingChecksFormValues = z.infer<typeof ValidationSchema>;
@@ -75,7 +75,7 @@ export const ChecksForm = ({
           <TextField
             fullWidth
             name="endOfLabsDate"
-            label="End of Labs Date"
+            label="Data końca laboratoriów"
             placeholder="YYYY-MM-DD"
             variant="outlined"
             value={formik.values.endOfLabsDate}
@@ -113,7 +113,7 @@ export const ChecksForm = ({
           <TextField
             fullWidth
             name="projectPointsThreshold"
-            label="projectPointsThreshold"
+            label="Próg punktowy dla projektu"
             type="number"
             variant="outlined"
             value={formik.values.projectPointsThreshold}

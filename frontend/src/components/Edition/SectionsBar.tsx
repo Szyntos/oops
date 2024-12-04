@@ -8,49 +8,49 @@ type SectionBarProps = {
 
 export type Section = {
   title:
-    | "awards"
-    | "categories"
-    | "chests"
-    | "groups"
-    | "levels"
-    | "files"
-    | "users"
-    | "grading checks";
+    | "Nagrody"
+    | "Kategorie"
+    | "Skrzynki"
+    | "Grupy"
+    | "Poziomy"
+    | "Pliki"
+    | "Użytkownicy"
+    | "Zasady oceniania";
 
   path: (editionId: string) => string;
 };
 
 const sections: Section[] = [
   {
-    title: "categories",
+    title: "Kategorie",
     path: pathsGenerator.coordinator.EditionChildren.Categories,
   },
   {
-    title: "levels",
+    title: "Poziomy",
     path: pathsGenerator.coordinator.EditionChildren.Levels,
   },
   {
-    title: "grading checks",
+    title: "Zasady oceniania",
     path: pathsGenerator.coordinator.EditionChildren.GradingChecks,
   },
   {
-    title: "awards",
+    title: "Nagrody",
     path: pathsGenerator.coordinator.EditionChildren.Awards,
   },
   {
-    title: "chests",
+    title: "Skrzynki",
     path: pathsGenerator.coordinator.EditionChildren.Chests,
   },
   {
-    title: "users",
+    title: "Użytkownicy",
     path: pathsGenerator.coordinator.EditionChildren.Users,
   },
   {
-    title: "groups",
+    title: "Grupy",
     path: pathsGenerator.coordinator.EditionChildren.Groups,
   },
   {
-    title: "files",
+    title: "Pliki",
     path: pathsGenerator.coordinator.EditionChildren.Files,
   },
 ];
@@ -63,7 +63,7 @@ export const SectionsBar = ({ editionId }: SectionBarProps) => {
     const activeSection = sections.find(
       (s) => location.pathname === s.path(editionId.toString()),
     );
-    if (section.title !== "categories") {
+    if (section.title !== "Kategorie") {
       return activeSection?.title === section.title;
     }
     return !activeSection || activeSection.title === section.title;

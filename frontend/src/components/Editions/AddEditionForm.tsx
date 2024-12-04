@@ -6,7 +6,7 @@ import { Styles } from "../../utils/Styles";
 export type EditionFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  name: z.string().min(1, "required"),
+  name: z.string().min(1, "Wymagane"),
   // TODO validation
   year: z.number().min(2000).max(2500),
 });
@@ -53,7 +53,7 @@ export const AddEditionForm = ({
           <TextField
             fullWidth
             name="name"
-            label="nazwa"
+            label="Nazwa"
             variant="outlined"
             value={formik.values.name}
             onChange={formik.handleChange}
@@ -65,7 +65,7 @@ export const AddEditionForm = ({
           <TextField
             fullWidth
             name="year"
-            label="year"
+            label="Rok"
             variant="outlined"
             type="number"
             value={formik.values.year}
@@ -76,7 +76,7 @@ export const AddEditionForm = ({
           />
         </div>
 
-        <button type="submit">confirm</button>
+        <button type="submit">Potwierdź</button>
       </form>
 
       {createError && <p style={styles.error}>Error: {createError}</p>}

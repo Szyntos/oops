@@ -49,7 +49,7 @@ export const GroupsSection = () => {
       </div>
       <GroupsList
         groups={groups}
-        title="groups"
+        title="Grupy"
         editClick={openEditDialog}
         deleteClick={handleDeleteGroup}
       />
@@ -65,7 +65,7 @@ export const GroupsSection = () => {
           handleUploadStudents={handleUploadStudents}
           editionId={editionId}
           variant={variant}
-          title={"Add group"}
+          title={"Dodaj grupę"}
         />
       </Dialog>
 
@@ -102,7 +102,7 @@ export const GroupsSection = () => {
                 }
               : undefined
           }
-          title="Edit group"
+          title="Edytuj grupę"
         />
       </Dialog>
     </div>

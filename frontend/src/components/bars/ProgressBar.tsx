@@ -23,18 +23,18 @@ export const ProgressBar = ({
   label,
 }: ProgressBarProps) => {
   if (points < 0) {
-    throw new Error("points cannot be a negative number");
+    throw new Error("Punkty nie mogą być ujemne.");
   }
 
   if (points < bounds.lower) {
-    throw new Error("points cannot be lower than the lower bound");
+    throw new Error("Punkty nie mogą być mniejsze nić ograniczenie dolne.");
   }
 
   const diff = bounds.lower;
 
   const calculatePercent = (p: number) => {
     if (p < bounds.lower) {
-      throw new Error("points out of bounds.");
+      throw new Error("Punkty poza określonym zakresem.");
     }
     return Math.min(
       Math.round(((p - diff) / (bounds.upper - diff)) * 100),

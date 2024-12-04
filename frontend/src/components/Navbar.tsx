@@ -63,26 +63,26 @@ export const Navbar = () => {
 
       {selectedEdition ? (
         <div style={styles.editionName}>
-          edition: {selectedEdition.editionId},{" "}
-          {isEditionActive(selectedEdition) ? "active" : "not active"}
+          Edycja: {selectedEdition.editionId},{" "}
+          {isEditionActive(selectedEdition) ? "Aktywna" : "Nieaktywna"}
         </div>
       ) : (
-        <div>no edition selected</div>
+        <div>Edycja nie jest wybrana</div>
       )}
 
       {user.role === UsersRolesType.Student && (
         <button disabled={chestsToOpen.length === 0} onClick={openChestDialog}>
-          {chestsToOpen.length} chest(s) to open
+          {chestsToOpen.length} skrzynka/i do otwarcia
         </button>
       )}
 
       {user.role !== UsersRolesType.UnauthenticatedUser && (
         <>
           <div onClick={async () => await logout()} style={styles.navbarItem}>
-            Logout
+            Wyloguj się
           </div>
           <div onClick={openSettings} style={styles.navbarItem}>
-            settings
+            Ustawienia
           </div>
         </>
       )}

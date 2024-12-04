@@ -55,16 +55,16 @@ export const AddChestForm = ({
       }
 
       if (values.fileId === "") {
-        errors.fileId = "select file";
+        errors.fileId = "Wybierz plik";
       }
 
       if (values.awardThisEditionIds.length === 0) {
-        errors.awardThisEditionIds = "select at least one award";
+        errors.awardThisEditionIds = "Wybierz co najmniej jedną nagrodę";
       }
 
       if (values.awardThisEditionIds.length < values.awardBundleCount) {
         errors.awardThisEditionIds =
-          "number of selected awards in this edition cannot be smaller than awardBundleCount";
+          "Liczba wybranych nagród  edycji nie może być mniejsza niż awardBundleCount";
       }
 
       return errors;
@@ -98,7 +98,7 @@ export const AddChestForm = ({
           <TextField
             fullWidth
             name="name"
-            label="name"
+            label="Nazwa"
             variant="outlined"
             value={formik.values.name}
             onChange={formik.handleChange}
@@ -120,7 +120,7 @@ export const AddChestForm = ({
             error={formik.errors.fileId as string}
             touched={formik.touched.fileId}
             selectVariant={"single"}
-            title="select image:"
+            title="Wybierz obrazek:"
           />
 
           <SelectImage
@@ -136,7 +136,7 @@ export const AddChestForm = ({
             error={formik.errors.awardThisEditionIds as string}
             touched={formik.touched.awardThisEditionIds}
             selectVariant={"multiple"}
-            title={"selected awards from this edition:"}
+            title={"Wybrane nagrody z tej edycji:"}
           />
 
           <SelectImage
@@ -152,7 +152,7 @@ export const AddChestForm = ({
             error={undefined}
             touched={undefined}
             selectVariant={"multiple"}
-            title={"selected awards form other editions:"}
+            title={"Wybrane nagrody z innych edycji:"}
           />
         </div>
         <button type="submit">confirm</button>

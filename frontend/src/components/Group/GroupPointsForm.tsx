@@ -30,8 +30,8 @@ export const GroupPointsForm = ({
   return (
     <div style={styles.container}>
       <div>
-        <div style={styles.title}>Add points to {subcategory.name}</div>
-        <div>max points: {subcategory.maxPoints}</div>
+        <div style={styles.title}>Dodaj punkty do {subcategory.name}</div>
+        <div>Max punkty: {subcategory.maxPoints}</div>
       </div>
 
       <div style={styles.fieldsContainer}>

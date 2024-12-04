@@ -12,7 +12,7 @@ export const Image = ({ size, id, disabled }: ImageProps) => {
     <div style={{ width: size, height: size, opacity: disabled ? 0.6 : 1 }}>
       <img
         src={`${FETCH_FILES_URL}${id}`}
-        alt={`img id ${id}`}
+        alt={`Id obrazka ${id}`}
         style={styles.img}
       />
     </div>

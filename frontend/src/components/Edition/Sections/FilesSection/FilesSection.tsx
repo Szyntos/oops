@@ -75,7 +75,7 @@ export const FilesSection = () => {
     });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
@@ -96,7 +96,7 @@ export const FilesSection = () => {
 
       <ImagesList
         files={files}
-        title={`All ${activeFolder.title} files`}
+        title={`Wszystkie ${activeFolder.title} pliki`}
         handleDelete={handleDelete}
       />
     </div>

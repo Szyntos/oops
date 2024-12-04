@@ -79,7 +79,7 @@ export const AddAwardForm = ({
           <TextField
             fullWidth
             name="awardName"
-            label="Award Name"
+            label="Nazwa nagrody"
             variant="outlined"
             value={formik.values.awardName}
             onChange={formik.handleChange}
@@ -135,7 +135,7 @@ export const AddAwardForm = ({
           <TextField
             fullWidth
             name="awardValue"
-            label="Award Value"
+            label="Wartość nagrody"
             type="number"
             variant="outlined"
             value={formik.values.awardValue}
@@ -149,7 +149,7 @@ export const AddAwardForm = ({
           <TextField
             fullWidth
             name="description"
-            label="Description"
+            label="Opis"
             variant="outlined"
             value={formik.values.description}
             onChange={formik.handleChange}
@@ -162,7 +162,7 @@ export const AddAwardForm = ({
           <TextField
             fullWidth
             name="maxUsages"
-            label="Max Usages"
+            label="Max użyć"
             type="number"
             variant="outlined"
             value={formik.values.maxUsages}

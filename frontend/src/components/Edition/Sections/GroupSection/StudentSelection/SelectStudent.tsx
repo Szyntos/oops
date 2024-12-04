@@ -21,7 +21,7 @@ export const SelectStudent = ({
         <Select
           name="studentId"
           value={student?.user.userId}
-          placeholder="choose student"
+          placeholder="Wybierz studenta"
           onChange={(e) =>
             setStudent(students.find((s) => s.user.userId === e.target.value))
           }

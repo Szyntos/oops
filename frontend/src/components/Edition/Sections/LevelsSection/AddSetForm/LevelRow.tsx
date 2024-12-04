@@ -41,7 +41,7 @@ export const LevelRow = ({
 
       <TextField
         name="ordinal"
-        label="ordinal"
+        label="Liczba porządkowa"
         variant="outlined"
         type="number"
         value={level.ordinal}
@@ -70,7 +70,7 @@ export const LevelRow = ({
 
       <TextField
         name="name"
-        label="name"
+        label="Nazwa"
         variant="outlined"
         value={level.name}
         style={styles.number}
@@ -79,7 +79,7 @@ export const LevelRow = ({
 
       <FormControl fullWidth style={styles.number} disabled>
         <InputLabel>Grade</InputLabel>
-        <Select value={level.grade} label="Grade">
+        <Select value={level.grade} label="Ocena">
           {GRADE_STRINGS.map((gradeOption) => (
             <MenuItem key={gradeOption} value={gradeOption}>
               {gradeOption}

@@ -16,7 +16,7 @@ const ValidationSchema = z.object({
   name: z.string().min(1),
   maxPoints: z.number().min(0),
   grade: z.string().min(0),
-  imageId: z.string().min(1, "You must select image"),
+  imageId: z.string().min(1, "Musisz wybrać obrazek."),
 });
 
 export type LevelFormValues = z.infer<typeof ValidationSchema>;
@@ -86,7 +86,7 @@ export const AddLevelForm = ({
             <TextField
               style={styles.blockedField}
               name="ordinal"
-              label="ordinal"
+              label="Liczba porządkowa"
               variant="outlined"
               value="?"
               disabled={true}
@@ -103,7 +103,7 @@ export const AddLevelForm = ({
 
             <TextField
               name="maxPoints"
-              label="maxPoints"
+              label="max"
               variant="outlined"
               type="number"
               value={formik.values.maxPoints}
@@ -117,7 +117,7 @@ export const AddLevelForm = ({
 
             <TextField
               name="name"
-              label="Level Name"
+              label="Nazwa poziomu"
               variant="outlined"
               value={formik.values.name}
               onChange={formik.handleChange}
@@ -160,7 +160,7 @@ export const AddLevelForm = ({
             error={formik.errors.imageId}
             touched={formik.touched.imageId}
             selectVariant={"single"}
-            title={"select image:"}
+            title={"Wybierz obrazek:"}
           />
         </div>
         <button type="submit">attach level</button>

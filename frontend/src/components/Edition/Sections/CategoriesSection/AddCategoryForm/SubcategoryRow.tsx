@@ -41,7 +41,7 @@ export const SubcategoryRow = ({
     <div style={styles.innerContainer}>
       <TextField
         name="ordinal"
-        label="ord"
+        label="liczebnik porządkowy"
         variant="outlined"
         value={initialValues.ordinal}
         style={styles.points}
@@ -65,7 +65,7 @@ export const SubcategoryRow = ({
       <TextField
         fullWidth
         name="name"
-        label="name"
+        label="Nazwa"
         variant="outlined"
         value={name}
         onChange={(e) => setName(e.target.value)}

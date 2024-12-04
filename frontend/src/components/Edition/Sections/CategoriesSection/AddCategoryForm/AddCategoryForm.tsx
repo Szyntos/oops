@@ -144,7 +144,7 @@ export const AddCategoryForm = ({
           />
         </div>
 
-        <button type="submit">confirm</button>
+        <button type="submit">potwierdź</button>
       </form>
 
       {formError && <p style={styles.error}>Error: {formError}</p>}

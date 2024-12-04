@@ -53,7 +53,7 @@ export const OpenChest = ({
           handleOpenChestClick(selectedAwards, chest.chestHistoryId)
         }
       >
-        confirm
+        potwierdź
       </button>
     </div>
   );

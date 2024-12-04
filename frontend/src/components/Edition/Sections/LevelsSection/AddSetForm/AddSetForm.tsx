@@ -160,7 +160,7 @@ export const AddSetForm = ({
         onClick={() => handleConfirm(levels)}
         disabled={levels.length === 0}
       >
-        confirm
+        potwierdź
       </button>
       <div style={styles.error}>{formError}</div>
     </div>

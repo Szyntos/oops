@@ -48,7 +48,7 @@ export const LevelSetsSection = () => {
       <button onClick={openAddSet}>Dodaj zbiór poziomów</button>
 
       <div>
-        <div>Selected Set:</div>
+        <div>Wybrany zbiór:</div>
         {activeSet ? (
           <SelectedSetCard
             levelSet={activeSet}

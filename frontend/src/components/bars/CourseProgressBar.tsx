@@ -9,7 +9,7 @@ type CourseProgressBarProps = {
 export const CourseProgressBar = ({ totalPoints }: CourseProgressBarProps) => {
   const { levels, error, loading } = useLevelsData();
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   if (levels.length < 2) return <div>{EMPTY_FIELD_STRING}</div>;

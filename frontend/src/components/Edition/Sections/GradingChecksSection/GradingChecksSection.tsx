@@ -35,9 +35,9 @@ export const GradingChecksSection = () => {
     handleDelete,
   } = useGradingChecksSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
-  if (!gradingChecks) return <div>something went wrong...</div>;
+  if (!gradingChecks) return <div>coś poszło nie tak :c ...</div>;
 
   const level = formLevels.find(
     (l) =>
@@ -52,7 +52,7 @@ export const GradingChecksSection = () => {
 
   return (
     <div style={styles.container}>
-      <div>grading checks: {editionId}</div>
+      <div>Zasady oceniania: {editionId}</div>
 
       <SetupButtons
         permissions={gradingChecks.permissions}

@@ -35,16 +35,16 @@ export const GroupsSection = () => {
     handleMarkAllPassingStudents,
   } = useGroupsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
     <div>
       <div>
-        <button onClick={() => openAddGroup("select")}>add group</button>
-        <button onClick={() => openAddGroup("import")}>import group</button>
+        <button onClick={() => openAddGroup("select")}>Dodaj grupę</button>
+        <button onClick={() => openAddGroup("import")}>Zaimportuj grupę</button>
         <button onClick={handleMarkAllPassingStudents}>
-          mark all passing students as inactive
+          Zaznacz wszystkich zdających studentów jako nieaktywnych
         </button>
       </div>
       <GroupsList

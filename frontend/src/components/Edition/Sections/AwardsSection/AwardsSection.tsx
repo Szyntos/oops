@@ -38,12 +38,12 @@ export const AwardsSection = () => {
     handleCopyAward,
   } = useAwardsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddAward}>add award</button>
+      <button onClick={openAddAward}>Dodaj nagrodę</button>
 
       <AwardsList
         awards={selectedAwards}

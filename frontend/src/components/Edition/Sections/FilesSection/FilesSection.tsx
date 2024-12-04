@@ -85,7 +85,7 @@ export const FilesSection = () => {
         active={activeFolder}
         setActive={setActiveFolder}
       />
-      <button onClick={handleUploadClick}>Upload file</button>
+      <button onClick={handleUploadClick}>Załącz plik</button>
       <input
         type="file"
         accept="image/*"

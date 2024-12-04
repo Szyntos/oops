@@ -40,12 +40,12 @@ export const ChestsSection = () => {
     handleCopyChest,
   } = useChestsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddChest}>add chest</button>
+      <button onClick={openAddChest}>Dodaj skrzynkę</button>
 
       <ChestsList
         chests={selectedChests}

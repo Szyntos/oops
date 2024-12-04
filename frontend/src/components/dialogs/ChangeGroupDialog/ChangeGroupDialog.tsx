@@ -26,7 +26,7 @@ export const ChangeGroupDialog = () => {
   const groups: Group[] = data?.editionByPk?.groups ?? [];
 
   const getDialogContent = () => {
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div>Ładowanie...</div>;
     if (error) return <div>ERROR: {error.message}</div>;
     if (!data || !initData) return <div>something went wrong...</div>;
     return (

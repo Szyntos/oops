@@ -35,7 +35,7 @@ export const CategoriesSection = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddCategory}>add category</button>
+      <button onClick={openAddCategory}>Dodaj kategorię</button>
 
       <CategoriesList
         categories={selectedCategories}

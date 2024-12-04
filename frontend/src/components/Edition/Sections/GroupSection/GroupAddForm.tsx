@@ -18,18 +18,12 @@ export type GroupFormValues = z.infer<typeof ValidationSchema>;
 const timeRegex = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
 
 const ValidationSchema = z.object({
-  startTime: z
-    .string()
-    .min(1, { message: "wymagane " })
-    .regex(timeRegex, {
-      message: "Godzina rozpoczęcia musi być w formacie hh:mm",
-    }),
-  endTime: z
-    .string()
-    .min(1, { message: "wymagane " })
-    .regex(timeRegex, {
-      message: "Godzina zakończenia musi być w formacie hh:mm",
-    }),
+  startTime: z.string().min(1, { message: "wymagane " }).regex(timeRegex, {
+    message: "Godzina rozpoczęcia musi być w formacie hh:mm",
+  }),
+  endTime: z.string().min(1, { message: "wymagane " }).regex(timeRegex, {
+    message: "Godzina zakończenia musi być w formacie hh:mm",
+  }),
   weekdayId: z.string().min(1, { message: "wymagane" }),
   teacherId: z.string().min(1, { message: "wymagane" }),
   usosId: z.number().min(1, { message: "USOS ID nie może być liczbą ujemną." }),
@@ -286,7 +280,7 @@ export const AddGroupForm = ({
           )}
         </div>
 
-        <button type="submit">confirm</button>
+        <button type="submit">potwierdź</button>
       </form>
 
       {createError && <p style={styles.error}>Error: {createError}</p>}

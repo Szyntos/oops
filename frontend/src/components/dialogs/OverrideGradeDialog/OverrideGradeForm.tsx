@@ -65,7 +65,7 @@ export const OverrideGradeForm = ({
               <div style={{ color: "red" }}>{formik.errors.grade}</div>
             )}
           </FormControl>
-          <button type="submit">confirm</button>
+          <button type="submit">potwierdź</button>
         </div>
       </form>
       {formError && <p style={styles.error}>Error: {formError}</p>}

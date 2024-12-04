@@ -15,8 +15,8 @@ import { RadioFilterGroups } from "../../../Groups/RadioFilterGroup";
 import { isPartOfAString } from "../../../../utils/strings";
 
 const activeRadioOptions = [
-  { id: "active", name: "active" },
-  { id: "inactive", name: "inactive" },
+  { id: "active", name: "Aktywny" },
+  { id: "inactive", name: "Nieaktywny" },
 ];
 
 export const UsersSection = () => {

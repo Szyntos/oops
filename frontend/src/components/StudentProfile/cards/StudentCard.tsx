@@ -27,7 +27,7 @@ export function StudentCard({
       </div>
       <div>prowadzący: {group ? group.teacherDisplayName : "brak"}</div>
 
-      <div style={styles.title}>Course progress</div>
+      <div style={styles.title}>Postęp w kursie</div>
       <CourseProgressBar totalPoints={totalPoints} />
     </div>
   );

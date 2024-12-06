@@ -18,12 +18,14 @@ export const useCategoriesCardData = (props: {
   const categories: ProgressBarProps[] =
     data?.getSumOfPointsForStudentByCategory.map((category) => {
       return {
-        label: category.category.categoryName,
+        title: category.category.categoryName.toLocaleLowerCase(),
         bounds: {
           lower: 0,
           upper: category.maxPoints,
         },
         points: category.sumOfAll,
+        pointsColor: category.category.darkColor,
+        barColor: category.category.lightColor,
       };
     }) ?? [];
 

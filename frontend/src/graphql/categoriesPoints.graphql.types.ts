@@ -20,7 +20,8 @@ export type CategoriesPointsQuery = {
       __typename?: "CategoryType";
       categoryName: string;
       categoryId: string;
-      label: string;
+      darkColor: string;
+      lightColor: string;
     };
   }>;
 };
@@ -38,7 +39,8 @@ export const CategoriesPointsDocument = gql`
       category {
         categoryName
         categoryId
-        label
+        darkColor
+        lightColor
       }
     }
   }

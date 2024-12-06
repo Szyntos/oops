@@ -14,6 +14,8 @@ export type ProgressBarProps = {
   thresholds?: BarThreshold[];
   showPoints?: boolean;
   title?: string;
+  pointsColor?: string;
+  barColor?: string;
 };
 
 export const ProgressBar = ({
@@ -22,6 +24,8 @@ export const ProgressBar = ({
   thresholds,
   showPoints,
   title,
+  pointsColor,
+  barColor,
 }: ProgressBarProps) => {
   if (points < 0) {
     throw new Error("points cannot be a negative number");
@@ -48,31 +52,36 @@ export const ProgressBar = ({
   return (
     <div style={styles.container}>
       {title && <CustomText>{title}</CustomText>}
+
       <div style={styles.empty}>
         {showPoints && (
-          <CustomText style={styles.pointsContainer}>
+          <CustomText style={styles.pointsContainer} color={pointsColor}>
             {points.toFixed(2)}/{bounds.upper.toFixed(2)}
           </CustomText>
         )}
-        <div style={{ ...styles.filled, width: `${filledPercent}%` }} />
+        <div
+          style={{
+            ...styles.filled,
+            width: `${filledPercent}%`,
+            ...(barColor ? { backgroundColor: barColor } : undefined),
+          }}
+        />
 
         {thresholds &&
           thresholds.length > 0 &&
-          thresholds.map((threshold, index) => {
-            return (
-              <div
-                key={index}
-                style={{
-                  ...styles.thresholdLine,
-                  left: `${calculatePercent(threshold.points)}%`,
-                }}
-              >
-                <CustomText style={styles.thresholdLabel}>
-                  {threshold.label}
-                </CustomText>
-              </div>
-            );
-          })}
+          thresholds.map((threshold, index) => (
+            <div
+              key={index}
+              style={{
+                ...styles.thresholdLine,
+                left: `${calculatePercent(threshold.points)}%`,
+              }}
+            >
+              <CustomText style={styles.thresholdLabel}>
+                {threshold.label}
+              </CustomText>
+            </div>
+          ))}
       </div>
     </div>
   );
@@ -88,7 +97,7 @@ const styles: Styles = {
     height: BAR_HEIGHT,
     width: "100%",
     backgroundColor: "lightgrey",
-    position: "relative", // Establish a containing block for positioned children
+    position: "relative",
   },
   filled: {
     height: "100%",

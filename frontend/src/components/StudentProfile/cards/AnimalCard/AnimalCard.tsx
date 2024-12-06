@@ -1,8 +1,9 @@
-import { Styles } from "../../../../utils/Styles";
 import { Avatar } from "../../../images/Avatar";
 import { LevelsSection } from "./LevelsSection";
 import { LevelProgressBar } from "../../../bars/LevelProgressBar/LevelProgressBar";
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
+import { Card } from "../Card/Card";
+import { CustomText } from "../../../CustomText";
 
 type AnimalCardProps = {
   totalPoints: number | undefined;
@@ -18,31 +19,20 @@ export const AnimalCard = ({
   totalPoints,
 }: AnimalCardProps) => {
   return (
-    <div style={styles.card}>
-      <Avatar id={currLevel.imageFile?.fileId} size="l" />
-      <div style={styles.title}>
-        obecny level: {currLevel.levelName} - lvl. {currLevel.ordinalNumber + 1}
+    <Card>
+      <div>
+        <Avatar id={currLevel.imageFile?.fileId} size="l" />
+        <CustomText>
+          {currLevel.levelName} - lvl. {currLevel.ordinalNumber + 1}
+        </CustomText>
+        <LevelProgressBar
+          totalPoints={totalPoints}
+          prevLevel={prevLevel}
+          currLevel={currLevel}
+          nextLevel={nextLevel}
+        />
       </div>
-      <LevelProgressBar
-        totalPoints={totalPoints}
-        prevLevel={prevLevel}
-        currLevel={currLevel}
-        nextLevel={nextLevel}
-      />
       <LevelsSection studentLevel={currLevel} />
-    </div>
+    </Card>
   );
-};
-
-const styles: Styles = {
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    border: "1px solid blue",
-    gap: 12,
-    padding: 24,
-  },
-  title: {
-    fontWeight: "bold",
-  },
 };

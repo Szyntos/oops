@@ -1,7 +1,9 @@
 import { Bonus } from "../../../hooks/StudentProfile";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 import { Styles } from "../../../utils/Styles";
+import { CustomText } from "../../CustomText";
 import { AwardWithTooltip } from "../../images/AwardWithTooltip";
+import { Card } from "./Card/Card";
 
 type BonusesCardProps = {
   bonuses: Bonus[];
@@ -9,29 +11,19 @@ type BonusesCardProps = {
 
 export const BonusesCard = ({ bonuses }: BonusesCardProps) => {
   return (
-    <div style={styles.card}>
-      <div style={styles.title}>Bonuses</div>
+    <Card>
+      <CustomText>Bonusy</CustomText>
       <div style={styles.bonusesContainer}>
         {bonuses.length === 0 && <div>{EMPTY_FIELD_STRING}</div>}
         {bonuses.map((bonus) => (
           <AwardWithTooltip key={bonus.award.id} bonus={bonus} size="s" />
         ))}
       </div>
-    </div>
+    </Card>
   );
 };
 
 const styles: Styles = {
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    border: "1px solid blue",
-    gap: 12,
-    padding: 24,
-  },
-  title: {
-    fontWeight: "bold",
-  },
   bonusesContainer: {
     display: "flex",
     gap: 12,

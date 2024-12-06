@@ -2,6 +2,7 @@ import { useLevelsData } from "../../../../hooks/StudentProfile/useLevelsData";
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
 import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { Styles } from "../../../../utils/Styles";
+import { CustomText } from "../../../CustomText";
 import { AnimalWithTooltip } from "../../../images/AnimalWithTooltip";
 
 type LevelsSectionProps = {
@@ -16,7 +17,7 @@ export const LevelsSection = ({ studentLevel }: LevelsSectionProps) => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>All levels</div>
+      <CustomText>Zdobyte levele</CustomText>
       {levels.length > 0 ? (
         <div style={styles.levelsContainer}>
           {levels?.map((level) => (
@@ -38,10 +39,7 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 12,
-  },
-  title: {
-    fontWeight: "bold",
+    gap: 8,
   },
   levelMiniaturesContainer: {
     display: "flex",

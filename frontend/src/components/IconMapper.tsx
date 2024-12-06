@@ -1,4 +1,3 @@
-import React from "react";
 import SettingsIconRounded from "@mui/icons-material/SettingsRounded";
 import LogoutIconRounded from "@mui/icons-material/LogoutRounded";
 import ModeEditRoundedIcon from "@mui/icons-material/ModeEditRounded";
@@ -12,9 +11,12 @@ import StarIcon from "@mui/icons-material/Star";
 import GroupIcon from "@mui/icons-material/Group";
 import SchoolIcon from "@mui/icons-material/School";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import SportsScoreIcon from "@mui/icons-material/SportsScore"; // Icon for score
+import MailIcon from "@mui/icons-material/Mail"; // Icon for email
 import { Styles } from "../utils/Styles";
 import { tokens } from "../tokens";
 
+// Defining the types for the props and icon keys
 type IconMapperProps = {
   icon: Icon;
   onClick?: () => void;
@@ -30,9 +32,13 @@ type DisplayIcons =
   | "grade"
   | "group"
   | "instructor"
-  | "progress";
+  | "progress"
+  | "score"
+  | "email"; // Adding email icon to the list of display icons
+
 export type Icon = ActionIcons | DisplayIcons;
 
+// Mapping the icon keys to actual Material UI icons
 const iconMap = {
   settings: SettingsIconRounded,
   logout: LogoutIconRounded,
@@ -47,15 +53,18 @@ const iconMap = {
   group: GroupIcon,
   instructor: SchoolIcon,
   progress: BarChartIcon,
+  score: SportsScoreIcon, // Added for points
+  email: MailIcon, // Added for email
 };
 
+// IconMapper Component
 export const IconMapper = ({
   icon,
   onClick,
   isDisabled,
   style,
 }: IconMapperProps) => {
-  const IconComponent = iconMap[icon];
+  const IconComponent = iconMap[icon]; // Get the corresponding icon component
 
   return (
     <IconComponent
@@ -70,6 +79,7 @@ export const IconMapper = ({
   );
 };
 
+// Default styles for icons
 const styles: Styles = {
   icon: {
     width: tokens.padding.m,
@@ -80,6 +90,6 @@ const styles: Styles = {
     cursor: "pointer",
   },
   disabled: {
-    color: "grey", // TODO add token
+    color: "grey", // You can adjust this with your design tokens
   },
 };

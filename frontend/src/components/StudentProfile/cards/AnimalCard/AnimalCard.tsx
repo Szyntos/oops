@@ -2,7 +2,7 @@ import { Avatar } from "../../../images/Avatar";
 import { LevelsSection } from "./LevelsSection";
 import { LevelProgressBar } from "../../../bars/LevelProgressBar/LevelProgressBar";
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
-import { Card } from "../Card/Card";
+import { Section } from "../Card/Section";
 import { CustomText } from "../../../CustomText";
 
 type AnimalCardProps = {
@@ -19,7 +19,7 @@ export const AnimalCard = ({
   totalPoints,
 }: AnimalCardProps) => {
   return (
-    <Card>
+    <Section title="Level">
       <div>
         <Avatar id={currLevel.imageFile?.fileId} size="l" />
         <CustomText>
@@ -33,6 +33,6 @@ export const AnimalCard = ({
         />
       </div>
       <LevelsSection studentLevel={currLevel} />
-    </Card>
+    </Section>
   );
 };

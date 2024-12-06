@@ -1,5 +1,5 @@
 import { ProgressBar, ProgressBarProps } from "../../bars/ProgressBar";
-import { Card } from "./Card/Card";
+import { Section } from "./Card/Section";
 
 type CategoriesCardProps = {
   categoriesBarProps: ProgressBarProps[];
@@ -7,10 +7,10 @@ type CategoriesCardProps = {
 
 export const CategoriesCard = ({ categoriesBarProps }: CategoriesCardProps) => {
   return (
-    <Card>
+    <Section title="Kategorie">
       {categoriesBarProps.map((props, index) => (
         <ProgressBar key={index} {...props} showPoints />
       ))}
-    </Card>
+    </Section>
   );
 };

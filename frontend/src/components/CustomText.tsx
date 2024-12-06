@@ -31,7 +31,6 @@ export const CustomText = ({
 
 const styles: Styles = {
   text: {
-    fontFamily: "'Inter', sans-serif",
     userSelect: "none",
   },
 };

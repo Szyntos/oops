@@ -3,14 +3,14 @@ import { CustomText } from "../../../CustomText";
 import { Icon, IconMapper } from "../../../IconMapper";
 
 export type CardItemProps = {
-  icon: Icon;
+  icon?: Icon;
   title: string | number;
 };
 
 export const CardItem = ({ icon, title }: CardItemProps) => {
   return (
     <div style={styles.container}>
-      <IconMapper icon={icon} />
+      {icon && <IconMapper icon={icon} />}
       <CustomText>{title}</CustomText>
     </div>
   );

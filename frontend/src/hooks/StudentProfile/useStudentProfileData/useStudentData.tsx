@@ -5,6 +5,7 @@ import { Points } from "../types";
 
 export type StudentCardData = {
   id: string;
+  nick: string;
   displayName: string;
   index: number;
   group?: {
@@ -39,6 +40,7 @@ export const useStudentData = (props: {
 
   const studentData: StudentCardData | undefined = user
     ? {
+        nick: user.nick,
         id: user.userId.toString(),
         displayName: `${user.firstName} ${user.secondName}`,
         index: user.indexNumber,

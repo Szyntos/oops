@@ -38,10 +38,12 @@ export function StudentProfile() {
         nextLevel={nextLevel}
         bonuses={bonuses}
       />
-      <StudentTableWithFilters
-        points={points}
-        filterHeaderNames={filterHeaderNames}
-      />
+      <div style={styles.tableWrapper}>
+        <StudentTableWithFilters
+          points={points}
+          filterHeaderNames={filterHeaderNames}
+        />
+      </div>
     </div>
   );
 }
@@ -49,7 +51,9 @@ export function StudentProfile() {
 const styles: Styles = {
   container: {
     display: "flex",
-    gap: 20,
-    margin: 12,
+  },
+  tableWrapper: {
+    flex: 1,
+    margin: 16,
   },
 };

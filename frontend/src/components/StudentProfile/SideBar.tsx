@@ -7,6 +7,7 @@ import { AnimalCard } from "./cards/AnimalCard/AnimalCard";
 import { BonusesCard } from "./cards/BonusesCard";
 import { Bonus } from "../../hooks/StudentProfile";
 import { NeighboringLevel } from "../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
+import { tokens } from "../../tokens";
 
 type SideBarProps = {
   student: StudentCardData;
@@ -46,9 +47,9 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 20,
-    borderRight: "2px solid red",
-    paddingRight: 24,
-    width: 360,
+    gap: 4,
+    backgroundColor: tokens.color.background.cardBlue,
+    minWidth: 360,
+    padding: 16,
   },
 };

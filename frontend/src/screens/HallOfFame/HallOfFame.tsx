@@ -1,7 +1,7 @@
 import { Styles } from "../../utils/Styles";
 import { HallOfFameMenu } from "../../components/hallOfFame/HallOfFameMenu";
 import { useHallOfFameData } from "../../hooks/HallOfFame/useHallOfFameData";
-import { NAV_BAR_HEIGHT } from "../../components/Navbar";
+import { NAV_BAR_HEIGHT } from "../../components/Navbar/Navbar";
 import { Podium } from "../../components/hallOfFame/Podium/Podium";
 import { StatisticsBox } from "../../components/hallOfFame/StatisticsBox";
 import { useCallback, useEffect, useState } from "react";

@@ -1,4 +1,5 @@
 import { Styles } from "../../utils/Styles";
+import { CustomText } from "../CustomText";
 
 const BAR_HEIGHT = 24;
 
@@ -12,7 +13,7 @@ export type ProgressBarProps = {
   bounds: { lower: number; upper: number };
   thresholds?: BarThreshold[];
   showPoints?: boolean;
-  label?: string;
+  title?: string;
 };
 
 export const ProgressBar = ({
@@ -20,7 +21,7 @@ export const ProgressBar = ({
   bounds,
   thresholds,
   showPoints,
-  label,
+  title,
 }: ProgressBarProps) => {
   if (points < 0) {
     throw new Error("points cannot be a negative number");
@@ -46,12 +47,12 @@ export const ProgressBar = ({
 
   return (
     <div style={styles.container}>
-      {label && <div>{label}</div>}
+      {title && <CustomText>{title}</CustomText>}
       <div style={styles.empty}>
         {showPoints && (
-          <div style={styles.pointsContainer}>
+          <CustomText style={styles.pointsContainer}>
             {points.toFixed(2)}/{bounds.upper.toFixed(2)}
-          </div>
+          </CustomText>
         )}
         <div style={{ ...styles.filled, width: `${filledPercent}%` }} />
 
@@ -66,7 +67,9 @@ export const ProgressBar = ({
                   left: `${calculatePercent(threshold.points)}%`,
                 }}
               >
-                <div style={styles.thresholdLabel}>{threshold.label}</div>
+                <CustomText style={styles.thresholdLabel}>
+                  {threshold.label}
+                </CustomText>
               </div>
             );
           })}
@@ -85,7 +88,7 @@ const styles: Styles = {
     height: BAR_HEIGHT,
     width: "100%",
     backgroundColor: "lightgrey",
-    position: "relative",
+    position: "relative", // Establish a containing block for positioned children
   },
   filled: {
     height: "100%",
@@ -99,6 +102,7 @@ const styles: Styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
+    zIndex: 2,
   },
   thresholdLine: {
     position: "absolute",
@@ -106,6 +110,7 @@ const styles: Styles = {
     width: 2,
     backgroundColor: "grey",
     bottom: 0,
+    zIndex: 1,
   },
   thresholdLabel: {
     position: "absolute",
@@ -113,5 +118,6 @@ const styles: Styles = {
     transform: "translateX(-50%)",
     whiteSpace: "nowrap",
     marginTop: 4,
+    zIndex: 1,
   },
 };

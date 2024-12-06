@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
-import { Navbar } from "./Navbar";
+import { Navbar } from "./Navbar/Navbar";
 import { Styles } from "../utils/Styles";
+import { tokens } from "../tokens";
 
 export const Root = () => {
   return (
@@ -17,5 +18,6 @@ const styles: Styles = {
   screenContainer: {
     width: "100%",
     minHeight: "100vh",
+    backgroundColor: tokens.color.background.primary,
   },
 };

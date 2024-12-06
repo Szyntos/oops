@@ -1,7 +1,9 @@
-import { Styles } from "../../../utils/Styles";
 import { StudentCardData } from "../../../hooks/StudentProfile/useStudentProfileData/useStudentData";
 import { Avatar } from "../../images/Avatar";
 import { CourseProgressBar } from "../../bars/CourseProgressBar";
+import { Card } from "./Card/Card";
+import { CardItem, CardItemProps } from "./Card/CardItem";
+import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 
 export function StudentCard({
   displayName,
@@ -9,53 +11,33 @@ export function StudentCard({
   group,
   totalPoints,
   avatarId,
-  id,
   grade,
 }: StudentCardData) {
+  const items: CardItemProps[] = [
+    { icon: "name", title: displayName },
+    { icon: "index", title: index },
+    {
+      icon: "instructor",
+      title: group ? group.teacherDisplayName : EMPTY_FIELD_STRING,
+    },
+    {
+      icon: "group",
+      title: group
+        ? `${group.name}, ${group.weekday.name} ${group.time.start}-${group.time.end}`
+        : EMPTY_FIELD_STRING,
+    },
+    { icon: "grade", title: grade },
+  ];
   return (
-    <div style={styles.container}>
+    <Card>
       <Avatar id={avatarId} size="l" />
-      <div>ID: {id}</div>
-      <div style={styles.studentName}>{displayName}</div>
-      <div>indeks: {index}</div>
-      <div>ocena: {grade}</div>
       <div>
-        grupa:{" "}
-        {group
-          ? `${group.name}, ${group.weekday.name} ${group.time.start}-${group.time.end}`
-          : "brak"}
+        {items.map((item) => (
+          <CardItem {...item} />
+        ))}
       </div>
-      <div>prowadzący: {group ? group.teacherDisplayName : "brak"}</div>
-
-      <div style={styles.title}>Course progress</div>
-      <CourseProgressBar totalPoints={totalPoints} />
-    </div>
+      {/* TODO this progress bar probably should be in different card */}
+      <CourseProgressBar totalPoints={totalPoints} title="total progress bar" />
+    </Card>
   );
 }
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    border: "1px solid blue",
-    gap: 12,
-    padding: 24,
-  },
-  studentName: {
-    fontWeight: "bold",
-  },
-  progressBar: {
-    width: "100%",
-    backgroundColor: "#f3f3f3",
-    borderRadius: "5px",
-    overflow: "hidden",
-    marginTop: "10px",
-  },
-  progress: {
-    height: "10px",
-    backgroundColor: "#4caf50",
-  },
-  title: {
-    fontWeight: "bold",
-  },
-};

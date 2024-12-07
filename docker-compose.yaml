@@ -40,8 +40,10 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./backend/Dockerfile
+      args:
+        BRANCH: release
     ports:
       - "9090:9090" # Map backend application port
     depends_on:
@@ -55,8 +57,10 @@ services:
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./frontend/Dockerfile
+      args:
+        BRANCH: release
     ports:
       - "3000:80" # Map frontend port (nginx serves it)
     depends_on:

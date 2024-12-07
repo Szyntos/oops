@@ -12,10 +12,10 @@ import {
 import { Points } from "../../../hooks/StudentProfile";
 import { CategoryTag } from "../../CategoryTag";
 import { Styles } from "../../../utils/Styles";
-import { ActionButton } from "./ActionButton";
 import { PointsCellContent } from "./cellContent/PointsCellContent";
 import { AwardsCellContent } from "./cellContent/AwardsCellContent";
 import { DateCellContent } from "./cellContent/DateCellContent";
+import { CustomIconButton } from "../../CustomIconButton";
 
 type StudentTableProps = {
   points: Points[];
@@ -83,18 +83,20 @@ export const StudentTable = ({
                 {showActionButtons && (
                   <TableCell>
                     <div style={styles.buttonsContainer}>
-                      <ActionButton
-                        type={p.points.purePoints ? "edit" : "add"}
-                        onClick={
-                          p.points.purePoints
-                            ? () => editFunctions?.handleEditClick(p)
-                            : () => editFunctions?.handleAddClick(p)
+                      <CustomIconButton
+                        icon="add"
+                        onClick={() => editFunctions?.handleAddClick(p)}
+                        disabled={
+                          Boolean(p.points.purePoints) || blockActionButtons
                         }
-                        isDisabled={blockActionButtons}
                       />
-
-                      <ActionButton
-                        type="delete"
+                      <CustomIconButton
+                        icon="edit"
+                        onClick={() => editFunctions?.handleEditClick(p)}
+                        disabled={!p.points.purePoints || blockActionButtons}
+                      />
+                      <CustomIconButton
+                        icon="delete"
                         onClick={() => {
                           if (p.points.purePoints?.pointsId) {
                             editFunctions?.handleDeleteClick(
@@ -102,9 +104,10 @@ export const StudentTable = ({
                             );
                           }
                         }}
-                        isDisabled={
+                        disabled={
                           blockActionButtons || !p.points.purePoints?.pointsId
                         }
+                        color="red"
                       />
                     </div>
                   </TableCell>
@@ -149,6 +152,6 @@ const styles: Styles = {
   buttonsContainer: {
     display: "flex",
     flexDirection: "row",
-    gap: 4,
+    gap: 8,
   },
 };

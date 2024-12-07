@@ -1,7 +1,9 @@
+import { tokens } from "../../tokens";
 import { Styles } from "../../utils/Styles";
 import { CustomText } from "../CustomText";
 
-const BAR_HEIGHT = 24;
+const BAR_HEIGHT = 20;
+const BORDER_RADIUS = 4;
 
 type BarThreshold = {
   label?: string;
@@ -50,12 +52,12 @@ export const ProgressBar = ({
   const filledPercent = calculatePercent(points);
 
   return (
-    <div style={{ ...styles.container, marginBottom: thresholds ? 12 : 0 }}>
-      {title && <CustomText>{title}</CustomText>}
+    <div style={styles.container}>
+      {title && <CustomText style={styles.title}>{title}</CustomText>}
 
       <div style={styles.empty}>
         {showPoints && (
-          <CustomText style={styles.pointsContainer}>
+          <CustomText style={styles.pointsContainer} size={tokens.font.xs}>
             {points.toFixed(2)}/{bounds.upper.toFixed(2)}
           </CustomText>
         )}
@@ -69,6 +71,8 @@ export const ProgressBar = ({
                 : barColor
                   ? barColor
                   : "lightblue",
+            borderTopRightRadius: filledPercent === 100 ? BORDER_RADIUS : 0,
+            borderBottomRightRadius: filledPercent === 100 ? BORDER_RADIUS : 0,
           }}
         />
 
@@ -98,17 +102,23 @@ const styles: Styles = {
     flexDirection: "column",
     gap: 4,
   },
+  title: {
+    paddingLeft: 2,
+  },
   empty: {
     height: BAR_HEIGHT,
     width: "100%",
-    backgroundColor: "lightgrey",
+    backgroundColor: tokens.color.background.cardGrey,
     position: "relative",
+    borderRadius: BORDER_RADIUS,
   },
   filled: {
     height: "100%",
     display: "flex",
     alignItems: "center",
     backgroundColor: "lightblue",
+    borderTopLeftRadius: BORDER_RADIUS,
+    borderBottomLeftRadius: BORDER_RADIUS,
   },
   pointsContainer: {
     position: "absolute",

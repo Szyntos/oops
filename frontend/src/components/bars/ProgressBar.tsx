@@ -55,7 +55,7 @@ export const ProgressBar = ({
 
       <div style={styles.empty}>
         {showPoints && (
-          <CustomText style={styles.pointsContainer} color={pointsColor}>
+          <CustomText style={styles.pointsContainer}>
             {points.toFixed(2)}/{bounds.upper.toFixed(2)}
           </CustomText>
         )}
@@ -63,7 +63,12 @@ export const ProgressBar = ({
           style={{
             ...styles.filled,
             width: `${filledPercent}%`,
-            ...(barColor ? { backgroundColor: barColor } : undefined),
+            background:
+              pointsColor && barColor
+                ? `linear-gradient(to right, ${pointsColor}, ${barColor})`
+                : barColor
+                  ? barColor
+                  : "lightblue",
           }}
         />
 
@@ -112,6 +117,7 @@ const styles: Styles = {
     flexDirection: "column",
     justifyContent: "center",
     zIndex: 2,
+    marginLeft: 4,
   },
   thresholdLine: {
     position: "absolute",

@@ -37,6 +37,8 @@ export type GroupPointsQuery = {
         __typename?: "CategoryType";
         categoryId: string;
         categoryName: string;
+        lightColor: string;
+        darkColor: string;
       };
       subcategoryPoints: Array<{
         __typename?: "SubcategoryPointsGroupType";
@@ -91,6 +93,8 @@ export const GroupPointsDocument = gql`
         category {
           categoryId
           categoryName
+          lightColor
+          darkColor
         }
         subcategoryPoints {
           createdAt

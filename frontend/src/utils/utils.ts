@@ -10,6 +10,8 @@ export type Category = {
   id: string;
   name: string;
   subcategories: Subcategory[];
+  lightColor: string;
+  darkColor: string;
 };
 
 export type Subcategory = {

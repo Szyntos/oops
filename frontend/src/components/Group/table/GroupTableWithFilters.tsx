@@ -1,9 +1,9 @@
 import { Styles } from "../../../utils/Styles";
-import FilterMenu from "./FilterMenu";
 import { useState } from "react";
 import { GroupTable } from "./GroupTable";
 import { Category, Subcategory } from "../../../utils/utils";
 import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
+import FilterMenu from "../../StudentProfile/table/FilterMenu/FilterMenu";
 
 type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
@@ -43,10 +43,16 @@ export const GroupTableWithFilters = ({
         onSelectChange={(selectedIds) => {
           setSelectedCategoryIds(selectedIds);
         }}
-        filterItems={categories.map((category) => {
-          return { id: category.id, name: category.name };
+        filterItems={categories.map((c) => {
+          return {
+            id: c.id,
+            name: c.name,
+            lightColor: c.lightColor,
+            darkColor: c.darkColor,
+          };
         })}
       />
+
       <GroupTable
         rows={rowsToDisplay}
         handleStudentClick={handleStudentClick}

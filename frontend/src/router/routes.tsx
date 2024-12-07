@@ -5,7 +5,7 @@ import { pathsWithParameters } from "./paths";
 import { StudentProfile } from "../screens/StudentProfile/StudentProfile";
 import { TeacherStudentProfile } from "../screens/StudentProfile/TeacherStudentProfile";
 import { Groups } from "../screens/Groups/Groups";
-import { Group } from "../screens/Group/Group";
+import { GroupScreen } from "../screens/Group/GroupScreen";
 import { Welcome } from "../screens/Welcome/Welcome";
 import { ProtectedRoute } from "./protectedRoute";
 import { StudentsScreen } from "../screens/Students/StudentsScreen";
@@ -75,7 +75,7 @@ export const routes = createBrowserRouter([
         path: teacherPaths.Group.path,
         element: (
           <ProtectedRoute
-            element={<Group />}
+            element={<GroupScreen />}
             allowedRoles={teacherPaths.Group.allowedRoles}
           />
         ),

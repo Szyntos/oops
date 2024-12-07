@@ -8,5 +8,5 @@
       "extensions": ["ms-vscode.vscode-typescript-next", "esbenp.prettier-vscode"]
     }
   },
-  "postCreateCommand": "git checkout release && docker-compose up --build"
+  "postCreateCommand": "git checkout release && printenv | awk -F= '{print \"export \" $1 \"=\\\"\" $2 \"\\\"\"}' >> ~/.bashrc && source ~/.bashrc && docker-compose up --build"
 }

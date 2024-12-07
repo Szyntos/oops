@@ -1,12 +1,13 @@
-import { AwardImage, AwardImageSize } from "./AwardImage";
+import { AwardImage } from "./AwardImage";
 import { Bonus } from "../../hooks/StudentProfile";
 import { TooltipWrapper } from "../TooltipWrapper";
 import { dateOptions } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
+import { ImageSize } from "./Image";
 
 type AwardWithTooltipProps = {
   bonus: Bonus;
-  size: AwardImageSize;
+  size: ImageSize;
 };
 
 export const AwardWithTooltip = ({ bonus, size }: AwardWithTooltipProps) => {

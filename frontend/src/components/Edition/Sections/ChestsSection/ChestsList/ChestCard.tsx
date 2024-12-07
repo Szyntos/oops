@@ -32,7 +32,7 @@ export const ChestCard = ({
     >
       <Image
         id={chest.chest.imageFile?.fileId ?? undefined}
-        size={32}
+        size="xs"
         disabled={false}
       />
       <div>[{chest.chest.chestId}]</div>

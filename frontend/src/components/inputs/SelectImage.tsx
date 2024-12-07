@@ -81,7 +81,7 @@ export const SelectImage = ({
           >
             <Image
               id={imageId}
-              size={64}
+              size="s"
               disabled={!selectedIds.some((id) => id === imageId)}
             />
           </div>

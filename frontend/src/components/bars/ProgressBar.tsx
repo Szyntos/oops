@@ -57,7 +57,7 @@ export const ProgressBar = ({
 
       <div style={styles.empty}>
         {showPoints && (
-          <CustomText style={styles.pointsContainer} size={tokens.font.xs}>
+          <CustomText style={styles.pointsContainer} size={tokens.font.small}>
             {points.toFixed(2)}/{bounds.upper.toFixed(2)}
           </CustomText>
         )}
@@ -86,8 +86,8 @@ export const ProgressBar = ({
                 left: `${calculatePercent(threshold.points)}%`,
               }}
             >
-              <CustomText style={styles.thresholdLabel}>
-                {threshold.label}
+              <CustomText style={styles.thresholdLabel} size={tokens.font.tiny}>
+                lvl.{threshold.label}
               </CustomText>
             </div>
           ))}

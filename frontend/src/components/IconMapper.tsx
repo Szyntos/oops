@@ -22,6 +22,7 @@ type IconMapperProps = {
   onClick?: () => void;
   style?: React.CSSProperties;
   isDisabled?: boolean;
+  size?: number;
 };
 
 type ActionIcons = "settings" | "logout" | "edit" | "delete" | "add" | "chest";
@@ -69,6 +70,7 @@ export const IconMapper = ({
   onClick,
   isDisabled,
   style,
+  size = 22,
 }: IconMapperProps) => {
   const IconComponent = iconMap[icon];
 
@@ -80,6 +82,8 @@ export const IconMapper = ({
         ...style,
         ...(onClick && styles.clickable),
         ...(isDisabled && styles.disabled),
+        width: size,
+        height: size,
       }}
     />
   );

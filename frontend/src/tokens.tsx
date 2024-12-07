@@ -28,13 +28,10 @@ export const tokens = {
     xxl: 128,
   },
   font: {
-    xxs: 10,
-    xs: 12,
-    s: 14,
-    m: 16,
-    l: 20,
-    xl: 24,
-    xxl: 32,
-    xxxl: 40,
+    tiny: 12,
+    small: 12,
+    text: 14,
+    title: 16,
+    header: 24,
   },
 };

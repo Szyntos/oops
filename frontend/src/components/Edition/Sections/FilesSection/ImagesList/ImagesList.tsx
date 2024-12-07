@@ -22,7 +22,7 @@ export const ImagesList = ({ files, title, handleDelete }: ImagesListProps) => {
         {files.length !== 0
           ? files.map((entry) => (
               <div style={styles.imageContainer}>
-                <Image id={entry.id} size={128} disabled={false} />
+                <Image id={entry.id} size="l" disabled={false} />
                 <SetupButtons
                   permissions={entry.permissions}
                   handleDelete={() => handleDelete(entry.id)}

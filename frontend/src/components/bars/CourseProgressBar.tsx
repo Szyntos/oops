@@ -32,6 +32,8 @@ export const CourseProgressBar = ({
       })}
       showPoints={true}
       title={title}
+      pointsColor="blue"
+      barColor="violet"
     />
   );
 };

@@ -37,7 +37,7 @@ export const LevelRow = ({
 }: LevelRowProps) => {
   return (
     <div style={styles.innerContainer}>
-      <Image size={64} disabled={false} id={level.imageId} />
+      <Image size="m" disabled={false} id={level.imageId} />
 
       <TextField
         name="ordinal"

@@ -4,9 +4,13 @@ import { CustomImageList } from "../ImageList";
 
 type LevelsSectionProps = {
   studentLevel: NeighboringLevel;
+  currLevel: NeighboringLevel;
 };
 
-export const LevelsSection = ({ studentLevel }: LevelsSectionProps) => {
+export const LevelsSection = ({
+  studentLevel,
+  currLevel,
+}: LevelsSectionProps) => {
   const { levels, loading, error } = useLevelsData();
 
   if (loading) return <div>loading...</div>;
@@ -17,6 +21,7 @@ export const LevelsSection = ({ studentLevel }: LevelsSectionProps) => {
       items={levels.map((level) => ({
         level,
         disabled: level.ordinalNumber > studentLevel.ordinalNumber,
+        current: currLevel.ordinalNumber === level.ordinalNumber,
         type: "animal",
       }))}
       type="animal"

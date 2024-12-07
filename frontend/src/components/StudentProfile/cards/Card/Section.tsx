@@ -3,20 +3,21 @@ import { Styles } from "../../../../utils/Styles";
 import { CustomText } from "../../../CustomText";
 import { tokens } from "../../../../tokens";
 
-const TITLE_MARGIN = 8;
-const CONTENT_MARGIN = 12;
-
 type SectionProps = {
   title?: string;
   children: ReactNode;
+  bigTitle?: boolean;
 };
 
-export const Section = ({ title, children }: SectionProps) => {
+export const Section = ({ title, children, bigTitle }: SectionProps) => {
   return (
     <div>
       {title && (
         <>
-          <CustomText style={styles.title} size={tokens.font.l}>
+          <CustomText
+            style={styles.title}
+            size={bigTitle ? tokens.font.header : tokens.font.title}
+          >
             {title}
           </CustomText>
           <div style={styles.separator} />
@@ -28,18 +29,16 @@ export const Section = ({ title, children }: SectionProps) => {
 };
 
 const styles: Styles = {
-  title: {
-    paddingLeft: TITLE_MARGIN,
-  },
   separator: {
-    height: 2,
+    height: 1,
     backgroundColor: tokens.color.border.light,
-    marginTop: TITLE_MARGIN,
-    marginBottom: CONTENT_MARGIN,
+    opacity: 0.3,
+    marginTop: 6,
+    marginBottom: 16,
   },
   contentContainer: {
     display: "flex",
     flexDirection: "column",
-    gap: 12,
+    gap: 10,
   },
 };

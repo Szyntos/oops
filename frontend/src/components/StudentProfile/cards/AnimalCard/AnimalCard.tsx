@@ -23,7 +23,7 @@ export const AnimalCard = ({
     { icon: "monster", title: "wielka bestia" },
     { icon: "level", title: "lvl. 6" },
     { icon: "level", title: currLevel.grade },
-    { icon: "minPoints", title: "123 - 254" }, // min points
+    { icon: "minPoints", title: "123 - 254" },
   ];
 
   return (
@@ -47,7 +47,7 @@ export const AnimalCard = ({
       </Section>
 
       <Section title="Zdobyte zweirzaki">
-        <LevelsSection studentLevel={currLevel} />
+        <LevelsSection studentLevel={currLevel} currLevel={currLevel} />
       </Section>
     </>
   );

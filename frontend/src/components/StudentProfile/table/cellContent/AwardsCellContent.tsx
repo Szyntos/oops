@@ -31,7 +31,7 @@ export const AwardsCellContent = ({ points }: AwardsCellContentProps) => {
               updatedAt: bonus?.bonuses.updatedAt ?? "",
               createdAt: bonus?.bonuses.createdAt ?? "",
             }}
-            size={"m"}
+            size={"xs"}
           />
         );
       })}

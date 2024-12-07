@@ -1,6 +1,6 @@
 import { Bonus, Level } from "../../../hooks/StudentProfile";
-import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 import { Styles } from "../../../utils/Styles";
+import { CustomText } from "../../CustomText";
 import { AnimalWithTooltip } from "../../images/AnimalWithTooltip";
 import { AwardWithTooltip } from "../../images/AwardWithTooltip";
 
@@ -17,6 +17,7 @@ type CustomImageListProps =
 export type AnimalItem = {
   level: Level;
   disabled: boolean;
+  current: boolean;
   type: "animal";
 };
 
@@ -33,11 +34,16 @@ export const CustomImageList = ({ items }: CustomImageListProps) => {
           level={item.level}
           size={"xs"}
           disabled={item.disabled}
+          shadow={item.current}
         />
       );
     }
     return (
-      <AwardWithTooltip key={item.bonus.award.id} bonus={item.bonus} size="m" />
+      <AwardWithTooltip
+        key={item.bonus.award.id}
+        bonus={item.bonus}
+        size="xs"
+      />
     );
   };
 
@@ -48,7 +54,7 @@ export const CustomImageList = ({ items }: CustomImageListProps) => {
           {items.map((item) => getImage(item))}
         </div>
       ) : (
-        <div>{EMPTY_FIELD_STRING}</div>
+        <CustomText>brak :(</CustomText>
       )}
     </>
   );

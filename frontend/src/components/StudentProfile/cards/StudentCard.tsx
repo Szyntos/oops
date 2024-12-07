@@ -38,7 +38,7 @@ export function StudentCard({
   ];
 
   return (
-    <Section title={nick}>
+    <Section title={nick} bigTitle={true}>
       <div style={styles.avatarContainer}>
         <Avatar id={avatarId} size="l" />
         <div style={styles.itemsContainer}>
@@ -75,7 +75,7 @@ const styles: Styles = {
   itemsContainer: {
     display: "flex",
     flexDirection: "column",
-    gap: 8,
+    gap: 6,
   },
   performanceItemsContainer: {
     display: "flex",

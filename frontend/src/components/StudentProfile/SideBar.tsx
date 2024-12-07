@@ -50,7 +50,7 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 24,
+    gap: 28,
     backgroundColor: tokens.color.background.cardBlue,
     minWidth: 360,
     maxWidth: 400,

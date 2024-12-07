@@ -16,7 +16,7 @@ export const ChestsNavbarItem = ({ quantity, onClick }: ChestsNavbarItem) => {
         icon="chest"
         style={styles.icon}
       />
-      <CustomText style={styles.circle} size={tokens.font.xxs}>
+      <CustomText style={styles.circle} size={tokens.font.small}>
         {quantity}
       </CustomText>
     </div>

@@ -19,7 +19,7 @@ export const CustomText = ({
     <div
       style={{
         ...styles.text,
-        fontSize: size ?? tokens.font.m,
+        fontSize: size ?? tokens.font.text,
         color: color ?? tokens.color.text.primary,
         ...style,
       }}

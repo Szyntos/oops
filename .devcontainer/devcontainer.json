@@ -1,7 +1,9 @@
 {
   "name": "OOPS",
-  "dockerComposeFile": "docker-compose.yaml",
-  "service": "backend", // Change this to your primary service (e.g., "backend" or "frontend")
+  "dockerComposeFile": [
+    "../docker-compose.yaml",
+  ],
+  "service": "backend",
   "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {

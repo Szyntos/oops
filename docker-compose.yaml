@@ -39,7 +39,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: ./backend/Dockerfile
+      dockerfile: ./Dockerfile
       args:
         BRANCH: release
     ports:
@@ -56,7 +56,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: ./frontend/Dockerfile
+      dockerfile: ./Dockerfile
       args:
         BRANCH: release
     ports:

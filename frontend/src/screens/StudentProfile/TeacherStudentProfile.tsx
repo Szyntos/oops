@@ -122,7 +122,8 @@ export function TeacherStudentProfile() {
         nextLevel={nextLevel}
         bonuses={bonuses}
       />
-      <div style={styles.rightContainer}>
+      <div style={styles.tableWrapper}>
+        {/* no rights info */}
         {disableEditMode && (
           <NotEditableInfo
             hasEditableRights={hasEditableRights}
@@ -130,6 +131,7 @@ export function TeacherStudentProfile() {
           />
         )}
 
+        {/* teacher action buttons */}
         <div style={styles.buttonsContainer}>
           <Button
             onClick={openAddDialog}
@@ -211,7 +213,6 @@ export function TeacherStudentProfile() {
             disableCategoryAndSubcategory={!!selectedPoints}
           />
         </Dialog>
-
         <Dialog open={isEditDialogOpen}>
           <CloseHeader onCloseClick={closeEditDialog} />
           <PointsForm
@@ -223,7 +224,6 @@ export function TeacherStudentProfile() {
             disableCategoryAndSubcategory={true}
           />
         </Dialog>
-
         <Dialog open={isChestDialogOpen}>
           <CloseHeader onCloseClick={closeChestDialog} />
           <AddChestToUserForm
@@ -246,18 +246,9 @@ export function TeacherStudentProfile() {
 const styles: Styles = {
   container: {
     display: "flex",
-    flexDirection: "row",
-    gap: 20,
-    margin: 12,
   },
-  rightContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 24,
-  },
-  buttonsContainer: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 12,
+  tableWrapper: {
+    flex: 1,
+    margin: 16,
   },
 };

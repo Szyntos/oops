@@ -1,10 +1,16 @@
-import { Styles } from "../../../utils/Styles";
-import { FilterItem } from "../../Groups/FilterBar/FilterOptionsSection";
+import { Styles } from "../../../../utils/Styles";
+import { FilterItem } from "../../../Groups/FilterBar/FilterOptionsSection";
+import { FilterMenuItem } from "./FilterMenuItem";
 
 type FilterMenuProps = {
   pickedCategoryIds: string[];
   onSelectChange: (pickedCategoryIds: string[]) => void;
-  filterItems: FilterItem[];
+  filterItems: FilterMenuItemm[];
+};
+
+export type FilterMenuItemm = FilterItem & {
+  lightColor: string;
+  darkColor: string;
 };
 
 export default function FilterMenu({
@@ -16,7 +22,7 @@ export default function FilterMenu({
     return pickedCategoryIds.some((selectedId) => selectedId === item.id);
   };
 
-  const handleCategoryClick = (item: FilterItem) => {
+  const handleCategoryClick = (item: FilterMenuItemm) => {
     if (isSelected(item)) {
       const updatedSelectedCategories = pickedCategoryIds.filter(
         (selectedId) => selectedId !== item.id,
@@ -30,16 +36,13 @@ export default function FilterMenu({
   return (
     <div style={styles.container}>
       {filterItems.map((item) => (
-        <div
-          style={{
-            ...styles.item,
-            ...(isSelected(item) ? styles.active : undefined),
-          }}
-          key={item.id}
+        <FilterMenuItem
+          text={item.name}
+          isSelected={isSelected(item)}
+          lightColor={item.lightColor}
+          darkColor={item.darkColor}
           onClick={() => handleCategoryClick(item)}
-        >
-          {item.name}
-        </div>
+        />
       ))}
     </div>
   );
@@ -48,15 +51,6 @@ export default function FilterMenu({
 const styles: Styles = {
   container: {
     display: "flex",
-    gap: "10px",
-  },
-  item: {
-    border: "1px solid black",
-    textAlign: "center",
-    padding: 12,
-    cursor: "pointer",
-  },
-  active: {
-    backgroundColor: "lightblue",
+    gap: 12,
   },
 };

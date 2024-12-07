@@ -1,4 +1,6 @@
 import { FilterItem } from "../../../components/Groups/FilterBar/FilterOptionsSection";
+import { FilterMenuItemm } from "../../../components/StudentProfile/table/FilterMenu/FilterMenu";
+import { useCategoriesQuery } from "../../../graphql/categories.graphql.types";
 import { useStudentPointsQuery } from "../../../graphql/studentPoints.graphql.types";
 import { Timestamp, Weekday } from "../../common/useGroupsData";
 import { Points } from "../types";
@@ -85,15 +87,25 @@ export const useStudentData = (props: {
       }
     });
 
-  const filterHeaderNames: FilterItem[] =
-    Array.from(uniqueCategories.values()) ?? [];
+  const {
+    data: headersData,
+    loading: headersLoading,
+    error: headersError,
+  } = useCategoriesQuery({ variables: { editionId: editionId as string } });
+
+  const filterHeaderNames: FilterMenuItemm[] =
+    headersData?.categories.map((c) => ({
+      ...c,
+      id: c.categoryId,
+      name: c.categoryName,
+    })) ?? [];
 
   return {
     studentData,
     points,
     filterHeaderNames,
-    studentPointsLoading: loading,
-    studentPointsError: error,
+    studentPointsLoading: loading || headersLoading,
+    studentPointsError: error || headersError,
     studentPointsRefetch: refetch,
   };
 };

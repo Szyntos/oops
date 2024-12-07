@@ -1,12 +1,21 @@
 {
   "name": "OOPS",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "dockerComposeFile": "docker-compose.yaml",
+  "service": "backend", // Change this to your primary service (e.g., "backend" or "frontend")
+  "workspaceFolder": "/workspace",
   "customizations": {
     "vscode": {
       "extensions": ["ms-vscode.vscode-typescript-next", "esbenp.prettier-vscode"]
     }
   },
-  "postCreateCommand": "git checkout release && printenv | awk -F= '{print \"export \" $1 \"=\\\"\" $2 \"\\\"\"}' >> ~/.bashrc && source ~/.bashrc && docker-compose up --build"
+  "postCreateCommand": "git checkout release && printenv | awk -F= '{print \"export \" $1 \"=\\\"\" $2 \"\\\"\"}' >> ~/.bashrc && source ~/.bashrc && docker-compose up --build",
+  "remoteEnv": {
+    "POSTGRES_USER": "${POSTGRES_USER}",
+    "POSTGRES_PASSWORD": "${POSTGRES_PASSWORD}",
+    "POSTGRES_DB": "${POSTGRES_DB}",
+    "HASURA_GRAPHQL_DATABASE_URL": "${HASURA_GRAPHQL_DATABASE_URL}",
+    "HASURA_GRAPHQL_ADMIN_SECRET": "${HASURA_GRAPHQL_ADMIN_SECRET}",
+    "HASURA_GRAPHQL_JWT_SECRET": "${HASURA_GRAPHQL_JWT_SECRET}"
+  },
+  "overrideCommand": false
 }

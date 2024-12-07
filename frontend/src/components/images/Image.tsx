@@ -23,5 +23,6 @@ const styles: Styles = {
   img: {
     width: "100%",
     objectFit: "cover",
+    borderRadius: 12,
   },
 };

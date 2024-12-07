@@ -31,13 +31,16 @@ export const SideBar = ({
   return (
     <div style={styles.container}>
       <StudentCard {...student} />
+      <CategoriesCard
+        categoriesBarProps={categoriesBarProps}
+        totalPoints={sumOfAllPoints ?? 0}
+      />
       <AnimalCard
         prevLevel={prevLevel}
         currLevel={currLevel}
         nextLevel={nextLevel}
         totalPoints={sumOfAllPoints}
       />
-      <CategoriesCard categoriesBarProps={categoriesBarProps} />
       <BonusesCard bonuses={bonuses} />
     </div>
   );
@@ -47,9 +50,10 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 4,
+    gap: 24,
     backgroundColor: tokens.color.background.cardBlue,
     minWidth: 360,
+    maxWidth: 400,
     padding: 16,
   },
 };

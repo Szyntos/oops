@@ -1,7 +1,7 @@
 import { NeighboringLevel } from "../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
 import { Styles } from "../../../utils/Styles";
 import { ProgressBar } from "../ProgressBar";
-import { LevelMiniature } from "./LevelMiniature";
+// import { LevelMiniature } from "./LevelMiniature";
 
 type LevelProgressBarProps = {
   totalPoints: number | undefined;
@@ -12,12 +12,12 @@ type LevelProgressBarProps = {
 
 export const LevelProgressBar = ({
   totalPoints,
-  prevLevel,
+  // prevLevel,
   currLevel,
-  nextLevel,
+  // nextLevel,
 }: LevelProgressBarProps) => {
-  const leftLevel = prevLevel ?? currLevel;
-  const rightLevel = nextLevel ?? currLevel;
+  // const leftLevel = prevLevel ?? currLevel;
+  // const rightLevel = nextLevel ?? currLevel;
   return (
     <div style={styles.container}>
       <ProgressBar
@@ -33,13 +33,13 @@ export const LevelProgressBar = ({
         showPoints
       />
 
-      <div style={styles.levelMiniaturesContainer}>
+      {/* <div style={styles.levelMiniaturesContainer}>
         <LevelMiniature level={leftLevel} />
         <LevelMiniature
           level={rightLevel}
           disabled={rightLevel !== currLevel}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

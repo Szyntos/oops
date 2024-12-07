@@ -1,20 +1,26 @@
 import { NeighboringLevel } from "../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
-import { CustomText } from "../../CustomText";
-import { Avatar } from "../../images/Avatar";
+import { AnimalWithTooltip } from "../../images/AnimalWithTooltip";
 
 type LevelMiniatureProps = {
   level: NeighboringLevel;
   disabled?: boolean;
 };
 
-export const LevelMiniature = ({
-  level,
-  disabled = false,
-}: LevelMiniatureProps) => {
+export const LevelMiniature = ({ level }: LevelMiniatureProps) => {
   return (
     <div>
-      <Avatar id={level.imageFile?.fileId} size="s" disabled={disabled} />
-      <CustomText>lvl. {level.ordinalNumber + 1}</CustomText>
+      <AnimalWithTooltip
+        size={"s"}
+        disabled={false}
+        level={{
+          name: level.levelName,
+          ordinalNumber: level.ordinalNumber,
+          realLevelNumber: level.ordinalNumber + 1,
+          imageId: level.imageFile?.fileId,
+          minimumPoints: parseFloat(level.minimumPoints),
+          maximumPoints: parseFloat(level.maximumPoints),
+        }}
+      />
     </div>
   );
 };

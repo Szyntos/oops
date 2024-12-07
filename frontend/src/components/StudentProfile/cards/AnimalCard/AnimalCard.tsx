@@ -1,9 +1,10 @@
 import { Avatar } from "../../../images/Avatar";
-import { LevelsSection } from "./LevelsSection";
 import { LevelProgressBar } from "../../../bars/LevelProgressBar/LevelProgressBar";
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
 import { Section } from "../Card/Section";
-import { CustomText } from "../../../CustomText";
+import { CardItem, CardItemProps } from "../Card/CardItem";
+import { Styles } from "../../../../utils/Styles";
+import { LevelsSection } from "./LevelsSection";
 
 type AnimalCardProps = {
   totalPoints: number | undefined;
@@ -18,21 +19,49 @@ export const AnimalCard = ({
   nextLevel,
   totalPoints,
 }: AnimalCardProps) => {
+  const items: CardItemProps[] = [
+    { icon: "monster", title: "wielka bestia" },
+    { icon: "level", title: "lvl. 6" },
+    { icon: "level", title: currLevel.grade },
+    { icon: "minPoints", title: "123 - 254" }, // min points
+  ];
+
   return (
-    <Section title="Level">
-      <div>
-        <Avatar id={currLevel.imageFile?.fileId} size="l" />
-        <CustomText>
-          {currLevel.levelName} - lvl. {currLevel.ordinalNumber + 1}
-        </CustomText>
+    <>
+      <Section title="Twój zwierzak">
+        <div style={styles.animalContainer}>
+          <Avatar id={currLevel.imageFile?.fileId} size="l" />
+          <div style={styles.itemsContainer}>
+            {items.map((item) => (
+              <CardItem {...item} />
+            ))}
+          </div>
+        </div>
+
         <LevelProgressBar
           totalPoints={totalPoints}
           prevLevel={prevLevel}
           currLevel={currLevel}
           nextLevel={nextLevel}
         />
-      </div>
-      <LevelsSection studentLevel={currLevel} />
-    </Section>
+      </Section>
+
+      <Section title="Zdobyte zweirzaki">
+        <LevelsSection studentLevel={currLevel} />
+      </Section>
+    </>
   );
+};
+
+const styles: Styles = {
+  animalContainer: {
+    display: "flex",
+    gap: 12,
+    alignItems: "center",
+  },
+  itemsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+  },
 };

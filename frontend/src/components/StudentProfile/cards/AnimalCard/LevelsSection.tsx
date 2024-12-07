@@ -1,9 +1,6 @@
 import { useLevelsData } from "../../../../hooks/StudentProfile/useLevelsData";
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
-import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
-import { Styles } from "../../../../utils/Styles";
-import { CustomText } from "../../../CustomText";
-import { AnimalWithTooltip } from "../../../images/AnimalWithTooltip";
+import { CustomImageList } from "../ImageList";
 
 type LevelsSectionProps = {
   studentLevel: NeighboringLevel;
@@ -16,42 +13,13 @@ export const LevelsSection = ({ studentLevel }: LevelsSectionProps) => {
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
-    <div style={styles.container}>
-      <CustomText>Zdobyte levele</CustomText>
-      {levels.length > 0 ? (
-        <div style={styles.levelsContainer}>
-          {levels?.map((level) => (
-            <AnimalWithTooltip
-              level={level}
-              size={"xs"}
-              disabled={level.ordinalNumber > studentLevel.ordinalNumber}
-            />
-          ))}
-        </div>
-      ) : (
-        <div>{EMPTY_FIELD_STRING}</div>
-      )}
-    </div>
+    <CustomImageList
+      items={levels.map((level) => ({
+        level,
+        disabled: level.ordinalNumber > studentLevel.ordinalNumber,
+        type: "animal",
+      }))}
+      type="animal"
+    />
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 8,
-  },
-  levelMiniaturesContainer: {
-    display: "flex",
-    flexDirection: "row",
-  },
-  levelMiniatureSpaceWrapper: {
-    flex: 1,
-  },
-  levelsContainer: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 12,
-    flexWrap: "wrap",
-  },
 };

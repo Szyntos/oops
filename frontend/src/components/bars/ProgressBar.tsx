@@ -50,7 +50,7 @@ export const ProgressBar = ({
   const filledPercent = calculatePercent(points);
 
   return (
-    <div style={styles.container}>
+    <div style={{ ...styles.container, marginBottom: thresholds ? 12 : 0 }}>
       {title && <CustomText>{title}</CustomText>}
 
       <div style={styles.empty}>

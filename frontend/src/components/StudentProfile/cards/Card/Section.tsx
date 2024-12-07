@@ -22,7 +22,7 @@ export const Section = ({ title, children }: SectionProps) => {
           <div style={styles.separator} />
         </>
       )}
-      <div style={styles.contentContainer}>{children}</div>;
+      <div style={styles.contentContainer}>{children}</div>
     </div>
   );
 };

@@ -1,3 +1,6 @@
+import PetsIcon from "@mui/icons-material/Pets";
+import StarIcon from "@mui/icons-material/Star";
+import SportsScoreIcon from "@mui/icons-material/SportsScore";
 import SettingsIconRounded from "@mui/icons-material/SettingsRounded";
 import LogoutIconRounded from "@mui/icons-material/LogoutRounded";
 import ModeEditRoundedIcon from "@mui/icons-material/ModeEditRounded";
@@ -7,16 +10,13 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonIcon from "@mui/icons-material/Person";
 import FingerprintIcon from "@mui/icons-material/Fingerprint";
-import StarIcon from "@mui/icons-material/Star";
 import GroupIcon from "@mui/icons-material/Group";
 import SchoolIcon from "@mui/icons-material/School";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import SportsScoreIcon from "@mui/icons-material/SportsScore"; // Icon for score
-import MailIcon from "@mui/icons-material/Mail"; // Icon for email
+import MailIcon from "@mui/icons-material/Mail";
 import { Styles } from "../utils/Styles";
 import { tokens } from "../tokens";
 
-// Defining the types for the props and icon keys
 type IconMapperProps = {
   icon: Icon;
   onClick?: () => void;
@@ -34,11 +34,14 @@ type DisplayIcons =
   | "instructor"
   | "progress"
   | "score"
-  | "email"; // Adding email icon to the list of display icons
+  | "email"
+  | "monster" // Added monster icon
+  | "level" // Added level icon
+  | "minPoints" // Added min points icon
+  | "maxPoints"; // Added max points icon
 
 export type Icon = ActionIcons | DisplayIcons;
 
-// Mapping the icon keys to actual Material UI icons
 const iconMap = {
   settings: SettingsIconRounded,
   logout: LogoutIconRounded,
@@ -53,18 +56,21 @@ const iconMap = {
   group: GroupIcon,
   instructor: SchoolIcon,
   progress: BarChartIcon,
-  score: SportsScoreIcon, // Added for points
-  email: MailIcon, // Added for email
+  score: SportsScoreIcon,
+  email: MailIcon,
+  monster: PetsIcon, // Icon for "wielka bestia"
+  level: StarIcon, // Icon for "lvl. 6"
+  minPoints: SportsScoreIcon, // Icon for "min points"
+  maxPoints: SportsScoreIcon, // Icon for "max points"
 };
 
-// IconMapper Component
 export const IconMapper = ({
   icon,
   onClick,
   isDisabled,
   style,
 }: IconMapperProps) => {
-  const IconComponent = iconMap[icon]; // Get the corresponding icon component
+  const IconComponent = iconMap[icon];
 
   return (
     <IconComponent
@@ -79,7 +85,6 @@ export const IconMapper = ({
   );
 };
 
-// Default styles for icons
 const styles: Styles = {
   icon: {
     width: tokens.padding.m,
@@ -90,6 +95,6 @@ const styles: Styles = {
     cursor: "pointer",
   },
   disabled: {
-    color: "grey", // You can adjust this with your design tokens
+    color: "grey",
   },
 };

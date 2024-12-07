@@ -1,16 +1,12 @@
 {
   "name": "OOPS",
-  "dockerComposeFile": [
-    "../docker-compose.yaml",
-  ],
-  "service": "backend",
-  "workspaceFolder": "/workspace",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu", // Basic Linux environment
   "customizations": {
     "vscode": {
       "extensions": ["ms-vscode.vscode-typescript-next", "esbenp.prettier-vscode"]
     }
   },
-  "postCreateCommand": "git checkout release && printenv | awk -F= '{print \"export \" $1 \"=\\\"\" $2 \"\\\"\"}' >> ~/.bashrc && source ~/.bashrc && docker-compose up --build",
+  "postCreateCommand": "git checkout release && docker-compose up --build",
   "remoteEnv": {
     "POSTGRES_USER": "${POSTGRES_USER}",
     "POSTGRES_PASSWORD": "${POSTGRES_PASSWORD}",

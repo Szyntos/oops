@@ -1,0 +1,12 @@
+{
+  "name": "OOPS",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-vscode.vscode-typescript-next", "esbenp.prettier-vscode"]
+    }
+  },
+  "postCreateCommand": "git checkout release && docker-compose up --build"
+}

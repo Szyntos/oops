@@ -38,7 +38,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: ./backend/Dockerfile
       args:
         BRANCH: release
@@ -55,7 +55,7 @@ services:
 
   frontend:
     build:
-      context: .
+      context: ./frontend
       dockerfile: ./frontend/Dockerfile
       args:
         BRANCH: release

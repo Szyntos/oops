@@ -24,7 +24,7 @@ class FirebaseUserService (
     fun createFirebaseUser(user: Users, sendEmail: Boolean): String {
 //        val randomPassword = generateRandomPassword()
         // TODO: Remove this line and uncomment the line above
-        val randomPassword = "aaaaaa"// Generate a random password
+        val randomPassword = generateRandomPassword()// Generate a random password
 
         val request = UserRecord.CreateRequest()
             .setEmail(user.email) // Assuming user has an email field; if not, adjust accordingly
@@ -36,14 +36,15 @@ class FirebaseUserService (
         val userRecord = FirebaseAuth.getInstance().createUser(request)
         val additionalClaims = mapOf("userId" to user.userId.toString())
         FirebaseAuth.getInstance().setCustomUserClaims(userRecord.uid, additionalClaims)
+        val resetPasswordLink = FirebaseAuth.getInstance().generatePasswordResetLink(user.email)
         if (sendEmail){
-            sendPasswordEmail(user.email, randomPassword)
+            sendPasswordEmail(user.email, resetPasswordLink)
         }
         return userRecord.uid // Return the UID of the newly created Firebase user
     }
 
     // Send email with the random password to the user
-    private fun sendPasswordEmail(email: String, password: String) {
+    private fun sendPasswordEmail(email: String, passwordLink: String) {
         val message = mailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true)
 
@@ -53,14 +54,13 @@ class FirebaseUserService (
             """
             Cześć,
 
-            Twoje konto w aplikacji OOPS zostało utworzone. Oto Twoje tymczasowe hasło:
+            Twoje konto w aplikacji OOPS zostało utworzone. Oto link do zresetowania hasła:
 
             Email:
             $email
-            Password:
-            $password
-
-            Po zalogowaniu się do aplikacji, zmień hasło na bardziej bezpieczne.
+            
+            Zresetuj hasło:
+            $passwordLink
 
             Pozdrawiamy,
             Zespół OOPS

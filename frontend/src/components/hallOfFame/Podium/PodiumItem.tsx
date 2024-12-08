@@ -5,7 +5,7 @@ import { CustomImage } from "../../images/Image";
 import { HallOfFameStudentData } from "../HallOfFameStudentCard";
 import { CSSProperties } from "react";
 
-const PODIUM_TOP_RADIUS = 8;
+const PODIUM_TOP_RADIUS = 4;
 const PODIUM_BOTTOM_RADIUS = 4;
 
 type PodiumItemProps = {

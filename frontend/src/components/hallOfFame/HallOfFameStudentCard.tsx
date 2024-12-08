@@ -1,4 +1,6 @@
+import { tokens } from "../../tokens";
 import { Styles } from "../../utils/Styles";
+import { CustomText } from "../CustomText";
 import { Avatar } from "../images/Avatar";
 
 export const HALL_OF_FAME_STUDENT_CARD_ID_PREFIX = "student-";
@@ -28,27 +30,42 @@ export const HallOfFameStudentCard = ({
       id={HALL_OF_FAME_STUDENT_CARD_ID_PREFIX + student.id}
       style={{
         ...styles.item,
-        backgroundColor: isHighlighted ? "pink" : "white",
+        ...(isHighlighted
+          ? {
+              background: `linear-gradient(to right, ${tokens.color.accent.light}, ${tokens.color.card.blue})`,
+            }
+          : undefined),
       }}
     >
-      <div>{student.position}.</div>
+      <CustomText style={styles.position}>{student.position}.</CustomText>
       <Avatar id={student.avatarImgId} size={"xs"} />
-      <div>{student.nick}</div>
+      <CustomText style={styles.nick}>{student.nick}</CustomText>
       <Avatar id={student.levelImgId} size={"xs"} />
-      <div>{student.levelName}</div>
-      <div>{student.totalPoints.toFixed(2)} pkt</div>
+      <CustomText style={styles.animalName}>{student.levelName}</CustomText>
+      <CustomText>{student.totalPoints.toFixed(2)}pkt</CustomText>
     </div>
   );
 };
 
 const styles: Styles = {
   item: {
-    display: "grid",
-    gridTemplateColumns: "0.5fr 0.5fr 3fr 1fr 2fr 1fr",
+    display: "flex",
     alignItems: "center",
-    border: "1px solid black",
-    gap: 12,
+    gap: 32,
     padding: 12,
-    boxSizing: "border-box",
+    paddingLeft: 24,
+    paddingRight: 24,
+    backgroundColor: tokens.color.card.blue,
+  },
+  position: {
+    width: 18,
+  },
+  nick: {
+    flex: 1,
+    fontWeight: "bold",
+  },
+  animalName: {
+    flex: 1,
+    textAlign: "center",
   },
 };

@@ -35,8 +35,8 @@ export const tokens = {
   font: {
     tiny: 12,
     small: 12,
-    text: 14,
-    title: 16,
+    text: 16,
+    title: 18,
     header: 24,
   },
 };

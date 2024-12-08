@@ -10,7 +10,6 @@ import { SideBar } from "../../components/StudentProfile/SideBar";
 import { useFormCategories } from "../../hooks/common/useFormCategories";
 import { Dialog } from "@mui/material";
 import { StudentTableWithFilters } from "../../components/StudentProfile/table/StudentTableWithFilters";
-import { Button } from "../../components/Button";
 import { useTeacherActions } from "../../hooks/StudentProfile";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
@@ -21,6 +20,7 @@ import { useCoordinatorActions } from "../../hooks/StudentProfile/useCoordinator
 import { AddChestToUserForm } from "./AddChestToUserForm";
 import { useChangeGroup } from "../../hooks/common/useChangeGroup";
 import { useOverrideGrade } from "../../hooks/common/useOverrideGrade";
+import { CustomButton } from "../../components/CustomButton";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -133,23 +133,18 @@ export function TeacherStudentProfile() {
 
         {/* teacher action buttons */}
         <div style={styles.buttonsContainer}>
-          <Button
-            onClick={openAddDialog}
-            color="lightblue"
-            disabled={disableEditMode}
-          >
-            Add Points
-          </Button>
+          <CustomButton onClick={openAddDialog} disabled={disableEditMode}>
+            dodaj punkty
+          </CustomButton>
           {user.role === UsersRolesType.Coordinator && (
             <>
-              <Button
+              <CustomButton
                 onClick={openChestDialog}
-                color="lightblue"
                 disabled={disableEditMode}
               >
-                Add Chest
-              </Button>
-              <Button
+                dodaj skrzynkę
+              </CustomButton>
+              <CustomButton
                 onClick={() =>
                   openOverrideGrade({
                     studentId,
@@ -157,19 +152,17 @@ export function TeacherStudentProfile() {
                     grade: studentData.grade,
                   })
                 }
-                color="lightblue"
                 disabled={disableEditMode || !selectedEdition?.editionId}
               >
-                Override Grade
-              </Button>
-              <Button
+                nadpisz ocenę
+              </CustomButton>
+              <CustomButton
                 onClick={() => handleRegenerateGrade(studentId)}
-                color="lightblue"
                 disabled={disableEditMode || !selectedEdition?.editionId}
               >
-                Regenerate Grade
-              </Button>
-              <Button
+                wygeneruj ocenę
+              </CustomButton>
+              <CustomButton
                 onClick={() =>
                   openChangeGroup({
                     studentId,
@@ -177,15 +170,14 @@ export function TeacherStudentProfile() {
                     editionId: selectedEdition?.editionId as string,
                   })
                 }
-                color="lightblue"
                 disabled={
                   disableEditMode ||
                   !studentData.group?.id ||
                   !selectedEdition?.editionId
                 }
               >
-                Change group
-              </Button>
+                zmień grupę
+              </CustomButton>
             </>
           )}
         </div>
@@ -249,6 +241,13 @@ const styles: Styles = {
   },
   tableWrapper: {
     flex: 1,
+    display: "flex",
+    flexDirection: "column",
     margin: 16,
+    gap: 12,
+  },
+  buttonsContainer: {
+    display: "flex",
+    gap: 12,
   },
 };

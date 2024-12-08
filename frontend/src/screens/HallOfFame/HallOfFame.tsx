@@ -7,7 +7,6 @@ import { useCallback, useEffect, useState } from "react";
 import { StudentCardsList } from "../../components/hallOfFame/StudentCardsList";
 import { isPartOfAString } from "../../utils/strings";
 import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame/HallOfFameStudentCard";
-import { tokens } from "../../tokens";
 
 export default function HallOfFame() {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
@@ -91,6 +90,7 @@ const styles: Styles = {
   sideBarContainer: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: tokens.color.card.grey,
+    backgroundColor: "grey",
+    minWidth: 720,
   },
 };

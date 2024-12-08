@@ -1,3 +1,4 @@
+import { tokens } from "../../tokens";
 import { Styles } from "../../utils/Styles";
 
 type TextInputProps = {
@@ -47,6 +48,10 @@ const styles: Styles = {
   },
   input: {
     flex: 1,
+    padding: 12,
+    borderRadius: 6,
+    fontSize: tokens.font.text,
+    border: "none",
   },
   error: {
     color: "red",

@@ -131,7 +131,7 @@ const styles: Styles = {
     margin: 12,
   },
   rightSide: {
-    width: "100%",
+    flex: 1,
     display: "flex",
     flexDirection: "column",
   },

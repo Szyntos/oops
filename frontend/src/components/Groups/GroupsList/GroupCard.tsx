@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Group } from "../../../hooks/common/useGroupsData";
+import { tokens } from "../../../tokens";
 import { FETCH_FILES_URL } from "../../../utils/constants";
 import { Styles } from "../../../utils/Styles";
+import { CustomText } from "../../CustomText";
 import { EditableIndicator } from "../../EditableIndicator";
 
 type GroupCardProps = {
@@ -14,18 +17,34 @@ export const GroupCard = ({
   onClick,
   withEditableRights,
 }: GroupCardProps) => {
+  const [isHoovered, setIsHoovered] = useState(false);
+
   return (
-    <div style={styles.container} onClick={onClick}>
+    <div
+      style={{
+        ...styles.container,
+        ...(isHoovered ? { opacity: 0.9 } : undefined),
+      }}
+      onClick={onClick}
+      onMouseEnter={() => setIsHoovered(true)}
+      onMouseLeave={() => setIsHoovered(false)}
+    >
       <img
         src={`${FETCH_FILES_URL}${group.imageId}`}
         alt={`img id ${group.imageId}`}
         style={styles.img}
       />
-      <div style={styles.title}>{group.name}</div>
-      <div>{group.teacher.fullName}</div>
-      <div>
-        {group.weekday.name} {group.time.start}-{group.time.end}
+      <CustomText bold={true} size={tokens.font.title}>
+        {group.name}
+      </CustomText>
+
+      <div style={styles.detailsContainer}>
+        <CustomText>
+          {group.weekday.name} {group.time.start}-{group.time.end}
+        </CustomText>
+        <CustomText>{group.teacher.fullName}</CustomText>
       </div>
+
       {withEditableRights && (
         <div style={styles.editableIndicatorWrapper}>
           <EditableIndicator />
@@ -39,13 +58,14 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    border: "1px solid black",
     width: 240,
     height: 240,
     cursor: "pointer",
     padding: 12,
-    gap: 12,
+    paddingBottom: 4,
     position: "relative",
+    backgroundColor: tokens.color.card.light,
+    borderRadius: 12,
   },
   img: {
     width: "100%",
@@ -53,10 +73,13 @@ const styles: Styles = {
     objectFit: "cover",
     borderRadius: 8,
     overflow: "hidden",
+    marginBottom: 12,
   },
-  title: {
-    fontWeight: "bold",
-    fontSize: 18,
+  detailsContainer: {
+    paddingTop: 6,
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
   },
   editableIndicatorWrapper: {
     top: 140,

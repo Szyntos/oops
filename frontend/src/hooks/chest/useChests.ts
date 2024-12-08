@@ -30,7 +30,7 @@ export const useChests = () => {
     }
   }, [globalErrorWrapper, error]);
 
-  const chestsToOpen: Chest[] = data?.users[0].chestHistories ?? [];
+  const chestsToOpen: Chest[] = data?.users[0]?.chestHistories ?? [];
 
   // OPEN
   const [chestError, setChestError] = useState<string | undefined>(undefined);

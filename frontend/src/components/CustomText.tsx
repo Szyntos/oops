@@ -7,6 +7,7 @@ type CustomTextProps = {
   style?: React.CSSProperties;
   size?: number;
   color?: string;
+  bold?: boolean;
 };
 
 export const CustomText = ({
@@ -14,6 +15,7 @@ export const CustomText = ({
   style,
   size,
   color,
+  bold,
 }: CustomTextProps) => {
   return (
     <div
@@ -21,6 +23,7 @@ export const CustomText = ({
         ...styles.text,
         fontSize: size ?? tokens.font.text,
         color: color ?? tokens.color.text.primary,
+        fontWeight: bold ? "bold" : undefined,
         ...style,
       }}
     >

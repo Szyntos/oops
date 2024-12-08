@@ -13,10 +13,13 @@ export const CategoriesCard = ({
 }: CategoriesCardProps) => {
   return (
     <Section title="Punkty">
+      <div style={{ marginBottom: 12 }}>
+        <CourseProgressBar totalPoints={totalPoints} title="razem" />
+      </div>
+
       {categoriesBarProps.map((props, index) => (
         <ProgressBar key={index} {...props} showPoints />
       ))}
-      <CourseProgressBar totalPoints={totalPoints} title="razem" />
     </Section>
   );
 };

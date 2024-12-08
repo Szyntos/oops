@@ -108,7 +108,7 @@ const styles: Styles = {
   empty: {
     height: BAR_HEIGHT,
     width: "100%",
-    backgroundColor: tokens.color.background.cardGrey,
+    backgroundColor: "grey",
     position: "relative",
     borderRadius: BORDER_RADIUS,
   },

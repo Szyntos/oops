@@ -38,6 +38,6 @@ const styles: Styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: tokens.color.accent.dark,
+    backgroundColor: tokens.color.accent.light,
   },
 };

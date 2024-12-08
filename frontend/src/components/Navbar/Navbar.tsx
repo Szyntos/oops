@@ -65,6 +65,7 @@ export const Navbar = () => {
         {user.role !== UsersRolesType.UnauthenticatedUser && (
           <>
             <NavbarItem
+              color={tokens.color.accent.light}
               title={
                 selectedEdition
                   ? `${selectedEdition.name}${isEditionActive(selectedEdition) ? "" : " [not active]"}`
@@ -115,7 +116,8 @@ const styles: Styles = {
     paddingRight: tokens.padding.xl,
     paddingLeft: tokens.padding.xl,
     minHeight: NAV_BAR_HEIGHT,
-    borderBottom: "1px solid " + tokens.color.border.light,
+    backgroundColor: tokens.color.card.blue,
+    borderBottom: `1px solid ${tokens.color.accent.dark}`,
   },
   itemsContainer: {
     display: "flex",

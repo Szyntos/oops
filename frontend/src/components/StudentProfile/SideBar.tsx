@@ -50,8 +50,8 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 28,
-    backgroundColor: tokens.color.background.cardBlue,
+    gap: 24,
+    backgroundColor: tokens.color.card.navy,
     minWidth: 360,
     maxWidth: 400,
     padding: 16,

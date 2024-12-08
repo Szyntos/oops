@@ -6,9 +6,15 @@ type NavbarProps = {
   onClick?: () => void;
   isActive?: boolean;
   title: string;
+  color?: string;
 };
 
-export const NavbarItem = ({ onClick, isActive, title }: NavbarProps) => {
+export const NavbarItem = ({
+  onClick,
+  isActive,
+  title,
+  color,
+}: NavbarProps) => {
   return (
     <div
       onClick={onClick}
@@ -17,7 +23,7 @@ export const NavbarItem = ({ onClick, isActive, title }: NavbarProps) => {
         ...(onClick && styles.clickable),
       }}
     >
-      <CustomText style={{ ...(isActive && styles.active) }}>
+      <CustomText style={{ ...(isActive && styles.active) }} color={color}>
         {title}
       </CustomText>
     </div>

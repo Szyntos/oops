@@ -1,20 +1,25 @@
 export const tokens = {
   color: {
     background: {
-      primary: "#020a08", // Main dark background
-      cardGrey: "#0a1210", // Secondary background (sidebar, cards, etc.)
-      cardBlue: "#091f2e", // Lighter background (input fields, forms)
+      primary: "#070c11",
+    },
+    card: {
+      blue: "#0d1929",
+      navy: "#0b131c",
+      light: "#98bde7",
+      grey: "#0f151a",
     },
     text: {
-      primary: "white", // Main text (headings, body)
-      secondary: "grey", // Subtext, captions, labels (muted, readable)
+      primary: "#dde8f4",
+      secondary: "#96bce6",
     },
     accent: {
-      light: "#83e7cf", // Light accent color for buttons or highlights
-      dark: "#2d57d6", // Darker accent color (actions, secondary buttons)
+      light: "#96bce6",
+      dark: "#4a93e3",
     },
     border: {
-      light: "white",
+      light: "#96bce6",
+      dark: "#1d5591",
     },
   },
 

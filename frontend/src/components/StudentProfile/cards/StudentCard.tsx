@@ -4,6 +4,8 @@ import { Section } from "./Card/Section";
 import { CardItem, CardItemProps } from "./Card/CardItem";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 import { Styles } from "../../../utils/Styles";
+import { CustomText } from "../../CustomText";
+import { tokens } from "../../../tokens";
 
 export function StudentCard({
   nick,
@@ -38,7 +40,14 @@ export function StudentCard({
   ];
 
   return (
-    <Section title={nick} bigTitle={true}>
+    <Section>
+      <CustomText
+        size={tokens.font.header}
+        bold={true}
+        color={tokens.color.accent.dark}
+      >
+        {nick}
+      </CustomText>
       <div style={styles.avatarContainer}>
         <Avatar id={avatarId} size="l" />
         <div style={styles.itemsContainer}>

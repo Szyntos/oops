@@ -64,8 +64,8 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
     volumes:
       - ./backend/hasura:/hasura
-      - ./backend/src/main/python:/app/python  # Mount directory containing init_data.py
-      - ./backend/src/main/python/config.json:/app/config.json  # Mount config.json file
+      - ./backend/src/main/python:/app/python # Mount directory containing init_data.py
+      - ./backend/src/main/python/config.json:/app/config.json # Mount config.json file
     working_dir: /hasura
     entrypoint: >
       /bin/sh -c "
@@ -77,14 +77,7 @@ services:
       done &&
       echo 'Backend is healthy. Applying Hasura metadata...' &&
       hasura metadata apply --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET} &&
-      hasura metadata reload --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET} &&
-      echo 'Running Python data initialization script...' &&
-      apt-get update && apt-get install -y python3 python3-pip &&
-      pip3 install psycopg2 requests &&
-      python3 /app/python/init_data.py
-      "
-
-
+      hasura metadata reload --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET}"
 
   frontend:
     build:
@@ -92,6 +85,13 @@ services:
       dockerfile: ./Dockerfile
       args:
         BRANCH: release
+        VITE_FIREBASE_API_KEY: ${VITE_FIREBASE_API_KEY}
+        VITE_FIREBASE_AUTH_DOMAIN: ${VITE_FIREBASE_AUTH_DOMAIN}
+        VITE_FIREBASE_PROJECT_ID: ${VITE_FIREBASE_PROJECT_ID}
+        VITE_FIREBASE_STORAGE_BUCKET: ${VITE_FIREBASE_STORAGE_BUCKET}
+        VITE_FIREBASE_MESSAGING_SENDER_ID: ${VITE_FIREBASE_MESSAGING_SENDER_ID}
+        VITE_FIREBASE_APP_ID: ${VITE_FIREBASE_APP_ID}
+        VITE_FIREBASE_MEASUREMENT_ID: ${VITE_FIREBASE_MEASUREMENT_ID}
     ports:
       - "3000:80" # Map frontend port (nginx serves it)
     depends_on:
@@ -99,6 +99,24 @@ services:
       - hasura
     env_file:
       - .env
+
+  init-data:
+    image: python:3.9-slim
+    depends_on:
+      hasura-apply-metadata:
+        condition: service_completed_successfully
+    working_dir: /app
+    volumes:
+      - ./backend/src/main/python:/app
+      - ./backend/src/main/python/config.json:/app/config.json
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Installing Python dependencies...' &&
+      pip install --no-cache-dir requests &&
+      echo 'Waiting for Hasura metadata to be applied...' &&
+      sleep 5 &&
+      echo 'Executing init_data.py...' &&
+      python3 init_data.py"
 
 volumes:
   postgres_data:

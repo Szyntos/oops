@@ -13,12 +13,19 @@ class FirebaseConfig {
     @PostConstruct
     fun initFirebase() {
 
-        val dotenv = Dotenv.configure()
-            .directory("../") // Adjust the path to your .env file
-            .load()
+        val dotenv = try {
+            Dotenv.configure()
+                .directory("../") // Adjust to your working directory setup
+                .load()
+        } catch (e: Exception) {
+            println("No .env file found: ${e.message}")
+            null
+        }
 
-        val base64ServiceAccount = dotenv["FIREBASE_SECRET_JSON_BASE64"]
-            ?: throw IllegalStateException("Environment variable 'FIREBASE_SECRET_JSON_BASE64' is not defined.")
+        // Get FIREBASE_SECRET_JSON_BASE64 from dotenv or environment variables
+        val base64ServiceAccount = dotenv?.get("FIREBASE_SECRET_JSON_BASE64")
+            ?: System.getenv("FIREBASE_SECRET_JSON_BASE64")
+            ?: throw IllegalStateException("Environment variable 'FIREBASE_SECRET_JSON_BASE64' is not defined in .env or system environment variables.")
 
         val decodedServiceAccount = Base64.getDecoder().decode(base64ServiceAccount)
 

@@ -52,6 +52,39 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+    env_file:
+      - .env
+
+  hasura-apply-metadata:
+    image: hasura/graphql-engine:latest
+    platform: linux/arm64/v8
+    depends_on:
+      - backend
+    environment:
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+    volumes:
+      - ./backend/hasura:/hasura
+      - ./backend/src/main/python:/app/python  # Mount directory containing init_data.py
+      - ./backend/src/main/python/config.json:/app/config.json  # Mount config.json file
+    working_dir: /hasura
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Installing Hasura CLI...' &&
+      curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash &&
+      echo 'Waiting for backend to become healthy...' &&
+      until curl -s http://backend:9090/actuator/health | grep -q '\"status\":\"UP\"'; do
+        sleep 5;
+      done &&
+      echo 'Backend is healthy. Applying Hasura metadata...' &&
+      hasura metadata apply --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET} &&
+      hasura metadata reload --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET} &&
+      echo 'Running Python data initialization script...' &&
+      apt-get update && apt-get install -y python3 python3-pip &&
+      pip3 install psycopg2 requests &&
+      python3 /app/python/init_data.py
+      "
+
+
 
   frontend:
     build:
@@ -64,6 +97,8 @@ services:
     depends_on:
       - backend
       - hasura
+    env_file:
+      - .env
 
 volumes:
   postgres_data:

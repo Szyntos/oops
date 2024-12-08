@@ -13,7 +13,7 @@ hasura_url = "http://hasura:8080/v1/graphql"
 headers = {
     "Content-Type": "application/json",
     "x-hasura-role": "admin",
-    "x-hasura-admin-secret": os.getenv("HASURA_ADMIN_SECRET"),
+    "x-hasura-admin-secret": os.getenv("HASURA_GRAPHQL_ADMIN_SECRET"),
 }
 
 def insert_data():

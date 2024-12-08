@@ -107,7 +107,7 @@ services:
         condition: service_completed_successfully
     working_dir: /app
     environment:
-      HASURA_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
     volumes:
       - ./backend/src/main/python:/app
       - ./backend/src/main/python/config.json:/app/config.json

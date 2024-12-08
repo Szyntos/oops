@@ -40,10 +40,15 @@ import org.springframework.context.annotation.PropertySource
 class BackendApplication
 
 fun main(args: Array<String>) {
-	val dotenv = Dotenv.configure()
+	val dotenv = try {Dotenv.configure()
 		.directory("../")
 		.load()
-	dotenv.entries().forEach { System.setProperty(it.key, it.value) }
+		}
+	catch (e: Exception) {
+		println("No .env file found")
+		null
+	}
+	dotenv?.entries()?.forEach { System.setProperty(it.key, it.value) }
 
 	runApplication<BackendApplication>(*args)
 }

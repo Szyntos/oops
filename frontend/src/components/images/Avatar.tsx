@@ -1,4 +1,4 @@
-import { Image, ImageSize } from "./Image";
+import { CustomImage, ImageSize } from "./Image";
 
 type AvatarProps = {
   id: string | undefined;
@@ -13,5 +13,7 @@ export const Avatar = ({
   disabled = false,
   shadow = false,
 }: AvatarProps) => {
-  return <Image id={id} size={size} disabled={disabled} shadow={shadow} />;
+  return (
+    <CustomImage id={id} size={size} disabled={disabled} shadow={shadow} />
+  );
 };

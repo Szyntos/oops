@@ -1,7 +1,7 @@
 import { FormHelperText } from "@mui/material";
 import { Styles } from "../../utils/Styles";
 import { AwardImage } from "../images/AwardImage";
-import { Image } from "../images/Image";
+import { CustomImage } from "../images/Image";
 import { Award } from "../../hooks/Edition/useAwardsSection";
 import { TooltipWrapper } from "../TooltipWrapper";
 
@@ -79,7 +79,7 @@ export const SelectImage = ({
             style={styles.imageWrapper}
             onClick={() => handleSelect(imageId)}
           >
-            <Image
+            <CustomImage
               id={imageId}
               size="s"
               disabled={!selectedIds.some((id) => id === imageId)}

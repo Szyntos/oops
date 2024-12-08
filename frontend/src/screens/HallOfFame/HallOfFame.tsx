@@ -3,11 +3,11 @@ import { HallOfFameMenu } from "../../components/hallOfFame/HallOfFameMenu";
 import { useHallOfFameData } from "../../hooks/HallOfFame/useHallOfFameData";
 import { NAV_BAR_HEIGHT } from "../../components/Navbar/Navbar";
 import { Podium } from "../../components/hallOfFame/Podium/Podium";
-import { StatisticsBox } from "../../components/hallOfFame/StatisticsBox";
 import { useCallback, useEffect, useState } from "react";
 import { StudentCardsList } from "../../components/hallOfFame/StudentCardsList";
 import { isPartOfAString } from "../../utils/strings";
 import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame/HallOfFameStudentCard";
+import { tokens } from "../../tokens";
 
 export default function HallOfFame() {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
@@ -46,7 +46,6 @@ export default function HallOfFame() {
     <div style={styles.container}>
       <div style={styles.leftSide}>
         <Podium students={displayStudents} />
-        <StatisticsBox />
       </div>
 
       <div style={styles.sideBarContainer}>
@@ -87,10 +86,11 @@ const styles: Styles = {
     height: "100%",
     display: "flex",
     flexDirection: "column",
+    justifyContent: "center",
   },
   sideBarContainer: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "lightblue",
+    backgroundColor: tokens.color.card.grey,
   },
 };

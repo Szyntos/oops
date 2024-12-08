@@ -1,11 +1,13 @@
+import { CSSProperties } from "react";
 import { FETCH_FILES_URL } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
 
-export type ImageProps = {
+export type CustomImageProps = {
   id: string | undefined;
   size: ImageSize;
   disabled: boolean;
   shadow?: boolean;
+  imageStyle?: CSSProperties;
 };
 
 const sizeMap: Record<ImageSize, number> = {
@@ -17,8 +19,13 @@ const sizeMap: Record<ImageSize, number> = {
 
 export type ImageSize = "xs" | "s" | "m" | "l";
 
-export const Image = ({ size, id, disabled, shadow }: ImageProps) => {
-  console.log("SHADOW: ", shadow);
+export const CustomImage = ({
+  size,
+  id,
+  disabled,
+  shadow,
+  imageStyle,
+}: CustomImageProps) => {
   return (
     <div
       style={{
@@ -35,6 +42,7 @@ export const Image = ({ size, id, disabled, shadow }: ImageProps) => {
           boxShadow: shadow
             ? "0px 0px 6px rgba(255, 255, 255, 0.6)"
             : undefined,
+          ...imageStyle,
         }}
       />
     </div>

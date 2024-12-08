@@ -1,4 +1,4 @@
-import { Image, ImageSize } from "./Image";
+import { CustomImage, ImageSize } from "./Image";
 
 type AwardImageProps = {
   id: string | undefined;
@@ -7,5 +7,5 @@ type AwardImageProps = {
 };
 
 export const AwardImage = ({ id, size, disabled = false }: AwardImageProps) => {
-  return <Image id={id} size={size} disabled={disabled} />;
+  return <CustomImage id={id} size={size} disabled={disabled} />;
 };

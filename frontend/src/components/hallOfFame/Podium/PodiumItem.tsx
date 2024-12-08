@@ -3,8 +3,10 @@ import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { CustomImage } from "../../images/Image";
 import { HallOfFameStudentData } from "../HallOfFameStudentCard";
+import { CSSProperties } from "react";
 
-const PODIUM_RADIUS = 8;
+const PODIUM_TOP_RADIUS = 8;
+const PODIUM_BOTTOM_RADIUS = 4;
 
 type PodiumItemProps = {
   student: HallOfFameStudentData;
@@ -12,13 +14,6 @@ type PodiumItemProps = {
 };
 
 export const PodiumItem = ({ student, place }: PodiumItemProps) => {
-  const getBoxHeight = () => {
-    if (place === 1) {
-      return 220 * 1.15;
-    }
-    return (place === 2 ? 150 : 110) * 1.15;
-  };
-
   const getPodiumShadow = () => {
     let color = "";
     switch (place) {
@@ -35,6 +30,31 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
     return { boxShadow: `0px 0px 12px ${color}` };
   };
 
+  const getPodiumStyle = (): CSSProperties => {
+    let height = 0;
+    switch (place) {
+      case 1:
+        height = 220;
+        break;
+      case 2:
+        height = 150;
+        break;
+      case 3:
+        height = 110;
+        break;
+    }
+
+    return {
+      borderTopRightRadius: place !== 2 ? PODIUM_TOP_RADIUS : 0,
+      borderTopLeftRadius: place !== 3 ? PODIUM_TOP_RADIUS : 0,
+      borderBottomLeftRadius: place === 2 ? PODIUM_BOTTOM_RADIUS : 0,
+      borderBottomRightRadius: place === 3 ? PODIUM_BOTTOM_RADIUS : 0,
+      backgroundColor:
+        place === 1 ? tokens.color.accent.dark : tokens.color.accent.light,
+      height: height * 1.15,
+    };
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.studentContainer}>
@@ -49,10 +69,7 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
       <div
         style={{
           ...styles.box,
-          height: getBoxHeight(),
-          backgroundColor: place === 1 ? "gray" : "lightgrey",
-          borderTopRightRadius: place !== 2 ? PODIUM_RADIUS : 0,
-          borderTopLeftRadius: place !== 3 ? PODIUM_RADIUS : 0,
+          ...getPodiumStyle(),
         }}
       >
         <CustomText

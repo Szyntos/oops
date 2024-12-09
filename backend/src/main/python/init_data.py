@@ -15,9 +15,11 @@ headers = {
     "x-hasura-role": "admin",
     "x-hasura-admin-secret": os.getenv("HASURA_GRAPHQL_ADMIN_SECRET"),
 }
+do_insert_files = os.getenv("DO_INSERT_FILES", "true").lower() == "true"
 
 def insert_data():
-    insert_init_files(base_url + "/files/upload")
+    if do_insert_files:
+        insert_init_files(base_url + "/files/upload")
     coordinator_id_and_role = insert_initial_coordinator(hasura_url, headers)
 
 if __name__ == '__main__':

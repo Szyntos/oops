@@ -113,6 +113,7 @@ services:
     working_dir: /app
     environment:
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      DO_INSERT_FILES: ${DO_INSERT_FILES}
     volumes:
       - ./backend/src/main/python:/app
       - ./backend/src/main/python/config.json:/app/config.json

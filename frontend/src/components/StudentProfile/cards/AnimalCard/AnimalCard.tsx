@@ -23,7 +23,7 @@ export const AnimalCard = ({
     { icon: "monster", title: "wielka bestia" },
     { icon: "level", title: "lvl. 6" },
     { icon: "level", title: currLevel.grade },
-    { icon: "minPoints", title: "123 - 254" },
+    { icon: "points", title: "123 - 254" },
   ];
 
   return (

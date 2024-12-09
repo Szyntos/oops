@@ -36,10 +36,9 @@ type DisplayIcons =
   | "progress"
   | "score"
   | "email"
-  | "monster" // Added monster icon
-  | "level" // Added level icon
-  | "minPoints" // Added min points icon
-  | "maxPoints"; // Added max points icon
+  | "monster"
+  | "level"
+  | "points";
 
 export type Icon = ActionIcons | DisplayIcons;
 
@@ -59,10 +58,9 @@ const iconMap = {
   progress: BarChartIcon,
   score: SportsScoreIcon,
   email: MailIcon,
-  monster: PetsIcon, // Icon for "wielka bestia"
-  level: StarIcon, // Icon for "lvl. 6"
-  minPoints: SportsScoreIcon, // Icon for "min points"
-  maxPoints: SportsScoreIcon, // Icon for "max points"
+  monster: PetsIcon,
+  level: StarIcon,
+  points: SportsScoreIcon,
 };
 
 export const IconMapper = ({

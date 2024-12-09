@@ -5,6 +5,7 @@ import { FETCH_FILES_URL } from "../../../utils/constants";
 import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { EditableIndicator } from "../../EditableIndicator";
+import { CARD_BORDER, CARD_PADDING } from "../../Students/StudentsListCard";
 
 type GroupCardProps = {
   group: Group;
@@ -61,17 +62,17 @@ const styles: Styles = {
     width: 240,
     height: 240,
     cursor: "pointer",
-    padding: 12,
+    padding: CARD_PADDING,
     paddingBottom: 4,
     position: "relative",
     backgroundColor: tokens.color.card.light,
-    borderRadius: 12,
+    borderRadius: CARD_BORDER,
   },
   img: {
     width: "100%",
     height: 150,
     objectFit: "cover",
-    borderRadius: 8,
+    borderRadius: CARD_BORDER,
     overflow: "hidden",
     marginBottom: 12,
   },
@@ -83,7 +84,7 @@ const styles: Styles = {
   },
   editableIndicatorWrapper: {
     top: 140,
-    right: 32,
+    right: 23,
     position: "absolute",
   },
 };

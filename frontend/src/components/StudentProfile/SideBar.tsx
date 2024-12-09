@@ -1,13 +1,12 @@
 import { ProgressBarProps } from "../bars/ProgressBar";
 import { StudentCard } from "./cards/StudentCard";
 import { CategoriesCard } from "./cards/CategoriesCard";
-import { Styles } from "../../utils/Styles";
 import { StudentCardData } from "../../hooks/StudentProfile/useStudentProfileData/useStudentData";
 import { AnimalCard } from "./cards/AnimalCard/AnimalCard";
 import { BonusesCard } from "./cards/BonusesCard";
 import { Bonus } from "../../hooks/StudentProfile";
 import { NeighboringLevel } from "../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
-import { tokens } from "../../tokens";
+import { CustomSideBar } from "../layout/CustomSideBar";
 
 type SideBarProps = {
   student: StudentCardData;
@@ -29,7 +28,7 @@ export const SideBar = ({
   bonuses,
 }: SideBarProps) => {
   return (
-    <div style={styles.container}>
+    <CustomSideBar>
       <StudentCard {...student} />
       <CategoriesCard
         categoriesBarProps={categoriesBarProps}
@@ -42,18 +41,6 @@ export const SideBar = ({
         totalPoints={sumOfAllPoints}
       />
       <BonusesCard bonuses={bonuses} />
-    </div>
+    </CustomSideBar>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 24,
-    backgroundColor: tokens.color.card.navy,
-    minWidth: 360,
-    maxWidth: 400,
-    padding: 16,
-  },
 };

@@ -1,12 +1,12 @@
 import { Styles } from "../../utils/Styles";
 import { HallOfFameMenu } from "../../components/hallOfFame/HallOfFameMenu";
 import { useHallOfFameData } from "../../hooks/HallOfFame/useHallOfFameData";
-import { NAV_BAR_HEIGHT } from "../../components/Navbar/Navbar";
 import { Podium } from "../../components/hallOfFame/Podium/Podium";
 import { useCallback, useEffect, useState } from "react";
 import { StudentCardsList } from "../../components/hallOfFame/StudentCardsList";
 import { isPartOfAString } from "../../utils/strings";
 import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame/HallOfFameStudentCard";
+import { CONTENT_CONTAINER_HEIGHT } from "../../components/layout/ScreenContentContainer";
 
 export default function HallOfFame() {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
@@ -78,11 +78,10 @@ const styles: Styles = {
     position: "relative",
     display: "flex",
     // TODO: I have no idea how to get rig of outer page scroll
-    height: `calc(100vh - ${NAV_BAR_HEIGHT + 1}px)`,
+    height: CONTENT_CONTAINER_HEIGHT,
   },
   leftSide: {
     flex: 1,
-    height: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",

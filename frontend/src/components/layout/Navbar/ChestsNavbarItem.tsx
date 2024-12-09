@@ -1,7 +1,7 @@
-import { IconMapper } from "../IconMapper";
-import { Styles } from "../../utils/Styles";
-import { tokens } from "../../tokens";
-import { CustomText } from "../CustomText";
+import { IconMapper } from "../../IconMapper";
+import { Styles } from "../../../utils/Styles";
+import { tokens } from "../../../tokens";
+import { CustomText } from "../../CustomText";
 
 type ChestsNavbarItem = {
   quantity: number;

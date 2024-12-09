@@ -1,6 +1,6 @@
-import { tokens } from "../../tokens";
-import { Styles } from "../../utils/Styles";
-import { CustomText } from "../CustomText";
+import { tokens } from "../../../tokens";
+import { Styles } from "../../../utils/Styles";
+import { CustomText } from "../../CustomText";
 
 type NavbarProps = {
   onClick?: () => void;

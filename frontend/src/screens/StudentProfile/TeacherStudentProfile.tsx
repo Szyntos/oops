@@ -20,6 +20,7 @@ import { useCoordinatorActions } from "../../hooks/StudentProfile/useCoordinator
 import { AddChestToUserForm } from "./AddChestToUserForm";
 import { useChangeGroup } from "../../hooks/common/useChangeGroup";
 import { useOverrideGrade } from "../../hooks/common/useOverrideGrade";
+import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
 import { CustomButton } from "../../components/CustomButton";
 
 export function TeacherStudentProfile() {
@@ -112,140 +113,128 @@ export function TeacherStudentProfile() {
     : addPointsFormInitialValues;
 
   return (
-    <div style={styles.container}>
-      <SideBar
-        student={studentData}
-        categoriesBarProps={categories}
-        sumOfAllPoints={sumOfAllPoints}
-        currLevel={currLevel}
-        prevLevel={prevLevel}
-        nextLevel={nextLevel}
-        bonuses={bonuses}
-      />
-      <div style={styles.tableWrapper}>
-        {/* no rights info */}
-        {disableEditMode && (
-          <NotEditableInfo
-            hasEditableRights={hasEditableRights}
-            isSelectedEditionActive={isSelectedEditionActive}
-          />
-        )}
-
-        {/* teacher action buttons */}
-        <div style={styles.buttonsContainer}>
-          <CustomButton onClick={openAddDialog} disabled={disableEditMode}>
-            dodaj punkty
-          </CustomButton>
-          {user.role === UsersRolesType.Coordinator && (
-            <>
-              <CustomButton
-                onClick={openChestDialog}
-                disabled={disableEditMode}
-              >
-                dodaj skrzynkę
-              </CustomButton>
-              <CustomButton
-                onClick={() =>
-                  openOverrideGrade({
-                    studentId,
-                    editionId: selectedEdition?.editionId as string,
-                    grade: studentData.grade,
-                  })
-                }
-                disabled={disableEditMode || !selectedEdition?.editionId}
-              >
-                nadpisz ocenę
-              </CustomButton>
-              <CustomButton
-                onClick={() => handleRegenerateGrade(studentId)}
-                disabled={disableEditMode || !selectedEdition?.editionId}
-              >
-                wygeneruj ocenę
-              </CustomButton>
-              <CustomButton
-                onClick={() =>
-                  openChangeGroup({
-                    studentId,
-                    groupId: studentData.group?.id as string,
-                    editionId: selectedEdition?.editionId as string,
-                  })
-                }
-                disabled={
-                  disableEditMode ||
-                  !studentData.group?.id ||
-                  !selectedEdition?.editionId
-                }
-              >
-                zmień grupę
-              </CustomButton>
-            </>
-          )}
-        </div>
-
-        <StudentTableWithFilters
-          points={points}
-          filterHeaderNames={filterHeaderNames}
-          editFunctions={{
-            handleDeleteClick: handleDeletePointsClick,
-            handleAddClick: openAddDialog,
-            handleEditClick: openEditDialog,
-          }}
-          showActionButtons={true}
-          blockActionButtons={disableEditMode}
+    <ScreenContentContainer
+      sidebar={
+        <SideBar
+          student={studentData}
+          categoriesBarProps={categories}
+          sumOfAllPoints={sumOfAllPoints}
+          currLevel={currLevel}
+          prevLevel={prevLevel}
+          nextLevel={nextLevel}
+          bonuses={bonuses}
         />
+      }
+    >
+      {/* no rights info */}
+      {disableEditMode && (
+        <NotEditableInfo
+          hasEditableRights={hasEditableRights}
+          isSelectedEditionActive={isSelectedEditionActive}
+        />
+      )}
 
-        <Dialog open={isAddDialogOpen}>
-          <CloseHeader onCloseClick={closeAddDialog} />
-          <PointsForm
-            categories={addPointsCategories}
-            handleConfirmClick={handleAddPointsConfirmation}
-            mutationError={formError}
-            variant="add"
-            initialValues={initialValues}
-            disableCategoryAndSubcategory={!!selectedPoints}
-          />
-        </Dialog>
-        <Dialog open={isEditDialogOpen}>
-          <CloseHeader onCloseClick={closeEditDialog} />
-          <PointsForm
-            categories={addPointsCategories}
-            handleConfirmClick={handleEditPointsConfirmation}
-            mutationError={formError}
-            initialValues={initialValues}
-            variant="edit"
-            disableCategoryAndSubcategory={true}
-          />
-        </Dialog>
-        <Dialog open={isChestDialogOpen}>
-          <CloseHeader onCloseClick={closeChestDialog} />
-          <AddChestToUserForm
-            handleConfirmClick={handleAddChestConfirmation}
-            categories={addChestCategories}
-            chests={chests}
-            initialValues={{
-              categoryId: addChestCategories[0].id,
-              subcategoryId: addChestCategories[0]?.subcategories[0].id,
-              chestId: chests[0].chestId,
-            }}
-            formError={chestError}
-          />
-        </Dialog>
+      {/* teacher action buttons */}
+      <div style={styles.buttonsContainer}>
+        <CustomButton onClick={openAddDialog} disabled={disableEditMode}>
+          dodaj punkty
+        </CustomButton>
+        {user.role === UsersRolesType.Coordinator && (
+          <>
+            <CustomButton onClick={openChestDialog} disabled={disableEditMode}>
+              dodaj skrzynkę
+            </CustomButton>
+            <CustomButton
+              onClick={() =>
+                openOverrideGrade({
+                  studentId,
+                  editionId: selectedEdition?.editionId as string,
+                  grade: studentData.grade,
+                })
+              }
+              disabled={disableEditMode || !selectedEdition?.editionId}
+            >
+              nadpisz ocenę
+            </CustomButton>
+            <CustomButton
+              onClick={() => handleRegenerateGrade(studentId)}
+              disabled={disableEditMode || !selectedEdition?.editionId}
+            >
+              wygeneruj ocenę
+            </CustomButton>
+            <CustomButton
+              onClick={() =>
+                openChangeGroup({
+                  studentId,
+                  groupId: studentData.group?.id as string,
+                  editionId: selectedEdition?.editionId as string,
+                })
+              }
+              disabled={
+                disableEditMode ||
+                !studentData.group?.id ||
+                !selectedEdition?.editionId
+              }
+            >
+              zmień grupę
+            </CustomButton>
+          </>
+        )}
       </div>
-    </div>
+
+      <StudentTableWithFilters
+        points={points}
+        filterHeaderNames={filterHeaderNames}
+        editFunctions={{
+          handleDeleteClick: handleDeletePointsClick,
+          handleAddClick: openAddDialog,
+          handleEditClick: openEditDialog,
+        }}
+        showActionButtons={true}
+        blockActionButtons={disableEditMode}
+      />
+
+      <Dialog open={isAddDialogOpen}>
+        <CloseHeader onCloseClick={closeAddDialog} />
+        <PointsForm
+          categories={addPointsCategories}
+          handleConfirmClick={handleAddPointsConfirmation}
+          mutationError={formError}
+          variant="add"
+          initialValues={initialValues}
+          disableCategoryAndSubcategory={!!selectedPoints}
+        />
+      </Dialog>
+      <Dialog open={isEditDialogOpen}>
+        <CloseHeader onCloseClick={closeEditDialog} />
+        <PointsForm
+          categories={addPointsCategories}
+          handleConfirmClick={handleEditPointsConfirmation}
+          mutationError={formError}
+          initialValues={initialValues}
+          variant="edit"
+          disableCategoryAndSubcategory={true}
+        />
+      </Dialog>
+      <Dialog open={isChestDialogOpen}>
+        <CloseHeader onCloseClick={closeChestDialog} />
+        <AddChestToUserForm
+          handleConfirmClick={handleAddChestConfirmation}
+          categories={addChestCategories}
+          chests={chests}
+          initialValues={{
+            categoryId: addChestCategories[0].id,
+            subcategoryId: addChestCategories[0]?.subcategories[0].id,
+            chestId: chests[0].chestId,
+          }}
+          formError={chestError}
+        />
+      </Dialog>
+    </ScreenContentContainer>
   );
 }
 
 const styles: Styles = {
-  container: {
-    display: "flex",
-  },
-  tableWrapper: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    margin: 16,
-    gap: 12,
-  },
   buttonsContainer: {
     display: "flex",
     gap: 12,

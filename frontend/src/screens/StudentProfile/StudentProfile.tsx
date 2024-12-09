@@ -1,8 +1,8 @@
-import { Styles } from "../../utils/Styles";
 import { useUser } from "../../hooks/common/useUser";
 import { useStudentProfileData } from "../../hooks/StudentProfile";
 import { SideBar } from "../../components/StudentProfile/SideBar";
 import { StudentTableWithFilters } from "../../components/StudentProfile/table/StudentTableWithFilters";
+import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
 
 export function StudentProfile() {
   const { user } = useUser();
@@ -28,32 +28,23 @@ export function StudentProfile() {
   if (!currLevel) return <p>Curr level is undefined</p>;
 
   return (
-    <div style={styles.container}>
-      <SideBar
-        student={studentData}
-        categoriesBarProps={categories}
-        sumOfAllPoints={sumOfAllPoints}
-        prevLevel={prevLevel}
-        currLevel={currLevel}
-        nextLevel={nextLevel}
-        bonuses={bonuses}
-      />
-      <div style={styles.tableWrapper}>
-        <StudentTableWithFilters
-          points={points}
-          filterHeaderNames={filterHeaderNames}
+    <ScreenContentContainer
+      sidebar={
+        <SideBar
+          student={studentData}
+          categoriesBarProps={categories}
+          sumOfAllPoints={sumOfAllPoints}
+          prevLevel={prevLevel}
+          currLevel={currLevel}
+          nextLevel={nextLevel}
+          bonuses={bonuses}
         />
-      </div>
-    </div>
+      }
+    >
+      <StudentTableWithFilters
+        points={points}
+        filterHeaderNames={filterHeaderNames}
+      />
+    </ScreenContentContainer>
   );
 }
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-  },
-  tableWrapper: {
-    flex: 1,
-    margin: 16,
-  },
-};

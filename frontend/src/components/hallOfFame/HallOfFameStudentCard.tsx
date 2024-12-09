@@ -39,7 +39,9 @@ export const HallOfFameStudentCard = ({
     >
       <CustomText style={styles.position}>{student.position}.</CustomText>
       <Avatar id={student.avatarImgId} size={"xs"} />
-      <CustomText style={styles.nick}>{student.nick}</CustomText>
+      <CustomText style={styles.nick} bold={true}>
+        {student.nick}
+      </CustomText>
       <Avatar id={student.levelImgId} size={"xs"} />
       <CustomText style={styles.animalName}>{student.levelName}</CustomText>
       <CustomText>{student.totalPoints.toFixed(2)}pkt</CustomText>
@@ -62,7 +64,6 @@ const styles: Styles = {
   },
   nick: {
     flex: 1,
-    fontWeight: "bold",
   },
   animalName: {
     flex: 1,

@@ -1,7 +1,7 @@
 import { FormHelperText } from "@mui/material";
 import { Styles } from "../../utils/Styles";
 import { AwardImage } from "../images/AwardImage";
-import { CustomImage } from "../images/Image";
+import { CustomImage } from "../images/CustomImage";
 import { Award } from "../../hooks/Edition/useAwardsSection";
 import { TooltipWrapper } from "../TooltipWrapper";
 

@@ -5,7 +5,7 @@ import { Styles } from "../../utils/Styles";
 export type CustomImageProps = {
   id: string | undefined;
   size: ImageSize;
-  disabled: boolean;
+  disabled?: boolean;
   shadow?: boolean;
   imageStyle?: CSSProperties;
 };

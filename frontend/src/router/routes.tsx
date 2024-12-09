@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import HallOfFame from "../screens/HallOfFame/HallOfFame";
 import { Root } from "../components/Root";
+import { HallOfFame } from "../screens/HallOfFame/HallOfFame";
 import { pathsWithParameters } from "./paths";
 import { StudentProfile } from "../screens/StudentProfile/StudentProfile";
 import { TeacherStudentProfile } from "../screens/StudentProfile/TeacherStudentProfile";

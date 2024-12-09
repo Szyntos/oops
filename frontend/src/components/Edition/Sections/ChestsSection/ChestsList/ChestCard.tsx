@@ -1,7 +1,7 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
 import { Styles } from "../../../../../utils/Styles";
-import { CustomImage } from "../../../../images/Image";
+import { CustomImage } from "../../../../images/CustomImage";
 import { SetupButtons } from "../../SetupButtons";
 
 type ChestCardProps = {
@@ -30,11 +30,7 @@ export const ChestCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <CustomImage
-        id={chest.chest.imageFile?.fileId ?? undefined}
-        size="xs"
-        disabled={false}
-      />
+      <CustomImage id={chest.chest.imageFile?.fileId ?? undefined} size="xs" />
       <div>[{chest.chest.chestId}]</div>
       <div style={styles.subtitle}>{chest.chest.chestType}</div>
 

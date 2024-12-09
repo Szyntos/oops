@@ -1,4 +1,4 @@
-import { CustomImage, ImageSize } from "./Image";
+import { CustomImage, ImageSize } from "./CustomImage";
 
 type AwardImageProps = {
   id: string | undefined;

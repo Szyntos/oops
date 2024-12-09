@@ -40,7 +40,6 @@ export const SelectedSetCard = ({
                   name: l.levelName,
                 }}
                 size={"m"}
-                disabled={false}
               />
             ))}
           </div>

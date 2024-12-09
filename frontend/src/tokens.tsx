@@ -21,6 +21,11 @@ export const tokens = {
       light: "#96bce6",
       dark: "#1d5591",
     },
+    unique: {
+      gold: "#FFD700",
+      silver: "#C0C0C0",
+      brown: "#CD7F32",
+    },
   },
 
   padding: {

@@ -8,7 +8,7 @@ import { isPartOfAString } from "../../utils/strings";
 import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame/HallOfFameStudentCard";
 import { CONTENT_CONTAINER_HEIGHT } from "../../components/layout/ScreenContentContainer";
 
-export default function HallOfFame() {
+export const HallOfFame = () => {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
     useHallOfFameData();
   const [showStudentsFromAllGroups, setShowStudentsFromAllGroups] =
@@ -71,13 +71,12 @@ export default function HallOfFame() {
       </div>
     </div>
   );
-}
+};
 
 const styles: Styles = {
   container: {
     position: "relative",
     display: "flex",
-    // TODO: I have no idea how to get rig of outer page scroll
     height: CONTENT_CONTAINER_HEIGHT,
   },
   leftSide: {

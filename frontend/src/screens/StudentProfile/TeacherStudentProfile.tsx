@@ -112,29 +112,8 @@ export function TeacherStudentProfile() {
       }
     : addPointsFormInitialValues;
 
-  return (
-    <ScreenContentContainer
-      sidebar={
-        <SideBar
-          student={studentData}
-          categoriesBarProps={categories}
-          sumOfAllPoints={sumOfAllPoints}
-          currLevel={currLevel}
-          prevLevel={prevLevel}
-          nextLevel={nextLevel}
-          bonuses={bonuses}
-        />
-      }
-    >
-      {/* no rights info */}
-      {disableEditMode && (
-        <NotEditableInfo
-          hasEditableRights={hasEditableRights}
-          isSelectedEditionActive={isSelectedEditionActive}
-        />
-      )}
-
-      {/* teacher action buttons */}
+  const getTeacherActionButtons = () => {
+    return (
       <div style={styles.buttonsContainer}>
         <CustomButton onClick={openAddDialog} disabled={disableEditMode}>
           dodaj punkty
@@ -181,7 +160,35 @@ export function TeacherStudentProfile() {
           </>
         )}
       </div>
+    );
+  };
 
+  return (
+    <ScreenContentContainer
+      sidebar={
+        <SideBar
+          student={studentData}
+          categoriesBarProps={categories}
+          sumOfAllPoints={sumOfAllPoints}
+          currLevel={currLevel}
+          prevLevel={prevLevel}
+          nextLevel={nextLevel}
+          bonuses={bonuses}
+        />
+      }
+    >
+      {/* no rights info */}
+      {disableEditMode && (
+        <NotEditableInfo
+          hasEditableRights={hasEditableRights}
+          isSelectedEditionActive={isSelectedEditionActive}
+        />
+      )}
+
+      {/* teacher action buttons */}
+      {getTeacherActionButtons()}
+
+      {/* table */}
       <StudentTableWithFilters
         points={points}
         filterHeaderNames={filterHeaderNames}

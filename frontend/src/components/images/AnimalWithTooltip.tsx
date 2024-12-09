@@ -2,12 +2,12 @@ import { TooltipWrapper } from "../TooltipWrapper";
 import { Styles } from "../../utils/Styles";
 import { Avatar } from "./Avatar";
 import { Level } from "../../hooks/StudentProfile";
-import { ImageSize } from "./Image";
+import { ImageSize } from "./CustomImage";
 
 type AnimalWithTooltipProps = {
   level: Level;
   size: ImageSize;
-  disabled: boolean;
+  disabled?: boolean;
   shadow?: boolean;
 };
 

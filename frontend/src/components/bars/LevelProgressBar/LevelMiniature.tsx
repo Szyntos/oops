@@ -11,7 +11,6 @@ export const LevelMiniature = ({ level }: LevelMiniatureProps) => {
     <div>
       <AnimalWithTooltip
         size={"s"}
-        disabled={false}
         level={{
           name: level.levelName,
           ordinalNumber: level.ordinalNumber,

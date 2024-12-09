@@ -1,7 +1,7 @@
 import { tokens } from "../../../tokens";
 import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
-import { CustomImage } from "../../images/Image";
+import { CustomImage } from "../../images/CustomImage";
 import { HallOfFameStudentData } from "../HallOfFameStudentCard";
 import { CSSProperties } from "react";
 
@@ -13,37 +13,27 @@ type PodiumItemProps = {
   place: 1 | 2 | 3;
 };
 
+const placeMap = {
+  color: {
+    1: tokens.color.unique.gold,
+    2: tokens.color.unique.silver,
+    3: tokens.color.unique.brown,
+  },
+  height: {
+    1: 220,
+    2: 150,
+    3: 110,
+  },
+};
+
+const PLACE_HEIGHT_RATIO = 1.15;
+
 export const PodiumItem = ({ student, place }: PodiumItemProps) => {
   const getPodiumShadow = () => {
-    let color = "";
-    switch (place) {
-      case 1:
-        color = "#FFD700";
-        break;
-      case 2:
-        color = "#C0C0C0";
-        break;
-      case 3:
-        color = "#CD7F32";
-        break;
-    }
-    return { boxShadow: `0px 0px 12px ${color}` };
+    return { boxShadow: `0px 0px 12px ${placeMap.color[place]}` };
   };
 
   const getPodiumStyle = (): CSSProperties => {
-    let height = 0;
-    switch (place) {
-      case 1:
-        height = 220;
-        break;
-      case 2:
-        height = 150;
-        break;
-      case 3:
-        height = 110;
-        break;
-    }
-
     return {
       borderTopRightRadius: place !== 2 ? PODIUM_TOP_RADIUS : 0,
       borderTopLeftRadius: place !== 3 ? PODIUM_TOP_RADIUS : 0,
@@ -51,7 +41,7 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
       borderBottomRightRadius: place === 3 ? PODIUM_BOTTOM_RADIUS : 0,
       backgroundColor:
         place === 1 ? tokens.color.accent.dark : tokens.color.accent.light,
-      height: height * 1.15,
+      height: placeMap.height[place] * PLACE_HEIGHT_RATIO,
     };
   };
 
@@ -61,7 +51,6 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
         <CustomImage
           id={student.avatarImgId}
           size={"l"}
-          disabled={false}
           imageStyle={getPodiumShadow()}
         />
         <CustomText size={tokens.font.title}>{student.nick}</CustomText>
@@ -100,7 +89,7 @@ const styles: Styles = {
   box: {
     display: "flex",
     flexDirection: "column",
-    // alignItems: "center",
+    alignItems: "center",
     paddingTop: 12,
   },
   place: {

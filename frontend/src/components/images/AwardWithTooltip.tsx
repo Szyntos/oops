@@ -3,7 +3,7 @@ import { Bonus } from "../../hooks/StudentProfile";
 import { TooltipWrapper } from "../TooltipWrapper";
 import { dateOptions } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
-import { ImageSize } from "./Image";
+import { ImageSize } from "./CustomImage";
 
 type AwardWithTooltipProps = {
   bonus: Bonus;

@@ -19,7 +19,7 @@ services:
 
   hasura:
     image: hasura/graphql-engine:latest
-    platform: linux/amd64
+    platform: linux/arm64/v8
     ports:
       - "9191:8080" # Mapping custom external port 9191 to internal default Hasura port 8080
     depends_on:
@@ -57,7 +57,7 @@ services:
 
   hasura-apply-metadata:
     image: hasura/graphql-engine:latest
-    platform: linux/arm64/v8
+    platform: linux/amd64
     depends_on:
       - backend
     environment:

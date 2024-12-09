@@ -1,3 +1,4 @@
+import { tokens } from "../tokens";
 import { Styles } from "../utils/Styles";
 import { Icon, IconMapper } from "./IconMapper";
 
@@ -10,7 +11,7 @@ type CustomIconButtonProps = {
 
 export const CustomIconButton = ({
   icon,
-  color = "blue",
+  color = tokens.color.accent.dark,
   disabled,
   onClick,
 }: CustomIconButtonProps) => {
@@ -18,7 +19,7 @@ export const CustomIconButton = ({
     <div
       style={{
         ...styles.wrapper,
-        backgroundColor: color ?? "pink",
+        backgroundColor: color,
         ...(disabled ? styles.disabled : undefined),
       }}
       onClick={() => {
@@ -43,7 +44,7 @@ const styles: Styles = {
     cursor: "pointer",
   },
   disabled: {
-    backgroundColor: "grey",
+    backgroundColor: tokens.color.state.disabled,
     cursor: "auto",
   },
 };

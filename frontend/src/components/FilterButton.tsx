@@ -1,5 +1,6 @@
 import { tokens } from "../tokens";
 import { Styles } from "../utils/Styles";
+import { BACKGROUND_COLOR_ANIMATION } from "../utils/utils";
 import { CustomText } from "./CustomText";
 
 type FilterButtonProps = {
@@ -16,11 +17,8 @@ export const FilterButton = ({
   return (
     <div onClick={onClick}>
       <CustomText
-        size={tokens.font.text}
         color={isActive ? tokens.color.accent.dark : undefined}
-        style={{
-          ...styles.button,
-        }}
+        style={styles.button}
       >
         {option}
       </CustomText>
@@ -35,6 +33,6 @@ const styles: Styles = {
     paddingBottom: 12,
     borderRadius: 8,
     cursor: "pointer",
-    transition: "background-color 0.3s ease",
+    transition: BACKGROUND_COLOR_ANIMATION,
   },
 };

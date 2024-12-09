@@ -97,6 +97,6 @@ const styles: Styles = {
     cursor: "pointer",
   },
   disabled: {
-    color: "grey",
+    color: tokens.color.state.disabled,
   },
 };

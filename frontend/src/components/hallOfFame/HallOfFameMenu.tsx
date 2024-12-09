@@ -3,6 +3,7 @@ import { HallOfFameStudentData } from "./HallOfFameStudentCard";
 import { HallOfFameStudentSearcher } from "./HallOfFameStudentSearcher";
 import { FilterButton } from "../FilterButton";
 import { CustomButton } from "../CustomButton";
+import { tokens } from "../../tokens";
 
 type HallOfFameMenuProps = {
   students: HallOfFameStudentData[];
@@ -49,6 +50,6 @@ const styles: Styles = {
     display: "flex",
     gap: 12,
     padding: 12,
-    backgroundColor: "grey",
+    backgroundColor: tokens.color.state.disabled,
   },
 };

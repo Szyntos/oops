@@ -2,12 +2,12 @@ import { Styles } from "../../../../utils/Styles";
 import { CustomText } from "../../../CustomText";
 import { Icon, IconMapper } from "../../../IconMapper";
 
-export type CardItemProps = {
+export type ItemWithIconProps = {
   icon?: Icon;
   title: string | number;
 };
 
-export const CardItem = ({ icon, title }: CardItemProps) => {
+export const ItemWithIcon = ({ icon, title }: ItemWithIconProps) => {
   return (
     <div style={styles.container}>
       {icon && <IconMapper icon={icon} />}

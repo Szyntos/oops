@@ -5,10 +5,10 @@ import { FilterMenuItem } from "./FilterMenuItem";
 type FilterMenuProps = {
   pickedCategoryIds: string[];
   onSelectChange: (pickedCategoryIds: string[]) => void;
-  filterItems: FilterMenuItemm[];
+  filterItems: FilterMenuItemType[];
 };
 
-export type FilterMenuItemm = FilterItem & {
+export type FilterMenuItemType = FilterItem & {
   lightColor: string;
   darkColor: string;
 };
@@ -22,7 +22,7 @@ export default function FilterMenu({
     return pickedCategoryIds.some((selectedId) => selectedId === item.id);
   };
 
-  const handleCategoryClick = (item: FilterMenuItemm) => {
+  const handleCategoryClick = (item: FilterMenuItemType) => {
     if (isSelected(item)) {
       const updatedSelectedCategories = pickedCategoryIds.filter(
         (selectedId) => selectedId !== item.id,
@@ -37,10 +37,8 @@ export default function FilterMenu({
     <div style={styles.container}>
       {filterItems.map((item) => (
         <FilterMenuItem
-          text={item.name}
+          item={item}
           isSelected={isSelected(item)}
-          lightColor={item.lightColor}
-          darkColor={item.darkColor}
           onClick={() => handleCategoryClick(item)}
         />
       ))}

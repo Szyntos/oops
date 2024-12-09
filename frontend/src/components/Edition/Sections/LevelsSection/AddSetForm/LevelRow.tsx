@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { CustomImage } from "../../../../images/CustomImage";
 import { GRADE_STRINGS } from "../../../../../utils/utils";
+import { tokens } from "../../../../../tokens";
 
 export type AddedLevel = {
   name: string;
@@ -112,8 +113,12 @@ const styles: Styles = {
   points: {
     width: 240,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
   number: {
     width: 120,
   },

@@ -7,6 +7,7 @@ import { StudentCardsList } from "../../components/hallOfFame/StudentCardsList";
 import { isPartOfAString } from "../../utils/strings";
 import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame/HallOfFameStudentCard";
 import { CONTENT_CONTAINER_HEIGHT } from "../../components/layout/ScreenContentContainer";
+import { tokens } from "../../tokens";
 
 export const HallOfFame = () => {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
@@ -88,7 +89,7 @@ const styles: Styles = {
   sideBarContainer: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "grey",
+    backgroundColor: tokens.color.state.disabled,
     minWidth: 720,
   },
 };

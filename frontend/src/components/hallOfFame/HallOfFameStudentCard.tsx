@@ -1,7 +1,8 @@
 import { tokens } from "../../tokens";
 import { Styles } from "../../utils/Styles";
+import { getLinearGradient } from "../../utils/utils";
 import { CustomText } from "../CustomText";
-import { Avatar } from "../images/Avatar";
+import { CustomImage } from "../images/CustomImage";
 
 export const HALL_OF_FAME_STUDENT_CARD_ID_PREFIX = "student-";
 
@@ -30,19 +31,17 @@ export const HallOfFameStudentCard = ({
       id={HALL_OF_FAME_STUDENT_CARD_ID_PREFIX + student.id}
       style={{
         ...styles.item,
-        ...(isHighlighted
-          ? {
-              background: `linear-gradient(to right, ${tokens.color.accent.light}, ${tokens.color.card.blue})`,
-            }
-          : undefined),
+        background: isHighlighted
+          ? getLinearGradient(tokens.color.accent.light, tokens.color.card.blue)
+          : undefined,
       }}
     >
       <CustomText style={styles.position}>{student.position}.</CustomText>
-      <Avatar id={student.avatarImgId} size={"xs"} />
+      <CustomImage id={student.avatarImgId} size={"xs"} />
       <CustomText style={styles.nick} bold={true}>
         {student.nick}
       </CustomText>
-      <Avatar id={student.levelImgId} size={"xs"} />
+      <CustomImage id={student.levelImgId} size={"xs"} />
       <CustomText style={styles.animalName}>{student.levelName}</CustomText>
       <CustomText>{student.totalPoints.toFixed(2)}pkt</CustomText>
     </div>

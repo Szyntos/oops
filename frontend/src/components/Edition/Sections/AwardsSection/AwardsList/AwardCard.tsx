@@ -1,7 +1,8 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
+import { tokens } from "../../../../../tokens";
 import { Styles } from "../../../../../utils/Styles";
-import { AwardImage } from "../../../../images/AwardImage";
+import { CustomImage } from "../../../../images/CustomImage";
 import { SetupButtons } from "../../SetupButtons";
 
 type AwardCardProps = {
@@ -30,7 +31,7 @@ export const AwardCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <AwardImage id={award.award.imageFile?.fileId ?? undefined} size="l" />
+      <CustomImage id={award.award.imageFile?.fileId ?? undefined} size="l" />
       <div>{award.award.awardName}</div>
       <div style={styles.subtitle}>{award.award.awardType}</div>
 
@@ -53,6 +54,6 @@ const styles: Styles = {
     padding: 12,
   },
   subtitle: {
-    color: "grey",
+    color: tokens.color.state.disabled,
   },
 };

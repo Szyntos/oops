@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { tokens } from "../tokens";
 import { Styles } from "../utils/Styles";
 import { CustomText } from "./CustomText";
+import { HooverWrapper } from "./HooverWrapper";
 
 type CustomButtonProps = {
   onClick: () => void;
@@ -14,29 +14,23 @@ export const CustomButton = ({
   children,
   disabled,
 }: CustomButtonProps) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
-    <div
-      onClick={() => {
-        if (!disabled) {
-          onClick();
-        }
-      }}
-      onMouseEnter={() => setIsHovered(true)} // Handle hover start
-      onMouseLeave={() => setIsHovered(false)} // Handle hover end
-    >
+    <HooverWrapper>
       <CustomText
         style={{
           ...styles.button,
           ...(disabled ? styles.disabled : undefined),
-          ...(isHovered && !disabled ? styles.hoovered : undefined),
         }}
         size={tokens.font.text}
+        onClick={() => {
+          if (!disabled) {
+            onClick();
+          }
+        }}
       >
         {children}
       </CustomText>
-    </div>
+    </HooverWrapper>
   );
 };
 
@@ -52,9 +46,6 @@ const styles: Styles = {
   },
   disabled: {
     cursor: "auto",
-    backgroundColor: "grey",
-  },
-  hoovered: {
-    opacity: 0.9,
+    backgroundColor: tokens.color.state.disabled,
   },
 };

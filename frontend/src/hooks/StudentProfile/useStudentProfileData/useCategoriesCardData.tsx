@@ -24,8 +24,8 @@ export const useCategoriesCardData = (props: {
           upper: category.maxPoints,
         },
         points: category.sumOfAll,
-        pointsColor: category.category.darkColor,
-        barColor: category.category.lightColor,
+        darkColor: category.category.darkColor,
+        lightColor: category.category.lightColor,
       };
     }) ?? [];
 

@@ -1,10 +1,10 @@
-import { Avatar } from "../../../images/Avatar";
 import { LevelProgressBar } from "../../../bars/LevelProgressBar/LevelProgressBar";
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
-import { Section } from "../Card/Section";
-import { CardItem, CardItemProps } from "../Card/CardItem";
+import { Section } from "../Section/Section";
+import { ItemWithIcon, ItemWithIconProps } from "../Section/ItemWithIcon";
 import { Styles } from "../../../../utils/Styles";
 import { LevelsSection } from "./LevelsSection";
+import { CustomImage } from "../../../images/CustomImage";
 
 type AnimalCardProps = {
   totalPoints: number | undefined;
@@ -19,21 +19,24 @@ export const AnimalCard = ({
   nextLevel,
   totalPoints,
 }: AnimalCardProps) => {
-  const items: CardItemProps[] = [
-    { icon: "monster", title: "wielka bestia" },
-    { icon: "level", title: "lvl. 6" },
+  const items: ItemWithIconProps[] = [
+    { icon: "monster", title: currLevel.levelName },
+    { icon: "level", title: `lvl. ${currLevel.ordinalNumber + 1}` },
     { icon: "level", title: currLevel.grade },
-    { icon: "points", title: "123 - 254" },
+    {
+      icon: "points",
+      title: `${parseFloat(currLevel.minimumPoints).toFixed(2)} - ${parseFloat(currLevel.maximumPoints).toFixed(2)}`,
+    },
   ];
 
   return (
     <>
       <Section title="Twój zwierzak">
         <div style={styles.animalContainer}>
-          <Avatar id={currLevel.imageFile?.fileId} size="l" />
+          <CustomImage id={currLevel.imageFile?.fileId} size="l" />
           <div style={styles.itemsContainer}>
             {items.map((item) => (
-              <CardItem {...item} />
+              <ItemWithIcon {...item} />
             ))}
           </div>
         </div>

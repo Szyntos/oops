@@ -1,5 +1,6 @@
 import { tokens } from "../../../tokens";
 import { Styles } from "../../../utils/Styles";
+import { COLOR_TRANSITION_ANIMATION } from "../../../utils/utils";
 import { CustomText } from "../../CustomText";
 
 type NavbarProps = {
@@ -37,7 +38,7 @@ const styles: Styles = {
   },
   active: {
     color: tokens.color.accent.dark,
-    transition: "color 0.2s ease",
+    transition: COLOR_TRANSITION_ANIMATION,
   },
   clickable: {
     cursor: "pointer",

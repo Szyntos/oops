@@ -8,24 +8,27 @@ type CustomTextProps = {
   size?: number;
   color?: string;
   bold?: boolean;
+  onClick?: () => void;
 };
 
 export const CustomText = ({
   children,
   style,
-  size,
-  color,
+  size = tokens.font.text,
+  color = tokens.color.text.primary,
   bold,
+  onClick,
 }: CustomTextProps) => {
   return (
     <div
       style={{
         ...styles.text,
-        fontSize: size ?? tokens.font.text,
-        color: color ?? tokens.color.text.primary,
+        fontSize: size,
+        color: color,
         fontWeight: bold ? "bold" : undefined,
         ...style,
       }}
+      onClick={onClick}
     >
       {children}
     </div>

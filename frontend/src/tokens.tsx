@@ -26,6 +26,10 @@ export const tokens = {
       silver: "#C0C0C0",
       brown: "#CD7F32",
     },
+    state: {
+      disabled: "grey",
+      error: "red",
+    },
   },
 
   padding: {

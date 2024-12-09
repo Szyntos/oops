@@ -1,12 +1,12 @@
 import { Styles } from "../../../utils/Styles";
-import FilterMenu, { FilterMenuItemm } from "./FilterMenu/FilterMenu";
+import FilterMenu, { FilterMenuItemType } from "./FilterMenu/FilterMenu";
 import { useState } from "react";
 import { Points } from "../../../hooks/StudentProfile";
 import { EditFunctions, StudentTable } from "./StudentTable";
 
 type StudentTableWithFiltersProps = {
   points: Points[];
-  filterHeaderNames: FilterMenuItemm[];
+  filterHeaderNames: FilterMenuItemType[];
   editFunctions?: EditFunctions;
   showActionButtons?: boolean;
   blockActionButtons?: boolean;

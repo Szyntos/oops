@@ -1,6 +1,6 @@
 import { CourseProgressBar } from "../../bars/CourseProgressBar";
 import { ProgressBar, ProgressBarProps } from "../../bars/ProgressBar";
-import { Section } from "./Card/Section";
+import { Section } from "./Section/Section";
 
 type CategoriesCardProps = {
   categoriesBarProps: ProgressBarProps[];

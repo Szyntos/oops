@@ -54,6 +54,6 @@ const styles: Styles = {
     border: "none",
   },
   error: {
-    color: "red",
+    color: tokens.color.state.error,
   },
 };

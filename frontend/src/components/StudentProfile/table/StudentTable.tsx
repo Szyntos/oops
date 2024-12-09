@@ -16,6 +16,7 @@ import { PointsCellContent } from "./cellContent/PointsCellContent";
 import { AwardsCellContent } from "./cellContent/AwardsCellContent";
 import { DateCellContent } from "./cellContent/DateCellContent";
 import { CustomIconButton } from "../../CustomIconButton";
+import { tokens } from "../../../tokens";
 
 type StudentTableProps = {
   points: Points[];
@@ -107,7 +108,7 @@ export const StudentTable = ({
                         disabled={
                           blockActionButtons || !p.points.purePoints?.pointsId
                         }
-                        color="red"
+                        color={tokens.color.state.error}
                       />
                     </div>
                   </TableCell>

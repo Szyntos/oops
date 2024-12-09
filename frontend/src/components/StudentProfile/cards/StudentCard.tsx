@@ -1,11 +1,11 @@
 import { StudentCardData } from "../../../hooks/StudentProfile/useStudentProfileData/useStudentData";
-import { Avatar } from "../../images/Avatar";
-import { Section } from "./Card/Section";
-import { CardItem, CardItemProps } from "./Card/CardItem";
+import { Section } from "./Section/Section";
+import { ItemWithIcon, ItemWithIconProps } from "./Section/ItemWithIcon";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { tokens } from "../../../tokens";
+import { CustomImage } from "../../images/CustomImage";
 
 export function StudentCard({
   nick,
@@ -15,18 +15,18 @@ export function StudentCard({
   avatarId,
   grade,
 }: StudentCardData) {
-  const profileItems: CardItemProps[] = [
+  const profileItems: ItemWithIconProps[] = [
     { icon: "name", title: displayName },
     { icon: "email", title: `${index}@student.agh.edu.pl` },
     { icon: "index", title: index },
   ];
 
-  const performanceItems: CardItemProps[] = [
+  const performanceItems: ItemWithIconProps[] = [
     { icon: "grade", title: grade },
     { icon: "score", title: 123 },
   ];
 
-  const centerItems: CardItemProps[] = [
+  const centerItems: ItemWithIconProps[] = [
     {
       icon: "group",
       title: group
@@ -49,15 +49,15 @@ export function StudentCard({
         {nick}
       </CustomText>
       <div style={styles.avatarContainer}>
-        <Avatar id={avatarId} size="l" />
+        <CustomImage id={avatarId} size="l" />
         <div style={styles.itemsContainer}>
           {profileItems.map((item) => (
-            <CardItem {...item} />
+            <ItemWithIcon {...item} />
           ))}
 
           <div style={styles.performanceItemsContainer}>
             {performanceItems.map((item) => (
-              <CardItem {...item} />
+              <ItemWithIcon {...item} />
             ))}
           </div>
         </div>
@@ -65,12 +65,9 @@ export function StudentCard({
 
       <div style={styles.itemsContainer}>
         {centerItems.map((item) => (
-          <CardItem {...item} />
+          <ItemWithIcon {...item} />
         ))}
       </div>
-
-      {/* TODO this progress bar probably should be in different card */}
-      {/* <CourseProgressBar totalPoints={totalPoints} title="total progress bar" /> */}
     </Section>
   );
 }

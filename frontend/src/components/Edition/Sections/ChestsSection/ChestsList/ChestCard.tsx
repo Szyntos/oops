@@ -1,5 +1,6 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
+import { tokens } from "../../../../../tokens";
 import { Styles } from "../../../../../utils/Styles";
 import { CustomImage } from "../../../../images/CustomImage";
 import { SetupButtons } from "../../SetupButtons";
@@ -53,6 +54,6 @@ const styles: Styles = {
     padding: 12,
   },
   subtitle: {
-    color: "grey",
+    color: tokens.color.state.disabled,
   },
 };

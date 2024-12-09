@@ -76,7 +76,7 @@ const styles: Styles = {
   },
   editableIndicatorWrapper: {
     top: 140,
-    right: 23,
+    right: 24,
     position: "absolute",
   },
 };

@@ -1,5 +1,6 @@
 import { tokens } from "../../tokens";
 import { Styles } from "../../utils/Styles";
+import { getLinearGradient } from "../../utils/utils";
 import { CustomText } from "../CustomText";
 
 const BAR_HEIGHT = 20;
@@ -16,8 +17,8 @@ export type ProgressBarProps = {
   thresholds?: BarThreshold[];
   showPoints?: boolean;
   title?: string;
-  pointsColor?: string;
-  barColor?: string;
+  lightColor?: string;
+  darkColor?: string;
 };
 
 export const ProgressBar = ({
@@ -26,8 +27,8 @@ export const ProgressBar = ({
   thresholds,
   showPoints,
   title,
-  pointsColor,
-  barColor,
+  lightColor = tokens.color.accent.light,
+  darkColor = tokens.color.accent.dark,
 }: ProgressBarProps) => {
   if (points < 0) {
     throw new Error("points cannot be a negative number");
@@ -65,12 +66,7 @@ export const ProgressBar = ({
           style={{
             ...styles.filled,
             width: `${filledPercent}%`,
-            background:
-              pointsColor && barColor
-                ? `linear-gradient(to right, ${pointsColor}, ${barColor})`
-                : barColor
-                  ? barColor
-                  : "lightblue",
+            background: getLinearGradient(darkColor, lightColor),
             borderTopRightRadius: filledPercent === 100 ? BORDER_RADIUS : 0,
             borderBottomRightRadius: filledPercent === 100 ? BORDER_RADIUS : 0,
           }}
@@ -108,7 +104,7 @@ const styles: Styles = {
   empty: {
     height: BAR_HEIGHT,
     width: "100%",
-    backgroundColor: "grey",
+    backgroundColor: tokens.color.state.disabled,
     position: "relative",
     borderRadius: BORDER_RADIUS,
   },
@@ -116,7 +112,7 @@ const styles: Styles = {
     height: "100%",
     display: "flex",
     alignItems: "center",
-    backgroundColor: "lightblue",
+    backgroundColor: tokens.color.accent.light,
     borderTopLeftRadius: BORDER_RADIUS,
     borderBottomLeftRadius: BORDER_RADIUS,
   },
@@ -133,7 +129,7 @@ const styles: Styles = {
     position: "absolute",
     height: BAR_HEIGHT,
     width: 2,
-    backgroundColor: "grey",
+    backgroundColor: tokens.color.state.disabled,
     bottom: 0,
     zIndex: 1,
   },

@@ -3,6 +3,7 @@ import { Styles } from "../../../../../utils/Styles";
 import { AddedLevel } from "./LevelRow";
 import { AddedLevels } from "./AddedLevels";
 import { AddLevelForm, LevelFormValues } from "./AddLevelForm";
+import { tokens } from "../../../../../tokens";
 
 export type AddSetFormProps = {
   initLevels: AddedLevel[];
@@ -175,6 +176,6 @@ const styles: Styles = {
     gap: 12,
   },
   error: {
-    color: "red",
+    color: tokens.color.state.error,
   },
 };

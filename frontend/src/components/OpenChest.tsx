@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Styles } from "../utils/Styles";
-import { AwardImage } from "./images/AwardImage";
 import { Chest } from "../hooks/chest/useChests";
+import { tokens } from "../tokens";
+import { CustomImage } from "./images/CustomImage";
 
 type OpenChestProps = {
   chest: Chest;
@@ -37,7 +38,7 @@ export const OpenChest = ({
       <div style={styles.awardsContainer}>
         {chest.chest.chestAwards.map((a) => (
           <div onClick={() => handleAwardClick(a.award)}>
-            <AwardImage
+            <CustomImage
               id={a.award.imageFileId ?? undefined}
               size={"l"}
               disabled={!selectedAwards.some((id) => id === a.award.awardId)}
@@ -76,6 +77,6 @@ const styles: Styles = {
     gap: 12,
   },
   error: {
-    color: "red",
+    color: tokens.color.state.error,
   },
 };

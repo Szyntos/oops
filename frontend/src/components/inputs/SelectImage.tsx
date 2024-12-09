@@ -1,6 +1,5 @@
 import { FormHelperText } from "@mui/material";
 import { Styles } from "../../utils/Styles";
-import { AwardImage } from "../images/AwardImage";
 import { CustomImage } from "../images/CustomImage";
 import { Award } from "../../hooks/Edition/useAwardsSection";
 import { TooltipWrapper } from "../TooltipWrapper";
@@ -65,7 +64,7 @@ export const SelectImage = ({
                 </div>
               }
             >
-              <AwardImage
+              <CustomImage
                 id={award.award.imageFile?.fileId as string}
                 size={"l"}
                 disabled={!selectedIds.some((id) => id === award.award.awardId)}
@@ -94,7 +93,7 @@ export const SelectImage = ({
       <div style={styles.title}>{title}</div>
       <div style={styles.listContainer}>{getOptionsImagesBasedOnType()}</div>
       {error && touched && (
-        <FormHelperText style={{ color: "red" }}>{error}</FormHelperText>
+        <FormHelperText style={styles.error}>{error}</FormHelperText>
       )}
     </div>
   );

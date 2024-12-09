@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Styles } from "../../../utils/Styles";
-import { Section } from "../../StudentProfile/cards/Card/Section";
+import { Section } from "../../StudentProfile/cards/Section/Section";
 import { CustomText } from "../../CustomText";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import { tokens } from "../../../tokens";

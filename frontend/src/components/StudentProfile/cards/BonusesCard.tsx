@@ -1,5 +1,5 @@
 import { Bonus } from "../../../hooks/StudentProfile";
-import { Section } from "./Card/Section";
+import { Section } from "./Section/Section";
 import { CustomImageList } from "./ImageList";
 
 type BonusesCardProps = {

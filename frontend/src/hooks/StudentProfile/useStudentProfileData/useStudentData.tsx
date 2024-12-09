@@ -1,5 +1,5 @@
 import { FilterItem } from "../../../components/Groups/FilterBar/FilterOptionsSection";
-import { FilterMenuItemm } from "../../../components/StudentProfile/table/FilterMenu/FilterMenu";
+import { FilterMenuItemType } from "../../../components/StudentProfile/table/FilterMenu/FilterMenu";
 import { useCategoriesQuery } from "../../../graphql/categories.graphql.types";
 import { useStudentPointsQuery } from "../../../graphql/studentPoints.graphql.types";
 import { Timestamp, Weekday } from "../../common/useGroupsData";
@@ -93,7 +93,7 @@ export const useStudentData = (props: {
     error: headersError,
   } = useCategoriesQuery({ variables: { editionId: editionId as string } });
 
-  const filterHeaderNames: FilterMenuItemm[] =
+  const filterHeaderNames: FilterMenuItemType[] =
     headersData?.categories.map((c) => ({
       ...c,
       id: c.categoryId,

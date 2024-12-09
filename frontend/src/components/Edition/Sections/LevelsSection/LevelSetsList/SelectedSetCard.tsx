@@ -1,5 +1,6 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { LevelSet } from "../../../../../hooks/Edition/useLevelSetsSection";
+import { tokens } from "../../../../../tokens";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
 import { AnimalWithTooltip } from "../../../../images/AnimalWithTooltip";
@@ -64,7 +65,7 @@ const styles: Styles = {
   card: {
     border: "1px solid black",
     padding: 12,
-    backgroundColor: "lightblue",
+    backgroundColor: tokens.color.accent.light,
     display: "flex",
     flexDirection: "column",
     gap: 12,
@@ -75,6 +76,6 @@ const styles: Styles = {
     gap: 12,
   },
   subtitle: {
-    color: "grey",
+    color: tokens.color.state.disabled,
   },
 };

@@ -32,8 +32,6 @@ export const LevelProgressBar = ({
         }}
         showPoints
         title="do następnego zwierzaka"
-        pointsColor="pink"
-        barColor="violet"
       />
 
       {/* <div style={styles.levelMiniaturesContainer}>

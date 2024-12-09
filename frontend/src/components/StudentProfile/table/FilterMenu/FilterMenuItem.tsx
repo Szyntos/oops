@@ -1,31 +1,30 @@
 import { Styles } from "../../../../utils/Styles";
+import { BACKGROUND_COLOR_ANIMATION } from "../../../../utils/utils";
 import { CustomText } from "../../../CustomText";
+import { FilterMenuItemType } from "./FilterMenu";
 
 export type FilterMenuItemProps = {
-  text: string;
+  item: FilterMenuItemType;
   isSelected: boolean;
-  lightColor: string;
-  darkColor: string;
   onClick: () => void;
 };
 
 export const FilterMenuItem = ({
-  text,
+  item,
   isSelected,
-  lightColor,
-  darkColor,
   onClick,
 }: FilterMenuItemProps) => {
   return (
-    <div
+    <CustomText
+      color={item.lightColor}
       onClick={onClick}
       style={{
         ...styles.item,
-        backgroundColor: isSelected ? darkColor : "transparent",
+        backgroundColor: isSelected ? item.darkColor : undefined,
       }}
     >
-      <CustomText color={lightColor}>{text}</CustomText>
-    </div>
+      {item.name}
+    </CustomText>
   );
 };
 
@@ -34,6 +33,6 @@ const styles: Styles = {
     padding: 12,
     borderRadius: 8,
     cursor: "pointer",
-    transition: "background-color 0.3s ease",
+    transition: BACKGROUND_COLOR_ANIMATION,
   },
 };

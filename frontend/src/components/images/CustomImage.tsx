@@ -56,6 +56,7 @@ export const CustomImage = ({
 const styles: Styles = {
   img: {
     width: "100%",
+    // TODO this probably should be adjusted to img size
     borderRadius: 12,
     objectFit: "cover",
   },

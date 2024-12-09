@@ -1,13 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-
-const getEnvVariable = (key: string, fallback: string = ""): string => {
-  const value = (import.meta.env[key] as string | undefined) ?? fallback;
-  if (!value) {
-    console.warn(`Environment variable ${key} is not defined.`);
-  }
-  return value;
-};
+import { getEnvVariable } from "./src/utils/constants";
 
 export const firebaseConfig = {
   apiKey: getEnvVariable("VITE_FIREBASE_API_KEY"),

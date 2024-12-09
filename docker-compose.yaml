@@ -77,7 +77,8 @@ services:
       done &&
       echo 'Backend is healthy. Applying Hasura metadata...' &&
       hasura metadata apply --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET} &&
-      hasura metadata reload --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET}"
+      hasura metadata reload --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET} &&
+      hasura metadata ic list --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET}"
 
   frontend:
     build:

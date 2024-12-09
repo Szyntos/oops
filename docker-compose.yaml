@@ -57,7 +57,7 @@ services:
 
   hasura-apply-metadata:
     image: hasura/graphql-engine:latest
-    platform: linux/amd64/v8
+    platform: linux/arm64/v8
     depends_on:
       - backend
     environment:

@@ -1,6 +1,6 @@
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
-import { CustomImage } from "../../../../images/CustomImage";
+import { Avatar } from "../../../../avatars/Avatar";
 import { Permissions, SetupButtons } from "../../SetupButtons";
 
 export type FileItem = {
@@ -22,7 +22,7 @@ export const ImagesList = ({ files, title, handleDelete }: ImagesListProps) => {
         {files.length !== 0
           ? files.map((entry) => (
               <div style={styles.imageContainer}>
-                <CustomImage id={entry.id} size="l" />
+                <Avatar id={entry.id} size="l" />
                 <SetupButtons
                   permissions={entry.permissions}
                   handleDelete={() => handleDelete(entry.id)}

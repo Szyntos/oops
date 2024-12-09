@@ -6,7 +6,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { CustomImage } from "../../../../images/CustomImage";
+import { Avatar } from "../../../../avatars/Avatar";
 import { GRADE_STRINGS } from "../../../../../utils/utils";
 import { tokens } from "../../../../../tokens";
 
@@ -38,7 +38,7 @@ export const LevelRow = ({
 }: LevelRowProps) => {
   return (
     <div style={styles.innerContainer}>
-      <CustomImage size="m" id={level.imageId} />
+      <Avatar size="m" id={level.imageId} />
 
       <TextField
         name="ordinal"

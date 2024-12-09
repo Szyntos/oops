@@ -2,30 +2,30 @@ import { CSSProperties } from "react";
 import { FETCH_FILES_URL } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
 
-export type CustomImageProps = {
+export type AvatarProps = {
   id: string | undefined;
-  size: ImageSize;
+  size: AvatarSize;
   disabled?: boolean;
   shadow?: boolean;
   imageStyle?: CSSProperties;
 };
 
-const sizeMap: Record<ImageSize, number> = {
+const sizeMap: Record<AvatarSize, number> = {
   xs: 48,
   s: 64,
   m: 82,
   l: 120,
 };
 
-export type ImageSize = "xs" | "s" | "m" | "l";
+export type AvatarSize = "xs" | "s" | "m" | "l";
 
-export const CustomImage = ({
+export const Avatar = ({
   size,
   id,
   disabled,
   shadow,
   imageStyle,
-}: CustomImageProps) => {
+}: AvatarProps) => {
   return (
     <div
       style={{

@@ -2,11 +2,11 @@ import { Bonus } from "../../hooks/StudentProfile";
 import { TooltipWrapper } from "../TooltipWrapper";
 import { dateOptions } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
-import { CustomImage, ImageSize } from "./CustomImage";
+import { Avatar, AvatarSize } from "./Avatar";
 
 type AwardWithTooltipProps = {
   bonus: Bonus;
-  size: ImageSize;
+  size: AvatarSize;
 };
 
 export const AwardWithTooltip = ({ bonus, size }: AwardWithTooltipProps) => {
@@ -23,7 +23,7 @@ export const AwardWithTooltip = ({ bonus, size }: AwardWithTooltipProps) => {
         </div>
       }
     >
-      <CustomImage id={bonus.award.imgId} size={size} />
+      <Avatar id={bonus.award.imgId} size={size} />
     </TooltipWrapper>
   );
 };

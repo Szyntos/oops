@@ -1,7 +1,7 @@
 import { tokens } from "../../../tokens";
 import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
-import { CustomImage } from "../../images/CustomImage";
+import { Avatar } from "../../avatars/Avatar";
 import { HallOfFameStudentData } from "../HallOfFameStudentCard";
 import { CSSProperties } from "react";
 
@@ -48,7 +48,7 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
   return (
     <div style={styles.container}>
       <div style={styles.studentContainer}>
-        <CustomImage
+        <Avatar
           id={student.avatarImgId}
           size={"l"}
           imageStyle={getPodiumShadow()}

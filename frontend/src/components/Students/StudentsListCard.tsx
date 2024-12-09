@@ -4,7 +4,7 @@ import { StudentFromList } from "./StudentsList";
 import { tokens } from "../../tokens";
 import { CustomText } from "../CustomText";
 import { HooverWrapper } from "../HooverWrapper";
-import { CustomImage } from "../images/CustomImage";
+import { Avatar } from "../avatars/Avatar";
 
 export const CARD_PADDING = 12;
 export const CARD_BORDER = 8;
@@ -24,7 +24,7 @@ export const StudentsListCard = ({
     <HooverWrapper>
       <div style={styles.container} onClick={onClick}>
         <div style={styles.topContainer}>
-          <CustomImage id={student.avatarId} size={"m"} />
+          <Avatar id={student.avatarId} size={"m"} />
           <div style={styles.textContainer}>
             <CustomText size={tokens.font.title} bold={true}>
               {student.nick}

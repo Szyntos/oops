@@ -1,7 +1,7 @@
 import { Points } from "../../../../hooks/StudentProfile";
 import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { Styles } from "../../../../utils/Styles";
-import { AwardWithTooltip } from "../../../images/AwardWithTooltip";
+import { AwardWithTooltip } from "../../../avatars/AwardWithTooltip";
 
 type AwardsCellContentProps = {
   points: Points;

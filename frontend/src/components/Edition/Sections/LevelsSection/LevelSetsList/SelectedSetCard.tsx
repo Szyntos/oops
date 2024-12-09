@@ -3,7 +3,7 @@ import { LevelSet } from "../../../../../hooks/Edition/useLevelSetsSection";
 import { tokens } from "../../../../../tokens";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
-import { AnimalWithTooltip } from "../../../../images/AnimalWithTooltip";
+import { AnimalWithTooltip } from "../../../../avatars/AnimalWithTooltip";
 import { SetupButtons } from "../../SetupButtons";
 
 type SelectedSetCardProps = {

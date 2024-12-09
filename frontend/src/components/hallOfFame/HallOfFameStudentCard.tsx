@@ -2,7 +2,7 @@ import { tokens } from "../../tokens";
 import { Styles } from "../../utils/Styles";
 import { getLinearGradient } from "../../utils/utils";
 import { CustomText } from "../CustomText";
-import { CustomImage } from "../images/CustomImage";
+import { Avatar } from "../avatars/Avatar";
 
 export const HALL_OF_FAME_STUDENT_CARD_ID_PREFIX = "student-";
 
@@ -37,11 +37,11 @@ export const HallOfFameStudentCard = ({
       }}
     >
       <CustomText style={styles.position}>{student.position}.</CustomText>
-      <CustomImage id={student.avatarImgId} size={"xs"} />
+      <Avatar id={student.avatarImgId} size={"xs"} />
       <CustomText style={styles.nick} bold={true}>
         {student.nick}
       </CustomText>
-      <CustomImage id={student.levelImgId} size={"xs"} />
+      <Avatar id={student.levelImgId} size={"xs"} />
       <CustomText style={styles.animalName}>{student.levelName}</CustomText>
       <CustomText>{student.totalPoints.toFixed(2)}pkt</CustomText>
     </div>

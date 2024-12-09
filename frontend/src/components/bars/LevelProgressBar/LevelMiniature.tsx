@@ -1,5 +1,5 @@
 import { NeighboringLevel } from "../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
-import { AnimalWithTooltip } from "../../images/AnimalWithTooltip";
+import { AnimalWithTooltip } from "../../avatars/AnimalWithTooltip";
 
 type LevelMiniatureProps = {
   level: NeighboringLevel;

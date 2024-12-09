@@ -5,7 +5,7 @@ import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { tokens } from "../../../tokens";
-import { CustomImage } from "../../images/CustomImage";
+import { Avatar } from "../../avatars/Avatar";
 
 export function StudentCard({
   nick,
@@ -49,7 +49,7 @@ export function StudentCard({
         {nick}
       </CustomText>
       <div style={styles.avatarContainer}>
-        <CustomImage id={avatarId} size="l" />
+        <Avatar id={avatarId} size="l" />
         <div style={styles.itemsContainer}>
           {profileItems.map((item) => (
             <ItemWithIcon {...item} />

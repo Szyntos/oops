@@ -1,8 +1,8 @@
 import { Bonus, Level } from "../../../hooks/StudentProfile";
 import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
-import { AnimalWithTooltip } from "../../images/AnimalWithTooltip";
-import { AwardWithTooltip } from "../../images/AwardWithTooltip";
+import { AnimalWithTooltip } from "../../avatars/AnimalWithTooltip";
+import { AwardWithTooltip } from "../../avatars/AwardWithTooltip";
 
 type CustomImageListProps =
   | {

@@ -4,7 +4,7 @@ import { Section } from "../Section/Section";
 import { ItemWithIcon, ItemWithIconProps } from "../Section/ItemWithIcon";
 import { Styles } from "../../../../utils/Styles";
 import { LevelsSection } from "./LevelsSection";
-import { CustomImage } from "../../../images/CustomImage";
+import { Avatar } from "../../../avatars/Avatar";
 
 type AnimalCardProps = {
   totalPoints: number | undefined;
@@ -33,7 +33,7 @@ export const AnimalCard = ({
     <>
       <Section title="Twój zwierzak">
         <div style={styles.animalContainer}>
-          <CustomImage id={currLevel.imageFile?.fileId} size="l" />
+          <Avatar id={currLevel.imageFile?.fileId} size="l" />
           <div style={styles.itemsContainer}>
             {items.map((item) => (
               <ItemWithIcon {...item} />

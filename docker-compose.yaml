@@ -35,6 +35,7 @@ services:
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "unauthenticated_user"
       HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
+      BACKEND_GRAPHQL_URL: ${BACKEND_GRAPHQL_URL}
 
   backend:
     build:
@@ -62,6 +63,7 @@ services:
       - backend
     environment:
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      BACKEND_GRAPHQL_URL: ${BACKEND_GRAPHQL_URL}
     volumes:
       - ./backend/hasura:/hasura
       - ./backend/src/main/python:/app/python # Mount directory containing init_data.py

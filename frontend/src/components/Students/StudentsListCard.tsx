@@ -4,7 +4,7 @@ import { EditableIndicator } from "../EditableIndicator";
 import { StudentFromList } from "./StudentsList";
 import { tokens } from "../../tokens";
 import { CustomText } from "../CustomText";
-import { useState } from "react";
+import { HooverWrapper } from "../HooverWrapper";
 
 export const CARD_PADDING = 12;
 export const CARD_BORDER = 8;
@@ -20,36 +20,32 @@ export const StudentsListCard = ({
   onClick,
   withEditableRights,
 }: StudentsListCardProps) => {
-  const [isHoovered, setIsHoovered] = useState(false);
   return (
-    <div
-      style={{ ...styles.container, opacity: isHoovered ? 0.95 : 1 }}
-      onClick={onClick}
-      onMouseLeave={() => setIsHoovered(false)}
-      onMouseEnter={() => setIsHoovered(true)}
-    >
-      <div style={styles.topContainer}>
-        <Avatar id={student.avatarId} size={"m"} />
-        <div style={styles.textContainer}>
-          <CustomText size={tokens.font.title} bold={true}>
-            {student.nick}
-          </CustomText>
-          <div style={styles.secondaryTextContainer}>
-            <CustomText>
-              {student.firstName} {student.secondName}
+    <HooverWrapper>
+      <div style={styles.container} onClick={onClick}>
+        <div style={styles.topContainer}>
+          <Avatar id={student.avatarId} size={"m"} />
+          <div style={styles.textContainer}>
+            <CustomText size={tokens.font.title} bold={true}>
+              {student.nick}
             </CustomText>
-            <CustomText>{student.index}</CustomText>
+            <div style={styles.secondaryTextContainer}>
+              <CustomText>
+                {student.firstName} {student.secondName}
+              </CustomText>
+              <CustomText>{student.index}</CustomText>
+            </div>
           </div>
         </div>
-      </div>
 
-      <CustomText>{student.group.name}</CustomText>
-      {withEditableRights && (
-        <div style={styles.rightBottomCorner}>
-          <EditableIndicator />
-        </div>
-      )}
-    </div>
+        <CustomText>{student.group.name}</CustomText>
+        {withEditableRights && (
+          <div style={styles.rightBottomCorner}>
+            <EditableIndicator />
+          </div>
+        )}
+      </div>
+    </HooverWrapper>
   );
 };
 

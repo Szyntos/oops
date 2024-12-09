@@ -30,8 +30,7 @@ export const CustomImage = ({
     <div
       style={{
         width: sizeMap[size],
-        height: size,
-        opacity: disabled ? 0.6 : 1,
+        height: sizeMap[size],
       }}
     >
       <img
@@ -43,6 +42,11 @@ export const CustomImage = ({
             ? "0px 0px 6px rgba(255, 255, 255, 0.6)"
             : undefined,
           ...imageStyle,
+          ...{
+            width: sizeMap[size],
+            height: sizeMap[size],
+            opacity: disabled ? 0.6 : 1,
+          },
         }}
       />
     </div>
@@ -52,7 +56,7 @@ export const CustomImage = ({
 const styles: Styles = {
   img: {
     width: "100%",
-    objectFit: "cover",
     borderRadius: 12,
+    objectFit: "cover",
   },
 };

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Group } from "../../../hooks/common/useGroupsData";
 import { tokens } from "../../../tokens";
 import { FETCH_FILES_URL } from "../../../utils/constants";
@@ -6,6 +5,7 @@ import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { EditableIndicator } from "../../EditableIndicator";
 import { CARD_BORDER, CARD_PADDING } from "../../Students/StudentsListCard";
+import { HooverWrapper } from "../../HooverWrapper";
 
 type GroupCardProps = {
   group: Group;
@@ -18,40 +18,32 @@ export const GroupCard = ({
   onClick,
   withEditableRights,
 }: GroupCardProps) => {
-  const [isHoovered, setIsHoovered] = useState(false);
-
   return (
-    <div
-      style={{
-        ...styles.container,
-        ...(isHoovered ? { opacity: 0.9 } : undefined),
-      }}
-      onClick={onClick}
-      onMouseEnter={() => setIsHoovered(true)}
-      onMouseLeave={() => setIsHoovered(false)}
-    >
-      <img
-        src={`${FETCH_FILES_URL}${group.imageId}`}
-        alt={`img id ${group.imageId}`}
-        style={styles.img}
-      />
-      <CustomText bold={true} size={tokens.font.title}>
-        {group.name}
-      </CustomText>
-
-      <div style={styles.detailsContainer}>
-        <CustomText>
-          {group.weekday.name} {group.time.start}-{group.time.end}
+    <HooverWrapper>
+      <div style={styles.container} onClick={onClick}>
+        <img
+          src={`${FETCH_FILES_URL}${group.imageId}`}
+          alt={`img id ${group.imageId}`}
+          style={styles.img}
+        />
+        <CustomText bold={true} size={tokens.font.title}>
+          {group.name}
         </CustomText>
-        <CustomText>{group.teacher.fullName}</CustomText>
-      </div>
 
-      {withEditableRights && (
-        <div style={styles.editableIndicatorWrapper}>
-          <EditableIndicator />
+        <div style={styles.detailsContainer}>
+          <CustomText>
+            {group.weekday.name} {group.time.start}-{group.time.end}
+          </CustomText>
+          <CustomText>{group.teacher.fullName}</CustomText>
         </div>
-      )}
-    </div>
+
+        {withEditableRights && (
+          <div style={styles.editableIndicatorWrapper}>
+            <EditableIndicator />
+          </div>
+        )}
+      </div>
+    </HooverWrapper>
   );
 };
 

@@ -174,7 +174,7 @@ class ChestHistoryPermissions {
                 reason = "Teacher must be a teacher or coordinator"
             )
         }
-        if (teacher.userGroups.isEmpty()) {
+        if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.isEmpty()) {
             return Permission(
                 action = action,
                 arguments = arguments,

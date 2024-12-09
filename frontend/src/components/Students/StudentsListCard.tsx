@@ -55,7 +55,7 @@ const styles: Styles = {
     flexDirection: "column",
     width: 240,
     padding: CARD_PADDING,
-    gap: 6,
+    gap: 12,
     backgroundColor: tokens.color.card.light,
     borderRadius: CARD_BORDER,
     cursor: "pointer",

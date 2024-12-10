@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Step 1: Start Docker services
-docker-compose up -d
+docker-compose --env-file ../.env up -d
 
 # Step 2: Build the Spring Boot application in a separate terminal and wait for it to finish
 osascript <<EOF

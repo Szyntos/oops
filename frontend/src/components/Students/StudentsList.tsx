@@ -13,6 +13,8 @@ export type StudentFromList = {
   firstName: string;
   secondName: string;
   group: Group;
+  nick: string;
+  index: number;
 };
 
 type StudentsListProps = {

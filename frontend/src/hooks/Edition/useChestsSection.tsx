@@ -184,7 +184,7 @@ export const useChestsSection = (editionId: number) => {
       const isActive = isChestActive(
         chest.chest.chestEdition.map((e) => ({
           id: e?.edition.editionId ?? "",
-          active: Boolean(e?.active),
+          active: Boolean(e?.active ?? false),
         })),
         editionId.toString(),
       );

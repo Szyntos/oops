@@ -1,7 +1,13 @@
 import { Styles } from "../../utils/Styles";
-import { Avatar } from "../images/Avatar";
 import { EditableIndicator } from "../EditableIndicator";
 import { StudentFromList } from "./StudentsList";
+import { tokens } from "../../tokens";
+import { CustomText } from "../CustomText";
+import { HooverWrapper } from "../HooverWrapper";
+import { Avatar } from "../avatars/Avatar";
+
+export const CARD_PADDING = 12;
+export const CARD_BORDER = 8;
 
 type StudentsListCardProps = {
   student: StudentFromList;
@@ -15,46 +21,64 @@ export const StudentsListCard = ({
   withEditableRights,
 }: StudentsListCardProps) => {
   return (
-    <div style={styles.container} onClick={onClick}>
-      <Avatar id={student.avatarId} size={"s"} />
-      <div style={styles.textContainer}>
-        <div style={styles.title}>{student.firstName}</div>
-        <div style={styles.title}>{student.secondName}</div>
-        <div style={styles.bottomContainer}>
-          <div style={styles.groupName}>{student.group.name}</div>
-          {withEditableRights && <EditableIndicator />}
+    <HooverWrapper>
+      <div style={styles.container} onClick={onClick}>
+        <div style={styles.topContainer}>
+          <Avatar id={student.avatarId} size={"m"} />
+          <div style={styles.textContainer}>
+            <CustomText size={tokens.font.title} bold={true}>
+              {student.nick}
+            </CustomText>
+            <div style={styles.secondaryTextContainer}>
+              <CustomText>
+                {student.firstName} {student.secondName}
+              </CustomText>
+              <CustomText>{student.index}</CustomText>
+            </div>
+          </div>
         </div>
+
+        <CustomText>{student.group.name}</CustomText>
+        {withEditableRights && (
+          <div style={styles.rightBottomCorner}>
+            <EditableIndicator />
+          </div>
+        )}
       </div>
-    </div>
+    </HooverWrapper>
   );
 };
 
 const styles: Styles = {
   container: {
     display: "flex",
-    flexDirection: "row",
-    border: "1px solid black",
-    cursor: "pointer",
-    width: 200,
-    padding: 12,
+    flexDirection: "column",
+    width: 240,
+    padding: CARD_PADDING,
     gap: 12,
-    justifyContent: "center",
+    backgroundColor: tokens.color.card.light,
+    borderRadius: CARD_BORDER,
+    cursor: "pointer",
+    position: "relative",
+  },
+  topContainer: {
+    display: "flex",
+    gap: 12,
     alignItems: "center",
   },
   textContainer: {
-    flex: 1,
     display: "flex",
     flexDirection: "column",
-    gap: 4,
+    gap: 8,
   },
-  title: {
-    fontWeight: "bold",
-    fontSize: 18,
-  },
-  bottomContainer: {
+  secondaryTextContainer: {
     display: "flex",
+    flexDirection: "column",
+    gap: 6,
   },
-  groupName: {
-    flex: 1,
+  rightBottomCorner: {
+    position: "absolute",
+    bottom: CARD_PADDING,
+    right: CARD_PADDING,
   },
 };

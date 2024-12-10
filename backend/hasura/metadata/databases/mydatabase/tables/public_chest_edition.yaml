@@ -12,10 +12,10 @@ select_permissions:
   - role: coordinator
     permission:
       columns:
+        - active
         - chest_edition_id
         - chest_id
         - edition_id
-        - active
         - label
       filter: {}
       allow_aggregations: true
@@ -23,10 +23,10 @@ select_permissions:
   - role: student
     permission:
       columns:
+        - active
         - chest_edition_id
         - chest_id
         - edition_id
-        - active
         - label
       filter:
         edition:

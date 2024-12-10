@@ -10,6 +10,7 @@ import {
 import { Styles } from "../../../../utils/Styles";
 import { Category } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { Level } from "../../../../hooks/Edition/useLevelSetsSection";
+import { tokens } from "../../../../tokens";
 
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // 'YYYY-MM-DD'
 
@@ -107,7 +108,7 @@ export const ChecksForm = ({
               ))}
             </Select>
             {formik.touched.projectId && formik.errors.projectId && (
-              <div style={{ color: "red" }}>{formik.errors.projectId}</div>
+              <div style={styles.error}>{formik.errors.projectId}</div>
             )}
           </FormControl>
           <TextField
@@ -149,7 +150,7 @@ export const ChecksForm = ({
               ))}
             </Select>
             {formik.touched.projectId && formik.errors.projectId && (
-              <div style={{ color: "red" }}>{formik.errors.projectId}</div>
+              <div style={styles.error}>{formik.errors.projectId}</div>
             )}
           </FormControl>
         </div>
@@ -168,8 +169,12 @@ const styles: Styles = {
     padding: 12,
     width: 500,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
   fieldsContainer: {
     display: "flex",
     flexDirection: "column",

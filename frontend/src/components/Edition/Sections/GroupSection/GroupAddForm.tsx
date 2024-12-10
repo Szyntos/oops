@@ -12,6 +12,7 @@ import { Weekday } from "../../../../hooks/common/useGroupsData";
 import { Student, Teacher } from "../../../../hooks/Edition/useGroupsSection";
 import { StudentSelection } from "./StudentSelection/StudentSelection";
 import { useRef, useState } from "react";
+import { tokens } from "../../../../tokens";
 
 export type GroupFormValues = z.infer<typeof ValidationSchema>;
 
@@ -215,7 +216,7 @@ export const AddGroupForm = ({
               ))}
             </Select>
             {formik.touched.weekdayId && formik.errors.weekdayId && (
-              <div style={{ color: "red" }}>{formik.errors.weekdayId}</div>
+              <div style={styles.error}>{formik.errors.weekdayId}</div>
             )}
           </FormControl>
 
@@ -237,7 +238,7 @@ export const AddGroupForm = ({
               ))}
             </Select>
             {formik.touched.teacherId && formik.errors.teacherId && (
-              <div style={{ color: "red" }}>{formik.errors.teacherId}</div>
+              <div style={styles.error}>{formik.errors.teacherId}</div>
             )}
           </FormControl>
 
@@ -299,6 +300,10 @@ const styles: Styles = {
     padding: 12,
     border: "1px solid black",
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
 };

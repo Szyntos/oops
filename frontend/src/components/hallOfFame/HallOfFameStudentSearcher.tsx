@@ -20,8 +20,8 @@ export const HallOfFameStudentSearcher = ({
     <TextInput
       handleChange={handleSearchInputChange}
       value={searchInputValue}
-      name={"searchHallOfFameStudent"}
-      placeholder="wyszukaj uzytkownika"
+      name="searchHallOfFameStudent"
+      placeholder="wyszukaj nick"
     />
   );
 };

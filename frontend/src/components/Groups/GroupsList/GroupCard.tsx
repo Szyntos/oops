@@ -1,7 +1,11 @@
 import { Group } from "../../../hooks/common/useGroupsData";
+import { tokens } from "../../../tokens";
 import { FETCH_FILES_URL } from "../../../utils/constants";
 import { Styles } from "../../../utils/Styles";
+import { CustomText } from "../../CustomText";
 import { EditableIndicator } from "../../EditableIndicator";
+import { CARD_BORDER, CARD_PADDING } from "../../Students/StudentsListCard";
+import { HooverWrapper } from "../../HooverWrapper";
 
 type GroupCardProps = {
   group: Group;
@@ -15,23 +19,31 @@ export const GroupCard = ({
   withEditableRights,
 }: GroupCardProps) => {
   return (
-    <div style={styles.container} onClick={onClick}>
-      <img
-        src={`${FETCH_FILES_URL}${group.imageId}`}
-        alt={`img id ${group.imageId}`}
-        style={styles.img}
-      />
-      <div style={styles.title}>{group.name}</div>
-      <div>{group.teacher.fullName}</div>
-      <div>
-        {group.weekday.name} {group.time.start}-{group.time.end}
-      </div>
-      {withEditableRights && (
-        <div style={styles.editableIndicatorWrapper}>
-          <EditableIndicator />
+    <HooverWrapper>
+      <div style={styles.container} onClick={onClick}>
+        <img
+          src={`${FETCH_FILES_URL}${group.imageId}`}
+          alt={`img id ${group.imageId}`}
+          style={styles.img}
+        />
+        <CustomText bold={true} size={tokens.font.title}>
+          {group.name}
+        </CustomText>
+
+        <div style={styles.detailsContainer}>
+          <CustomText>
+            {group.weekday.name} {group.time.start}-{group.time.end}
+          </CustomText>
+          <CustomText>{group.teacher.fullName}</CustomText>
         </div>
-      )}
-    </div>
+
+        {withEditableRights && (
+          <div style={styles.editableIndicatorWrapper}>
+            <EditableIndicator />
+          </div>
+        )}
+      </div>
+    </HooverWrapper>
   );
 };
 
@@ -39,28 +51,32 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    border: "1px solid black",
     width: 240,
     height: 240,
     cursor: "pointer",
-    padding: 12,
-    gap: 12,
+    padding: CARD_PADDING,
+    paddingBottom: 4,
     position: "relative",
+    backgroundColor: tokens.color.card.light,
+    borderRadius: CARD_BORDER,
   },
   img: {
     width: "100%",
     height: 150,
     objectFit: "cover",
-    borderRadius: 8,
+    borderRadius: CARD_BORDER,
     overflow: "hidden",
+    marginBottom: 12,
   },
-  title: {
-    fontWeight: "bold",
-    fontSize: 18,
+  detailsContainer: {
+    paddingTop: 8,
+    display: "flex",
+    flexDirection: "column",
+    gap: 6,
   },
   editableIndicatorWrapper: {
     top: 140,
-    right: 32,
+    right: 24,
     position: "absolute",
   },
 };

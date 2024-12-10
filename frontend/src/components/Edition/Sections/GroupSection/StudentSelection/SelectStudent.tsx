@@ -2,6 +2,7 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { Styles } from "../../../../../utils/Styles";
 import { Student } from "../../../../../hooks/Edition/useGroupsSection";
+import { tokens } from "../../../../../tokens";
 
 type SelectStudentProps = {
   students: Student[];
@@ -59,6 +60,10 @@ const styles: Styles = {
   points: {
     width: 80,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
 };

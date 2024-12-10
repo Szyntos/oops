@@ -13,6 +13,8 @@ export type FormCategoriesQuery = {
     __typename?: "Categories";
     categoryId: string;
     categoryName: string;
+    lightColor: string;
+    darkColor: string;
     canAddPoints: boolean;
     subcategories: Array<{
       __typename?: "Subcategories";
@@ -32,6 +34,8 @@ export const FormCategoriesDocument = gql`
     ) {
       categoryId
       categoryName
+      lightColor
+      darkColor
       subcategories(
         orderBy: { ordinalNumber: ASC }
         where: { editionId: { _eq: $editionId } }

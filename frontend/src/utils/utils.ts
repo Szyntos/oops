@@ -54,6 +54,14 @@ export const mockPermissions = {
 
 export const GRADE_STRINGS = ["2.0", "3.0", "3.5", "4.0", "4.5", "5.0"];
 
+type ChestEdition = {
+  id: string;
+  active: boolean;
+};
+export const isChestActive = (editions: ChestEdition[], edition: string) => {
+  return Boolean(editions.find((e) => e.id === edition && e.active));
+};
+
 export const BACKGROUND_COLOR_ANIMATION = "background-color 0.3s ease";
 export const COLOR_TRANSITION_ANIMATION = "color 0.3s ease";
 

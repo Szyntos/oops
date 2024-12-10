@@ -21,7 +21,10 @@ export const OpenChest = ({
 
   const handleAwardClick = (award: Award) => {
     const isSelected = selectedAwards.some((id) => id === award.awardId);
-    if (!isSelected && selectedAwards.length > chest.chest.awardBundleCount) {
+    if (
+      !isSelected &&
+      selectedAwards.length + 1 > chest.chest.awardBundleCount
+    ) {
       return;
     }
     setSelectedAwards((prev) =>

@@ -79,6 +79,16 @@ export type SetupAwardsQuery = {
         allow: boolean;
         reason?: string | null;
       } | null;
+      canActivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canDeactivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
     };
   }>;
 };
@@ -144,6 +154,14 @@ export const SetupAwardsDocument = gql`
           reason
         }
         canTurnOffOverride {
+          allow
+          reason
+        }
+        canActivate {
+          allow
+          reason
+        }
+        canDeactivate {
           allow
           reason
         }

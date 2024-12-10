@@ -5,7 +5,6 @@ import { AddGroupForm } from "./GroupAddForm";
 import { useGroupsSection } from "../../../../hooks/Edition/useGroupsSection";
 import { useParams } from "react-router-dom";
 import { UsersRolesType } from "../../../../__generated__/schema.graphql.types";
-import { mockPermissions } from "../../../../utils/utils";
 
 export const GroupsSection = () => {
   const params = useParams();
@@ -29,7 +28,6 @@ export const GroupsSection = () => {
     handleEditGroupConfirm,
     handleDeleteGroup,
     handleUploadStudents,
-    // handleStudentGroupChange,
     variant,
     selectedGroup,
     handleMarkAllPassingStudents,
@@ -80,16 +78,11 @@ export const GroupsSection = () => {
           editionId={editionId}
           variant={"select"}
           initSelected={
-            selectedGroup?.group.userGroups.map((u) => {
-              return {
-                user: {
-                  ...u.user,
-                  __typename: "UserType",
-                  role: u.user.role as UsersRolesType,
-                },
-                permissions: mockPermissions,
-              };
-            }) ?? []
+            selectedGroup?.group.userGroups.map((u) => ({
+              ...u.user,
+              __typename: "Users",
+              role: u.user.role as UsersRolesType,
+            })) ?? []
           }
           initValues={
             selectedGroup

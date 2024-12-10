@@ -29,7 +29,7 @@ select_permissions:
       filter:
         edition:
           groups:
-            userGroups:
+            teacher:
               user_id:
                 _eq: X-Hasura-User-Id
     comment: ""

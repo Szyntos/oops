@@ -61,6 +61,16 @@ export type SetupGradingChecksQuery = {
         allow: boolean;
         reason?: string | null;
       };
+      canActivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canDeactivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
     };
   };
 };
@@ -108,6 +118,14 @@ export const SetupGradingChecksDocument = gql`
           reason
         }
         canUnselect {
+          allow
+          reason
+        }
+        canActivate {
+          allow
+          reason
+        }
+        canDeactivate {
           allow
           reason
         }

@@ -1,5 +1,6 @@
 package backend
 
+import io.github.cdimascio.dotenv.Dotenv
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 import org.springframework.boot.runApplication
@@ -36,9 +37,13 @@ import org.springframework.context.annotation.PropertySource
 	]
 )
 @EnableJpaAuditing
-@PropertySource("classpath:application-secrets.properties")
 class BackendApplication
 
 fun main(args: Array<String>) {
+	val dotenv = Dotenv.configure()
+		.directory("../")
+		.load()
+	dotenv.entries().forEach { System.setProperty(it.key, it.value) }
+
 	runApplication<BackendApplication>(*args)
 }

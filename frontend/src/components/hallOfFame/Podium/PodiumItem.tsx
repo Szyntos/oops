@@ -5,8 +5,8 @@ import { Avatar } from "../../avatars/Avatar";
 import { HallOfFameStudentData } from "../HallOfFameStudentCard";
 import { CSSProperties } from "react";
 
-const PODIUM_TOP_RADIUS = 4;
-const PODIUM_BOTTOM_RADIUS = 4;
+const PODIUM_TOP_RADIUS = 8;
+const PODIUM_BOTTOM_RADIUS = 8;
 
 type PodiumItemProps = {
   student: HallOfFameStudentData;
@@ -20,17 +20,17 @@ const placeMap = {
     3: tokens.color.unique.brown,
   },
   height: {
-    1: 220,
-    2: 150,
-    3: 110,
+    1: 3,
+    2: 2,
+    3: 1.2,
   },
 };
 
-const PLACE_HEIGHT_RATIO = 1.15;
+const PLACE_HEIGHT_RATIO = 120;
 
 export const PodiumItem = ({ student, place }: PodiumItemProps) => {
   const getPodiumShadow = () => {
-    return { boxShadow: `0px 0px 12px ${placeMap.color[place]}` };
+    return { boxShadow: `0px 0px 20px ${placeMap.color[place]}` };
   };
 
   const getPodiumStyle = (): CSSProperties => {
@@ -78,7 +78,7 @@ const styles: Styles = {
     display: "flex",
     flexDirection: "column",
     gap: 12,
-    width: 240,
+    width: 220,
   },
   studentContainer: {
     display: "flex",

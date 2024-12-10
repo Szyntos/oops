@@ -45,7 +45,7 @@ export const Avatar = ({
           ...{
             width: sizeMap[size],
             height: sizeMap[size],
-            opacity: disabled ? 0.6 : 1,
+            opacity: disabled ? 0.1 : 1,
           },
         }}
       />

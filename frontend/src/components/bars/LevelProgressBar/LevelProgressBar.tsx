@@ -31,7 +31,7 @@ export const LevelProgressBar = ({
             parseFloat(currLevel.minimumPoints),
         }}
         showPoints
-        title="do następnego zwierzaka"
+        title="postęp poziomu zwierzaka"
       />
 
       {/* <div style={styles.levelMiniaturesContainer}>

@@ -49,7 +49,7 @@ export const AnimalCard = ({
         />
       </Section>
 
-      <Section title="Zdobyte zweirzaki">
+      <Section title="Zdobyte poziomy">
         <LevelsSection studentLevel={currLevel} currLevel={currLevel} />
       </Section>
     </>

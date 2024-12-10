@@ -58,6 +58,7 @@ export const ChestsSection = () => {
         handleDeleteChest={handleDeleteChest}
         handleCopyChest={handleCopyChest}
         handleActivateChest={handleActivateChest}
+        editionId={editionId}
       />
       <ChestsList
         chests={chests}
@@ -68,6 +69,7 @@ export const ChestsSection = () => {
         handleDeleteChest={handleDeleteChest}
         handleCopyChest={handleCopyChest}
         handleActivateChest={handleActivateChest}
+        editionId={editionId}
       />
 
       <Dialog open={isAddChest}>

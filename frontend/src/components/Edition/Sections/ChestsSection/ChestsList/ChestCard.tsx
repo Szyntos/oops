@@ -1,5 +1,4 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
-import { useEditionSelection } from "../../../../../hooks/common/useEditionSelection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
 import { Styles } from "../../../../../utils/Styles";
 import { isChestActive } from "../../../../../utils/utils";
@@ -14,6 +13,7 @@ type ChestCardProps = {
   onDeleteClick: () => void;
   onCopyClick: () => void;
   onChestActivateClick: () => void;
+  editionId: number;
 };
 
 export const ChestCard = ({
@@ -24,9 +24,9 @@ export const ChestCard = ({
   onDeleteClick,
   onCopyClick,
   onChestActivateClick,
+  editionId,
 }: ChestCardProps) => {
   const { openShowDialog } = useEditionSections();
-  const { selectedEdition } = useEditionSelection();
 
   return (
     <div
@@ -57,7 +57,7 @@ export const ChestCard = ({
             id: e?.edition.editionId ?? "-1",
             active: Boolean(e?.active),
           })),
-          selectedEdition?.editionId ?? "",
+          editionId.toString(),
         )}
       />
     </div>

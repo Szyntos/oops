@@ -12,6 +12,7 @@ type ChestsListProps = {
   handleCopyChest: (chest: Chest) => void;
   handleActivateChest: (chest: Chest) => void;
   title: string;
+  editionId: number;
 };
 
 export const ChestsList = ({
@@ -23,6 +24,7 @@ export const ChestsList = ({
   handleCopyChest,
   handleActivateChest,
   title,
+  editionId,
 }: ChestsListProps) => {
   return (
     <div>
@@ -41,6 +43,7 @@ export const ChestsList = ({
                 onDeleteClick={() => handleDeleteChest(chest)}
                 onCopyClick={() => handleCopyChest(chest)}
                 onChestActivateClick={() => handleActivateChest(chest)}
+                editionId={editionId}
               />
             ))
           : EMPTY_FIELD_STRING}

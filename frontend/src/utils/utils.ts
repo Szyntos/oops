@@ -56,9 +56,6 @@ type ChestEdition = {
   id: string;
   active: boolean;
 };
-export const isChestActive = (
-  editions: ChestEdition[],
-  selectedEditionId: string,
-) => {
-  return Boolean(editions.find((e) => e.id === selectedEditionId && e.active));
+export const isChestActive = (editions: ChestEdition[], edition: string) => {
+  return Boolean(editions.find((e) => e.id === edition && e.active));
 };

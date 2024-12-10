@@ -5,6 +5,7 @@ import { FormControlLabel, Switch, TextField } from "@mui/material";
 import { FormSubcategory, SubcategoryRows } from "./SubcategoryRows";
 import { useState } from "react";
 import { SubcategoriesFormValues } from "./SubcategoryRow";
+import { tokens } from "../../../../../tokens";
 
 export type CategoriesFormValues = z.infer<typeof ValidationSchema>;
 
@@ -160,6 +161,10 @@ const styles: Styles = {
     padding: 12,
     border: "1px solid black",
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
 };

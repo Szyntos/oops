@@ -31,9 +31,6 @@ const styles: Styles = {
     display: "flex",
     flex: 1,
     flexDirection: "column",
-    gap: 12,
-    width: 600,
     overflowY: "scroll",
-    padding: 12,
   },
 };

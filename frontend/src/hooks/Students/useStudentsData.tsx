@@ -21,6 +21,8 @@ export const useStudentsData = (editionId: string | undefined) => {
         avatarId: student.imageFileId ?? undefined,
         firstName: student.firstName,
         secondName: student.secondName,
+        nick: student.nick,
+        index: student.indexNumber,
         group: {
           name: group.generatedName,
           id: group.groupsId,

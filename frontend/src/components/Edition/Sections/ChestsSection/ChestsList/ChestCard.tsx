@@ -1,7 +1,8 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
+import { tokens } from "../../../../../tokens";
 import { Styles } from "../../../../../utils/Styles";
-import { Image } from "../../../../images/Image";
+import { Avatar } from "../../../../avatars/Avatar";
 import { SetupButtons } from "../../SetupButtons";
 
 type ChestCardProps = {
@@ -30,11 +31,7 @@ export const ChestCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <Image
-        id={chest.chest.imageFile?.fileId ?? undefined}
-        size={32}
-        disabled={false}
-      />
+      <Avatar id={chest.chest.imageFile?.fileId ?? undefined} size="xs" />
       <div>[{chest.chest.chestId}]</div>
       <div style={styles.subtitle}>{chest.chest.chestType}</div>
 
@@ -57,6 +54,6 @@ const styles: Styles = {
     padding: 12,
   },
   subtitle: {
-    color: "grey",
+    color: tokens.color.state.disabled,
   },
 };

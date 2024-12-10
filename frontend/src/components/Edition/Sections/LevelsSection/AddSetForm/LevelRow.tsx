@@ -6,8 +6,9 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { Image } from "../../../../images/Image";
+import { Avatar } from "../../../../avatars/Avatar";
 import { GRADE_STRINGS } from "../../../../../utils/utils";
+import { tokens } from "../../../../../tokens";
 
 export type AddedLevel = {
   name: string;
@@ -37,7 +38,7 @@ export const LevelRow = ({
 }: LevelRowProps) => {
   return (
     <div style={styles.innerContainer}>
-      <Image size={64} disabled={false} id={level.imageId} />
+      <Avatar size="m" id={level.imageId} />
 
       <TextField
         name="ordinal"
@@ -112,8 +113,12 @@ const styles: Styles = {
   points: {
     width: 240,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
   number: {
     width: 120,
   },

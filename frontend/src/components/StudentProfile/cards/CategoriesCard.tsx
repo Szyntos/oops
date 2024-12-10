@@ -1,30 +1,25 @@
+import { CourseProgressBar } from "../../bars/CourseProgressBar";
 import { ProgressBar, ProgressBarProps } from "../../bars/ProgressBar";
-import { Styles } from "../../../utils/Styles";
+import { Section } from "./Section/Section";
 
 type CategoriesCardProps = {
   categoriesBarProps: ProgressBarProps[];
+  totalPoints: number;
 };
 
-export const CategoriesCard = ({ categoriesBarProps }: CategoriesCardProps) => {
+export const CategoriesCard = ({
+  categoriesBarProps,
+  totalPoints,
+}: CategoriesCardProps) => {
   return (
-    <div style={styles.card}>
-      <div style={styles.title}>Punkty</div>
+    <Section title="Punkty">
+      <div style={{ marginBottom: 12 }}>
+        <CourseProgressBar totalPoints={totalPoints} title="razem" />
+      </div>
+
       {categoriesBarProps.map((props, index) => (
         <ProgressBar key={index} {...props} showPoints />
       ))}
-    </div>
+    </Section>
   );
-};
-
-const styles: Styles = {
-  card: {
-    display: "flex",
-    flexDirection: "column",
-    border: "1px solid blue",
-    gap: 12,
-    padding: 24,
-  },
-  title: {
-    fontWeight: "bold",
-  },
 };

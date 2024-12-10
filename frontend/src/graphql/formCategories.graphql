@@ -5,6 +5,8 @@ query FormCategories($editionId: bigint!) {
   ) {
     categoryId
     categoryName
+    lightColor
+    darkColor
     subcategories(
       orderBy: { ordinalNumber: ASC }
       where: { editionId: { _eq: $editionId } }

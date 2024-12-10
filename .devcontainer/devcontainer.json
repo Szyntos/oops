@@ -1,0 +1,19 @@
+{
+  "name": "OOPS",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu", // Basic Linux environment
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-vscode.vscode-typescript-next", "esbenp.prettier-vscode"]
+    }
+  },
+  "postCreateCommand": "git checkout release && docker-compose up --build",
+  "remoteEnv": {
+    "POSTGRES_USER": "${POSTGRES_USER}",
+    "POSTGRES_PASSWORD": "${POSTGRES_PASSWORD}",
+    "POSTGRES_DB": "${POSTGRES_DB}",
+    "HASURA_GRAPHQL_DATABASE_URL": "${HASURA_GRAPHQL_DATABASE_URL}",
+    "HASURA_GRAPHQL_ADMIN_SECRET": "${HASURA_GRAPHQL_ADMIN_SECRET}",
+    "HASURA_GRAPHQL_JWT_SECRET": "${HASURA_GRAPHQL_JWT_SECRET}"
+  },
+  "overrideCommand": false
+}

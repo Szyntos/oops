@@ -1,5 +1,3 @@
-version: '3.6'
-
 services:
   postgres:
     image: postgres:15
@@ -20,8 +18,8 @@ services:
       retries: 10
 
   hasura:
-    image: hasura/graphql-engine:latest
-    platform: linux/arm64/v8
+    image: hasura/graphql-engine:v2.45.1-ce
+    platform: linux/amd64
     ports:
       - "9191:8080" # Mapping custom external port 9191 to internal default Hasura port 8080
     depends_on:
@@ -37,11 +35,12 @@ services:
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "unauthenticated_user"
       HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
+      BACKEND_GRAPHQL_URL: ${BACKEND_GRAPHQL_URL}
 
   backend:
     build:
-      context: .
-      dockerfile: ./backend/Dockerfile
+      context: ./backend
+      dockerfile: ./Dockerfile
       args:
         BRANCH: release
     ports:
@@ -54,18 +53,78 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+    env_file:
+      - .env
+
+  hasura-apply-metadata:
+    image: hasura/graphql-engine:v2.45.1-ce
+    platform: linux/amd64
+    depends_on:
+      - backend
+    environment:
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      BACKEND_GRAPHQL_URL: ${BACKEND_GRAPHQL_URL}
+    volumes:
+      - ./backend/hasura:/hasura
+      - ./backend/src/main/python:/app/python # Mount directory containing init_data.py
+      - ./backend/src/main/python/config.json:/app/config.json # Mount config.json file
+    working_dir: /hasura
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Installing Hasura CLI...' &&
+      curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash &&
+      echo 'Waiting for backend to become healthy...' &&
+      until curl -s http://backend:9090/actuator/health | grep -q '\"status\":\"UP\"'; do
+        sleep 5;
+      done &&
+      echo 'Backend is healthy. Applying Hasura metadata...' &&
+      hasura metadata apply --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET} &&
+      hasura metadata reload --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET} &&
+      hasura metadata ic list --endpoint http://hasura:8080 --admin-secret ${HASURA_GRAPHQL_ADMIN_SECRET}"
 
   frontend:
     build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
+      context: ./frontend
+      dockerfile: ./Dockerfile
       args:
         BRANCH: release
+        VITE_FIREBASE_API_KEY: ${VITE_FIREBASE_API_KEY}
+        VITE_FIREBASE_AUTH_DOMAIN: ${VITE_FIREBASE_AUTH_DOMAIN}
+        VITE_FIREBASE_PROJECT_ID: ${VITE_FIREBASE_PROJECT_ID}
+        VITE_FIREBASE_STORAGE_BUCKET: ${VITE_FIREBASE_STORAGE_BUCKET}
+        VITE_FIREBASE_MESSAGING_SENDER_ID: ${VITE_FIREBASE_MESSAGING_SENDER_ID}
+        VITE_FIREBASE_APP_ID: ${VITE_FIREBASE_APP_ID}
+        VITE_FIREBASE_MEASUREMENT_ID: ${VITE_FIREBASE_MEASUREMENT_ID}
+        VITE_PUBLIC_IP: ${VITE_PUBLIC_IP}
+
     ports:
-      - "3000:80" # Map frontend port (nginx serves it)
+      - "80:80" # Map frontend port (nginx serves it)
     depends_on:
       - backend
       - hasura
+    env_file:
+      - .env
+
+  init-data:
+    image: python:3.9-slim
+    depends_on:
+      hasura-apply-metadata:
+        condition: service_completed_successfully
+    working_dir: /app
+    environment:
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      DO_INSERT_FILES: ${DO_INSERT_FILES}
+    volumes:
+      - ./backend/src/main/python:/app
+      - ./backend/src/main/python/config.json:/app/config.json
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Installing Python dependencies...' &&
+      pip install --no-cache-dir requests &&
+      echo 'Waiting for Hasura metadata to be applied...' &&
+      sleep 5 &&
+      echo 'Executing init_data.py...' &&
+      python3 init_data.py"
 
 volumes:
   postgres_data:

@@ -5,9 +5,9 @@ FROM openjdk:17-jdk-slim as builder
 WORKDIR /app
 
 # Step 3: Copy Gradle wrapper and necessary files
-COPY gradlew gradlew
-COPY gradlew.bat gradlew.bat
-COPY gradle gradle
+COPY gradlew .
+COPY gradlew.bat .
+COPY gradle ./gradle
 
 # Step 4: Ensure gradlew has LF line endings and correct permissions
 RUN apt-get update && apt-get install -y dos2unix && dos2unix gradlew

@@ -15,7 +15,6 @@ import backend.users.UsersRoles
 import backend.utils.JsonNodeExtensions.getIntField
 import backend.utils.JsonNodeExtensions.getLongField
 import backend.utils.JsonNodeExtensions.getStringField
-import backend.utils.JsonNodeExtensions.getTimeField
 import backend.utils.JsonNodeExtensions.getUserIdsType
 import backend.utils.JsonNodeExtensions.getUsersInputTypeList
 import backend.utils.UserMapper
@@ -24,7 +23,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.sql.Time
 import kotlin.jvm.optionals.getOrNull
 
@@ -1002,42 +1000,38 @@ class GroupsPermissions {
             .forEach { userGroupsRepository.deleteByUserAndGroup(it, group) }
 
         // users that are not in the group yet
+        val permissionMsg = StringBuilder()
         users.userIds.filter { userId -> userId !in existingUsers.map { it.userId } }
             .forEach { userId ->
                 val user = usersRepository.findById(userId).getOrNull()
-                    ?: return Permission(
-                        action = action,
-                        arguments = arguments,
-                        allow = false,
-                        reason = "Invalid User ID: $userId"
-                    )
+                if (user == null) {
+                    permissionMsg.append("User with ID $userId not found;\n")
+                    return@forEach
+                }
                 if (user.role != UsersRoles.STUDENT) {
-                    return Permission(
-                        action = action,
-                        arguments = arguments,
-                        allow = false,
-                        reason = "User with ID $userId is not a student"
-                    )
+                    permissionMsg.append("User ${user.firstName} ${user.secondName} is not a student;\n")
+                    return@forEach
                 }
 
                 if (userGroupsRepository.existsByUserAndGroup(user, group)){
-                    return Permission(
-                        action = action,
-                        arguments = arguments,
-                        allow = false,
-                        reason = "This User already exists in this Group"
-                    )
+                    permissionMsg.append("User ${user.firstName} ${user.secondName} already exists in this group;\n")
+                    return@forEach
                 }
 
                 if (userGroupsRepository.existsByUserAndGroup_Edition(user, group.edition)){
-                    return Permission(
-                        action = action,
-                        arguments = arguments,
-                        allow = false,
-                        reason = "This User already exists in a group in this Edition"
-                    )
+                    permissionMsg.append("User ${user.firstName} ${user.secondName} is already in a group in this edition;\n")
+                    return@forEach
                 }
             }
+
+        if (permissionMsg.isNotEmpty()){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = permissionMsg.toString()
+            )
+        }
 
         return Permission(
             action = action,

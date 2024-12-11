@@ -124,8 +124,7 @@ export const AddGroupForm = ({
 
   const studentsToSelect = students.filter((s) => {
     const isSelected =
-      selectedStudents.find((ss) => ss.user.userId === s.user.userId) !==
-      undefined;
+      selectedStudents.find((ss) => ss.userId === s.userId) !== undefined;
     return !isSelected;
   });
 
@@ -135,7 +134,7 @@ export const AddGroupForm = ({
 
   const handleDelete = (student: Student) => {
     setSelectedStudents((prev) =>
-      prev.filter((s) => s.user.userId !== student.user.userId),
+      prev.filter((s) => s.userId !== student.userId),
     );
   };
 
@@ -233,8 +232,8 @@ export const AddGroupForm = ({
               )}
             >
               {teachers.map((teacher) => (
-                <MenuItem key={teacher.user.userId} value={teacher.user.userId}>
-                  {teacher.user.firstName} {teacher.user.secondName}
+                <MenuItem key={teacher.userId} value={teacher.userId}>
+                  {teacher.firstName} {teacher.secondName}
                 </MenuItem>
               ))}
             </Select>
@@ -278,7 +277,7 @@ export const AddGroupForm = ({
               {importedFile && <div>imported file: {importedFile}</div>}
               {selectedStudents.map((s, index) => (
                 <div>
-                  {index + 1}. {s.user.firstName} {s.user.secondName}
+                  {index + 1}. {s.firstName} {s.secondName}
                 </div>
               ))}
             </div>

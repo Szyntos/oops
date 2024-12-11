@@ -3,7 +3,10 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu", // Basic Linux environment
   "customizations": {
     "vscode": {
-      "extensions": ["ms-vscode.vscode-typescript-next", "esbenp.prettier-vscode"]
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode"
+      ]
     }
   },
   "postCreateCommand": "git checkout release && docker-compose up --build",

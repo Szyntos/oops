@@ -6,11 +6,13 @@ import { ChestCard } from "./ChestCard";
 type ChestsListProps = {
   chests: Chest[];
   selectedChests: Chest[];
-  handleSelectChest: (award: Chest) => void;
-  handleEditChest: (award: Chest) => void;
-  handleDeleteChest: (award: Chest) => void;
-  handleCopyChest: (award: Chest) => void;
+  handleSelectChest: (chest: Chest) => void;
+  handleEditChest: (chest: Chest) => void;
+  handleDeleteChest: (chest: Chest) => void;
+  handleCopyChest: (chest: Chest) => void;
+  handleActivateChest: (chest: Chest) => void;
   title: string;
+  editionId: number;
 };
 
 export const ChestsList = ({
@@ -20,7 +22,9 @@ export const ChestsList = ({
   handleEditChest,
   handleDeleteChest,
   handleCopyChest,
+  handleActivateChest,
   title,
+  editionId,
 }: ChestsListProps) => {
   return (
     <div>
@@ -38,6 +42,8 @@ export const ChestsList = ({
                 onEditClick={() => handleEditChest(chest)}
                 onDeleteClick={() => handleDeleteChest(chest)}
                 onCopyClick={() => handleCopyChest(chest)}
+                onChestActivateClick={() => handleActivateChest(chest)}
+                editionId={editionId}
               />
             ))
           : EMPTY_FIELD_STRING}

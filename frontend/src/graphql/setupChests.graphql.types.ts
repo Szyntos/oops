@@ -20,6 +20,7 @@ export type SetupChestsQuery = {
       imageFile?: { __typename?: "FileType"; fileId: string } | null;
       chestEdition: Array<{
         __typename?: "ChestEditionType";
+        active: boolean;
         edition: { __typename?: "EditionType"; editionId: string };
       } | null>;
       chestAward: Array<{
@@ -90,6 +91,16 @@ export type SetupChestsQuery = {
         allow: boolean;
         reason?: string | null;
       } | null;
+      canActivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canDeactivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
     };
   }>;
 };
@@ -109,6 +120,7 @@ export const SetupChestsDocument = gql`
           edition {
             editionId
           }
+          active
         }
         chestAward {
           award {
@@ -166,6 +178,14 @@ export const SetupChestsDocument = gql`
           reason
         }
         canTurnOffOverride {
+          allow
+          reason
+        }
+        canActivate {
+          allow
+          reason
+        }
+        canDeactivate {
           allow
           reason
         }

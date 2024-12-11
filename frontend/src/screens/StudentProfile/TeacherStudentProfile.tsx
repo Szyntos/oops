@@ -230,9 +230,9 @@ export function TeacherStudentProfile() {
           categories={addChestCategories}
           chests={chests}
           initialValues={{
-            categoryId: addChestCategories[0].id,
-            subcategoryId: addChestCategories[0]?.subcategories[0].id,
-            chestId: chests[0].chestId,
+            categoryId: addChestCategories[0]?.id,
+            subcategoryId: addChestCategories[0]?.subcategories[0]?.id,
+            chestId: chests[0]?.chestId,
           }}
           formError={chestError}
         />

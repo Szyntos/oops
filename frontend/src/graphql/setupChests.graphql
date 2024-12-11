@@ -12,6 +12,7 @@ query SetupChests($editionId: Int!) {
         edition {
           editionId
         }
+        active
       }
       chestAward {
         award {
@@ -69,6 +70,14 @@ query SetupChests($editionId: Int!) {
         reason
       }
       canTurnOffOverride {
+        allow
+        reason
+      }
+      canActivate {
+        allow
+        reason
+      }
+      canDeactivate {
         allow
         reason
       }

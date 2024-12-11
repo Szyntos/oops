@@ -2,6 +2,7 @@ import { useEditionSections } from "../../../../../hooks/common/useEditionSectio
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
 import { tokens } from "../../../../../tokens";
 import { Styles } from "../../../../../utils/Styles";
+import { isChestActive } from "../../../../../utils/utils";
 import { Avatar } from "../../../../avatars/Avatar";
 import { SetupButtons } from "../../SetupButtons";
 
@@ -12,6 +13,8 @@ type ChestCardProps = {
   onEditClick: () => void;
   onDeleteClick: () => void;
   onCopyClick: () => void;
+  onChestActivateClick: () => void;
+  editionId: number;
 };
 
 export const ChestCard = ({
@@ -21,6 +24,8 @@ export const ChestCard = ({
   onEditClick,
   onDeleteClick,
   onCopyClick,
+  onChestActivateClick,
+  editionId,
 }: ChestCardProps) => {
   const { openShowDialog } = useEditionSections();
 
@@ -43,6 +48,14 @@ export const ChestCard = ({
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
         handleShow={() => openShowDialog(chest)}
+        handleMarkChestActiveness={onChestActivateClick}
+        isChestActive={isChestActive(
+          chest.chest.chestEdition.map((e) => ({
+            id: e?.edition.editionId ?? "-1",
+            active: Boolean(e?.active),
+          })),
+          editionId.toString(),
+        )}
       />
     </div>
   );

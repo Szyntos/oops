@@ -114,17 +114,23 @@ services:
     environment:
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
       DO_INSERT_FILES: ${DO_INSERT_FILES}
+      DO_INSERT_DEMO_DATA: ${DO_INSERT_FILES}
+      INIT_DATA: ${DO_INSERT_FILES}
+      BYPASS_AUTH: ${DO_INSERT_FILES}
+      BYPASS_TOKEN: ${DO_INSERT_FILES}
+      ADMIN_MAIL: ${DO_INSERT_FILES}
+
     volumes:
       - ./backend/src/main/python:/app
       - ./backend/src/main/python/config.json:/app/config.json
     entrypoint: >
       /bin/sh -c "
       echo 'Installing Python dependencies...' &&
-      pip install --no-cache-dir requests &&
+      pip install --no-cache-dir requests psycopg2 faker tqdm scipy numpy &&
       echo 'Waiting for Hasura metadata to be applied...' &&
       sleep 5 &&
-      echo 'Executing init_data.py...' &&
-      python3 init_data.py"
+      echo 'Executing insert_data.py...' &&
+      python3 insert_data.py config_for_demo.json ${INIT_DATA}"
 
 volumes:
   postgres_data:

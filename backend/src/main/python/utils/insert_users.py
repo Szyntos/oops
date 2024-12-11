@@ -75,7 +75,7 @@ def insert_students(hasura_url, headers, year_group_counts, fake, random, studen
     print("All students have been inserted.")
     return student_ids, students_in_group_count
 
-def insert_coordinator(hasura_url, headers, fake):
+def insert_coordinator(hasura_url, headers, fake, admin_mail):
     # Insert data into users (coordinator)
 
     print("Preparing coordinator for insertion...")
@@ -91,7 +91,7 @@ def insert_coordinator(hasura_url, headers, fake):
         "indexNumber": index_number,
         "firstName": first_name,
         "secondName": second_name,
-        "email": "hot.mamusia.69.2137@gmail.com",
+        "email": admin_mail,
         "createFirebaseUser": True,
         "sendEmail": True,
     }
@@ -117,7 +117,7 @@ def insert_coordinator(hasura_url, headers, fake):
     variables = user_object
 
     admin_header = headers.copy()
-    admin_header["Authorization"] = "Bearer Bypass0"
+    admin_header["Authorization"] = admin_header["Authorization"][:-1] + "0"
 
     response = requests.post(
         hasura_url,

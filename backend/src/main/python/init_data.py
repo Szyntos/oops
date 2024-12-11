@@ -15,6 +15,7 @@ headers = {
     "x-hasura-role": "admin",
     "x-hasura-admin-secret": os.getenv("HASURA_GRAPHQL_ADMIN_SECRET"),
 }
+admin_mail = os.getenv("ADMIN_MAIL")
 do_insert_files = os.getenv("DO_INSERT_FILES", "true").lower() == "true"
 
 def insert_data():

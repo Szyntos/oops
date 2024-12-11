@@ -6,6 +6,7 @@ select_permissions:
     permission:
       columns:
         - edition_id
+        - first_name
         - generated_name
         - group_name
         - groups_id
@@ -13,6 +14,7 @@ select_permissions:
         - level_image_id
         - level_name
         - nick
+        - second_name
         - sum_of_points
         - user_id
         - user_image_id
@@ -40,6 +42,7 @@ select_permissions:
     permission:
       columns:
         - edition_id
+        - first_name
         - generated_name
         - group_name
         - groups_id
@@ -47,6 +50,7 @@ select_permissions:
         - level_image_id
         - level_name
         - nick
+        - second_name
         - sum_of_points
         - user_id
         - user_image_id

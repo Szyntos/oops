@@ -50,6 +50,7 @@ const styles: Styles = {
     display: "flex",
     gap: 12,
     padding: 12,
-    backgroundColor: tokens.color.state.disabled,
+    backgroundColor: tokens.color.border.dark,
+    alignItems: "center",
   },
 };

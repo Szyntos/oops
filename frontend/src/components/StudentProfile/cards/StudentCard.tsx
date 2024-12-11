@@ -14,6 +14,7 @@ export function StudentCard({
   group,
   avatarId,
   grade,
+  totalPoints,
 }: StudentCardData) {
   const profileItems: ItemWithIconProps[] = [
     { icon: "name", title: displayName },
@@ -23,7 +24,7 @@ export function StudentCard({
 
   const performanceItems: ItemWithIconProps[] = [
     { icon: "grade", title: grade },
-    { icon: "score", title: 123 },
+    { icon: "score", title: totalPoints },
   ];
 
   const centerItems: ItemWithIconProps[] = [

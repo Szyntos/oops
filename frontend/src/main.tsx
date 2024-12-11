@@ -7,19 +7,28 @@ import { EditionSectionsProvider } from "./contexts/editionContext.tsx";
 import { ConfirmPopupProvider } from "./contexts/confirmPopupContext.tsx";
 import { ChangeGroupProvider } from "./contexts/changeGroupContext.tsx";
 import { OverrideGradeProvider } from "./contexts/overrideGradeContext.tsx";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloClientProvider>
       <UserProvider>
         <EditionSectionsProvider>
-          <ConfirmPopupProvider>
-            <ChangeGroupProvider>
-              <OverrideGradeProvider>
-                <App />
-              </OverrideGradeProvider>
-            </ChangeGroupProvider>
-          </ConfirmPopupProvider>
+          <ThemeProvider theme={darkTheme}>
+            <ConfirmPopupProvider>
+              <ChangeGroupProvider>
+                <OverrideGradeProvider>
+                  <App />
+                </OverrideGradeProvider>
+              </ChangeGroupProvider>
+            </ConfirmPopupProvider>
+          </ThemeProvider>
         </EditionSectionsProvider>
       </UserProvider>
     </ApolloClientProvider>

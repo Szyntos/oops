@@ -22,8 +22,8 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
+    padding: 16,
     gap: 24,
     backgroundColor: tokens.color.card.navy,
-    padding: 16,
   },
 };

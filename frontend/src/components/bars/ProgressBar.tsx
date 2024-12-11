@@ -1,3 +1,4 @@
+import { Tooltip } from "@mui/material";
 import { tokens } from "../../tokens";
 import { Styles } from "../../utils/Styles";
 import { getLinearGradient } from "../../utils/utils";
@@ -5,6 +6,9 @@ import { CustomText } from "../CustomText";
 
 const BAR_HEIGHT = 20;
 const BORDER_RADIUS = 4;
+
+const TRIANGLE_WIDTH = 16;
+const TRIANGLE_HEIGHT = 10;
 
 type BarThreshold = {
   label?: string;
@@ -31,19 +35,15 @@ export const ProgressBar = ({
   darkColor = tokens.color.accent.dark,
 }: ProgressBarProps) => {
   if (points < 0) {
-    throw new Error("points cannot be a negative number");
+    console.error("points cannot be a negative number");
   }
-
   if (points < bounds.lower) {
-    throw new Error("points cannot be lower than the lower bound");
+    console.error("points cannot be lower than the lower bound");
   }
 
   const diff = bounds.lower;
 
   const calculatePercent = (p: number) => {
-    if (p < bounds.lower) {
-      throw new Error("points out of bounds.");
-    }
     return Math.min(
       Math.round(((p - diff) / (bounds.upper - diff)) * 100),
       100,
@@ -58,7 +58,10 @@ export const ProgressBar = ({
 
       <div style={styles.empty}>
         {showPoints && (
-          <CustomText style={styles.pointsContainer} size={tokens.font.small}>
+          <CustomText
+            style={styles.pointsTextContainer}
+            size={tokens.font.small}
+          >
             {points.toFixed(2)}/{bounds.upper.toFixed(2)}
           </CustomText>
         )}
@@ -78,13 +81,13 @@ export const ProgressBar = ({
             <div
               key={index}
               style={{
-                ...styles.thresholdLine,
+                position: "absolute",
                 left: `${calculatePercent(threshold.points)}%`,
               }}
             >
-              <CustomText style={styles.thresholdLabel} size={tokens.font.tiny}>
-                lvl.{threshold.label}
-              </CustomText>
+              <Tooltip placement="top" title={`lvl. ${threshold.label}`}>
+                <div style={styles.thresholdLine} />
+              </Tooltip>
             </div>
           ))}
       </div>
@@ -103,10 +106,9 @@ const styles: Styles = {
   },
   empty: {
     height: BAR_HEIGHT,
-    width: "100%",
     backgroundColor: tokens.color.state.disabled,
-    position: "relative",
     borderRadius: BORDER_RADIUS,
+    position: "relative",
   },
   filled: {
     height: "100%",
@@ -116,29 +118,20 @@ const styles: Styles = {
     borderTopLeftRadius: BORDER_RADIUS,
     borderBottomLeftRadius: BORDER_RADIUS,
   },
-  pointsContainer: {
+  pointsTextContainer: {
     position: "absolute",
     height: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    zIndex: 2,
     marginLeft: 4,
   },
   thresholdLine: {
+    borderLeft: `${TRIANGLE_WIDTH / 2}px solid transparent`,
+    borderRight: `${TRIANGLE_WIDTH / 2}px solid transparent`,
+    borderTop: `${TRIANGLE_HEIGHT}px solid ${tokens.color.state.error}`,
     position: "absolute",
-    height: BAR_HEIGHT,
-    width: 2,
-    backgroundColor: tokens.color.state.disabled,
-    bottom: 0,
-    zIndex: 1,
-  },
-  thresholdLabel: {
-    position: "absolute",
-    top: "100%",
     transform: "translateX(-50%)",
-    whiteSpace: "nowrap",
-    marginTop: 4,
-    zIndex: 1,
+    bottom: BAR_HEIGHT - TRIANGLE_HEIGHT + 2,
   },
 };

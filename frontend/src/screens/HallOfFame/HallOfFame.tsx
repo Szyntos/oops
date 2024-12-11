@@ -65,9 +65,13 @@ export const HallOfFame = () => {
         />
         <StudentCardsList
           students={displayStudents.filter((s) =>
-            isPartOfAString(searchInput, [s.nick]),
+            isPartOfAString(
+              searchInput,
+              isUserRoleStudent ? [s.nick] : [s.nick, s.displayName],
+            ),
           )}
           highlightedStudent={highlightedStudent}
+          showStudentName={!isUserRoleStudent}
         />
       </div>
     </div>

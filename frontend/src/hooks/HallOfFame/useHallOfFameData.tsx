@@ -19,6 +19,7 @@ export const useHallOfFameData = () => {
   const students: HallOfFameStudentData[] =
     data?.hallOfFame.map((student, index) => {
       return {
+        displayName: `${student.firstName} ${student.secondName}`,
         position: index + 1,
         id: student.userId ?? "",
         nick: student.nick ?? "",

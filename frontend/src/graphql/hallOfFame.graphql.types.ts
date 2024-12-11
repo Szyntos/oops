@@ -22,6 +22,8 @@ export type HallOfFameQuery = {
     generatedName?: string | null;
     levelImageId?: string | null;
     userImageId?: string | null;
+    firstName?: string | null;
+    secondName?: string | null;
   }>;
 };
 
@@ -42,6 +44,8 @@ export const HallOfFameDocument = gql`
       generatedName
       levelImageId
       userImageId
+      firstName
+      secondName
     }
   }
 `;

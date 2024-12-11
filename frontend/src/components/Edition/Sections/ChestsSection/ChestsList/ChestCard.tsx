@@ -31,7 +31,7 @@ export const ChestCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <Avatar id={chest.chest.imageFile?.fileId ?? undefined} size="xs" />
+      <Avatar id={chest.chest.imageFile?.fileId} size="xs" />
       <div>[{chest.chest.chestId}]</div>
       <div style={styles.subtitle}>{chest.chest.chestType}</div>
 

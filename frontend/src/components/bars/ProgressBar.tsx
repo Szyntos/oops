@@ -102,7 +102,7 @@ const styles: Styles = {
     gap: 4,
   },
   title: {
-    paddingLeft: 2,
+    paddingLeft: 0,
   },
   empty: {
     height: BAR_HEIGHT,

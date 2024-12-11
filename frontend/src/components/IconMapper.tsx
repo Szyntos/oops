@@ -14,6 +14,8 @@ import GroupIcon from "@mui/icons-material/Group";
 import SchoolIcon from "@mui/icons-material/School";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import MailIcon from "@mui/icons-material/Mail";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Yes icon
+import CancelIcon from "@mui/icons-material/Cancel"; // No icon
 import { Styles } from "../utils/Styles";
 import { tokens } from "../tokens";
 
@@ -38,7 +40,9 @@ type DisplayIcons =
   | "email"
   | "monster"
   | "level"
-  | "points";
+  | "points"
+  | "yes" // Added "yes"
+  | "no"; // Added "no"
 
 export type Icon = ActionIcons | DisplayIcons;
 
@@ -61,6 +65,8 @@ const iconMap = {
   monster: PetsIcon,
   level: StarIcon,
   points: SportsScoreIcon,
+  yes: CheckCircleIcon,
+  no: CancelIcon,
 };
 
 export const IconMapper = ({

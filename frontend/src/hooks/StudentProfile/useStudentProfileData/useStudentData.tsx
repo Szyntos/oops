@@ -21,6 +21,8 @@ export type StudentCardData = {
   totalPoints: number;
   avatarId: string | undefined;
   grade: string;
+  projectCheck: boolean;
+  levelCheck: boolean;
 };
 
 export const useStudentData = (props: {
@@ -69,6 +71,14 @@ export const useStudentData = (props: {
           : undefined,
         totalPoints: data.getStudentPoints.sumOfAll,
         avatarId: user.imageFile?.fileId,
+        levelCheck: Boolean(
+          user.userLevels.find((e) => e?.edition.editionId === editionId)
+            ?.endOfLabsLevelsReached,
+        ),
+        projectCheck: Boolean(
+          user.userLevels.find((e) => e?.edition.editionId === editionId)
+            ?.projectPointsThresholdReached,
+        ),
       }
     : undefined;
 

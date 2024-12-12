@@ -1,4 +1,4 @@
-query HallOfFame($editionId: bigint) {
+query HallOfFameTeacher($editionId: bigint) {
   hallOfFame(
     where: { editionId: { _eq: $editionId } }
     orderBy: [{ sumOfPoints: DESC }, { nick: ASC }]
@@ -14,5 +14,7 @@ query HallOfFame($editionId: bigint) {
     generatedName
     levelImageId
     userImageId
+    firstName
+    secondName
   }
 }

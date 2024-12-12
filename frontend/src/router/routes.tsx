@@ -19,6 +19,7 @@ import { GroupsSection } from "../components/Edition/Sections/GroupSection/Group
 import { UsersSection } from "../components/Edition/Sections/UsersSection/UsersSection";
 import { GradingChecksSection } from "../components/Edition/Sections/GradingChecksSection/GradingChecksSection";
 import { ChestsSection } from "../components/Edition/Sections/ChestsSection/ChestsSection";
+import { HallOfFameTeacher } from "../screens/HallOfFame/HallOfFameTeacher";
 
 const commonPaths = pathsWithParameters.common;
 const studentPaths = pathsWithParameters.student;
@@ -54,11 +55,11 @@ export const routes = createBrowserRouter([
         ),
       },
       {
-        path: commonPaths.HallOfFame.path,
+        path: studentPaths.HallOfFame.path,
         element: (
           <ProtectedRoute
             element={<HallOfFame />}
-            allowedRoles={commonPaths.HallOfFame.allowedRoles}
+            allowedRoles={studentPaths.HallOfFame.allowedRoles}
           />
         ),
       },
@@ -86,6 +87,15 @@ export const routes = createBrowserRouter([
           <ProtectedRoute
             element={<TeacherStudentProfile />}
             allowedRoles={teacherPaths.StudentProfile.allowedRoles}
+          />
+        ),
+      },
+      {
+        path: teacherPaths.HallOfFame.path,
+        element: (
+          <ProtectedRoute
+            element={<HallOfFameTeacher />}
+            allowedRoles={teacherPaths.HallOfFame.allowedRoles}
           />
         ),
       },

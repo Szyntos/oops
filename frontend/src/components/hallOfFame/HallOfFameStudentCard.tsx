@@ -13,7 +13,7 @@ type HallOfFameStudentCardProps = {
 };
 
 export type HallOfFameStudentData = {
-  displayName: string;
+  displayName?: string;
   position: number;
   id: string;
   nick: string;

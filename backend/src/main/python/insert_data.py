@@ -290,7 +290,7 @@ if __name__ == '__main__':
             "port": "5432"
         }
         headers["x-hasura-admin-secret"] = os.getenv("HASURA_GRAPHQL_ADMIN_SECRET")
-        headers["Authorization"] = f"Bearer {os.getenv('BYPASS_TOKEN')}1"
+        headers["Authorization"] = f"Bearer {os.getenv('VITE_BYPASS_TOKEN')}1"
         admin_mail = os.getenv("ADMIN_MAIL")
         print("Configuration for demo loaded successfully.")
     if check_if_coordinator_present():

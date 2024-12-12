@@ -19,8 +19,7 @@ class UserMapper(
         val token = authorizationHeader.removePrefix("Bearer ").trim()
         val bypassAuth = System.getProperty("BYPASS_AUTH") ?: System.getenv("BYPASS_AUTH")
         if (bypassAuth == "true") {
-            val bypassToken = System.getProperty("BYPASS_TOKEN") ?: System.getenv("BYPASS_TOKEN")
-
+            val bypassToken = System.getProperty("VITE_BYPASS_TOKEN") ?: System.getenv("VITE_BYPASS_TOKEN")
             if (token.startsWith(bypassToken)) {
                 val id = token.substringAfter(bypassToken).toLongOrNull()
                 if (id?.toInt() == 0){

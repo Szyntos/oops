@@ -50,5 +50,6 @@ fun main(args: Array<String>) {
 	}
 	dotenv?.entries()?.forEach { System.setProperty(it.key, it.value) }
 
+
 	runApplication<BackendApplication>(*args)
 }

@@ -237,6 +237,7 @@ if __name__ == '__main__':
     with open(path_to_config, encoding="UTF-8") as config_file:
         config = json.load(config_file)
 
+    print("Configuration loaded successfully.")
     # Extract values from the configuration
     db_config = config['database']
     base_url = config['base_url']
@@ -258,10 +259,12 @@ if __name__ == '__main__':
             "user": os.getenv("POSTGRES_USER"),
             "password": os.getenv("POSTGRES_PASSWORD"),
             "host": "postgres",
-            "port": "6543"
+            "port": "5432"
         }
         headers["x-hasura-admin-secret"] = os.getenv("HASURA_GRAPHQL_ADMIN_SECRET")
         headers["Authorization"] = f"Bearer {os.getenv('BYPASS_TOKEN')}1"
+        admin_mail = os.getenv("ADMIN_MAIL")
+        print("Configuration for demo loaded successfully.")
 
 
 

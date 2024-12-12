@@ -2,6 +2,7 @@ import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { TextField } from "@mui/material";
 import { Styles } from "../../utils/Styles";
+import { tokens } from "../../tokens";
 
 export type EditionFormValues = z.infer<typeof ValidationSchema>;
 
@@ -97,6 +98,6 @@ const styles: Styles = {
     fontWeight: "bold",
   },
   error: {
-    color: "red",
+    color: tokens.color.state.error,
   },
 };

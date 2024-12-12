@@ -12,6 +12,7 @@ select_permissions:
   - role: coordinator
     permission:
       columns:
+        - active
         - chest_edition_id
         - chest_id
         - edition_id
@@ -22,6 +23,7 @@ select_permissions:
   - role: student
     permission:
       columns:
+        - active
         - chest_edition_id
         - chest_id
         - edition_id
@@ -37,6 +39,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - active
         - chest_edition_id
         - chest_id
         - edition_id

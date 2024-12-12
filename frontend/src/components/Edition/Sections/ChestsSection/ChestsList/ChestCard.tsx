@@ -1,7 +1,9 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
+import { tokens } from "../../../../../tokens";
 import { Styles } from "../../../../../utils/Styles";
-import { Image } from "../../../../images/Image";
+import { isChestActive } from "../../../../../utils/utils";
+import { Avatar } from "../../../../avatars/Avatar";
 import { SetupButtons } from "../../SetupButtons";
 
 type ChestCardProps = {
@@ -11,6 +13,8 @@ type ChestCardProps = {
   onEditClick: () => void;
   onDeleteClick: () => void;
   onCopyClick: () => void;
+  onChestActivateClick: () => void;
+  editionId: number;
 };
 
 export const ChestCard = ({
@@ -20,6 +24,8 @@ export const ChestCard = ({
   onEditClick,
   onDeleteClick,
   onCopyClick,
+  onChestActivateClick,
+  editionId,
 }: ChestCardProps) => {
   const { openShowDialog } = useEditionSections();
 
@@ -30,11 +36,7 @@ export const ChestCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <Image
-        id={chest.chest.imageFile?.fileId ?? undefined}
-        size={32}
-        disabled={false}
-      />
+      <Avatar id={chest.chest.imageFile?.fileId ?? undefined} size="xs" />
       <div>[{chest.chest.chestId}]</div>
       <div style={styles.subtitle}>{chest.chest.chestType}</div>
 
@@ -46,6 +48,14 @@ export const ChestCard = ({
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
         handleShow={() => openShowDialog(chest)}
+        handleMarkChestActiveness={onChestActivateClick}
+        isChestActive={isChestActive(
+          chest.chest.chestEdition.map((e) => ({
+            id: e?.edition.editionId ?? "-1",
+            active: Boolean(e?.active),
+          })),
+          editionId.toString(),
+        )}
       />
     </div>
   );
@@ -57,6 +67,6 @@ const styles: Styles = {
     padding: 12,
   },
   subtitle: {
-    color: "grey",
+    color: tokens.color.state.disabled,
   },
 };

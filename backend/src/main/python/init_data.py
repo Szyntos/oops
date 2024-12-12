@@ -2,6 +2,7 @@ import json
 import os
 
 from insert_data import check_if_coordinator_present
+
 from utils.insert_init_files import insert_init_files
 from utils.insert_initial_user import insert_initial_coordinator
 
@@ -18,14 +19,17 @@ headers = {
     "x-hasura-admin-secret": os.getenv("HASURA_GRAPHQL_ADMIN_SECRET"),
 }
 admin_mail = os.getenv("ADMIN_MAIL")
+
 do_insert_files = os.getenv("DO_INSERT_FILES", "true").lower() == "true"
 
 def insert_data():
     if do_insert_files:
         insert_init_files(base_url + "/files/upload")
+
     if check_if_coordinator_present():
         print("Coordinator already present. Exiting.")
         exit(0)
+
     coordinator_id_and_role = insert_initial_coordinator(hasura_url, headers)
 
 if __name__ == '__main__':

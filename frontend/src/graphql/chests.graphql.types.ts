@@ -15,7 +15,11 @@ export type ChestsQuery = {
     imageFileId?: string | null;
     label: string;
     type: string;
-    chestEditions: Array<{ __typename?: "ChestEdition"; editionId: string }>;
+    chestEditions: Array<{
+      __typename?: "ChestEdition";
+      editionId: string;
+      active: boolean;
+    }>;
   }>;
 };
 
@@ -28,6 +32,7 @@ export const ChestsDocument = gql`
       type
       chestEditions {
         editionId
+        active
       }
     }
   }

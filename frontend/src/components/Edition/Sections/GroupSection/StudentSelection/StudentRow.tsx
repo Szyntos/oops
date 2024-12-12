@@ -13,7 +13,7 @@ export const StudentRow = ({ student, handleDelete }: StudentRowProps) => {
         -
       </button>
       <div>
-        {student.user.firstName} {student.user.secondName}
+        {student.firstName} {student.secondName}
       </div>
     </div>
   );

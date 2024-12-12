@@ -126,7 +126,6 @@ services:
       BYPASS_AUTH: ${BYPASS_AUTH}
       BYPASS_TOKEN: ${BYPASS_TOKEN}
       ADMIN_MAIL: ${ADMIN_MAIL}
-
     volumes:
       - ./backend/src/main/python:/app
       - ./backend/src/main/python/config.json:/app/config.json

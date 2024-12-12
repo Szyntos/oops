@@ -7443,8 +7443,10 @@ export type LevelsVarianceOrderBy = {
 export type ListPermissionsOutputType = {
   __typename?: "ListPermissionsOutputType";
   additional: Array<PermissionType>;
+  canActivate?: Maybe<PermissionType>;
   canAdd: PermissionType;
   canCopy: PermissionType;
+  canDeactivate?: Maybe<PermissionType>;
   canEdit: PermissionType;
   canMarkAsActive?: Maybe<PermissionType>;
   canMarkAsInactive?: Maybe<PermissionType>;

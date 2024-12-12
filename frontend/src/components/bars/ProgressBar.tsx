@@ -1,6 +1,10 @@
+import { tokens } from "../../tokens";
 import { Styles } from "../../utils/Styles";
+import { getLinearGradient } from "../../utils/utils";
+import { CustomText } from "../CustomText";
 
-const BAR_HEIGHT = 24;
+const BAR_HEIGHT = 20;
+const BORDER_RADIUS = 4;
 
 type BarThreshold = {
   label?: string;
@@ -12,7 +16,9 @@ export type ProgressBarProps = {
   bounds: { lower: number; upper: number };
   thresholds?: BarThreshold[];
   showPoints?: boolean;
-  label?: string;
+  title?: string;
+  lightColor?: string;
+  darkColor?: string;
 };
 
 export const ProgressBar = ({
@@ -20,7 +26,9 @@ export const ProgressBar = ({
   bounds,
   thresholds,
   showPoints,
-  label,
+  title,
+  lightColor = tokens.color.accent.light,
+  darkColor = tokens.color.accent.dark,
 }: ProgressBarProps) => {
   if (points < 0) {
     throw new Error("points cannot be a negative number");
@@ -46,30 +54,39 @@ export const ProgressBar = ({
 
   return (
     <div style={styles.container}>
-      {label && <div>{label}</div>}
+      {title && <CustomText style={styles.title}>{title}</CustomText>}
+
       <div style={styles.empty}>
         {showPoints && (
-          <div style={styles.pointsContainer}>
+          <CustomText style={styles.pointsContainer} size={tokens.font.small}>
             {points.toFixed(2)}/{bounds.upper.toFixed(2)}
-          </div>
+          </CustomText>
         )}
-        <div style={{ ...styles.filled, width: `${filledPercent}%` }} />
+        <div
+          style={{
+            ...styles.filled,
+            width: `${filledPercent}%`,
+            background: getLinearGradient(darkColor, lightColor),
+            borderTopRightRadius: filledPercent === 100 ? BORDER_RADIUS : 0,
+            borderBottomRightRadius: filledPercent === 100 ? BORDER_RADIUS : 0,
+          }}
+        />
 
         {thresholds &&
           thresholds.length > 0 &&
-          thresholds.map((threshold, index) => {
-            return (
-              <div
-                key={index}
-                style={{
-                  ...styles.thresholdLine,
-                  left: `${calculatePercent(threshold.points)}%`,
-                }}
-              >
-                <div style={styles.thresholdLabel}>{threshold.label}</div>
-              </div>
-            );
-          })}
+          thresholds.map((threshold, index) => (
+            <div
+              key={index}
+              style={{
+                ...styles.thresholdLine,
+                left: `${calculatePercent(threshold.points)}%`,
+              }}
+            >
+              <CustomText style={styles.thresholdLabel} size={tokens.font.tiny}>
+                lvl.{threshold.label}
+              </CustomText>
+            </div>
+          ))}
       </div>
     </div>
   );
@@ -81,17 +98,23 @@ const styles: Styles = {
     flexDirection: "column",
     gap: 4,
   },
+  title: {
+    paddingLeft: 2,
+  },
   empty: {
     height: BAR_HEIGHT,
     width: "100%",
-    backgroundColor: "lightgrey",
+    backgroundColor: tokens.color.state.disabled,
     position: "relative",
+    borderRadius: BORDER_RADIUS,
   },
   filled: {
     height: "100%",
     display: "flex",
     alignItems: "center",
-    backgroundColor: "lightblue",
+    backgroundColor: tokens.color.accent.light,
+    borderTopLeftRadius: BORDER_RADIUS,
+    borderBottomLeftRadius: BORDER_RADIUS,
   },
   pointsContainer: {
     position: "absolute",
@@ -99,13 +122,16 @@ const styles: Styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
+    zIndex: 2,
+    marginLeft: 4,
   },
   thresholdLine: {
     position: "absolute",
     height: BAR_HEIGHT,
     width: 2,
-    backgroundColor: "grey",
+    backgroundColor: tokens.color.state.disabled,
     bottom: 0,
+    zIndex: 1,
   },
   thresholdLabel: {
     position: "absolute",
@@ -113,5 +139,6 @@ const styles: Styles = {
     transform: "translateX(-50%)",
     whiteSpace: "nowrap",
     marginTop: 4,
+    zIndex: 1,
   },
 };

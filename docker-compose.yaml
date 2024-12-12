@@ -99,11 +99,7 @@ services:
         VITE_FIREBASE_APP_ID: ${VITE_FIREBASE_APP_ID}
         VITE_FIREBASE_MEASUREMENT_ID: ${VITE_FIREBASE_MEASUREMENT_ID}
         VITE_PUBLIC_IP: ${VITE_PUBLIC_IP}
-<<<<<<< HEAD
-        VITE_BYPASS_TOKEN: ${BYPASS_TOKEN}
-=======
         VITE_BYPASS_TOKEN: ${VITE_BYPASS_TOKEN}
->>>>>>> main
 
     ports:
       - "80:80" # Map frontend port (nginx serves it)
@@ -128,11 +124,7 @@ services:
       DO_INSERT_DEMO_DATA: ${DO_INSERT_DEMO_DATA}
       INIT_DATA: ${INIT_DATA}
       BYPASS_AUTH: ${BYPASS_AUTH}
-<<<<<<< HEAD
-      BYPASS_TOKEN: ${BYPASS_TOKEN}
-=======
       VITE_BYPASS_TOKEN: ${VITE_BYPASS_TOKEN}
->>>>>>> main
       ADMIN_MAIL: ${ADMIN_MAIL}
     volumes:
       - ./backend/src/main/python:/app

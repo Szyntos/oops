@@ -1,5 +1,4 @@
 import {
-  createTheme,
   Paper,
   Table,
   TableBody,
@@ -7,7 +6,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  ThemeProvider,
 } from "@mui/material";
 import { Points } from "../../../hooks/StudentProfile";
 import { CategoryTag } from "../../CategoryTag";
@@ -52,12 +50,6 @@ export const StudentTable = ({
   showActionButtons,
   blockActionButtons,
 }: StudentTableProps) => {
-  const darkTheme = createTheme({
-    palette: {
-      mode: "dark",
-    },
-  });
-
   if (showActionButtons && !editFunctions) {
     throw new Error(
       "Invalid arguments passed - handleEditClick or handleDeleteClick is undefined.",
@@ -65,83 +57,81 @@ export const StudentTable = ({
   }
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {showActionButtons && <TableCell />}
-              {headerTitles.map((header) => (
-                <TableCell style={styles.header} align={header.align}>
-                  {header.name}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {points.map((p, index) => (
-              <TableRow key={index}>
-                {showActionButtons && (
-                  <TableCell>
-                    <div style={styles.buttonsContainer}>
-                      <CustomIconButton
-                        icon="add"
-                        onClick={() => editFunctions?.handleAddClick(p)}
-                        disabled={
-                          Boolean(p.points.purePoints) || blockActionButtons
-                        }
-                      />
-                      <CustomIconButton
-                        icon="edit"
-                        onClick={() => editFunctions?.handleEditClick(p)}
-                        disabled={!p.points.purePoints || blockActionButtons}
-                      />
-                      <CustomIconButton
-                        icon="delete"
-                        onClick={() => {
-                          if (p.points.purePoints?.pointsId) {
-                            editFunctions?.handleDeleteClick(
-                              p.points.purePoints?.pointsId,
-                            );
-                          }
-                        }}
-                        disabled={
-                          blockActionButtons || !p.points.purePoints?.pointsId
-                        }
-                        color={tokens.color.state.error}
-                      />
-                    </div>
-                  </TableCell>
-                )}
-                <TableCell align="center">
-                  {p.subcategory.subcategoryName}
-                </TableCell>
-                <TableCell align="center">
-                  <AwardsCellContent points={p} />
-                </TableCell>
-                <TableCell align="center">
-                  <CategoryTag
-                    name={p.subcategory.category.categoryName}
-                    darkColor={p.subcategory.category.darkColor}
-                    lightColor={p.subcategory.category.lightColor}
-                  />
-                </TableCell>
-                <TableCell align="center">
-                  <PointsCellContent points={p} />
-                </TableCell>
-                <TableCell align="center">{p.subcategory.maxPoints}</TableCell>
-                <TableCell align="center">
-                  <DateCellContent points={p} />
-                </TableCell>
-                <TableCell align="center">
-                  {p.teacher.firstName} {p.teacher.secondName}
-                </TableCell>
-              </TableRow>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {showActionButtons && <TableCell />}
+            {headerTitles.map((header) => (
+              <TableCell style={styles.header} align={header.align}>
+                {header.name}
+              </TableCell>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </ThemeProvider>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {points.map((p, index) => (
+            <TableRow key={index}>
+              {showActionButtons && (
+                <TableCell>
+                  <div style={styles.buttonsContainer}>
+                    <CustomIconButton
+                      icon="add"
+                      onClick={() => editFunctions?.handleAddClick(p)}
+                      disabled={
+                        Boolean(p.points.purePoints) || blockActionButtons
+                      }
+                    />
+                    <CustomIconButton
+                      icon="edit"
+                      onClick={() => editFunctions?.handleEditClick(p)}
+                      disabled={!p.points.purePoints || blockActionButtons}
+                    />
+                    <CustomIconButton
+                      icon="delete"
+                      onClick={() => {
+                        if (p.points.purePoints?.pointsId) {
+                          editFunctions?.handleDeleteClick(
+                            p.points.purePoints?.pointsId,
+                          );
+                        }
+                      }}
+                      disabled={
+                        blockActionButtons || !p.points.purePoints?.pointsId
+                      }
+                      color={tokens.color.state.error}
+                    />
+                  </div>
+                </TableCell>
+              )}
+              <TableCell align="center">
+                {p.subcategory.subcategoryName}
+              </TableCell>
+              <TableCell align="center">
+                <AwardsCellContent points={p} />
+              </TableCell>
+              <TableCell align="center">
+                <CategoryTag
+                  name={p.subcategory.category.categoryName}
+                  darkColor={p.subcategory.category.darkColor}
+                  lightColor={p.subcategory.category.lightColor}
+                />
+              </TableCell>
+              <TableCell align="center">
+                <PointsCellContent points={p} />
+              </TableCell>
+              <TableCell align="center">{p.subcategory.maxPoints}</TableCell>
+              <TableCell align="center">
+                <DateCellContent points={p} />
+              </TableCell>
+              <TableCell align="center">
+                {p.teacher.firstName} {p.teacher.secondName}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

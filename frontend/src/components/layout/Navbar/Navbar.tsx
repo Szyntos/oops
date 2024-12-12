@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { navigationItems } from "../../../router/paths";
+import { getNavigationItems } from "../../../router/paths";
 import { Styles } from "../../../utils/Styles";
 import { useEditionSelection } from "../../../hooks/common/useEditionSelection";
 import { useUser } from "../../../hooks/common/useUser";
@@ -45,6 +45,10 @@ export const Navbar = () => {
     closeSettings,
     handleChangeEditionConfirm,
   } = useSettings();
+
+  const navigationItems = getNavigationItems(
+    user.role === UsersRolesType.Student,
+  );
 
   return (
     <div style={styles.navbar}>

@@ -27,7 +27,7 @@ type SubcategoryRowProps = {
 
 export const SubcategoryRow = ({
   initialValues,
-  disabled = true,
+  disabled = false,
   blockUp = false,
   blockDown = false,
   handleAdd,

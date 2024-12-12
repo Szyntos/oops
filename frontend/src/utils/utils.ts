@@ -71,3 +71,7 @@ export const getLinearGradient = (
 ): string => {
   return `linear-gradient(to right, ${firstColor}, ${secondColor})`;
 };
+
+export const getTimeWithoutSeconds = (time: string) => {
+  return time.slice(0, -3);
+};

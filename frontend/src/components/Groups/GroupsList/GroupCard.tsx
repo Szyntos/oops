@@ -69,10 +69,10 @@ const styles: Styles = {
     marginBottom: 12,
   },
   detailsContainer: {
-    paddingTop: 8,
+    paddingTop: 6,
     display: "flex",
     flexDirection: "column",
-    gap: 6,
+    gap: 4,
   },
   editableIndicatorWrapper: {
     top: 140,

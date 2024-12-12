@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Styles } from "../../../utils/Styles";
 import { Section } from "../../StudentProfile/cards/Section/Section";
-import { CustomText } from "../../CustomText";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import { tokens } from "../../../tokens";
+import { CustomText } from "../../CustomText";
 
 export type FilterItem = {
   id: string;
@@ -47,10 +47,17 @@ export const FilterOptionsSection = ({
                     "&.Mui-checked": {
                       color: tokens.color.accent.dark,
                     },
+                    padding: 0,
                   }}
                 />
               }
               label={<CustomText>{option.name}</CustomText>}
+              sx={{
+                display: "flex",
+                gap: "6px",
+                alignItems: "center",
+                transform: "translateX(11px)",
+              }}
             />
           </div>
         ))}
@@ -61,8 +68,7 @@ export const FilterOptionsSection = ({
 
 const styles: Styles = {
   optionsContainer: {
-    padding: 4,
-    gap: 4,
+    gap: 8,
     display: "flex",
     flexDirection: "column",
     cursor: "pointer",

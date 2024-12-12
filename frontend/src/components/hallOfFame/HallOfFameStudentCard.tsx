@@ -9,9 +9,11 @@ export const HALL_OF_FAME_STUDENT_CARD_ID_PREFIX = "student-";
 type HallOfFameStudentCardProps = {
   student: HallOfFameStudentData;
   isHighlighted?: boolean;
+  showStudentName: boolean;
 };
 
 export type HallOfFameStudentData = {
+  displayName?: string;
   position: number;
   id: string;
   nick: string;
@@ -25,6 +27,7 @@ export type HallOfFameStudentData = {
 export const HallOfFameStudentCard = ({
   student,
   isHighlighted,
+  showStudentName,
 }: HallOfFameStudentCardProps) => {
   return (
     <div
@@ -38,9 +41,10 @@ export const HallOfFameStudentCard = ({
     >
       <CustomText style={styles.position}>{student.position}.</CustomText>
       <Avatar id={student.avatarImgId} size={"xs"} />
-      <CustomText style={styles.nick} bold={true}>
-        {student.nick}
-      </CustomText>
+      <div style={styles.nickAndNAmeContainer}>
+        <CustomText bold={true}>{student.nick}</CustomText>
+        {showStudentName && <CustomText>{student.displayName}</CustomText>}
+      </div>
       <Avatar id={student.levelImgId} size={"xs"} />
       <CustomText style={styles.animalName}>{student.levelName}</CustomText>
       <CustomText>{student.totalPoints.toFixed(2)}pkt</CustomText>
@@ -61,8 +65,11 @@ const styles: Styles = {
   position: {
     width: 18,
   },
-  nick: {
+  nickAndNAmeContainer: {
     flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    gap: 6,
   },
   animalName: {
     flex: 1,

@@ -65,7 +65,7 @@ export const SelectImage = ({
               }
             >
               <Avatar
-                id={award.award.imageFile?.fileId as string}
+                id={award.award.imageFile?.fileId}
                 size={"l"}
                 disabled={!selectedIds.some((id) => id === award.award.awardId)}
               />

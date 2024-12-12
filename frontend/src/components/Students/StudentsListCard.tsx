@@ -69,12 +69,12 @@ const styles: Styles = {
   textContainer: {
     display: "flex",
     flexDirection: "column",
-    gap: 8,
+    gap: 6,
   },
   secondaryTextContainer: {
     display: "flex",
     flexDirection: "column",
-    gap: 6,
+    gap: 4,
   },
   rightBottomCorner: {
     position: "absolute",

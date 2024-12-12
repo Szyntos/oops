@@ -7,11 +7,13 @@ import {
 type StudentCardsListProps = {
   students: HallOfFameStudentData[];
   highlightedStudent?: HallOfFameStudentData;
+  showStudentName: boolean;
 };
 
 export const StudentCardsList = ({
   students,
   highlightedStudent,
+  showStudentName,
 }: StudentCardsListProps) => {
   return (
     <div style={styles.cardsContainer}>
@@ -20,6 +22,7 @@ export const StudentCardsList = ({
           key={student.id}
           student={student}
           isHighlighted={student.id === highlightedStudent?.id}
+          showStudentName={showStudentName}
         />
       ))}
     </div>

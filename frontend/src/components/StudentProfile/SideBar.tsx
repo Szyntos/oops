@@ -7,6 +7,7 @@ import { BonusesCard } from "./cards/BonusesCard";
 import { Bonus } from "../../hooks/StudentProfile";
 import { NeighboringLevel } from "../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
 import { CustomSideBar } from "../layout/CustomSideBar";
+import { ChecksCard } from "./cards/ChecksCard";
 
 type SideBarProps = {
   student: StudentCardData;
@@ -30,15 +31,19 @@ export const SideBar = ({
   return (
     <CustomSideBar>
       <StudentCard {...student} />
-      <CategoriesCard
-        categoriesBarProps={categoriesBarProps}
-        totalPoints={sumOfAllPoints ?? 0}
-      />
       <AnimalCard
         prevLevel={prevLevel}
         currLevel={currLevel}
         nextLevel={nextLevel}
         totalPoints={sumOfAllPoints}
+      />
+      <ChecksCard
+        levelCheck={student.levelCheck}
+        projectCheck={student.projectCheck}
+      />
+      <CategoriesCard
+        categoriesBarProps={categoriesBarProps}
+        totalPoints={sumOfAllPoints ?? 0}
       />
       <BonusesCard bonuses={bonuses} />
     </CustomSideBar>

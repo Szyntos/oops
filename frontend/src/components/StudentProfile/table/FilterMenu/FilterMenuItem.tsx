@@ -3,6 +3,8 @@ import { BACKGROUND_COLOR_ANIMATION } from "../../../../utils/utils";
 import { CustomText } from "../../../CustomText";
 import { FilterMenuItemType } from "./FilterMenu";
 
+const BORDER_WIDTH = 2;
+
 export type FilterMenuItemProps = {
   item: FilterMenuItemType;
   isSelected: boolean;
@@ -21,6 +23,7 @@ export const FilterMenuItem = ({
       style={{
         ...styles.item,
         backgroundColor: isSelected ? item.darkColor : undefined,
+        border: `${BORDER_WIDTH}px solid ${item.darkColor}`,
       }}
     >
       {item.name}
@@ -30,7 +33,7 @@ export const FilterMenuItem = ({
 
 const styles: Styles = {
   item: {
-    padding: 12,
+    padding: 12 - BORDER_WIDTH,
     borderRadius: 8,
     cursor: "pointer",
     transition: BACKGROUND_COLOR_ANIMATION,

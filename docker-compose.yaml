@@ -53,8 +53,11 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      BYPASS_TOKEN: ${BYPASS_TOKEN}
     env_file:
       - .env
+    volumes:
+      - backend_files:/app/resources
 
   hasura-apply-metadata:
     image: hasura/graphql-engine:v2.45.1-ce
@@ -96,6 +99,7 @@ services:
         VITE_FIREBASE_APP_ID: ${VITE_FIREBASE_APP_ID}
         VITE_FIREBASE_MEASUREMENT_ID: ${VITE_FIREBASE_MEASUREMENT_ID}
         VITE_PUBLIC_IP: ${VITE_PUBLIC_IP}
+        VITE_BYPASS_TOKEN: ${BYPASS_TOKEN}
 
     ports:
       - "80:80" # Map frontend port (nginx serves it)
@@ -114,17 +118,27 @@ services:
     environment:
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
       DO_INSERT_FILES: ${DO_INSERT_FILES}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      DO_INSERT_DEMO_DATA: ${DO_INSERT_DEMO_DATA}
+      INIT_DATA: ${INIT_DATA}
+      BYPASS_AUTH: ${BYPASS_AUTH}
+      BYPASS_TOKEN: ${BYPASS_TOKEN}
+      ADMIN_MAIL: ${ADMIN_MAIL}
     volumes:
       - ./backend/src/main/python:/app
       - ./backend/src/main/python/config.json:/app/config.json
+      - ./backend/src/main/python/config_for_demo.json:/app/config_for_demo.json
     entrypoint: >
       /bin/sh -c "
       echo 'Installing Python dependencies...' &&
-      pip install --no-cache-dir requests &&
+      pip install --no-cache-dir requests psycopg2-binary faker tqdm scipy numpy &&
       echo 'Waiting for Hasura metadata to be applied...' &&
       sleep 5 &&
-      echo 'Executing init_data.py...' &&
-      python3 init_data.py"
+      echo 'Executing insert_data.py...' &&
+      python3 insert_data.py config_for_demo.json ${INIT_DATA}"
 
 volumes:
   postgres_data:
+  backend_files:

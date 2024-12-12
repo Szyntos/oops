@@ -42,7 +42,8 @@ def insert_initial_coordinator(hasura_url, headers):
     variables = user_object
 
     admin_header = headers.copy()
-    admin_header["Authorization"] = "Bearer Bypass0"
+    admin_header["Authorization"] = admin_header["Authorization"][:-1] + "0"
+
 
     response = requests.post(
         hasura_url,

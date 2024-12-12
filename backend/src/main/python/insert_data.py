@@ -216,6 +216,34 @@ def insert_data():
     cursor.close()
     conn.close()
 
+def check_if_coordinator_present():
+    mutation = """
+            query MyQuery {
+              users(where: {role: {_eq: "coordinator"}}) {
+                userId
+              }
+            }
+            """
+
+    admin_header = headers.copy()
+    admin_header["Authorization"] = admin_header["Authorization"][:-1] + "0"
+
+    response = requests.post(
+        hasura_url,
+        json={"query": mutation},
+        headers=admin_header
+    )
+
+    if response.status_code != 200:
+        print(f"Error fetching coordinator: {response.text}")
+        return False
+    if "errors" in response.json():
+        print(f"Error fetching coordinator: {response.json()['errors']}")
+        return False
+    if not response.json()["data"]["users"]:
+        return False
+    return True
+
 
 if __name__ == '__main__':
     path_to_config = "config.json"
@@ -265,6 +293,9 @@ if __name__ == '__main__':
         headers["Authorization"] = f"Bearer {os.getenv('BYPASS_TOKEN')}1"
         admin_mail = os.getenv("ADMIN_MAIL")
         print("Configuration for demo loaded successfully.")
+    if check_if_coordinator_present():
+        print("Coordinator already present. Exiting.")
+        exit(0)
 
 
 

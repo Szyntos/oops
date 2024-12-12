@@ -9,7 +9,7 @@ import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame
 import { CONTENT_CONTAINER_HEIGHT } from "../../components/layout/ScreenContentContainer";
 import { tokens } from "../../tokens";
 
-export const HallOfFame = () => {
+export const HallOfFameTeacher = () => {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
     useHallOfFameData();
   const [showStudentsFromAllGroups, setShowStudentsFromAllGroups] =

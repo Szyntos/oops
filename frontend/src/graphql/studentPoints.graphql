@@ -6,6 +6,8 @@ query StudentPoints($editionId: Int!, $studentId: Int!) {
         edition {
           editionId
         }
+        endOfLabsLevelsReached
+        projectPointsThresholdReached
       }
       firstName
       indexNumber

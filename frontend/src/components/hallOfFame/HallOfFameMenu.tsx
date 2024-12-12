@@ -25,7 +25,7 @@ export const HallOfFameMenu = ({
     <div style={styles.container}>
       {isUserRoleStudent ? (
         <>
-          <CustomButton onClick={scrollToStudent}>znajdź mnie</CustomButton>
+          <CustomButton onClick={scrollToStudent}>wyszukaj mnie</CustomButton>
           <HallOfFameStudentSearcher onInputChange={onSearchChange} />
           <FilterButton
             option={"moja grupa"}
@@ -50,6 +50,7 @@ const styles: Styles = {
     display: "flex",
     gap: 12,
     padding: 12,
-    backgroundColor: tokens.color.state.disabled,
+    backgroundColor: tokens.color.border.dark,
+    alignItems: "center",
   },
 };

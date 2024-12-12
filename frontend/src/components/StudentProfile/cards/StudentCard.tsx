@@ -6,6 +6,7 @@ import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { tokens } from "../../../tokens";
 import { Avatar } from "../../avatars/Avatar";
+import { getTimeWithoutSeconds } from "../../../utils/utils";
 
 export function StudentCard({
   nick,
@@ -14,6 +15,7 @@ export function StudentCard({
   group,
   avatarId,
   grade,
+  totalPoints,
 }: StudentCardData) {
   const profileItems: ItemWithIconProps[] = [
     { icon: "name", title: displayName },
@@ -23,14 +25,14 @@ export function StudentCard({
 
   const performanceItems: ItemWithIconProps[] = [
     { icon: "grade", title: grade },
-    { icon: "score", title: 123 },
+    { icon: "score", title: totalPoints },
   ];
 
   const centerItems: ItemWithIconProps[] = [
     {
       icon: "group",
       title: group
-        ? `${group.name}, ${group.weekday.name} ${group.time.start}-${group.time.end}`
+        ? `${group.name}, ${group.weekday.name} ${getTimeWithoutSeconds(group.time.start)}-${getTimeWithoutSeconds(group.time.end)}`
         : EMPTY_FIELD_STRING,
     },
     {

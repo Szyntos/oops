@@ -48,7 +48,7 @@ const styles: Styles = {
   },
   input: {
     flex: 1,
-    padding: 12,
+    padding: 11,
     borderRadius: 6,
     fontSize: tokens.font.text,
     border: "none",

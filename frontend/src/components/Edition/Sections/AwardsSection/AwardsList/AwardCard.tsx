@@ -31,7 +31,7 @@ export const AwardCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <Avatar id={award.award.imageFile?.fileId ?? undefined} size="l" />
+      <Avatar id={award.award.imageFile?.fileId} size="l" />
       <div>{award.award.awardName}</div>
       <div style={styles.subtitle}>{award.award.awardType}</div>
 

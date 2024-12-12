@@ -129,5 +129,6 @@ const styles: Styles = {
     display: "flex",
     flexDirection: "row",
     gap: 12,
+    alignItems: "center",
   },
 };

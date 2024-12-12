@@ -13,7 +13,7 @@ export const CategoriesCard = ({
 }: CategoriesCardProps) => {
   return (
     <Section title="Punkty">
-      <div style={{ marginBottom: 12 }}>
+      <div>
         <CourseProgressBar totalPoints={totalPoints} title="razem" />
       </div>
 

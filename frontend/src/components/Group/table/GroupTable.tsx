@@ -113,7 +113,7 @@ export const GroupTable = ({
   };
 
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 560 }}>
+    <TableContainer component={Paper} sx={{ maxHeight: "100%" }}>
       <Table>
         <TableHead>
           <TableRow>

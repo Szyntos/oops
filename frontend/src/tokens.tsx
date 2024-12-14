@@ -1,25 +1,20 @@
 export const tokens = {
   color: {
     background: {
-      primary: "#070c11",
+      primary: "#fbf8fc",
     },
     card: {
-      blue: "#0d1929",
-      navy: "#0b131c",
-      light: "#98bde7",
-      grey: "#0f151a",
+      light: "#f5eef9",
+      dark: "#e7d8ef",
     },
     text: {
-      primary: "#dde8f4",
-      secondary: "#96bce6",
+      primary: "black",
+      secondary: "#202020",
+      tertiary: "lightgrey",
     },
     accent: {
-      light: "#96bce6",
-      dark: "#4a93e3",
-    },
-    border: {
-      light: "#96bce6",
-      dark: "#1d5591",
+      light: "#c191d6",
+      dark: "#bb68df",
     },
     unique: {
       gold: "#FFD700",
@@ -31,7 +26,6 @@ export const tokens = {
       error: "red",
     },
   },
-
   padding: {
     xxs: 4,
     xs: 8,

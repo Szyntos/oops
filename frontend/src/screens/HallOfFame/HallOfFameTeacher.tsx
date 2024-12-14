@@ -1,6 +1,5 @@
 import { Styles } from "../../utils/Styles";
 import { HallOfFameMenu } from "../../components/hallOfFame/HallOfFameMenu";
-import { useHallOfFameData } from "../../hooks/HallOfFame/useHallOfFameData";
 import { Podium } from "../../components/hallOfFame/Podium/Podium";
 import { useCallback, useEffect, useState } from "react";
 import { StudentCardsList } from "../../components/hallOfFame/StudentCardsList";
@@ -8,10 +7,11 @@ import { isPartOfAString } from "../../utils/strings";
 import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame/HallOfFameStudentCard";
 import { CONTENT_CONTAINER_HEIGHT } from "../../components/layout/ScreenContentContainer";
 import { tokens } from "../../tokens";
+import { useHallOfFameDataTeacher } from "../../hooks/HallOfFame/useHallOfFameDataTeacher";
 
 export const HallOfFameTeacher = () => {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
-    useHallOfFameData();
+    useHallOfFameDataTeacher();
   const [showStudentsFromAllGroups, setShowStudentsFromAllGroups] =
     useState(!isUserRoleStudent);
   const [searchInput, setSearchInput] = useState("");
@@ -42,6 +42,7 @@ export const HallOfFameTeacher = () => {
           return { ...student, position: index + 1 };
         }) ?? [];
 
+  console.log(students);
   return (
     <div style={styles.container}>
       <div style={styles.leftSide}>
@@ -71,7 +72,7 @@ export const HallOfFameTeacher = () => {
             ),
           )}
           highlightedStudent={highlightedStudent}
-          showStudentName={!isUserRoleStudent}
+          showStudentName={true}
         />
       </div>
     </div>
@@ -93,7 +94,7 @@ const styles: Styles = {
   sideBarContainer: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: tokens.color.card.navy,
+    backgroundColor: tokens.color.card.light,
     minWidth: 720,
   },
 };

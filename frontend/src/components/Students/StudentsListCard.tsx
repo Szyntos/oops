@@ -30,15 +30,19 @@ export const StudentsListCard = ({
               {student.nick}
             </CustomText>
             <div style={styles.secondaryTextContainer}>
-              <CustomText>
+              <CustomText color={tokens.color.text.secondary}>
                 {student.firstName} {student.secondName}
               </CustomText>
-              <CustomText>{student.index}</CustomText>
+              <CustomText color={tokens.color.text.secondary}>
+                {student.index}
+              </CustomText>
             </div>
           </div>
         </div>
 
-        <CustomText>{student.group.name}</CustomText>
+        <CustomText color={tokens.color.text.secondary}>
+          {student.group.name}
+        </CustomText>
         {withEditableRights && (
           <div style={styles.rightBottomCorner}>
             <EditableIndicator />

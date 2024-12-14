@@ -16,3 +16,4 @@ backend/src/main/python/utils/__pycache__/
 backend/resources/files
 
 **/.env
+*_[0-9]*.png

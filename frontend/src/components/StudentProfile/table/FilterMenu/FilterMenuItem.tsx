@@ -23,7 +23,7 @@ export const FilterMenuItem = ({
       style={{
         ...styles.item,
         backgroundColor: isSelected ? item.darkColor : undefined,
-        border: `${BORDER_WIDTH}px solid ${item.darkColor}`,
+        border: `${BORDER_WIDTH}px solid ${isSelected ? item.darkColor : item.lightColor}`,
       }}
     >
       {item.name}

@@ -11,6 +11,8 @@ import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
 import { Styles } from "../../../utils/Styles";
 import { Subcategory } from "../../../utils/utils";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
+import { IconMapper } from "../../IconMapper";
+import { tokens } from "../../../tokens";
 
 type GroupTableProps = {
   rows: GroupTableRow[];
@@ -47,11 +49,9 @@ export const GroupTable = ({
     // add grade values
     values.push(row.student.computedValues.level.levelName);
     values.push(row.student.computedValues.level.grade);
+    values.push(Boolean(row.student.computedValues.endOfLabsLevelsReached));
     values.push(
-      row.student.computedValues.endOfLabsLevelsReached ? "tak" : "nie",
-    );
-    values.push(
-      row.student.computedValues.projectPointsThresholdReached ? "tak" : "nie",
+      Boolean(row.student.computedValues.projectPointsThresholdReached),
     );
     values.push(row.student.computedValues.computedGrade.toFixed(1));
     return values;
@@ -92,25 +92,50 @@ export const GroupTable = ({
             },
           });
         }
-        headers.push({ name: "sum of pure points", color: "blue" });
+        headers.push({ name: "zdobyte punkty", color: "blue" });
         for (const award of category.awards) {
           headers.push({ name: award.name });
         }
-        headers.push({ name: "sum of bonuses", color: "blue" });
+        headers.push({ name: "punkty bonusowe", color: "blue" });
       }
     }
     // add aggregate values
-    headers.push({ name: "overall pure points", color: "blue" });
-    headers.push({ name: "overall bonuses", color: "blue" });
-    headers.push({ name: "overall", color: "blue" });
+    headers.push({ name: "zdobyte punkty", color: "blue" });
+    headers.push({ name: "punkty bonusowe", color: "blue" });
+    headers.push({ name: "razem", color: "blue" });
     // levels...
-    headers.push({ name: "level", color: "blue" });
-    headers.push({ name: "level grade", color: "blue" });
-    headers.push({ name: "endOfLabs", color: "blue" });
-    headers.push({ name: "projectPoints", color: "blue" });
-    headers.push({ name: "computed grade", color: "blue" });
+    headers.push({ name: "zdobyty zwierzak", color: "blue" });
+    headers.push({ name: "przewidywana ocena", color: "blue" });
+    headers.push({ name: "status wyklucia", color: "blue" });
+    headers.push({ name: "status projektu", color: "blue" });
+    headers.push({ name: "coena końcowa", color: "blue" });
     return headers;
   };
+
+  const getCellContent = (
+    value: string | number | boolean | undefined | null,
+  ) => {
+    if (value === null || value === undefined) {
+      return EMPTY_FIELD_STRING;
+    }
+    if (typeof value === "string") {
+      return value;
+    }
+    if (typeof value === "number") {
+      return value.toFixed(2);
+    }
+    if (typeof value === "boolean") {
+      return (
+        <IconMapper
+          icon={value ? "yes" : "no"}
+          color={value ? tokens.color.state.success : tokens.color.state.error}
+        />
+      );
+    }
+    return EMPTY_FIELD_STRING;
+  };
+
+  // TODO last 4 columns could be centered
 
   return (
     <TableContainer component={Paper} sx={{ maxHeight: "100%" }}>
@@ -151,9 +176,7 @@ export const GroupTable = ({
                 {index + 1}. {row.student.fullName}
               </TableCell>
               {getRowValues(row).map((value, index) => (
-                <TableCell key={`${index}`}>
-                  {value ?? EMPTY_FIELD_STRING}
-                </TableCell>
+                <TableCell key={`${index}`}>{getCellContent(value)}</TableCell>
               ))}
             </TableRow>
           ))}

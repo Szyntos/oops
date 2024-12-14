@@ -25,6 +25,7 @@ type IconMapperProps = {
   style?: React.CSSProperties;
   isDisabled?: boolean;
   size?: number;
+  color?: string;
 };
 
 type ActionIcons = "settings" | "logout" | "edit" | "delete" | "add" | "chest";
@@ -41,8 +42,8 @@ type DisplayIcons =
   | "monster"
   | "level"
   | "points"
-  | "yes" // Added "yes"
-  | "no"; // Added "no"
+  | "yes"
+  | "no";
 
 export type Icon = ActionIcons | DisplayIcons;
 
@@ -75,6 +76,7 @@ export const IconMapper = ({
   isDisabled,
   style,
   size = 22,
+  color,
 }: IconMapperProps) => {
   const IconComponent = iconMap[icon];
 
@@ -88,6 +90,7 @@ export const IconMapper = ({
         ...(isDisabled && styles.disabled),
         width: size,
         height: size,
+        color: color ?? tokens.color.text.secondary,
       }}
     />
   );
@@ -97,7 +100,6 @@ const styles: Styles = {
   icon: {
     width: tokens.padding.m,
     height: tokens.padding.m,
-    color: tokens.color.text.secondary,
   },
   clickable: {
     cursor: "pointer",

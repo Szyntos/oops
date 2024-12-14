@@ -15,7 +15,7 @@ export const CustomText = ({
   children,
   style,
   size = tokens.font.text,
-  color = tokens.color.text.primary,
+  color = tokens.color.text.secondary,
   bold,
   onClick,
 }: CustomTextProps) => {

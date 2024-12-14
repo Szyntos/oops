@@ -97,7 +97,7 @@ const styles: Styles = {
   icon: {
     width: tokens.padding.m,
     height: tokens.padding.m,
-    color: tokens.color.text.primary,
+    color: tokens.color.text.secondary,
   },
   clickable: {
     cursor: "pointer",

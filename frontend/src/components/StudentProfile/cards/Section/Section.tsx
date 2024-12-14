@@ -6,21 +6,19 @@ import { tokens } from "../../../../tokens";
 type SectionProps = {
   title?: string;
   children: ReactNode;
-  bigTitle?: boolean;
 };
 
-export const Section = ({ title, children, bigTitle }: SectionProps) => {
+export const Section = ({ title, children }: SectionProps) => {
   return (
     <div>
       {title && (
         <div style={styles.sep}>
           <CustomText
-            style={styles.title}
-            size={bigTitle ? tokens.font.header : tokens.font.title}
-            color={tokens.color.accent.dark}
+            color={tokens.color.text.tertiary}
             bold={true}
+            size={tokens.font.text}
           >
-            {title}
+            {title.toUpperCase()}
           </CustomText>
           <div style={styles.separator} />
         </div>
@@ -33,7 +31,7 @@ export const Section = ({ title, children, bigTitle }: SectionProps) => {
 const styles: Styles = {
   separator: {
     height: 1,
-    backgroundColor: tokens.color.accent.dark,
+    backgroundColor: tokens.color.text.tertiary,
     flex: 1,
   },
   sep: {
@@ -41,7 +39,7 @@ const styles: Styles = {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   contentContainer: {
     display: "flex",

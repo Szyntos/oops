@@ -93,7 +93,7 @@ const styles: Styles = {
   sideBarContainer: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: tokens.color.card.navy,
+    backgroundColor: tokens.color.card.light,
     minWidth: 720,
   },
 };

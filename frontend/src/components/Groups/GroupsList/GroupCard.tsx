@@ -31,10 +31,12 @@ export const GroupCard = ({
         </CustomText>
 
         <div style={styles.detailsContainer}>
-          <CustomText>
+          <CustomText color={tokens.color.text.secondary}>
             {group.weekday.name} {group.time.start}-{group.time.end}
           </CustomText>
-          <CustomText>{group.teacher.fullName}</CustomText>
+          <CustomText color={tokens.color.text.secondary}>
+            {group.teacher.fullName}
+          </CustomText>
         </div>
 
         {withEditableRights && (

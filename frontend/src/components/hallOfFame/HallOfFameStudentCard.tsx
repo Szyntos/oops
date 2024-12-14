@@ -35,7 +35,7 @@ export const HallOfFameStudentCard = ({
       style={{
         ...styles.item,
         background: isHighlighted
-          ? getLinearGradient(tokens.color.accent.light, tokens.color.card.blue)
+          ? getLinearGradient(tokens.color.accent.light, tokens.color.card.dark)
           : undefined,
       }}
     >
@@ -43,7 +43,11 @@ export const HallOfFameStudentCard = ({
       <Avatar id={student.avatarImgId} size={"xs"} />
       <div style={styles.nickAndNAmeContainer}>
         <CustomText bold={true}>{student.nick}</CustomText>
-        {showStudentName && <CustomText>{student.displayName}</CustomText>}
+        {showStudentName && (
+          <CustomText color={tokens.color.text.secondary}>
+            {student.displayName}
+          </CustomText>
+        )}
       </div>
       <Avatar id={student.levelImgId} size={"xs"} />
       <CustomText style={styles.animalName}>{student.levelName}</CustomText>
@@ -60,7 +64,7 @@ const styles: Styles = {
     padding: 12,
     paddingLeft: 24,
     paddingRight: 24,
-    backgroundColor: tokens.color.card.blue,
+    backgroundColor: tokens.color.card.dark,
   },
   position: {
     width: 18,

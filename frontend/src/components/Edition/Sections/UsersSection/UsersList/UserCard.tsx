@@ -1,6 +1,9 @@
+import { UsersRolesType } from "../../../../../__generated__/schema.graphql.types";
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { User } from "../../../../../hooks/Edition/users/useUsersSection";
-import { Styles } from "../../../../../utils/Styles";
+import { tokens } from "../../../../../tokens";
+import { cardStyles, getCardStyles } from "../../../../../utils/utils";
+import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
 type GroupCardProps = {
@@ -19,10 +22,16 @@ export const UserCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div style={styles.card}>
-      <div>
-        [{user.user.userId}] {user.user.firstName} {user.user.secondName}
+    <div style={getCardStyles(false)}>
+      <div style={cardStyles.textContainer}>
+        <CustomText color={tokens.color.text.primary} bold={true}>
+          {user.user.firstName} {user.user.secondName}
+        </CustomText>
+        {user.user.role === UsersRolesType.Student && (
+          <CustomText>{user.user.nick}</CustomText>
+        )}
       </div>
+
       {handleStudentActiveness ? (
         <SetupButtons
           permissions={user.permissions}
@@ -41,12 +50,4 @@ export const UserCard = ({
       )}
     </div>
   );
-};
-
-const styles: Styles = {
-  card: {
-    padding: 12,
-    border: "1px solid black",
-    width: 160,
-  },
 };

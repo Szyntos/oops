@@ -82,7 +82,7 @@ export const getTimeWithoutSeconds = (time: string) => {
 export const getCardStyles = (isSelected: boolean): CSSProperties => ({
   display: "flex",
   flexDirection: "column",
-  gap: 8,
+  gap: 12,
   padding: 12,
   borderRadius: 12,
   backgroundColor: isSelected

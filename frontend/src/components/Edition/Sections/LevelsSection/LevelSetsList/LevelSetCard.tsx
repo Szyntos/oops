@@ -1,8 +1,8 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { LevelSet } from "../../../../../hooks/Edition/useLevelSetsSection";
-import { tokens } from "../../../../../tokens";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
-import { Styles } from "../../../../../utils/Styles";
+import { cardStyles, getCardStyles } from "../../../../../utils/utils";
+import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
 type LevelSetCardProps = {
@@ -25,21 +25,14 @@ export const LevelSetCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div
-      style={{
-        ...styles.card,
-        backgroundColor: isSelected ? "pink" : undefined,
-      }}
-    >
-      <div>[{levelSet.levelSet.levelSetId}]</div>
-
-      <div>
+    <div style={getCardStyles(isSelected)}>
+      <div style={cardStyles.textContainer}>
         {levelSet.levelSet.levels.length > 0
           ? levelSet.levelSet.levels.map((l) => (
-              <div>
+              <CustomText>
                 {l.ordinalNumber + 1}. {l.levelName}, {l.minimumPoints}-
                 {l.maximumPoints}
-              </div>
+              </CustomText>
             ))
           : EMPTY_FIELD_STRING}
       </div>
@@ -55,14 +48,4 @@ export const LevelSetCard = ({
       />
     </div>
   );
-};
-
-const styles: Styles = {
-  card: {
-    border: "1px solid black",
-    padding: 12,
-  },
-  subtitle: {
-    color: tokens.color.state.disabled,
-  },
 };

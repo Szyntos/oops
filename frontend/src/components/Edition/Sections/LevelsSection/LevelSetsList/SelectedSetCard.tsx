@@ -1,8 +1,8 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { LevelSet } from "../../../../../hooks/Edition/useLevelSetsSection";
-import { tokens } from "../../../../../tokens";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
+import { getCardStyles } from "../../../../../utils/utils";
 import { AnimalWithTooltip } from "../../../../avatars/AnimalWithTooltip";
 import { SetupButtons } from "../../SetupButtons";
 
@@ -24,9 +24,7 @@ export const SelectedSetCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div style={styles.card}>
-      <div>[{levelSet.levelSet.levelSetId}]</div>
-
+    <div style={getCardStyles(true)}>
       <div>
         {levelSet.levelSet.levels.length > 0 ? (
           <div style={styles.levelContainer}>
@@ -62,20 +60,9 @@ export const SelectedSetCard = ({
 };
 
 const styles: Styles = {
-  card: {
-    border: "1px solid black",
-    padding: 12,
-    backgroundColor: tokens.color.accent.light,
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
   levelContainer: {
     display: "flex",
     flexDirection: "row",
     gap: 12,
-  },
-  subtitle: {
-    color: tokens.color.state.disabled,
   },
 };

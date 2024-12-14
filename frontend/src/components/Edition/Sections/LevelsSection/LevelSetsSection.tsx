@@ -6,8 +6,9 @@ import { useParams } from "react-router-dom";
 import { useLevelSetsSection } from "../../../../hooks/Edition/useLevelSetsSection";
 import { LevelSetsList } from "./LevelSetsList/LevelSetsList";
 import { AddSetForm } from "./AddSetForm/AddSetForm";
-import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { SelectedSetCard } from "./LevelSetsList/SelectedSetCard";
+import { CustomButton } from "../../../CustomButton";
+import { CardsSection } from "../../CardsSection";
 
 export const LevelSetsSection = () => {
   const params = useParams();
@@ -45,11 +46,11 @@ export const LevelSetsSection = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddSet}>add level set</button>
+      <CustomButton onClick={openAddSet}>dodaj zbiór leveli</CustomButton>
 
-      <div>
-        <div>Selected Set:</div>
-        {activeSet ? (
+      <CardsSection
+        title={"wybrany zbiór leveli"}
+        cards={[
           <SelectedSetCard
             levelSet={activeSet}
             onSelectClick={() => handleSelectSet(activeSet)}
@@ -58,11 +59,9 @@ export const LevelSetsSection = () => {
               handleDeleteSet(activeSet);
             }}
             onCopyClick={() => handleCopySet(activeSet)}
-          />
-        ) : (
-          EMPTY_FIELD_STRING
-        )}
-      </div>
+          />,
+        ]}
+      />
 
       <LevelSetsList
         levelSets={levelSets}
@@ -71,7 +70,7 @@ export const LevelSetsSection = () => {
         handleEdit={openEditSet}
         handleDelete={handleDeleteSet}
         handleCopy={handleCopySet}
-        title={"All level sets"}
+        title={"Wszystkie zbiory leveli"}
       />
 
       <Dialog open={isAddSetOpen} maxWidth={"lg"}>
@@ -110,6 +109,6 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 12,
+    gap: 20,
   },
 };

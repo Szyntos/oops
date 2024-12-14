@@ -1,7 +1,9 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
-import { Styles } from "../../../../../utils/Styles";
 import { SetupButtons } from "../../SetupButtons";
+import { cardStyles, getCardStyles } from "../../../../../utils/utils";
+import { CustomText } from "../../../../CustomText";
+import { tokens } from "../../../../../tokens";
 
 type CategoryCardProps = {
   category: Category;
@@ -31,14 +33,15 @@ export const CategoryCard = ({
   };
 
   return (
-    <div
-      style={{
-        ...styles.card,
-        backgroundColor: isSelected ? "pink" : undefined,
-      }}
-    >
-      <div>{category.category.categoryName}</div>
-      <div>subcategories: {getSubcategoriesString(category)}</div>
+    <div style={getCardStyles(isSelected)}>
+      <div style={cardStyles.textContainer}>
+        <CustomText color={tokens.color.text.primary} bold={true}>
+          {category.category.categoryName}
+        </CustomText>
+        <CustomText>
+          subkategorie: {getSubcategoriesString(category)}
+        </CustomText>
+      </div>
 
       <SetupButtons
         isSelected={isSelected}
@@ -51,11 +54,4 @@ export const CategoryCard = ({
       />
     </div>
   );
-};
-
-const styles: Styles = {
-  card: {
-    border: "1px solid black",
-    padding: 12,
-  },
 };

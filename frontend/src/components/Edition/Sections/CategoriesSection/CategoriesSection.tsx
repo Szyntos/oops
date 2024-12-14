@@ -5,6 +5,7 @@ import { CategoriesList } from "./CategoriesList/CategoriesList";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useCategoriesSection } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { useParams } from "react-router-dom";
+import { CustomButton } from "../../../CustomButton";
 
 export const CategoriesSection = () => {
   const params = useParams();
@@ -35,7 +36,7 @@ export const CategoriesSection = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddCategory}>add category</button>
+      <CustomButton onClick={openAddCategory}>dodaj kategorię</CustomButton>
 
       <CategoriesList
         categories={selectedCategories}
@@ -44,7 +45,7 @@ export const CategoriesSection = () => {
         handleEditClick={openEditCategory}
         handleDeleteClick={handleDeleteCategory}
         handleCopyClick={handleCopyCategory}
-        title="Selected categories"
+        title="Wybrane kategorie"
       />
       <CategoriesList
         categories={categories}
@@ -53,7 +54,7 @@ export const CategoriesSection = () => {
         handleEditClick={openEditCategory}
         handleDeleteClick={handleDeleteCategory}
         handleCopyClick={handleCopyCategory}
-        title="All categories"
+        title="Wszystkie kategorie"
       />
 
       <Dialog open={isAddCategory}>
@@ -88,6 +89,6 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 12,
+    gap: 20,
   },
 };

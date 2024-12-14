@@ -1,4 +1,5 @@
 import { Category } from "../../../hooks/Edition/categories/useCategoriesSection";
+import { tokens } from "../../../tokens";
 import { Styles } from "../../../utils/Styles";
 
 import { TooltipWrapper } from "../../TooltipWrapper";
@@ -155,12 +156,20 @@ const SetupButton = ({
 }: SetupButtonProps) => {
   {
     return isClickable ? (
-      <button disabled={!isClickable} onClick={handleClick}>
+      <button
+        disabled={!isClickable}
+        onClick={handleClick}
+        style={styles.button}
+      >
         {title}
       </button>
     ) : (
       <TooltipWrapper tooltipContent={<div>{reason ?? emptyReason}</div>}>
-        <button disabled={!isClickable} onClick={handleClick}>
+        <button
+          disabled={!isClickable}
+          onClick={handleClick}
+          style={styles.button}
+        >
           {title}
         </button>
       </TooltipWrapper>
@@ -172,6 +181,17 @@ const styles: Styles = {
   buttonsContainer: {
     display: "flex",
     flexDirection: "row",
-    gap: 4,
+    gap: 6,
+  },
+  button: {
+    border: "none",
+    fontSize: tokens.font.small,
+    color: tokens.color.text.secondary,
+    borderRadius: 4,
+    cursor: "pointer",
+    padding: 4,
+    paddingLeft: 8,
+    paddingRight: 8,
+    backgroundColor: tokens.color.accent.light,
   },
 };

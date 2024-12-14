@@ -1,6 +1,9 @@
+import { CSSProperties } from "react";
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
 import { Permissions } from "../components/Edition/Sections/SetupButtons";
 import { Edition } from "../contexts/userContext";
+import { tokens } from "../tokens";
+import { Styles } from "./Styles";
 
 type User = {
   role: string;
@@ -74,4 +77,23 @@ export const getLinearGradient = (
 
 export const getTimeWithoutSeconds = (time: string) => {
   return time.slice(0, -3);
+};
+
+export const getCardStyles = (isSelected: boolean): CSSProperties => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: 8,
+  padding: 12,
+  borderRadius: 12,
+  backgroundColor: isSelected
+    ? tokens.color.card.dark
+    : tokens.color.card.light,
+});
+
+export const cardStyles: Styles = {
+  textContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+  },
 };

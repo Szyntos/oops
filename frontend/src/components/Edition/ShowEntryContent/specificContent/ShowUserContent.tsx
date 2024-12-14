@@ -7,7 +7,7 @@ export const ShowUserContent = ({ entry }: ShowUserContentProps) => {
   return (
     <div>
       {entry.user.firstName} {entry.user.secondName}
-      <pre>{JSON.stringify(entry)}</pre>
+      <pre>{JSON.stringify(entry, null, 2)}</pre>
     </div>
   );
 };

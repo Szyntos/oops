@@ -7,7 +7,7 @@ export const ShowCategoryContent = ({ entry }: ShowCategoryContentProps) => {
   return (
     <div>
       {entry.category.categoryName}
-      <pre>{JSON.stringify(entry)}</pre>
+      <pre>{JSON.stringify(entry, null, 2)}</pre>
     </div>
   );
 };

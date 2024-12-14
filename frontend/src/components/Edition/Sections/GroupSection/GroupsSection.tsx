@@ -5,6 +5,8 @@ import { AddGroupForm } from "./GroupAddForm";
 import { useGroupsSection } from "../../../../hooks/Edition/useGroupsSection";
 import { useParams } from "react-router-dom";
 import { UsersRolesType } from "../../../../__generated__/schema.graphql.types";
+import { CustomButton } from "../../../CustomButton";
+import { Styles } from "../../../../utils/Styles";
 
 export const GroupsSection = () => {
   const params = useParams();
@@ -37,17 +39,21 @@ export const GroupsSection = () => {
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
-    <div>
-      <div>
-        <button onClick={() => openAddGroup("select")}>add group</button>
-        <button onClick={() => openAddGroup("import")}>import group</button>
-        <button onClick={handleMarkAllPassingStudents}>
+    <div style={styles.container}>
+      <div style={styles.buttonsContainer}>
+        <CustomButton onClick={() => openAddGroup("select")}>
+          add group
+        </CustomButton>
+        <CustomButton onClick={() => openAddGroup("import")}>
+          import group
+        </CustomButton>
+        <CustomButton onClick={handleMarkAllPassingStudents}>
           mark all passing students as inactive
-        </button>
+        </CustomButton>
       </div>
       <GroupsList
         groups={groups}
-        title="groups"
+        title="Grupy"
         editClick={openEditDialog}
         deleteClick={handleDeleteGroup}
       />
@@ -100,4 +106,16 @@ export const GroupsSection = () => {
       </Dialog>
     </div>
   );
+};
+
+const styles: Styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+  },
+  buttonsContainer: {
+    display: "flex",
+    gap: 12,
+  },
 };

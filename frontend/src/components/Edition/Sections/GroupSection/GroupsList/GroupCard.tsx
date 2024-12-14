@@ -1,6 +1,8 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Group } from "../../../../../hooks/Edition/useGroupsSection";
-import { Styles } from "../../../../../utils/Styles";
+import { tokens } from "../../../../../tokens";
+import { cardStyles, getCardStyles } from "../../../../../utils/utils";
+import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
 type GroupCardProps = {
@@ -17,15 +19,20 @@ export const GroupCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div style={styles.card}>
-      <div>{group.group.generatedName}</div>
-      <div>
-        {group.group.userGroups.map((student, index) => (
-          <div>
-            {index + 1}. {student.user.firstName} {student.user.secondName}
-          </div>
-        ))}
+    <div style={getCardStyles(false)}>
+      <div style={{ ...cardStyles.textContainer, flex: 1 }}>
+        <CustomText color={tokens.color.text.primary} bold={true}>
+          {group.group.generatedName}
+        </CustomText>
+        <div>
+          {group.group.userGroups.map((student, index) => (
+            <CustomText>
+              {index + 1}. {student.user.firstName} {student.user.secondName}
+            </CustomText>
+          ))}
+        </div>
       </div>
+
       <SetupButtons
         permissions={group.permissions}
         handleEdit={editClick}
@@ -34,11 +41,4 @@ export const GroupCard = ({
       />
     </div>
   );
-};
-
-const styles: Styles = {
-  card: {
-    padding: 12,
-    border: "1px solid black",
-  },
 };

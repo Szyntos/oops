@@ -29,7 +29,7 @@ export const AwardCard = ({
   return (
     <div style={getCardStyles(isSelected)}>
       <div style={styles.contentContainer}>
-        <Avatar id={"1"} size="s" />
+        <Avatar id={award.award.imageFile?.fileId} size="s" />
         <div style={cardStyles.textContainer}>
           <CustomText color={tokens.color.text.primary} bold={true}>
             {award.award.awardName}

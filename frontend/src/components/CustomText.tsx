@@ -37,6 +37,6 @@ export const CustomText = ({
 
 const styles: Styles = {
   text: {
-    userSelect: "none",
+    // userSelect: "none",
   },
 };

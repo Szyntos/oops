@@ -2,7 +2,9 @@ import { useEditionSections } from "../../../../../hooks/common/useEditionSectio
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
 import { tokens } from "../../../../../tokens";
 import { Styles } from "../../../../../utils/Styles";
+import { cardStyles, getCardStyles } from "../../../../../utils/utils";
 import { Avatar } from "../../../../avatars/Avatar";
+import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
 type AwardCardProps = {
@@ -25,15 +27,18 @@ export const AwardCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div
-      style={{
-        ...styles.card,
-        backgroundColor: isSelected ? "pink" : undefined,
-      }}
-    >
-      <Avatar id={award.award.imageFile?.fileId} size="l" />
-      <div>{award.award.awardName}</div>
-      <div style={styles.subtitle}>{award.award.awardType}</div>
+    <div style={getCardStyles(isSelected)}>
+      <div style={styles.contentContainer}>
+        <Avatar id={"1"} size="s" />
+        <div style={cardStyles.textContainer}>
+          <CustomText color={tokens.color.text.primary} bold={true}>
+            {award.award.awardName}
+          </CustomText>
+          <CustomText color={tokens.color.text.secondary}>
+            {award.award.awardType}
+          </CustomText>
+        </div>
+      </div>
 
       <SetupButtons
         isSelected={isSelected}
@@ -49,11 +54,9 @@ export const AwardCard = ({
 };
 
 const styles: Styles = {
-  card: {
-    border: "1px solid black",
-    padding: 12,
-  },
-  subtitle: {
-    color: tokens.color.state.disabled,
+  contentContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 12,
   },
 };

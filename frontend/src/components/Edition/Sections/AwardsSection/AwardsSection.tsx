@@ -6,6 +6,7 @@ import { useAwardsSection } from "../../../../hooks/Edition/useAwardsSection";
 import { AddAwardForm } from "./AddAwardForm/AddAwardForm";
 
 import { useParams } from "react-router-dom";
+import { CustomButton } from "../../../CustomButton";
 
 export const AwardsSection = () => {
   const params = useParams();
@@ -43,13 +44,13 @@ export const AwardsSection = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddAward}>add award</button>
+      <CustomButton onClick={openAddAward}>dodaj nagrodę</CustomButton>
 
       <AwardsList
         awards={selectedAwards}
         selectedAwards={selectedAwards}
         handleSelectAward={handleSelectAward}
-        title={"Selected awards"}
+        title={"Wybrane nagrody"}
         handleEditAward={openEditAward}
         handleDeleteAward={handleDeleteAward}
         handleCopyAward={handleCopyAward}
@@ -58,7 +59,7 @@ export const AwardsSection = () => {
         awards={awards}
         selectedAwards={selectedAwards}
         handleSelectAward={handleSelectAward}
-        title={"All awards"}
+        title={"Wszystkie nagrody"}
         handleEditAward={openEditAward}
         handleDeleteAward={handleDeleteAward}
         handleCopyAward={handleCopyAward}
@@ -104,6 +105,6 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 12,
+    gap: 20,
   },
 };

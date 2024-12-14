@@ -50,17 +50,21 @@ export const LevelSetsSection = () => {
 
       <CardsSection
         title={"wybrany zbiór leveli"}
-        cards={[
-          <SelectedSetCard
-            levelSet={activeSet}
-            onSelectClick={() => handleSelectSet(activeSet)}
-            onEditClick={() => openEditSet(activeSet)}
-            onDeleteClick={() => {
-              handleDeleteSet(activeSet);
-            }}
-            onCopyClick={() => handleCopySet(activeSet)}
-          />,
-        ]}
+        cards={
+          activeSet
+            ? [
+                <SelectedSetCard
+                  levelSet={activeSet}
+                  onSelectClick={() => handleSelectSet(activeSet)}
+                  onEditClick={() => openEditSet(activeSet)}
+                  onDeleteClick={() => {
+                    handleDeleteSet(activeSet);
+                  }}
+                  onCopyClick={() => handleCopySet(activeSet)}
+                />,
+              ]
+            : []
+        }
       />
 
       <LevelSetsList

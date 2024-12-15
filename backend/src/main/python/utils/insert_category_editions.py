@@ -4,7 +4,7 @@ import requests
 def insert_category_editions(hasura_url, headers, editions, category_editions_type_map, random):
 
     admin_header = headers.copy()
-    admin_header["Authorization"] = "Bearer Bypass0"
+    admin_header["Authorization"] = admin_header["Authorization"][:-1] + "0"
 
     editions_type_year_map = {
         "all": [year for year in editions.keys()],

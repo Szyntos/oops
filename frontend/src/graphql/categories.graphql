@@ -1,0 +1,13 @@
+query Categories($editionId: bigint!) {
+  categories(
+    where: {
+      categoryEditions: { editionId: { _eq: $editionId } }
+      canAddPoints: { _eq: true }
+    }
+  ) {
+    categoryId
+    categoryName
+    darkColor
+    lightColor
+  }
+}

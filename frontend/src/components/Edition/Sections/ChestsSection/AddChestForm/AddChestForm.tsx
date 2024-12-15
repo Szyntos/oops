@@ -4,6 +4,7 @@ import { Styles } from "../../../../../utils/Styles";
 import { TextField } from "@mui/material";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
 import { SelectImage } from "../../../../inputs/SelectImage";
+import { tokens } from "../../../../../tokens";
 
 const ValidationSchema = z.object({
   awardBundleCount: z.number().min(0),
@@ -170,8 +171,12 @@ const styles: Styles = {
     padding: 12,
     width: 500,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
   fieldsContainer: {
     display: "flex",
     flexDirection: "column",

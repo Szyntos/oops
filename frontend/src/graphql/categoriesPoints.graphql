@@ -10,7 +10,8 @@ query CategoriesPoints($editionId: Int!, $studentId: Int!) {
     category {
       categoryName
       categoryId
-      label
+      darkColor
+      lightColor
     }
   }
 }

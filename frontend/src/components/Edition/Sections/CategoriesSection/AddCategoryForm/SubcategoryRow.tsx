@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Styles } from "../../../../../utils/Styles";
 import { TextField } from "@mui/material";
 import { useState } from "react";
+import { tokens } from "../../../../../tokens";
 
 export type SubcategoriesFormValues = z.infer<typeof ValidationSchema>;
 
@@ -26,7 +27,7 @@ type SubcategoryRowProps = {
 
 export const SubcategoryRow = ({
   initialValues,
-  disabled = true,
+  disabled = false,
   blockUp = false,
   blockDown = false,
   handleAdd,
@@ -129,6 +130,10 @@ const styles: Styles = {
   points: {
     width: 80,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
 };

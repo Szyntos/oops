@@ -1,13 +1,12 @@
 import { Styles } from "../../../utils/Styles";
-import FilterMenu from "./FilterMenu";
+import FilterMenu, { FilterMenuItemType } from "./FilterMenu/FilterMenu";
 import { useState } from "react";
 import { Points } from "../../../hooks/StudentProfile";
-import { FilterItem } from "../../Groups/FilterBar/FilterOptionsSection";
 import { EditFunctions, StudentTable } from "./StudentTable";
 
 type StudentTableWithFiltersProps = {
   points: Points[];
-  filterHeaderNames: FilterItem[];
+  filterHeaderNames: FilterMenuItemType[];
   editFunctions?: EditFunctions;
   showActionButtons?: boolean;
   blockActionButtons?: boolean;
@@ -56,7 +55,7 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 12,
     flex: 1,
+    gap: 12,
   },
 };

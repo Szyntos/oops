@@ -5,6 +5,7 @@ import { SelectInput } from "../../components/inputs/SelectInput";
 import { Category } from "../../utils/utils";
 import { Styles } from "../../utils/Styles";
 import { Chest } from "../../hooks/StudentProfile/useCoordinatorActions";
+import { tokens } from "../../tokens";
 
 export type ChestFormValues = z.infer<typeof ValidationSchema>;
 
@@ -135,6 +136,6 @@ const styles: Styles = {
     fontWeight: "bold",
   },
   error: {
-    color: "red",
+    color: tokens.color.state.error,
   },
 };

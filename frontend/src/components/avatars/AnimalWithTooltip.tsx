@@ -1,18 +1,20 @@
 import { TooltipWrapper } from "../TooltipWrapper";
 import { Styles } from "../../utils/Styles";
-import { Avatar, AvatarSize } from "./Avatar";
 import { Level } from "../../hooks/StudentProfile";
+import { Avatar, AvatarSize } from "./Avatar";
 
 type AnimalWithTooltipProps = {
   level: Level;
   size: AvatarSize;
-  disabled: boolean;
+  disabled?: boolean;
+  shadow?: boolean;
 };
 
 export const AnimalWithTooltip = ({
   level,
   size,
   disabled,
+  shadow,
 }: AnimalWithTooltipProps) => {
   return (
     <TooltipWrapper
@@ -27,7 +29,12 @@ export const AnimalWithTooltip = ({
         </div>
       }
     >
-      <Avatar id={level.imageId} size={size} disabled={disabled} />
+      <Avatar
+        id={level.imageId}
+        size={size}
+        disabled={disabled}
+        shadow={shadow}
+      />
     </TooltipWrapper>
   );
 };

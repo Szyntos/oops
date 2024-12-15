@@ -62,6 +62,8 @@ export const useGroupTableData = (groupId: number | undefined) => {
       return {
         id: category.categoryId,
         name: category.categoryName,
+        lightColor: category.lightColor,
+        darkColor: category.darkColor,
         subcategories:
           subcategoryPoints.map((points) => {
             return {

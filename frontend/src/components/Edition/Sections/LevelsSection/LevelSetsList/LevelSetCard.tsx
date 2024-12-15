@@ -1,5 +1,6 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { LevelSet } from "../../../../../hooks/Edition/useLevelSetsSection";
+import { tokens } from "../../../../../tokens";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
 import { SetupButtons } from "../../SetupButtons";
@@ -62,6 +63,6 @@ const styles: Styles = {
     padding: 12,
   },
   subtitle: {
-    color: "grey",
+    color: tokens.color.state.disabled,
   },
 };

@@ -6,6 +6,7 @@ import { Styles } from "../../../utils/Styles";
 import { NumberInput } from "../../inputs/NumberInput";
 import { SelectInput } from "../../inputs/SelectInput";
 import { Category } from "../../../utils/utils";
+import { tokens } from "../../../tokens";
 
 export type PointsFormValues = z.infer<typeof ValidationSchema>;
 
@@ -153,6 +154,6 @@ const styles: Styles = {
     fontWeight: "bold",
   },
   error: {
-    color: "red",
+    color: tokens.color.state.error,
   },
 };

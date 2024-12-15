@@ -1,0 +1,3 @@
+mutation DeactivateChest($chestId: Int!, $editionId: Int!) {
+  deactivateChestInEdition(chestId: $chestId, editionId: $editionId)
+}

@@ -1,12 +1,12 @@
-import { AwardImage, AwardImageSize } from "./AwardImage";
 import { Bonus } from "../../hooks/StudentProfile";
 import { TooltipWrapper } from "../TooltipWrapper";
 import { dateOptions } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
+import { Avatar, AvatarSize } from "./Avatar";
 
 type AwardWithTooltipProps = {
   bonus: Bonus;
-  size: AwardImageSize;
+  size: AvatarSize;
 };
 
 export const AwardWithTooltip = ({ bonus, size }: AwardWithTooltipProps) => {
@@ -23,7 +23,7 @@ export const AwardWithTooltip = ({ bonus, size }: AwardWithTooltipProps) => {
         </div>
       }
     >
-      <AwardImage id={bonus.award.imgId} size={size} />
+      <Avatar id={bonus.award.imgId} size={size} />
     </TooltipWrapper>
   );
 };

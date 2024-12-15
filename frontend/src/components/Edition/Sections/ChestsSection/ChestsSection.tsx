@@ -38,6 +38,8 @@ export const ChestsSection = () => {
 
     handleDeleteChest,
     handleCopyChest,
+
+    handleActivateChest,
   } = useChestsSection(editionId);
 
   if (loading) return <div>Ładowanie...</div>;
@@ -55,6 +57,8 @@ export const ChestsSection = () => {
         handleEditChest={openEditChest}
         handleDeleteChest={handleDeleteChest}
         handleCopyChest={handleCopyChest}
+        handleActivateChest={handleActivateChest}
+        editionId={editionId}
       />
       <ChestsList
         chests={chests}
@@ -64,6 +68,8 @@ export const ChestsSection = () => {
         handleEditChest={openEditChest}
         handleDeleteChest={handleDeleteChest}
         handleCopyChest={handleCopyChest}
+        handleActivateChest={handleActivateChest}
+        editionId={editionId}
       />
 
       <Dialog open={isAddChest}>

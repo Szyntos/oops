@@ -1,6 +1,5 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Styles } from "../../utils/Styles";
-import { pathsGenerator } from "../../router/paths";
 import { useGroupScreenData } from "../../hooks/Group/useGroupScreenData";
 import { GroupTableWithFilters } from "../../components/Group/table/GroupTableWithFilters";
 import { Dialog } from "@mui/material";
@@ -13,8 +12,7 @@ import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
 
-export const Group = () => {
-  const navigate = useNavigate();
+export const GroupScreen = () => {
   const params = useParams();
   const groupId = params.groupId ? parseInt(params.groupId) : undefined;
   const teacherId = params.teacherId ?? undefined;
@@ -56,13 +54,6 @@ export const Group = () => {
 
   return (
     <div style={styles.screenContainer}>
-      <div style={styles.header}>
-        <button onClick={() => navigate(pathsGenerator.teacher.Groups)}>
-          Powrót do listy grup
-        </button>
-        <div>params - id grupy: {groupId}</div>
-      </div>
-
       {disableEditMode && (
         <NotEditableInfo
           hasEditableRights={hasEditableRights}
@@ -117,11 +108,6 @@ const styles: Styles = {
     margin: 12,
     display: "flex",
     flexDirection: "column",
-    gap: 12,
-  },
-  header: {
-    display: "flex",
-    flexDirection: "row",
     gap: 12,
   },
 };

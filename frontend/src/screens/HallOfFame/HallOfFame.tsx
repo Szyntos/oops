@@ -1,15 +1,15 @@
 import { Styles } from "../../utils/Styles";
 import { HallOfFameMenu } from "../../components/hallOfFame/HallOfFameMenu";
 import { useHallOfFameData } from "../../hooks/HallOfFame/useHallOfFameData";
-import { NAV_BAR_HEIGHT } from "../../components/Navbar";
 import { Podium } from "../../components/hallOfFame/Podium/Podium";
-import { StatisticsBox } from "../../components/hallOfFame/StatisticsBox";
 import { useCallback, useEffect, useState } from "react";
 import { StudentCardsList } from "../../components/hallOfFame/StudentCardsList";
 import { isPartOfAString } from "../../utils/strings";
 import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame/HallOfFameStudentCard";
+import { CONTENT_CONTAINER_HEIGHT } from "../../components/layout/ScreenContentContainer";
+import { tokens } from "../../tokens";
 
-export default function HallOfFame() {
+export const HallOfFame = () => {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
     useHallOfFameData();
   const [showStudentsFromAllGroups, setShowStudentsFromAllGroups] =
@@ -46,7 +46,6 @@ export default function HallOfFame() {
     <div style={styles.container}>
       <div style={styles.leftSide}>
         <Podium students={displayStudents} />
-        <StatisticsBox />
       </div>
 
       <div style={styles.sideBarContainer}>
@@ -66,31 +65,35 @@ export default function HallOfFame() {
         />
         <StudentCardsList
           students={displayStudents.filter((s) =>
-            isPartOfAString(searchInput, [s.nick]),
+            isPartOfAString(
+              searchInput,
+              isUserRoleStudent ? [s.nick] : [s.nick, s.displayName ?? ""],
+            ),
           )}
           highlightedStudent={highlightedStudent}
+          showStudentName={!isUserRoleStudent}
         />
       </div>
     </div>
   );
-}
+};
 
 const styles: Styles = {
   container: {
     position: "relative",
     display: "flex",
-    // TODO: I have no idea how to get rig of outer page scroll
-    height: `calc(100vh - ${NAV_BAR_HEIGHT + 1}px)`,
+    height: CONTENT_CONTAINER_HEIGHT,
   },
   leftSide: {
     flex: 1,
-    height: "100%",
     display: "flex",
     flexDirection: "column",
+    justifyContent: "center",
   },
   sideBarContainer: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "lightblue",
+    backgroundColor: tokens.color.card.light,
+    minWidth: 720,
   },
 };

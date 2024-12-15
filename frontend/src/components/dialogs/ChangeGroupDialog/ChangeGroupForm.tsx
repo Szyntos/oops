@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { Styles } from "../../../utils/Styles";
 import { Group } from "./ChangeGroupDialog";
+import { tokens } from "../../../tokens";
 
 export type ChangeGroupFormValues = z.infer<typeof ValidationSchema>;
 
@@ -63,7 +64,7 @@ export const ChangeGroupForm = ({
             ))}
           </Select>
           {formik.touched.groupId && formik.errors.groupId && (
-            <div style={{ color: "red" }}>{formik.errors.groupId}</div>
+            <div style={styles.error}>{formik.errors.groupId}</div>
           )}
         </FormControl>
         <button type="submit">potwiedź</button>
@@ -81,6 +82,10 @@ const styles: Styles = {
     padding: 12,
     border: "1px solid black",
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
 };

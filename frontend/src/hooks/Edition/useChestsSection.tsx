@@ -16,6 +16,9 @@ import { ChestFormValues } from "../../components/Edition/Sections/ChestsSection
 import { useAwardsSection } from "./useAwardsSection";
 import { useSetupChestCreateMutation } from "../../graphql/setupChestCreate.graphql.types";
 import { useConfirmPopup } from "../common/useConfirmPopup";
+import { useActivateChestMutation } from "../../graphql/activateChest.graphql.types";
+import { useDeactivateChestMutation } from "../../graphql/deactivateChest.graphql.types";
+import { isChestActive } from "../../utils/utils";
 
 export type Chest = SetupChestsQuery["listSetupChests"][number];
 
@@ -173,6 +176,32 @@ export const useChestsSection = (editionId: number) => {
     });
   };
 
+  // ACTIVATE / DEACTIVATE
+  const [activateChest] = useActivateChestMutation();
+  const [deactivateChest] = useDeactivateChestMutation();
+  const handleActivateChest = (chest: Chest) => {
+    globalErrorWrapper(async () => {
+      const isActive = isChestActive(
+        chest.chest.chestEdition.map((e) => ({
+          id: e?.edition.editionId ?? "",
+          active: Boolean(e?.active ?? false),
+        })),
+        editionId.toString(),
+      );
+
+      const variables = {
+        variables: {
+          chestId: parseInt(chest.chest.chestId),
+          editionId: editionId,
+        },
+      };
+      isActive
+        ? await deactivateChest(variables)
+        : await activateChest(variables);
+      refetch();
+    });
+  };
+
   return {
     awards,
     chests,
@@ -199,5 +228,7 @@ export const useChestsSection = (editionId: number) => {
 
     handleDeleteChest,
     handleCopyChest,
+
+    handleActivateChest,
   };
 };

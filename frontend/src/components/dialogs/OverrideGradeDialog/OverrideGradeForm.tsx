@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { Styles } from "../../../utils/Styles";
 import { GRADE_STRINGS } from "../../../utils/utils";
+import { tokens } from "../../../tokens";
 
 export type OverrideGradeFormValues = z.infer<typeof ValidationSchema>;
 
@@ -62,7 +63,7 @@ export const OverrideGradeForm = ({
               ))}
             </Select>
             {formik.touched.grade && formik.errors.grade && (
-              <div style={{ color: "red" }}>{formik.errors.grade}</div>
+              <div style={styles.error}>{formik.errors.grade}</div>
             )}
           </FormControl>
           <button type="submit">potwierdź</button>
@@ -85,6 +86,10 @@ const styles: Styles = {
     display: "flex",
     flexDirection: "column",
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
 };

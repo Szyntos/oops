@@ -11,6 +11,7 @@ import {
 import { AwardTypeType } from "../../../../../__generated__/schema.graphql.types";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
 import { SelectImage } from "../../../../inputs/SelectImage";
+import { tokens } from "../../../../../tokens";
 
 const ValidationSchema = z.object({
   awardName: z.string().min(1),
@@ -108,7 +109,7 @@ export const AddAwardForm = ({
               ))}
             </Select>
             {formik.touched.categoryId && formik.errors.categoryId && (
-              <div style={{ color: "red" }}>{formik.errors.categoryId}</div>
+              <div style={styles.error}>{formik.errors.categoryId}</div>
             )}
           </FormControl>
           <FormControl fullWidth>
@@ -129,7 +130,7 @@ export const AddAwardForm = ({
               ))}
             </Select>
             {formik.touched.awardType && formik.errors.awardType && (
-              <div style={{ color: "red" }}>{formik.errors.awardType}</div>
+              <div style={styles.error}>{formik.errors.awardType}</div>
             )}
           </FormControl>
           <TextField
@@ -203,8 +204,12 @@ const styles: Styles = {
     padding: 12,
     width: 500,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
   fieldsContainer: {
     display: "flex",
     flexDirection: "column",

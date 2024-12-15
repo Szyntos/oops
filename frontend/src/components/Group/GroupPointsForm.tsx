@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Styles } from "../../utils/Styles";
 import { PointsRow, PointsRowData } from "./PointsRow";
 import { Subcategory } from "../../utils/utils";
+import { tokens } from "../../tokens";
 
 type GroupPointsForm = {
   initialRows: PointsRowData[];
@@ -74,6 +75,6 @@ const styles: Styles = {
     gap: 4,
   },
   error: {
-    color: "red",
+    color: tokens.color.state.error,
   },
 };

@@ -10,7 +10,6 @@ import { SideBar } from "../../components/StudentProfile/SideBar";
 import { useFormCategories } from "../../hooks/common/useFormCategories";
 import { Dialog } from "@mui/material";
 import { StudentTableWithFilters } from "../../components/StudentProfile/table/StudentTableWithFilters";
-import { Button } from "../../components/Button";
 import { useTeacherActions } from "../../hooks/StudentProfile";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
@@ -21,6 +20,8 @@ import { useCoordinatorActions } from "../../hooks/StudentProfile/useCoordinator
 import { AddChestToUserForm } from "./AddChestToUserForm";
 import { useChangeGroup } from "../../hooks/common/useChangeGroup";
 import { useOverrideGrade } from "../../hooks/common/useOverrideGrade";
+import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
+import { CustomButton } from "../../components/CustomButton";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -83,7 +84,7 @@ export function TeacherStudentProfile() {
   const { openOverrideGrade } = useOverrideGrade();
 
   if (!studentId) return <p>Id studentanie jest zdefiniowany</p>;
-  if (!userId) return <p>Id nayczyciela nie jest zdefiniowany</p>;
+  if (!userId) return <p>Id nauczyciela nie jest zdefiniowany</p>;
 
   if (loading || formDataLoading || chestsLoading) return <p>Ładowanie..</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -111,153 +112,138 @@ export function TeacherStudentProfile() {
       }
     : addPointsFormInitialValues;
 
-  return (
-    <div style={styles.container}>
-      <SideBar
-        student={studentData}
-        categoriesBarProps={categories}
-        sumOfAllPoints={sumOfAllPoints}
-        currLevel={currLevel}
-        prevLevel={prevLevel}
-        nextLevel={nextLevel}
-        bonuses={bonuses}
-      />
-      <div style={styles.rightContainer}>
-        {disableEditMode && (
-          <NotEditableInfo
-            hasEditableRights={hasEditableRights}
-            isSelectedEditionActive={isSelectedEditionActive}
-          />
+  const getTeacherActionButtons = () => {
+    return (
+      <div style={styles.buttonsContainer}>
+        <CustomButton onClick={openAddDialog} disabled={disableEditMode}>
+          Dodaj punkty
+        </CustomButton>
+        {user.role === UsersRolesType.Coordinator && (
+          <>
+            <CustomButton onClick={openChestDialog} disabled={disableEditMode}>
+              Dodaj skrzynkę
+            </CustomButton>
+            <CustomButton
+              onClick={() =>
+                openOverrideGrade({
+                  studentId,
+                  editionId: selectedEdition?.editionId as string,
+                  grade: studentData.grade,
+                })
+              }
+              disabled={disableEditMode || !selectedEdition?.editionId}
+            >
+              Nadpisz ocenę
+            </CustomButton>
+            <CustomButton
+              onClick={() => handleRegenerateGrade(studentId)}
+              disabled={disableEditMode || !selectedEdition?.editionId}
+            >
+              Wygeneruj ocenę
+            </CustomButton>
+            <CustomButton
+              onClick={() =>
+                openChangeGroup({
+                  studentId,
+                  groupId: studentData.group?.id as string,
+                  editionId: selectedEdition?.editionId as string,
+                })
+              }
+              disabled={
+                disableEditMode ||
+                !studentData.group?.id ||
+                !selectedEdition?.editionId
+              }
+            >
+              Zmień grupę
+            </CustomButton>
+          </>
         )}
-
-        <div style={styles.buttonsContainer}>
-          <Button
-            onClick={openAddDialog}
-            color="lightblue"
-            disabled={disableEditMode}
-          >
-            Dodaj punkty
-          </Button>
-          {user.role === UsersRolesType.Coordinator && (
-            <>
-              <Button
-                onClick={openChestDialog}
-                color="lightblue"
-                disabled={disableEditMode}
-              >
-                Dodaj skrzynkę
-              </Button>
-              <Button
-                onClick={() =>
-                  openOverrideGrade({
-                    studentId,
-                    editionId: selectedEdition?.editionId as string,
-                    grade: studentData.grade,
-                  })
-                }
-                color="lightblue"
-                disabled={disableEditMode || !selectedEdition?.editionId}
-              >
-                Nadpisz ocenę
-              </Button>
-              <Button
-                onClick={() => handleRegenerateGrade(studentId)}
-                color="lightblue"
-                disabled={disableEditMode || !selectedEdition?.editionId}
-              >
-                Wygeneruj ocenę ponownie
-              </Button>
-              <Button
-                onClick={() =>
-                  openChangeGroup({
-                    studentId,
-                    groupId: studentData.group?.id as string,
-                    editionId: selectedEdition?.editionId as string,
-                  })
-                }
-                color="lightblue"
-                disabled={
-                  disableEditMode ||
-                  !studentData.group?.id ||
-                  !selectedEdition?.editionId
-                }
-              >
-                Zmień grupę
-              </Button>
-            </>
-          )}
-        </div>
-
-        <StudentTableWithFilters
-          points={points}
-          filterHeaderNames={filterHeaderNames}
-          editFunctions={{
-            handleDeleteClick: handleDeletePointsClick,
-            handleAddClick: openAddDialog,
-            handleEditClick: openEditDialog,
-          }}
-          showActionButtons={true}
-          blockActionButtons={disableEditMode}
-        />
-
-        <Dialog open={isAddDialogOpen}>
-          <CloseHeader onCloseClick={closeAddDialog} />
-          <PointsForm
-            categories={addPointsCategories}
-            handleConfirmClick={handleAddPointsConfirmation}
-            mutationError={formError}
-            variant="add"
-            initialValues={initialValues}
-            disableCategoryAndSubcategory={!!selectedPoints}
-          />
-        </Dialog>
-
-        <Dialog open={isEditDialogOpen}>
-          <CloseHeader onCloseClick={closeEditDialog} />
-          <PointsForm
-            categories={addPointsCategories}
-            handleConfirmClick={handleEditPointsConfirmation}
-            mutationError={formError}
-            initialValues={initialValues}
-            variant="edit"
-            disableCategoryAndSubcategory={true}
-          />
-        </Dialog>
-
-        <Dialog open={isChestDialogOpen}>
-          <CloseHeader onCloseClick={closeChestDialog} />
-          <AddChestToUserForm
-            handleConfirmClick={handleAddChestConfirmation}
-            categories={addChestCategories}
-            chests={chests}
-            initialValues={{
-              categoryId: addChestCategories[0].id,
-              subcategoryId: addChestCategories[0]?.subcategories[0].id,
-              chestId: chests[0].chestId,
-            }}
-            formError={chestError}
-          />
-        </Dialog>
       </div>
-    </div>
+    );
+  };
+
+  return (
+    <ScreenContentContainer
+      sidebar={
+        <SideBar
+          student={studentData}
+          categoriesBarProps={categories}
+          sumOfAllPoints={sumOfAllPoints}
+          currLevel={currLevel}
+          prevLevel={prevLevel}
+          nextLevel={nextLevel}
+          bonuses={bonuses}
+        />
+      }
+    >
+      {/* no rights info */}
+      {disableEditMode && (
+        <NotEditableInfo
+          hasEditableRights={hasEditableRights}
+          isSelectedEditionActive={isSelectedEditionActive}
+        />
+      )}
+
+      {/* teacher action buttons */}
+      {getTeacherActionButtons()}
+
+      {/* table */}
+      <StudentTableWithFilters
+        points={points}
+        filterHeaderNames={filterHeaderNames}
+        editFunctions={{
+          handleDeleteClick: handleDeletePointsClick,
+          handleAddClick: openAddDialog,
+          handleEditClick: openEditDialog,
+        }}
+        showActionButtons={true}
+        blockActionButtons={disableEditMode}
+      />
+
+      <Dialog open={isAddDialogOpen}>
+        <CloseHeader onCloseClick={closeAddDialog} />
+        <PointsForm
+          categories={addPointsCategories}
+          handleConfirmClick={handleAddPointsConfirmation}
+          mutationError={formError}
+          variant="add"
+          initialValues={initialValues}
+          disableCategoryAndSubcategory={!!selectedPoints}
+        />
+      </Dialog>
+      <Dialog open={isEditDialogOpen}>
+        <CloseHeader onCloseClick={closeEditDialog} />
+        <PointsForm
+          categories={addPointsCategories}
+          handleConfirmClick={handleEditPointsConfirmation}
+          mutationError={formError}
+          initialValues={initialValues}
+          variant="edit"
+          disableCategoryAndSubcategory={true}
+        />
+      </Dialog>
+      <Dialog open={isChestDialogOpen}>
+        <CloseHeader onCloseClick={closeChestDialog} />
+        <AddChestToUserForm
+          handleConfirmClick={handleAddChestConfirmation}
+          categories={addChestCategories}
+          chests={chests}
+          initialValues={{
+            categoryId: addChestCategories[0]?.id,
+            subcategoryId: addChestCategories[0]?.subcategories[0]?.id,
+            chestId: chests[0]?.chestId,
+          }}
+          formError={chestError}
+        />
+      </Dialog>
+    </ScreenContentContainer>
   );
 }
 
 const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 20,
-    margin: 12,
-  },
-  rightContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 24,
-  },
   buttonsContainer: {
     display: "flex",
-    flexDirection: "row",
     gap: 12,
   },
 };

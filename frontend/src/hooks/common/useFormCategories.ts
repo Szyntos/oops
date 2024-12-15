@@ -19,6 +19,8 @@ export const useFormCategories = () => {
         return {
           id: c.categoryId,
           name: c.categoryName,
+          lightColor: c.lightColor,
+          darkColor: c.darkColor,
           subcategories: c.subcategories.map((s) => {
             return {
               id: s.subcategoryId,
@@ -37,6 +39,8 @@ export const useFormCategories = () => {
         return {
           id: c.categoryId,
           name: c.categoryName,
+          lightColor: c.lightColor,
+          darkColor: c.darkColor,
           subcategories: c.subcategories.map((s) => {
             return {
               id: s.subcategoryId,

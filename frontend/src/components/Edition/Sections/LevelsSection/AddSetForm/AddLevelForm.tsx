@@ -11,6 +11,7 @@ import {
 import { WithAddedLevelsValidateErrors } from "./AddSetForm";
 import { SelectImage } from "../../../../inputs/SelectImage";
 import { GRADE_STRINGS } from "../../../../../utils/utils";
+import { tokens } from "../../../../../tokens";
 
 const ValidationSchema = z.object({
   name: z.string().min(1),
@@ -141,7 +142,7 @@ export const AddLevelForm = ({
                 ))}
               </Select>
               {formik.touched.grade && formik.errors.grade && (
-                <div style={{ color: "red" }}>{formik.errors.grade}</div>
+                <div style={styles.error}>{formik.errors.grade}</div>
               )}
             </FormControl>
           </div>
@@ -181,8 +182,12 @@ const styles: Styles = {
     flexDirection: "column",
     gap: 12,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
   fieldsContainer: {
     display: "flex",
     flexDirection: "row",

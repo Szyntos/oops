@@ -52,6 +52,14 @@ query Files($paths: [String!]!) {
           allow
           reason
         }
+        canActivate {
+          allow
+          reason
+        }
+        canDeactivate {
+          allow
+          reason
+        }
       }
     }
   }

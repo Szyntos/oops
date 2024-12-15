@@ -1,8 +1,10 @@
-import { Styles } from "../../../../utils/Styles";
-import { Avatar } from "../../../images/Avatar";
-import { LevelsSection } from "./LevelsSection";
 import { LevelProgressBar } from "../../../bars/LevelProgressBar/LevelProgressBar";
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
+import { Section } from "../Section/Section";
+import { ItemWithIcon, ItemWithIconProps } from "../Section/ItemWithIcon";
+import { Styles } from "../../../../utils/Styles";
+import { LevelsSection } from "./LevelsSection";
+import { Avatar } from "../../../avatars/Avatar";
 
 type AnimalCardProps = {
   totalPoints: number | undefined;
@@ -17,32 +19,52 @@ export const AnimalCard = ({
   nextLevel,
   totalPoints,
 }: AnimalCardProps) => {
+  const items: ItemWithIconProps[] = [
+    { icon: "monster", title: currLevel.levelName },
+    { icon: "level", title: `lvl. ${currLevel.ordinalNumber + 1}` },
+    { icon: "level", title: currLevel.grade },
+    {
+      icon: "points",
+      title: `${parseFloat(currLevel.minimumPoints).toFixed(2)} - ${parseFloat(currLevel.maximumPoints).toFixed(2)}`,
+    },
+  ];
+
   return (
-    <div style={styles.card}>
-      <Avatar id={currLevel.imageFile?.fileId} size="l" />
-      <div style={styles.title}>
-        Obecny level: {currLevel.levelName} - lvl. {currLevel.ordinalNumber + 1}
-      </div>
-      <LevelProgressBar
-        totalPoints={totalPoints}
-        prevLevel={prevLevel}
-        currLevel={currLevel}
-        nextLevel={nextLevel}
-      />
-      <LevelsSection studentLevel={currLevel} />
-    </div>
+    <>
+      <Section title="Twój zwierzak">
+        <div style={styles.animalContainer}>
+          <Avatar id={currLevel.imageFile?.fileId} size="l" />
+          <div style={styles.itemsContainer}>
+            {items.map((item) => (
+              <ItemWithIcon {...item} />
+            ))}
+          </div>
+        </div>
+
+        <LevelProgressBar
+          totalPoints={totalPoints}
+          prevLevel={prevLevel}
+          currLevel={currLevel}
+          nextLevel={nextLevel}
+        />
+      </Section>
+
+      <Section title="Zdobyte poziomy">
+        <LevelsSection studentLevel={currLevel} currLevel={currLevel} />
+      </Section>
+    </>
   );
 };
 
 const styles: Styles = {
-  card: {
+  animalContainer: {
+    display: "flex",
+    gap: 12,
+    alignItems: "center",
+  },
+  itemsContainer: {
     display: "flex",
     flexDirection: "column",
-    border: "1px solid blue",
-    gap: 12,
-    padding: 24,
-  },
-  title: {
-    fontWeight: "bold",
+    gap: 8,
   },
 };

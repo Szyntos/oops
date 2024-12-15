@@ -13,6 +13,7 @@ import {
 } from "../../components/Students/StudentsList";
 import { useStudentsScreenData } from "../../hooks/Students/useStudentsScreenData";
 import { groupsRadioButtonOptions } from "../../utils/constants";
+import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
 
 export const StudentsScreen = () => {
   const { teacherId, groups, students, loading, error } =
@@ -71,44 +72,35 @@ export const StudentsScreen = () => {
   if (error) return <div>ERROR: {error?.message}</div>;
 
   return (
-    <div style={styles.container}>
-      <SideFilterBar
-        sections={[
-          {
-            pickerTitle: "Grupa",
-            options: groups,
-            onFiltersChange: (selectedIds) => setGroupsIds(selectedIds),
-          },
-        ]}
-      />
-      <div style={styles.rightSide}>
-        <div style={styles.topBar}>
-          <StudentsListSearcher
-            onInputChange={(input: string) => setInput(input)}
-          />
-          <RadioFilterGroups
-            options={groupsRadioButtonOptions}
-            onOptionChange={(option) => setSelectedOption(option)}
-            selectedOption={selectedOption}
-          />
-        </div>
-        <StudentsList students={studentsWithFilterAndRadio} />
+    <ScreenContentContainer
+      sidebar={
+        <SideFilterBar
+          sections={[
+            {
+              pickerTitle: "Grupa",
+              options: groups,
+              onFiltersChange: (selectedIds) => setGroupsIds(selectedIds),
+            },
+          ]}
+        />
+      }
+    >
+      <div style={styles.topBar}>
+        <StudentsListSearcher
+          onInputChange={(input: string) => setInput(input)}
+        />
+        <RadioFilterGroups
+          options={groupsRadioButtonOptions}
+          onOptionChange={(option) => setSelectedOption(option)}
+          selectedOption={selectedOption}
+        />
       </div>
-    </div>
+      <StudentsList students={studentsWithFilterAndRadio} />
+    </ScreenContentContainer>
   );
 };
 
 const styles: Styles = {
-  container: {
-    display: "flex",
-    gap: 20,
-    margin: 12,
-  },
-  rightSide: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-  },
   topBar: {
     display: "flex",
     flexDirection: "row",

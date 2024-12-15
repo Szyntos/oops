@@ -11,11 +11,13 @@ type SetupButtonsProps = {
   handleEdit?: () => void;
   handleDelete?: () => void;
   handleCopy?: () => void;
-  handleMarkActiveness?: () => void;
+  handleMarkStudentActiveness?: () => void;
+  handleMarkChestActiveness?: () => void;
   handleShow?: () => void;
   handleAdd?: () => void;
   isSelected?: boolean;
-  isActive?: boolean;
+  isStudentActive?: boolean;
+  isChestActive?: boolean;
 };
 
 export const SetupButtons = ({
@@ -24,11 +26,13 @@ export const SetupButtons = ({
   handleDelete,
   handleCopy,
   handleEdit,
-  handleMarkActiveness,
+  handleMarkStudentActiveness,
+  handleMarkChestActiveness,
   handleShow,
   handleAdd,
   isSelected,
-  isActive,
+  isStudentActive,
+  isChestActive,
 }: SetupButtonsProps) => {
   const copy: SetupButtonProps | undefined = handleCopy
     ? {
@@ -70,20 +74,37 @@ export const SetupButtons = ({
       }
     : undefined;
 
-  const activeness: SetupButtonProps | undefined = handleMarkActiveness
-    ? {
-        handleClick: handleMarkActiveness,
-        isClickable: Boolean(
-          isActive
-            ? permissions.canMarkAsInactive?.allow
-            : permissions.canMarkAsActive?.allow,
-        ),
-        reason: isActive
-          ? permissions.canMarkAsActive?.reason
-          : permissions.canMarkAsInactive?.reason,
-        title: isActive ? "Dezaktywuj" : "Aktywuj",
-      }
-    : undefined;
+  const studentActiveness: SetupButtonProps | undefined =
+    handleMarkStudentActiveness
+      ? {
+          handleClick: handleMarkStudentActiveness,
+          isClickable: Boolean(
+            isStudentActive
+              ? permissions.canMarkAsInactive?.allow
+              : permissions.canMarkAsActive?.allow,
+          ),
+          reason: isStudentActive
+            ? permissions.canMarkAsInactive?.reason
+            : permissions.canMarkAsActive?.reason,
+          title: isStudentActive ? "Dezaktywuj" : "Aktywuj",
+        }
+      : undefined;
+
+  const chestActiveness: SetupButtonProps | undefined =
+    handleMarkChestActiveness
+      ? {
+          handleClick: handleMarkChestActiveness,
+          isClickable: Boolean(
+            isChestActive
+              ? permissions.canDeactivate?.allow
+              : permissions.canActivate?.allow,
+          ),
+          reason: isChestActive
+            ? permissions.canDeactivate?.reason
+            : permissions.canActivate?.reason,
+          title: isChestActive ? "Dezaktywuj" : "Aktywuj",
+        }
+      : undefined;
 
   const show: SetupButtonProps | undefined = handleShow
     ? {
@@ -110,7 +131,8 @@ export const SetupButtons = ({
       {copy && <SetupButton {...copy} />}
       {edit && <SetupButton {...edit} />}
       {remove && <SetupButton {...remove} />}
-      {activeness && <SetupButton {...activeness} />}
+      {studentActiveness && <SetupButton {...studentActiveness} />}
+      {chestActiveness && <SetupButton {...chestActiveness} />}
       {show && <SetupButton {...show} />}
     </div>
   );

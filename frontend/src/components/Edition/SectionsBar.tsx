@@ -1,6 +1,7 @@
 import { Styles } from "../../utils/Styles";
 import { pathsGenerator } from "../../router/paths";
 import { useLocation, useNavigate } from "react-router-dom";
+import { tokens } from "../../tokens";
 
 type SectionBarProps = {
   editionId: number;
@@ -80,7 +81,9 @@ export const SectionsBar = ({ editionId }: SectionBarProps) => {
           onClick={() => handleSectionChange(section)}
           style={{
             ...styles.section,
-            color: isSectionActive(section) ? "red" : "grey",
+            color: isSectionActive(section)
+              ? tokens.color.accent.dark
+              : tokens.color.state.disabled,
           }}
         >
           {section.title}

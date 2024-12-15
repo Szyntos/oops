@@ -11,6 +11,7 @@ import { useApolloClient } from "@apollo/client";
 import { UserFromList } from "../../components/Welcome/UsersListWithFilter/UsersListWithFilter";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { isEditionActive } from "../../utils/utils";
+import { getEnvVariable } from "../../utils/constants";
 
 export const cookiesStrings = {
   token: "token",
@@ -71,7 +72,7 @@ export const useLogin = () => {
   };
 
   const getBypassToken = (userId: string) => {
-    return `Bypass${userId}`;
+    return `${getEnvVariable("VITE_BYPASS_TOKEN")}${userId}`;
   };
 
   const loginWithCredentials = async (credentials: LoginCredentials) => {

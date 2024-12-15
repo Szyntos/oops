@@ -2,6 +2,8 @@ import { Styles } from "../../utils/Styles";
 import { HallOfFameStudentData } from "./HallOfFameStudentCard";
 import { HallOfFameStudentSearcher } from "./HallOfFameStudentSearcher";
 import { FilterButton } from "../FilterButton";
+import { CustomButton } from "../CustomButton";
+import { tokens } from "../../tokens";
 
 type HallOfFameMenuProps = {
   students: HallOfFameStudentData[];
@@ -23,7 +25,7 @@ export const HallOfFameMenu = ({
     <div style={styles.container}>
       {isUserRoleStudent ? (
         <>
-          <button onClick={scrollToStudent}>znajdź swoją pozycję</button>
+          <CustomButton onClick={scrollToStudent}>wyszukaj mnie</CustomButton>
           <HallOfFameStudentSearcher onInputChange={onSearchChange} />
           <FilterButton
             option={"Moja grupa"}
@@ -48,6 +50,7 @@ const styles: Styles = {
     display: "flex",
     gap: 12,
     padding: 12,
-    backgroundColor: "lightgrey",
+    backgroundColor: tokens.color.card.dark,
+    alignItems: "center",
   },
 };

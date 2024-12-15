@@ -174,7 +174,7 @@ class ChestHistoryPermissions {
                 reason = "Teacher must be a teacher or coordinator"
             )
         }
-        if (teacher.userGroups.isEmpty()) {
+        if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.isEmpty()) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -182,7 +182,7 @@ class ChestHistoryPermissions {
                 reason = "Teacher has no groups"
             )
         }
-        if (teacher.userGroups.map { it.group.edition }.none { it in chestEditions }) {
+        if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.map { it.group.edition }.none { it in chestEditions }) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -457,7 +457,7 @@ class ChestHistoryPermissions {
                     reason = "Teacher must be a teacher or coordinator"
                 )
             }
-            if (teacher.userGroups.isEmpty()) {
+            if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.isEmpty()) {
                 return Permission(
                     action = action,
                     arguments = arguments,
@@ -465,7 +465,7 @@ class ChestHistoryPermissions {
                     reason = "Teacher has no groups"
                 )
             }
-            if (teacher.userGroups.map { group -> group.group.edition }.none { edition -> edition in chestEditions }) {
+            if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.map { group -> group.group.edition }.none { edition -> edition in chestEditions }) {
                 return Permission(
                     action = action,
                     arguments = arguments,

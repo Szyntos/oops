@@ -1,0 +1,60 @@
+table:
+  name: chest_edition
+  schema: public
+object_relationships:
+  - name: chest
+    using:
+      foreign_key_constraint_on: chest_id
+  - name: edition
+    using:
+      foreign_key_constraint_on: edition_id
+select_permissions:
+  - role: coordinator
+    permission:
+      columns:
+        - active
+        - chest_edition_id
+        - chest_id
+        - edition_id
+        - label
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+  - role: student
+    permission:
+      columns:
+        - active
+        - chest_edition_id
+        - chest_id
+        - edition_id
+        - label
+      filter:
+        edition:
+          groups:
+            userGroups:
+              user_id:
+                _eq: X-Hasura-User-Id
+      allow_aggregations: true
+    comment: ""
+  - role: teacher
+    permission:
+      columns:
+        - active
+        - chest_edition_id
+        - chest_id
+        - edition_id
+        - label
+      filter:
+        _or:
+          - edition:
+              groups:
+                teacher:
+                  user_id:
+                    _eq: X-Hasura-User-Id
+          - edition:
+              groups:
+                userGroups:
+                  user_id:
+                    _eq: X-Hasura-User-Id
+      allow_aggregations: true
+    comment: ""

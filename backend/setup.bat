@@ -1,7 +1,7 @@
 @echo off
 
 REM Step 1: Start Docker services
-docker-compose up -d
+docker-compose --env-file ../.env up -d
 
 REM Step 2: Build the Spring Boot application in a non-blocking way
 start /wait cmd /c "gradlew.bat build"

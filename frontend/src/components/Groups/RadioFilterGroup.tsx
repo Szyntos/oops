@@ -1,18 +1,6 @@
-import { Styles } from "../../utils/Styles";
+import { FilterButton } from "../FilterButton";
 
-export type GroupRadioFilterItem =
-  | {
-      id: "all";
-      name: "wszystkie";
-    }
-  | {
-      id: "yours";
-      name: "twoje";
-    }
-  | {
-      id: "foreign";
-      name: "obce";
-    };
+export type GroupRadioFilterItem = { id: string; name: string };
 
 type RadioFilterGroupProps = {
   options: GroupRadioFilterItem[];
@@ -28,28 +16,12 @@ export const RadioFilterGroups = ({
   return (
     <>
       {options.map((option) => (
-        <div
-          style={{
-            ...styles.button,
-            ...(option.id === selectedOption.id ? styles.active : undefined),
-          }}
-          key={option.id}
+        <FilterButton
+          option={option.name}
+          isActive={option.id === selectedOption.id}
           onClick={() => onOptionChange(option)}
-        >
-          {option.name}
-        </div>
+        />
       ))}
     </>
   );
-};
-
-const styles: Styles = {
-  button: {
-    padding: 12,
-    backgroundColor: "lightgrey",
-  },
-  active: {
-    backgroundColor: "blue",
-    color: "white",
-  },
 };

@@ -12,28 +12,57 @@ export const useFormCategories = () => {
     skip: !editionId,
   });
 
-  const formCategories: Category[] =
+  const addPointsCategories: Category[] =
     data?.categories
       .filter((c) => c.canAddPoints)
       .map((c) => {
         return {
           id: c.categoryId,
           name: c.categoryName,
+          lightColor: c.lightColor,
+          darkColor: c.darkColor,
           subcategories: c.subcategories.map((s) => {
             return {
               id: s.subcategoryId,
               name: s.subcategoryName,
               maxPoints: parseFloat(s.maxPoints),
+              categoryId: parseInt(c.categoryId),
             };
           }),
         };
       }) ?? [];
 
-  const formInitialValues: PointsFormValues = {
-    categoryId: formCategories[0]?.id,
+  const addChestCategories: Category[] =
+    data?.categories
+      .filter((c) => !c.canAddPoints)
+      .map((c) => {
+        return {
+          id: c.categoryId,
+          name: c.categoryName,
+          lightColor: c.lightColor,
+          darkColor: c.darkColor,
+          subcategories: c.subcategories.map((s) => {
+            return {
+              id: s.subcategoryId,
+              name: s.subcategoryName,
+              maxPoints: parseFloat(s.maxPoints),
+              categoryId: parseInt(c.categoryId),
+            };
+          }),
+        };
+      }) ?? [];
+
+  const addPointsFormInitialValues: PointsFormValues = {
+    categoryId: addPointsCategories[0]?.id,
     points: 0,
-    subcategoryId: formCategories[0]?.subcategories[0].id,
+    subcategoryId: addPointsCategories[0]?.subcategories[0].id,
   };
 
-  return { formCategories, formInitialValues, loading, error };
+  return {
+    addPointsCategories,
+    addChestCategories,
+    addPointsFormInitialValues,
+    loading,
+    error,
+  };
 };

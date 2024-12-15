@@ -6,7 +6,7 @@ def insert_editions(hasura_url, headers, number_of_editions=6):
     editions = {}
     current_year = int(datetime.datetime.now().year)
     print(f"Attempting to insert {number_of_editions} editions starting from {current_year}")
-    for year in range(current_year, current_year + number_of_editions):
+    for year in range(current_year, current_year + number_of_editions + 1):
         name = f"Edition {year}/{year+1}"
         print(f"Attempting to insert edition: {name}")
 
@@ -32,7 +32,8 @@ def insert_editions(hasura_url, headers, number_of_editions=6):
             print(f"Error inserting edition '{name}': {data['errors']}")
         else:
             returned_data = data["data"]["addEdition"]
-            editions[returned_data["editionYear"]] = returned_data["editionId"]
+            if year != current_year + number_of_editions:
+                editions[returned_data["editionYear"]] = returned_data["editionId"]
             print(f"Successfully inserted edition '{name}' with ID {returned_data['editionId']} for year {year}")
 
     print("All editions have been processed.")

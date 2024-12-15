@@ -1,0 +1,6 @@
+mutation SetupCategoryEditionAdd($categoryId: Int!, $editionId: Int!) {
+  addCategoryToEdition(categoryId: $categoryId, editionId: $editionId) {
+    categoryEditionId
+    label
+  }
+}

@@ -1,20 +1,10 @@
-import { useEffect } from "react";
-import { useUserEditions } from "./useUserEditions";
-import { isEditionActive } from "../../utils/utils";
+import { useUser } from "./useUser";
 
 // TODO refactor this to has editionId ?
 export function useEditionSelection() {
-  const { editions, selectedEdition, setSelectedEdition } = useUserEditions();
+  const { editions, selectedEdition } = useUser();
 
-  useEffect(() => {
-    const activeEdition = editions.find(isEditionActive);
-
-    if (activeEdition) {
-      setSelectedEdition(activeEdition);
-    } else {
-      setSelectedEdition(editions[0]);
-    }
-  }, [editions, setSelectedEdition]);
+  // TODO this should be reworked or deleted
 
   // TODO will be used later on
   // const handleEditionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

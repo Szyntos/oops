@@ -57,7 +57,7 @@ class CsvReader(
 
                     // Check if the user is active
                     if (skreslony == "0" && rezygnacja == "0") {
-                        val indexNumberRegex = Regex("(\\d+)@student\\.agh\\.edu\\.pl")
+                        val indexNumberRegex = Regex("(\\d+)@")
                         val indexNumberMatch = indexNumberRegex.find(email)
                         val indexNumber = indexNumberMatch?.groupValues?.get(1)?.toInt() ?: 0
 

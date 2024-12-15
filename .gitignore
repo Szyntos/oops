@@ -15,7 +15,5 @@ backend/src/main/python/__pycache__/
 backend/src/main/python/utils/__pycache__/
 backend/resources/files
 
-**/firebase_secret.json
 **/.env
-**/application-secrets.properties
-**/firebaseConfig.ts
+*_[0-9]*.png

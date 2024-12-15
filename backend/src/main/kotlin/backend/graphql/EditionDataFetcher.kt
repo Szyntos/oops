@@ -1,28 +1,61 @@
 package backend.graphql
 
 import backend.award.AwardRepository
+import backend.awardEdition.AwardEditionRepository
 import backend.bonuses.BonusesRepository
+import backend.categories.Categories
 import backend.categories.CategoriesRepository
+import backend.chests.ChestsRepository
 import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.gradingChecks.GradingChecks
+import backend.gradingChecks.GradingChecksRepository
+import backend.graphql.utils.*
 import backend.groups.GroupsRepository
+import backend.levels.Levels
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import kotlin.jvm.optionals.getOrNull
 
 @DgsComponent
 class EditionDataFetcher {
     @Autowired
-    lateinit var userMapper: UserMapper
+    private lateinit var gradingChecksDataFetcher: GradingChecksDataFetcher
+
+    @Autowired
+    private lateinit var gradingChecksRepository: GradingChecksRepository
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
+    @Autowired
+    private lateinit var groupsDataFetcher: GroupsDataFetcher
+
+    @Autowired
+    private lateinit var chestsRepository: ChestsRepository
+
+    @Autowired
+    private lateinit var awardEditionDataFetcher: AwardEditionDataFetcher
+
+    @Autowired
+    private lateinit var chestEditionDataFetcher: ChestEditionDataFetcher
+
+    @Autowired
+    private lateinit var awardEditionRepository: AwardEditionRepository
+
+    @Autowired
+    private lateinit var userMapper: UserMapper
 
     @Autowired
     lateinit var bonusesRepository: BonusesRepository
@@ -54,25 +87,70 @@ class EditionDataFetcher {
     @Autowired
     lateinit var photoAssigner: PhotoAssigner
 
+    @Autowired
+    lateinit var categoryEditionDataFetcher: CategoryEditionDataFetcher
+
+    @DgsQuery
+    @Transactional
+    fun listSetupEditions(): List<EditionWithPermissions>{
+        val action = "listSetupEditions"
+        val arguments = mapOf<String, Any>()
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val editions = editionRepository.findAll()
+        return editions.map {
+            EditionWithPermissions(
+                edition = it,
+                permissions =  ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addEdition",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editEdition", objectMapper.writeValueAsString(mapOf("editionId" to it.editionId)))),
+                    canCopy = permissionService.checkPartialPermission(PermissionInput("copyEdition", objectMapper.writeValueAsString(mapOf("editionId" to it.editionId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeEdition", objectMapper.writeValueAsString(mapOf("editionId" to it.editionId)))),
+                    canSelect =
+                    Permission(
+                        "selectEdition",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canUnselect =
+                    Permission(
+                        "unselectEdition",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    additional = emptyList()
+                )
+            )
+        }.sortedBy { it.edition.editionYear }
+    }
+
     @DgsMutation
     @Transactional
     fun addEdition(@InputArgument editionName: String, @InputArgument editionYear: Int, @InputArgument label: String = ""): Edition {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add editions")
-        }
-
-        if (editionRepository.existsByEditionName(editionName)) {
-            throw IllegalArgumentException("Edition with name $editionName already exists")
-        }
-        if (editionRepository.existsByEditionYear(editionYear)) {
-            throw IllegalArgumentException("Edition with year $editionYear already exists")
-        }
-
-        val currentYear = LocalDate.now().year
-
-        if (editionYear < currentYear-1 || editionYear > currentYear + 10) {
-            throw IllegalArgumentException("Edition year must be between ${currentYear-1} and ${currentYear + 10}")
+        val action = "addEdition"
+        val arguments = mapOf(
+            "editionName" to editionName,
+            "editionYear" to editionYear,
+            "label" to label
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val startDate = LocalDate.of(editionYear, 10, 1)
@@ -95,36 +173,31 @@ class EditionDataFetcher {
         @InputArgument editionYear: Int?,
         @InputArgument label: String?
     ): Edition {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can edit editions")
+        val action = "editEdition"
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "editionName" to editionName,
+            "editionYear" to editionYear,
+            "label" to label
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)
             .orElseThrow { IllegalArgumentException("Invalid edition ID") }
 
-        if (edition.endDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (edition.startDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already started")
-        }
 
         editionName?.let {
-            if (editionRepository.existsByEditionName(it) && it != edition.editionName) {
-                throw IllegalArgumentException("Edition with name $it already exists")
-            }
             edition.editionName = it
         }
 
         editionYear?.let {
-            val currentYear = LocalDate.now().year
-            if (it < currentYear || it > currentYear + 10) {
-                throw IllegalArgumentException("Edition year must be between $currentYear and ${currentYear + 10}")
-            }
-            if (editionRepository.existsByEditionYear(it) && it != edition.editionYear) {
-                throw IllegalArgumentException("Edition with year $it already exists")
-            }
             edition.editionYear = it
             edition.startDate = LocalDate.of(it, 10, 1)
             edition.endDate = LocalDate.of(it + 1, 9, 30)
@@ -140,22 +213,127 @@ class EditionDataFetcher {
     @DgsMutation
     @Transactional
     fun removeEdition(@InputArgument editionId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only coordinators can remove editions")
+        val action = "removeEdition"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)
             .orElseThrow { IllegalArgumentException("Invalid edition ID") }
 
-        if (edition.endDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
+
+        val categories = categoriesRepository.findByCategoryEdition_Edition(edition)
+        categories.forEach {
+            categoryEditionDataFetcher.removeCategoryFromEditionHelper(it.categoryId, edition.editionId)
         }
-        if (edition.startDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already started")
+
+        val awards = awardRepository.findByAwardEditions_Edition(edition)
+
+        awards.forEach {
+            awardEditionDataFetcher.removeAwardFromEditionHelper(it.awardId, edition.editionId)
+        }
+
+        val chests = chestsRepository.findByChestEdition_Edition(edition)
+
+        chests.forEach {
+            chestEditionDataFetcher.removeChestFromEditionHelper(it.chestId, edition.editionId)
+        }
+
+        val groups = groupsRepository.findByEdition(edition)
+
+        groups.forEach {
+            groupsDataFetcher.removeGroupHelper(it.groupsId)
+        }
+
+        val gradingCheck = gradingChecksRepository.findByEdition(edition).getOrNull()
+        if (gradingCheck != null){
+            gradingChecksDataFetcher.removeGradingCheckHelper(gradingCheck.gradingCheckId)
         }
 
         editionRepository.delete(edition)
         return true
     }
+
+    @DgsMutation
+    @Transactional
+    fun copyEdition(@InputArgument editionId: Long, @InputArgument editionYear: Int, @InputArgument editionName: String): Edition {
+        val action = "copyEdition"
+        val arguments = mapOf(
+            "editionId" to editionId,
+            "editionYear" to editionYear,
+            "editionName" to editionName
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val edition = editionRepository.findById(editionId)
+            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+
+        val startDate = LocalDate.of(editionYear, 10, 1)
+        val endDate = LocalDate.of(editionYear + 1, 9, 30)
+
+        val newEdition = Edition(
+            editionName = editionName,
+            editionYear = editionYear,
+            startDate = startDate,
+            endDate = endDate,
+            label = edition.label)
+        newEdition.levelSet = edition.levelSet
+        val resultEdition = editionRepository.save(newEdition)
+
+        val categories = categoriesRepository.findByCategoryEdition_Edition(edition)
+        categories.forEach {
+            categoryEditionDataFetcher.addCategoryToEditionHelper(it.categoryId, resultEdition.editionId)
+        }
+
+        val awards = awardRepository.findByAwardEditions_Edition(edition)
+
+        awards.forEach {
+            awardEditionDataFetcher.addAwardToEditionHelper(it.awardId, resultEdition.editionId)
+        }
+
+        val chests = chestsRepository.findByChestEdition_Edition(edition)
+
+        chests.forEach {
+            chestEditionDataFetcher.addChestToEditionHelper(it.chestId, resultEdition.editionId)
+        }
+
+        val gradingCheck = gradingChecksRepository.findByEdition(edition).getOrNull()
+
+        if (gradingCheck != null){
+            val newEndOfLabsDate = gradingCheck.endOfLabsDate.withYear(
+                editionYear + gradingCheck.endOfLabsDate.year - edition.editionYear
+            )
+
+            val newGradingCheck = GradingChecks(
+                endOfLabsDate = newEndOfLabsDate,
+                endOfLabsLevelsThreshold = gradingCheck.endOfLabsLevelsThreshold,
+                projectPointsThreshold = gradingCheck.projectPointsThreshold,
+                project = gradingCheck.project,
+                edition = resultEdition
+            )
+            gradingChecksRepository.save(newGradingCheck)
+        }
+
+        return resultEdition
+    }
 }
+
+data class EditionWithPermissions(
+    val edition: Edition,
+    val permissions: ListPermissionsOutput
+)

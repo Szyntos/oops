@@ -1,7 +1,9 @@
 package backend.categories
 
+import backend.award.Award
 import backend.categoryEdition.CategoryEdition
-import backend.userLevel.UserLevel
+import backend.gradingChecks.GradingChecks
+import backend.subcategories.Subcategories
 import jakarta.persistence.*
 
 @Entity
@@ -28,7 +30,16 @@ class Categories(
     var darkColor: String,
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    var categoryEdition: Set<CategoryEdition> = HashSet(),
+    val categoryEdition: Set<CategoryEdition> = HashSet(),
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    val subcategories: Set<Subcategories> = HashSet(),
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    val awards: Set<Award> = HashSet(),
+
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    val gradingChecks: Set<GradingChecks> = HashSet(),
 ) {
     constructor() : this(
         categoryName = "LABORATORY",

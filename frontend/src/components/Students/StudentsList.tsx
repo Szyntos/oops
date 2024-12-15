@@ -4,6 +4,7 @@ import { pathsGenerator } from "../../router/paths";
 import { Styles } from "../../utils/Styles";
 import { StudentsListCard } from "./StudentsListCard";
 import { Group } from "../../hooks/common/useGroupsData";
+import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 
 // TODO name to clean up after group screen is ready
 export type StudentFromList = {
@@ -12,6 +13,8 @@ export type StudentFromList = {
   firstName: string;
   secondName: string;
   group: Group;
+  nick: string;
+  index: number;
 };
 
 type StudentsListProps = {
@@ -31,7 +34,10 @@ export const StudentsList = ({ students: groups }: StudentsListProps) => {
           onClick={() =>
             navigate(pathsGenerator.teacher.StudentProfile(student.id))
           }
-          withEditableRights={student.group.teacher.id === user.user.userId}
+          withEditableRights={
+            student.group.teacher.id === user.user.userId ||
+            user.user.role === UsersRolesType.Coordinator
+          }
         />
       ))}
     </div>

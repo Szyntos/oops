@@ -1,7 +1,7 @@
 import { Points } from "../../../../hooks/StudentProfile";
 import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { Styles } from "../../../../utils/Styles";
-import { AwardWithTooltip } from "../../../images/AwardWithTooltip";
+import { AwardWithTooltip } from "../../../avatars/AwardWithTooltip";
 
 type AwardsCellContentProps = {
   points: Points;
@@ -31,7 +31,7 @@ export const AwardsCellContent = ({ points }: AwardsCellContentProps) => {
               updatedAt: bonus?.bonuses.updatedAt ?? "",
               createdAt: bonus?.bonuses.createdAt ?? "",
             }}
-            size={"m"}
+            size={"xs"}
           />
         );
       })}

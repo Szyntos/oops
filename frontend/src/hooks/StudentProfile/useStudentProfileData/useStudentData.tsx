@@ -1,10 +1,13 @@
 import { FilterItem } from "../../../components/Groups/FilterBar/FilterOptionsSection";
+import { FilterMenuItemType } from "../../../components/StudentProfile/table/FilterMenu/FilterMenu";
+import { useCategoriesQuery } from "../../../graphql/categories.graphql.types";
 import { useStudentPointsQuery } from "../../../graphql/studentPoints.graphql.types";
 import { Timestamp, Weekday } from "../../common/useGroupsData";
 import { Points } from "../types";
 
 export type StudentCardData = {
   id: string;
+  nick: string;
   displayName: string;
   index: number;
   group?: {
@@ -17,6 +20,9 @@ export type StudentCardData = {
   };
   totalPoints: number;
   avatarId: string | undefined;
+  grade: string;
+  projectCheck: boolean;
+  levelCheck: boolean;
 };
 
 export const useStudentData = (props: {
@@ -24,7 +30,6 @@ export const useStudentData = (props: {
   studentId: string | undefined;
 }) => {
   const { editionId, studentId } = props;
-
   const { data, loading, error, refetch } = useStudentPointsQuery({
     variables: {
       editionId: parseInt(editionId as string),
@@ -39,9 +44,15 @@ export const useStudentData = (props: {
 
   const studentData: StudentCardData | undefined = user
     ? {
+        nick: user.nick,
         id: user.userId.toString(),
         displayName: `${user.firstName} ${user.secondName}`,
         index: user.indexNumber,
+        grade:
+          user.userLevels
+            .find((l) => l?.edition.editionId)
+            ?.computedGrade.toFixed(1)
+            .toString() ?? "",
         group: user.userGroups[0]
           ? {
               name: user.userGroups[0].group.generatedName,
@@ -60,6 +71,14 @@ export const useStudentData = (props: {
           : undefined,
         totalPoints: data.getStudentPoints.sumOfAll,
         avatarId: user.imageFile?.fileId,
+        levelCheck: Boolean(
+          user.userLevels.find((e) => e?.edition.editionId === editionId)
+            ?.endOfLabsLevelsReached,
+        ),
+        projectCheck: Boolean(
+          user.userLevels.find((e) => e?.edition.editionId === editionId)
+            ?.projectPointsThresholdReached,
+        ),
       }
     : undefined;
 
@@ -78,15 +97,25 @@ export const useStudentData = (props: {
       }
     });
 
-  const filterHeaderNames: FilterItem[] =
-    Array.from(uniqueCategories.values()) ?? [];
+  const {
+    data: headersData,
+    loading: headersLoading,
+    error: headersError,
+  } = useCategoriesQuery({ variables: { editionId: editionId as string } });
+
+  const filterHeaderNames: FilterMenuItemType[] =
+    headersData?.categories.map((c) => ({
+      ...c,
+      id: c.categoryId,
+      name: c.categoryName,
+    })) ?? [];
 
   return {
     studentData,
     points,
     filterHeaderNames,
-    studentPointsLoading: loading,
-    studentPointsError: error,
+    studentPointsLoading: loading || headersLoading,
+    studentPointsError: error || headersError,
     studentPointsRefetch: refetch,
   };
 };

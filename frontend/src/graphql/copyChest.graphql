@@ -1,0 +1,5 @@
+mutation CopyChest($chestId: Int!) {
+  copyChest(chestId: $chestId) {
+    chestId
+  }
+}

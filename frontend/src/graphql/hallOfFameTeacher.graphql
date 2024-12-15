@@ -1,0 +1,20 @@
+query HallOfFameTeacher($editionId: bigint) {
+  hallOfFame(
+    where: { editionId: { _eq: $editionId } }
+    orderBy: [{ sumOfPoints: DESC }, { nick: ASC }]
+  ) {
+    editionId
+    levelId
+    levelName
+    nick
+    sumOfPoints
+    userId
+    groupsId
+    groupName
+    generatedName
+    levelImageId
+    userImageId
+    firstName
+    secondName
+  }
+}

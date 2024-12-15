@@ -1,0 +1,56 @@
+query SetupGradingChecks($editionId: Int!) {
+  listSetupGradingChecks(editionId: $editionId) {
+    gradingCheck {
+      gradingCheckId
+      endOfLabsDate
+      endOfLabsLevelsThreshold {
+        grade
+        highest
+        label
+        levelId
+        levelName
+        maximumPoints
+        minimumPoints
+        ordinalNumber
+      }
+      projectPointsThreshold
+      project {
+        categoryId
+      }
+    }
+    permissions {
+      canAdd {
+        allow
+        reason
+      }
+      canCopy {
+        allow
+        reason
+      }
+      canEdit {
+        allow
+        reason
+      }
+      canRemove {
+        allow
+        reason
+      }
+      canSelect {
+        allow
+        reason
+      }
+      canUnselect {
+        allow
+        reason
+      }
+      canActivate {
+        allow
+        reason
+      }
+      canDeactivate {
+        allow
+        reason
+      }
+    }
+  }
+}

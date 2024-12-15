@@ -2,7 +2,8 @@ package backend.levels
 
 import backend.edition.Edition
 import backend.files.FileEntity
-import backend.userGroups.UserGroups
+import backend.gradingChecks.GradingChecks
+import backend.levelSet.LevelSet
 import backend.userLevel.UserLevel
 import backend.utils.HasImageFile
 import jakarta.persistence.*
@@ -42,11 +43,14 @@ class Levels(
     var label: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "edition_id", nullable = false)
-    var edition: Edition,
+    @JoinColumn(name = "level_set_id", nullable = false)
+    var levelSet: LevelSet,
 
     @OneToMany(mappedBy = "level", fetch = FetchType.LAZY)
     val userLevels: Set<UserLevel> = HashSet(),
+
+    @OneToMany(mappedBy = "endOfLabsLevelsThreshold", fetch = FetchType.LAZY)
+    val gradingChecks: Set<GradingChecks> = HashSet(),
 ) : HasImageFile {
     constructor() : this(
         levelName = "",
@@ -54,16 +58,6 @@ class Levels(
         maximumPoints = BigDecimal.ZERO,
         grade = (2.0).toBigDecimal().setScale(1),
         label = "",
-        edition = Edition()
-    )
-
-    constructor(name: String, minimumPoints: BigDecimal, maximumPoints: BigDecimal, grade: BigDecimal) : this(
-        levelName = name,
-        minimumPoints = minimumPoints,
-        maximumPoints = maximumPoints,
-        grade = grade,
-        imageFile = null,
-        label = "",
-        edition = Edition()
+        levelSet = LevelSet()
     )
 }

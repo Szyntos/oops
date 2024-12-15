@@ -1,0 +1,16 @@
+mutation SetupCategoryCreate(
+  $canAddPoints: Boolean!
+  $categoryName: String!
+  $subcategories: [SubcategoryInputType!]!
+) {
+  addCategory(
+    canAddPoints: $canAddPoints
+    categoryName: $categoryName
+    subcategories: $subcategories
+  ) {
+    categoryId
+    categoryName
+    darkColor
+    lightColor
+  }
+}

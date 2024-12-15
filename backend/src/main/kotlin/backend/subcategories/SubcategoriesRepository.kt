@@ -26,4 +26,10 @@ interface SubcategoriesRepository : JpaRepository<Subcategories, Long> {
     fun findByCategoryAndOrdinalNumber(category: Categories, ordinalNumber: Int): List<Subcategories>
     fun existsBySubcategoryNameAndCategory(subcategoryName: String, category: Categories): Boolean
     fun findByCategoryAndEdition_EditionId(category: Categories, editionId: Long): List<Subcategories>
+    fun findAllByCategoryAndEdition(category: Categories, edition: Edition): List<Subcategories>
+    fun findAllByCategoryAndEditionAndOrdinalNumberGreaterThanOrderByOrdinalNumberAsc(
+        category: Categories,
+        edition: Edition,
+        ordinalNumber: Int
+    ): List<Subcategories>
 }

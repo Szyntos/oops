@@ -1,0 +1,17 @@
+mutation AddPointsToGroup(
+  $groupId: Int!
+  $subcategoryId: Int!
+  $teacherId: Int!
+  $values: [GroupPointsInputType!]!
+) {
+  addPointsToGroup(
+    groupId: $groupId
+    subcategoryId: $subcategoryId
+    teacherId: $teacherId
+    values: $values
+  ) {
+    points {
+      pointsId
+    }
+  }
+}

@@ -1,6 +1,14 @@
 query StudentPoints($editionId: Int!, $studentId: Int!) {
   getStudentPoints(editionId: $editionId, studentId: $studentId) {
     user {
+      userLevels {
+        computedGrade
+        edition {
+          editionId
+        }
+        endOfLabsLevelsReached
+        projectPointsThresholdReached
+      }
       firstName
       indexNumber
       nick
@@ -62,6 +70,8 @@ query StudentPoints($editionId: Int!, $studentId: Int!) {
         category {
           categoryId
           categoryName
+          darkColor
+          lightColor
         }
         maxPoints
       }

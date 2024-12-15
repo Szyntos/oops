@@ -1,5 +1,6 @@
 query NeighboringLevels($editionId: Int!, $studentId: Int!) {
   getNeighboringLevels(editionId: $editionId, studentId: $studentId) {
+    sumOfAllPoints
     currLevel {
       highest
       levelId
@@ -9,20 +10,16 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
       ordinalNumber
       grade
       label
-      edition {
-        editionId
-        editionName
-        editionYear
-        endDate
-        label
-        startDate
-      }
       imageFile {
+        createdAt
+        updatedAt
         fileId
         fileName
         fileType
         label
         pathToFile
+        createdAt
+        updatedAt
       }
     }
     nextLevel {
@@ -34,20 +31,16 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
       ordinalNumber
       grade
       label
-      edition {
-        editionId
-        editionName
-        editionYear
-        endDate
-        label
-        startDate
-      }
       imageFile {
+        createdAt
+        updatedAt
         fileId
         fileName
         fileType
         label
         pathToFile
+        createdAt
+        updatedAt
       }
     }
     prevLevel {
@@ -59,20 +52,16 @@ query NeighboringLevels($editionId: Int!, $studentId: Int!) {
       ordinalNumber
       grade
       label
-      edition {
-        editionId
-        editionName
-        editionYear
-        endDate
-        label
-        startDate
-      }
       imageFile {
+        createdAt
+        updatedAt
         fileId
         fileName
         fileType
         label
         pathToFile
+        createdAt
+        updatedAt
       }
     }
   }

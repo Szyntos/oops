@@ -4,6 +4,7 @@ import { pathsGenerator } from "../../../router/paths";
 import { Styles } from "../../../utils/Styles";
 import { GroupCard } from "./GroupCard";
 import { Group } from "../../../hooks/common/useGroupsData";
+import { UsersRolesType } from "../../../__generated__/schema.graphql.types";
 
 type GroupsProps = {
   groups: Group[];
@@ -19,8 +20,13 @@ export const GroupsList = ({ groups }: GroupsProps) => {
         <GroupCard
           key={group.id}
           group={group}
-          onClick={() => navigate(pathsGenerator.teacher.Group(group.id))}
-          withEditableRights={group.teacher.id === user.user.userId}
+          onClick={() =>
+            navigate(pathsGenerator.teacher.Group(group.id, group.teacher.id))
+          }
+          withEditableRights={
+            group.teacher.id === user.user.userId ||
+            user.user.role === UsersRolesType.Coordinator
+          }
         />
       ))}
     </div>

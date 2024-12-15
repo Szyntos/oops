@@ -1,0 +1,18 @@
+mutation CreateEdition(
+  $editionName: String!
+  $editionYear: Int!
+  $label: String
+) {
+  addEdition(
+    editionName: $editionName
+    editionYear: $editionYear
+    label: $label
+  ) {
+    editionId
+    editionName
+    editionYear
+    endDate
+    label
+    startDate
+  }
+}

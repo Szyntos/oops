@@ -1,0 +1,8 @@
+ALTER TABLE files
+    ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    ADD COLUMN updated_at TIMESTAMP NOT NULL DEFAULT NOW();
+
+CREATE TRIGGER set_timestamp_files
+    BEFORE UPDATE ON files
+    FOR EACH ROW
+EXECUTE FUNCTION trigger_set_timestamp();

@@ -20,6 +20,15 @@ object_relationships:
   - name: userByTeacherId
     using:
       foreign_key_constraint_on: teacher_id
+  - name: userByUpdatedBy
+    using:
+      manual_configuration:
+        column_mapping:
+          updated_by: user_id
+        insertion_order: null
+        remote_table:
+          name: users
+          schema: public
 select_permissions:
   - role: coordinator
     permission:

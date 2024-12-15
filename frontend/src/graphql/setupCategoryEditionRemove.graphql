@@ -1,0 +1,3 @@
+mutation SetupCategoryEditionRemove($categoryId: Int!, $editionId: Int!) {
+  removeCategoryFromEdition(categoryId: $categoryId, editionId: $editionId)
+}

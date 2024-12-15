@@ -1,7 +1,11 @@
 package backend.subcategories
 
+import backend.bonuses.Bonuses
 import backend.categories.Categories
+import backend.chestHistory.ChestHistory
 import backend.edition.Edition
+import backend.points.Points
+import backend.pointsHistory.PointsHistory
 import jakarta.persistence.*
 import java.math.BigDecimal
 
@@ -31,7 +35,16 @@ class Subcategories(
     var edition: Edition? = null,
 
     @Column(name = "label", nullable = false, length = 256)
-    var label: String
+    var label: String,
+
+    @OneToMany(mappedBy = "subcategory", fetch = FetchType.LAZY)
+    val chestHistory: Set<ChestHistory> = HashSet(),
+
+    @OneToMany(mappedBy = "subcategory", fetch = FetchType.LAZY)
+    val points: Set<Points> = HashSet(),
+
+    @OneToMany(mappedBy = "subcategory", fetch = FetchType.LAZY)
+    val pointsHistory: Set<PointsHistory> = HashSet(),
 ) {
     constructor() : this(
         subcategoryName = "",

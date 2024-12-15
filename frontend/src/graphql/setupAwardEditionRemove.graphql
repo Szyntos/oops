@@ -1,0 +1,3 @@
+mutation SetupAwardEditionRemove($editionId: Int!, $awardId: Int!) {
+  removeAwardFromEdition(awardId: $awardId, editionId: $editionId)
+}

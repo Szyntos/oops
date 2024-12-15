@@ -1,6 +1,6 @@
 - name: Backend
   definition:
-    url: http://host.docker.internal:9090/graphql
+    url_from_env: BACKEND_GRAPHQL_URL
     timeout_seconds: 60
     customization: {}
     forward_client_headers: true

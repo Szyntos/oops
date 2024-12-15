@@ -7,11 +7,13 @@ import {
 type StudentCardsListProps = {
   students: HallOfFameStudentData[];
   highlightedStudent?: HallOfFameStudentData;
+  showStudentName: boolean;
 };
 
 export const StudentCardsList = ({
   students,
   highlightedStudent,
+  showStudentName,
 }: StudentCardsListProps) => {
   return (
     <div style={styles.cardsContainer}>
@@ -20,6 +22,7 @@ export const StudentCardsList = ({
           key={student.id}
           student={student}
           isHighlighted={student.id === highlightedStudent?.id}
+          showStudentName={showStudentName}
         />
       ))}
     </div>
@@ -31,9 +34,6 @@ const styles: Styles = {
     display: "flex",
     flex: 1,
     flexDirection: "column",
-    gap: 12,
-    width: 600,
     overflowY: "scroll",
-    padding: 12,
   },
 };

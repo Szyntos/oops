@@ -1,49 +1,39 @@
 import { Styles } from "../../../utils/Styles";
-import FilterMenu from "./FilterMenu";
 import { useState } from "react";
 import { GroupTable } from "./GroupTable";
-import {
-  GroupTableRow,
-  SubcategoryPoints,
-} from "../../../hooks/Group/useGroupScreenData";
-import { Category } from "../../../utils/utils";
+import { Category, Subcategory } from "../../../utils/utils";
+import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
+import FilterMenu from "../../StudentProfile/table/FilterMenu/FilterMenu";
 
 type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
   categories: Category[];
+  handleStudentClick: (student: Student) => void;
+  handleSubcategoryClick: (subcategory: Subcategory) => void;
+  editable: boolean;
 };
 
 export const GroupTableWithFilters = ({
   rows,
   categories,
+  handleStudentClick,
+  handleSubcategoryClick,
+  editable,
 }: GroupTableWithFiltersProps) => {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
 
-  const isCategorySelected = (category: Category) => {
-    return selectedCategoryIds.some((categoryId) => categoryId === category.id);
-  };
-
-  const arePointsSelected = (points: SubcategoryPoints) => {
-    return selectedCategoryIds.some(
-      (categoryId) => categoryId === points.categoryId,
-    );
-  };
-
   const applyFilters = selectedCategoryIds.length !== 0;
 
-  const subcategoriesToDisplay = (
-    applyFilters ? categories.filter(isCategorySelected) : categories
-  )
-    .map((category) => category.subcategories)
-    .flat();
-
   const rowsToDisplay: GroupTableRow[] = rows.map((row) => {
-    return {
-      ...row,
-      subcategories: applyFilters
-        ? row.subcategories.filter(arePointsSelected)
-        : row.subcategories,
+    const filteredRow: GroupTableRow = {
+      student: row.student,
+      categories: applyFilters
+        ? row.categories.filter((c) =>
+            selectedCategoryIds.some((id) => id === c.categoryId),
+          )
+        : row.categories,
     };
+    return filteredRow;
   });
 
   return (
@@ -53,11 +43,22 @@ export const GroupTableWithFilters = ({
         onSelectChange={(selectedIds) => {
           setSelectedCategoryIds(selectedIds);
         }}
-        filterItems={categories.map((category) => {
-          return { id: category.id, name: category.name };
+        filterItems={categories.map((c) => {
+          return {
+            id: c.id,
+            name: c.name,
+            lightColor: c.lightColor,
+            darkColor: c.darkColor,
+          };
         })}
       />
-      <GroupTable rows={rowsToDisplay} subcategories={subcategoriesToDisplay} />
+
+      <GroupTable
+        rows={rowsToDisplay}
+        handleStudentClick={handleStudentClick}
+        handleSubcategoryClick={handleSubcategoryClick}
+        editable={editable}
+      />
     </div>
   );
 };

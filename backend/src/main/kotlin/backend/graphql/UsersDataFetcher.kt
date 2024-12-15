@@ -4,16 +4,20 @@ import backend.award.AwardType
 import backend.bonuses.BonusesRepository
 import backend.categories.Categories
 import backend.categories.CategoriesRepository
+import backend.edition.Edition
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
 import backend.files.FileRetrievalService
-import backend.files.FileUploadService
+import backend.graphql.permissions.UsersPermissions
+import backend.graphql.utils.*
+import backend.groups.Groups
 import backend.groups.GroupsRepository
+import backend.levelSet.LevelSet
 import backend.levels.Levels
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
-import backend.userGroups.UserGroups
 import backend.userGroups.UserGroupsRepository
+import backend.userLevel.UserLevel
 import backend.userLevel.UserLevelRepository
 import backend.users.FirebaseUserService
 import backend.users.UsersRepository
@@ -21,27 +25,34 @@ import backend.users.Users
 import backend.users.UsersRoles
 import backend.utils.CsvReader
 import backend.utils.UserMapper
+import com.google.common.primitives.Floats.max
 import com.google.firebase.ErrorCode
 import com.google.firebase.auth.FirebaseAuthException
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
-import org.apache.catalina.User
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDateTime
-import kotlin.math.exp
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.min
 
 @DgsComponent
 class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
 
     @Autowired
-    lateinit var userLevelRepository: UserLevelRepository
+    private lateinit var usersPermissions: UsersPermissions
+
+    @Autowired
+    private lateinit var permissionService: PermissionService
+
+    @Autowired
+    private lateinit var userLevelRepository: UserLevelRepository
 
     @Autowired
     lateinit var groupsRepository: GroupsRepository
@@ -85,21 +96,91 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @Value("\${constants.emailDomain}")
     lateinit var emailDomain: String
 
+    @DgsQuery
+    @Transactional
+    fun listSetupUsers(@InputArgument editionId: Long): List<UserWithPermissions> {
+        val action = "listSetupUsers"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val users = usersRepository.findAll().map {
+            UserWithPermissions(
+                user = it,
+                permissions = ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addUser",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
+                    canCopy = Permission(
+                        "copyUser",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId))),),
+                    canSelect =
+                    Permission(
+                        "selectUser",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canUnselect =
+                    Permission(
+                        "unselectUser",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    additional = emptyList(),
+                    canOverride = permissionService.checkPartialPermission(PermissionInput("overrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
+                    canTurnOffOverride =  permissionService.checkPartialPermission(PermissionInput("turnOffOverrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
+                    canMarkAsInactive = permissionService.checkPartialPermission(PermissionInput("markStudentAsInactive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
+                    canMarkAsActive =  permissionService.checkPartialPermission(PermissionInput("markStudentAsActive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
+                )
+            )
+        }.sortedBy { "${it.user.firstName} ${it.user.secondName}" }
+        return users
+    }
+
+
     @DgsMutation
     @Transactional
     fun assignPhotoToUser(@InputArgument userId: Long, @InputArgument fileId: Long?): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != userId) {
-            throw IllegalArgumentException("Student can only assign a photo to themselves")
+        val action = "assignPhotoToUser"
+        val arguments = mapOf(
+            "userId" to userId,
+            "fileId" to fileId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
 
-        if (currentUser.role == UsersRoles.TEACHER && user.role == UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Teacher cannot assign a photo to a coordinator")
+        val result = photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", userId, fileId)
+
+        if (result){
+            if (userMapper.getCurrentUser().userId == userId){
+                user.avatarSetByUser = true
+                usersRepository.save(user)
+            }
         }
 
-        return photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", userId, fileId)
+        return result
     }
 
     @DgsMutation
@@ -109,45 +190,136 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                 @InputArgument role: String, @InputArgument email: String = "",
                 @InputArgument label: String = "", @InputArgument createFirebaseUser: Boolean = false,
                 @InputArgument sendEmail: Boolean = false): Users {
+        val action = "addUser"
+        val arguments = mapOf(
+            "indexNumber" to indexNumber,
+            "nick" to nick,
+            "firstName" to firstName,
+            "secondName" to secondName,
+            "role" to role,
+            "email" to email,
+            "label" to label,
+            "createFirebaseUser" to createFirebaseUser,
+            "sendEmail" to sendEmail
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
         return addUserHelper(indexNumber, nick, firstName, secondName, role, email, label, createFirebaseUser, sendEmail)
     }
 
     @DgsMutation
     @Transactional
-    fun addUsersFromCsv(@InputArgument fileId: Long, @InputArgument editionId: Long): List<Users> {
-        val currentUser = userMapper.getCurrentUser()
-
-        if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only a coordinator can add users from a CSV file")
+    fun addTeacher(@InputArgument firstName: String, @InputArgument secondName: String,
+                @InputArgument email: String = "",
+                @InputArgument label: String = "", @InputArgument createFirebaseUser: Boolean = false,
+                @InputArgument sendEmail: Boolean = false): Users {
+        val action = "addTeacher"
+        val arguments = mapOf(
+            "firstName" to firstName,
+            "secondName" to secondName,
+            "email" to email,
+            "label" to label,
+            "createFirebaseUser" to createFirebaseUser,
+            "sendEmail" to sendEmail
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
+
+        return addUserHelper(-1, "", firstName, secondName, "teacher", email, label, createFirebaseUser, sendEmail)
+    }
+
+    @DgsMutation
+    @Transactional
+    fun setStudentNick(@InputArgument userId: Long, @InputArgument nick: String): Users {
+        val action = "setStudentNick"
+        val arguments = mapOf(
+            "userId" to userId,
+            "nick" to nick
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+
+        user.nick = nick
+        if (userMapper.getCurrentUser().userId == userId){
+            user.nickSetByUser = true
+        }
+
+        return usersRepository.save(user)
+    }
+
+    @DgsMutation
+    @Transactional
+    fun parseUsersFromCsv(@InputArgument fileId: Long, @InputArgument editionId: Long): ParsedUsersType {
+        val action = "parseUsersFromCsv"
+        val arguments = mapOf(
+            "fileId" to fileId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
 
         val file = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("File not found") }
-        if (file.fileType != "text/csv") {
-            throw IllegalArgumentException("Invalid file type")
-        }
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Edition not found") }
-        if (edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
         val usosId = csvReader.extractGroupNumber(file.fileName).toLong()
-        val group = groupsRepository.findByUsosIdAndEdition(usosId, edition) ?: throw IllegalArgumentException("Group not found")
         val users = csvReader.getUsersFromCsv(file)
-        // TODO: change to sendEmail = true
-        val addedUsers = users.map { user ->
-            addUserHelper(user.indexNumber, user.nick, user.firstName, user.secondName, user.role.name, user.email, user.label, true, false)
-        }
-        addedUsers.forEach { user ->
-            if (!userGroupsRepository.existsByUserAndGroup(user, group)){
-                val userGroup = UserGroups(
-                    user = user,
-                    group = group
-                )
-                userGroupsRepository.save(userGroup)
-            }
-        }
-        fileRetrievalService.deleteFile(fileId)
-        return addedUsers
+        val parsedUsers = ParsedUsersType(users, usosId)
+
+        fileRetrievalService.deleteFile(file.fileId)
+        return parsedUsers
     }
+
+    @DgsQuery
+    @Transactional
+    fun validateUsersToBeAdded(@InputArgument userIndexes: List<Int>, @InputArgument editionId: Long): List<NotValidUser> {
+        val action = "validateUsersToBeAdded"
+        val arguments = mapOf(
+            "userIndexes" to userIndexes,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val notValidUsers = userIndexes.mapNotNull { index -> usersRepository.findByIndexNumber(index) }
+            .filter { user -> user.userGroups.any { it.group.edition == edition } }
+            .map { user ->
+                NotValidUser(user, user.userGroups.first { it.group.edition == edition }.group) }
+        return notValidUsers
+    }
+
 
     @DgsMutation
     @Transactional
@@ -160,55 +332,37 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         @InputArgument role: String?,
         @InputArgument label: String?
     ): Users {
-        val currentUser = userMapper.getCurrentUser()
+        val action = "editUser"
+        val arguments = mapOf(
+            "userId" to userId,
+            "indexNumber" to indexNumber,
+            "nick" to nick,
+            "firstName" to firstName,
+            "secondName" to secondName,
+            "role" to role,
+            "label" to label
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
 
         val user = usersRepository.findById(userId)
             .orElseThrow { IllegalArgumentException("User not found") }
 
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            if (currentUser.userId != userId){
-                throw IllegalArgumentException("Student can only edit themselves")
-            }
-            if (indexNumber != null || firstName != null || secondName != null || role != null || label != null){
-                throw IllegalArgumentException("Student can only edit their own nick")
-            }
-        }
-        if (currentUser.role == UsersRoles.TEACHER){
-            if (currentUser.userId != userId && user.role != UsersRoles.STUDENT){
-                throw IllegalArgumentException("Teacher can only edit students or themselves")
-            }
-            if (currentUser.userId == userId){
-                if (role != null){
-                    throw IllegalArgumentException("Teacher cannot change their own role")
-                }
-            }
-
-            val activeUserEditions = user.userGroups.map { it.group.edition }.filter { it.endDate.isAfter(java.time.LocalDate.now()) }
-            if (activeUserEditions.isEmpty()){
-                throw IllegalArgumentException("Teacher can only edit students that are in an active edition")
-            }
-
-            val userGroups = groupsRepository.findByUserGroups_User_UserId(userId)
-            if (userGroups.none { it.teacher == currentUser }){
-                throw IllegalArgumentException("Teacher can only edit students that are in their groups")
-            }
-            if (role != null){
-                throw IllegalArgumentException("Teacher cannot edit role of a student")
-            }
-        }
-
 
         indexNumber?.let {
-            if (usersRepository.existsByIndexNumber(it) && it != user.indexNumber) {
-                throw IllegalArgumentException("User with index number $it already exists")
+            if (user.role == UsersRoles.STUDENT) {
+                user.email = "$it@$emailDomain"
             }
             user.indexNumber = it
         }
 
         nick?.let {
-            if (usersRepository.findByNick(it) != null && it != user.nick) {
-                throw IllegalArgumentException("User with nick $it already exists")
-            }
             user.nick = it
         }
 
@@ -221,12 +375,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         }
 
         role?.let {
-            val userRole = try {
-                UsersRoles.valueOf(it.uppercase())
-            } catch (e: IllegalArgumentException) {
-                throw IllegalArgumentException("Invalid role")
-            }
-            user.role = userRole
+            user.role = UsersRoles.valueOf(it.uppercase())
         }
 
         label?.let {
@@ -239,33 +388,34 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @DgsMutation
     @Transactional
     fun removeUser(@InputArgument userId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only a coordinator can remove a user")
+        val action = "removeUser"
+        val arguments = mapOf(
+            "userId" to userId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
-        if (currentUser.userId == userId){
-            throw IllegalArgumentException("Cannot remove yourself")
-        }
+
+
 
         val user = usersRepository.findById(userId)
             .orElseThrow { IllegalArgumentException("User not found") }
 
-        if (user.role == UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Cannot remove coordinator")
-        }
-
-        if (user.userGroups.isNotEmpty()){
-            throw IllegalArgumentException("Cannot remove user that is in a group")
-        }
-
         userLevelRepository.deleteAllByUser_UserId(userId)
         try {
-            user.firebaseUid?.let { firebaseUserService.deleteFirebaseUser(it) }
-            } catch (e: FirebaseAuthException) {
-                if (e.errorCode != ErrorCode.NOT_FOUND) {
-                    throw e
-                }
+            if (user.firebaseUid != null && user.firebaseUid != "") {
+                firebaseUserService.deleteFirebaseUser(user.firebaseUid!!)
             }
+        } catch (e: FirebaseAuthException) {
+            if (e.errorCode != ErrorCode.NOT_FOUND) {
+                throw e
+            }
+        }
         usersRepository.delete(user)
         return true
     }
@@ -273,9 +423,17 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @DgsMutation
     @Transactional
     fun resetPassword(@InputArgument userId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != userId) {
-            throw IllegalArgumentException("Student can only reset their own password")
+        val action = "resetPassword"
+        val arguments = mapOf(
+            "userId" to userId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val user = usersRepository.findByUserId(userId)
@@ -283,58 +441,201 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         return firebaseUserService.resetPassword(user.email)
     }
 
+    @DgsMutation
+    @Transactional
+    fun resetPasswordByEmail(@InputArgument email: String): Boolean {
+        val action = "resetPasswordByEmail"
+        val arguments = mapOf(
+            "email" to email
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        if (usersRepository.existsByEmail(email)) {
+            return firebaseUserService.resetPassword(email)
+        }
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
+    fun markPassingStudentsFromEditionAsInactive(@InputArgument editionId: Long): Boolean{
+        val action = "markPassingStudentsFromEditionAsInactive"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val passingStudents = usersRepository.findByUserGroups_Group_Edition(edition).filter { it.role == UsersRoles.STUDENT }
+            .filter { user -> user.userLevels.any { it.computedGrade >= 3.0 }}
+        passingStudents.forEach { it.active = false }
+        usersRepository.saveAll(passingStudents)
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
+    fun markStudentAsInactive(@InputArgument userId: Long): Boolean{
+        val action = "markStudentAsInactive"
+        val arguments = mapOf(
+            "userId" to userId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        user.active = false
+        usersRepository.save(user)
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
+    fun markStudentAsActive(@InputArgument userId: Long): Boolean{
+        val action = "markStudentAsActive"
+        val arguments = mapOf(
+            "userId" to userId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        user.active = true
+        usersRepository.save(user)
+        return true
+    }
+
+    @DgsMutation
+    @Transactional
+    fun overrideComputedGradeForUser(@InputArgument userId: Long, @InputArgument editionId: Long,
+                              @InputArgument grade: Float): UserLevel {
+        val action = "overrideComputedGradeForUser"
+        val arguments = mapOf(
+            "userId" to userId,
+            "editionId" to editionId,
+            "grade" to grade
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
+            ?: throw IllegalArgumentException("User has no levels for this edition")
+
+        userLevel.coordinatorOverride = true
+        userLevelRepository.save(userLevel)
+
+        userLevel.computedGrade = grade.toDouble()
+        return userLevelRepository.save(userLevel)
+    }
+
+    @DgsMutation
+    @Transactional
+    fun turnOffOverrideComputedGradeForUser(@InputArgument userId: Long, @InputArgument editionId: Long): UserLevel {
+        val action = "turnOffOverrideComputedGradeForUser"
+        val arguments = mapOf(
+            "userId" to userId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
+            ?: throw IllegalArgumentException("User has no levels for this edition")
+
+        userLevel.coordinatorOverride = false
+        userLevelRepository.save(userLevel)
+
+        if (userLevel.endOfLabsLevelsReached && userLevel.projectPointsThresholdReached){
+            userLevel.computedGrade = userLevel.level.grade.toDouble()
+        } else {
+            userLevel.computedGrade = 2.0
+        }
+        return userLevelRepository.save(userLevel)
+    }
 
     @DgsQuery
     @Transactional
     fun getStudentPoints(@InputArgument studentId: Long, @InputArgument editionId: Long): StudentPointsType {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != studentId) {
-            throw IllegalArgumentException("Student can only view their own points")
+        val action = "getStudentPoints"
+        val arguments = mapOf(
+            "studentId" to studentId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
+
 
         val user = usersRepository.findById(studentId).orElseThrow { IllegalArgumentException("Invalid student ID") }
-        if (user.role != UsersRoles.STUDENT) {
-            throw IllegalArgumentException("User is not a student")
-        }
 
-        if (currentUser.role == UsersRoles.TEACHER){
-            val userGroupsEditions = groupsRepository.findByUserGroups_User_UserId(studentId).map { it.edition }
-            val teacherGroupsEditions = groupsRepository.findByTeacher_UserId(currentUser.userId).map { it.edition }
-            if (userGroupsEditions.intersect(teacherGroupsEditions).isEmpty()){
-                throw IllegalArgumentException("Teacher can only view points of students that are in their editions")
-            }
-        }
+
 
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (user.userGroups.none { it.group.edition == edition }) {
-            throw IllegalArgumentException("Student is not participating in this edition")
-        }
-        val teacher = user.userGroups.filter { it.group.edition == edition }.firstOrNull()?.group?.teacher
+        val teacher = user.userGroups.firstOrNull { it.group.edition == edition }?.group?.teacher
             ?: throw IllegalArgumentException("Student is not in any group")
         val points = pointsRepository.findAllByStudentAndSubcategory_Edition(user, edition)
         val bonuses = bonusesRepository.findByChestHistory_User_UserId(studentId)
 
-        val additivePrevBonuses = bonuses.filter { it.award.awardType == AwardType.ADDITIVE_PREV }
-
-        val additivePrevBonusesMap = additivePrevBonuses.associateWith { it.points.value }.toMutableMap()
+        val additivePrevBonuses = bonuses.filter { it.award.awardType == AwardType.ADDITIVE_PREV }.sortedBy { it.points.createdAt }
 
         val subcategoryPoints = points.sortedByDescending { it.subcategory.ordinalNumber }.groupBy { it.subcategory }
             .map { (subcategory, points) ->
-                val purePoints = points.filter { bonusesRepository.findByPoints(it).isEmpty() }.firstOrNull()
-                val allBonuses = bonuses.filter { (it.award.awardType != AwardType.MULTIPLICATIVE && it.award.awardType != AwardType.ADDITIVE_PREV && it.points.subcategory == subcategory)  ||
-                        ((it.award.awardType == AwardType.MULTIPLICATIVE || it.award.awardType == AwardType.ADDITIVE_PREV) && it.points.subcategory.category == subcategory.category) }
+                val purePoints = points.firstOrNull { bonusesRepository.findByPoints(it).isEmpty() }
+                val allBonuses = bonuses.filter { (it.award.awardType != AwardType.MULTIPLICATIVE && it.points.subcategory == subcategory)  ||
+                        ((it.award.awardType == AwardType.MULTIPLICATIVE) && it.points.subcategory.category == subcategory.category) }
+                    .filter { it.award.awardType != AwardType.ADDITIVE_PREV }
                 val partialBonusType = allBonuses.map { bonus ->
                     PartialBonusType(
                         bonuses = bonus,
                         partialValue = if (bonus.award.awardType == AwardType.MULTIPLICATIVE) {
                             purePoints?.value?.times(bonus.award.awardValue)?.toFloat() ?: 0f
-                        } else if (bonus.award.awardType == AwardType.ADDITIVE_PREV) {
-                            val contribution = min(
-                                additivePrevBonusesMap[bonus]?.toFloat() ?: 0f,
-                                purePoints?.value?.let { (purePoints.subcategory.maxPoints.toFloat()).minus(it.toFloat()) } ?: 0f
-                            )
-                            additivePrevBonusesMap[bonus] = BigDecimal(((additivePrevBonusesMap[bonus]?.toFloat() ?: 0f) - contribution).toString()).setScale(2, RoundingMode.HALF_UP)
-                            contribution
                         } else {
                             bonus.points.value.toFloat()
                         }
@@ -353,7 +654,92 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                     createdAt = createdAt,
                     updatedAt = updatedAt
                 )
+            }.toMutableList()
+
+
+        val uniqueCategories = categoriesRepository.findByCategoryEdition_Edition(edition).filter { it.canAddPoints }
+        uniqueCategories.forEach { category ->
+            val categoryPoints = subcategoryPoints.filter { it.subcategory.category == category }.sortedByDescending { it.subcategory.ordinalNumber }.toMutableList()
+            val additivePrevBonusesInCategory = additivePrevBonuses.filter { it.points.subcategory.category == category }.associateWith { it.points.value.toFloat() }
+            for (bonus in additivePrevBonusesInCategory){
+                categoryPoints.sortByDescending { it.subcategory.ordinalNumber }
+                var valueToSpread = bonus.value
+                var i = 0
+                while (valueToSpread > 0){
+                    if (i >= categoryPoints.size){
+                        break
+                    }
+                    val subcategoryPoint = categoryPoints[i].points
+                    val purePoints = subcategoryPoint.purePoints?.value?.toFloat() ?: 0f
+                    val pointsFromAddPrev = subcategoryPoint.partialBonusType.filter { it.bonuses.award.awardType == AwardType.ADDITIVE_PREV }
+                        .sumOf { it.partialValue.toDouble() }.toFloat()
+                    val maxPoints = categoryPoints[i].subcategory.maxPoints.toFloat()
+                    val freeSpace = maxPoints - purePoints - pointsFromAddPrev
+                    val pointsToAdd = max(min(valueToSpread, freeSpace), 0f)
+                    valueToSpread -= pointsToAdd
+                    if (pointsToAdd != 0f){
+                        categoryPoints[i].points.partialBonusType = categoryPoints[i].points.partialBonusType.toMutableList().apply {
+                            add(PartialBonusType(
+                                bonuses = bonus.key,
+                                partialValue = pointsToAdd
+                            ))
+                        }
+                    }
+                    i++
+                }
+
+                if (valueToSpread > 0){
+                    val nextSubcategoriesWithoutPurePoints = subcategoriesRepository.findAllByCategoryAndEdition(category, edition)
+                        .filter { subcategory -> subcategory.points.none { it.bonuses == null } }
+                        .sortedBy { it.ordinalNumber }
+                    var j = 0
+                    while (valueToSpread > 0){
+                        if (j >= nextSubcategoriesWithoutPurePoints.size){
+                            break
+                        }
+                        val subcategory = nextSubcategoriesWithoutPurePoints[j]
+                        val maxPoints = subcategory.maxPoints.toFloat()
+                        val index = categoryPoints.find {it.subcategory == subcategory}?.let { categoryPoints.indexOf(it) }
+                        val pointsFromAddPrev = if (index != null){
+                            categoryPoints[index].points.partialBonusType.filter { it.bonuses.award.awardType == AwardType.ADDITIVE_PREV }
+                                .sumOf { it.partialValue.toDouble() }.toFloat()
+                        } else {
+                            0f
+                        }
+                        val freeSpace = maxPoints - pointsFromAddPrev
+                        val pointsToAdd = max(min(valueToSpread, freeSpace), 0f)
+                        valueToSpread -= pointsToAdd
+                        if (pointsToAdd != 0f){
+                            if (index != null){
+                                categoryPoints[index].points.partialBonusType = categoryPoints[index].points.partialBonusType.toMutableList().apply {
+                                    add(PartialBonusType(
+                                        bonuses = bonus.key,
+                                        partialValue = pointsToAdd
+                                    ))
+                                }
+                            } else {
+                                categoryPoints.add(SubcategoryPointsType(
+                                    subcategory = subcategory,
+                                    points = PurePointsType(
+                                        purePoints = null,
+                                        partialBonusType = listOf(PartialBonusType(
+                                            bonuses = bonus.key,
+                                            partialValue = pointsToAdd
+                                        ))
+                                    ),
+                                    teacher = bonus.key.points.teacher,
+                                    createdAt = bonus.key.points.createdAt,
+                                    updatedAt = bonus.key.points.updatedAt
+                                ))
+                            }
+                        }
+                        j++
+                    }
+                }
             }
+            subcategoryPoints.removeAll { it.subcategory.category == category }
+            subcategoryPoints.addAll(categoryPoints)
+        }
 
         val sumOfPurePoints = BigDecimal(subcategoryPoints.sumOf { it.points.purePoints?.value?.toDouble() ?: 0.0 }.toString())
             .setScale(2, RoundingMode.HALF_UP).toFloat()
@@ -375,28 +761,23 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     @DgsQuery
     @Transactional
     fun getSumOfPointsForStudentByCategory(@InputArgument studentId: Long, @InputArgument editionId: Long): List<CategoryPointsSumType> {
-        val currentUser = userMapper.getCurrentUser()
-        if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != studentId) {
-            throw IllegalArgumentException("Student can only view their own points")
+        val action = "getSumOfPointsForStudentByCategory"
+        val arguments = mapOf(
+            "studentId" to studentId,
+            "editionId" to editionId
+        )
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val user = usersRepository.findById(studentId).orElseThrow { IllegalArgumentException("Invalid student ID") }
-        if (user.role != UsersRoles.STUDENT) {
-            throw IllegalArgumentException("User is not a student")
-        }
-
-        if (currentUser.role == UsersRoles.TEACHER){
-            val userGroupsEditions = groupsRepository.findByUserGroups_User_UserId(studentId).map { it.edition }
-            val teacherGroupsEditions = groupsRepository.findByTeacher_UserId(currentUser.userId).map { it.edition }
-            if (userGroupsEditions.intersect(teacherGroupsEditions).isEmpty()){
-                throw IllegalArgumentException("Teacher can only view points of students that are in their editions")
-            }
-        }
 
         val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (user.userGroups.none { it.group.edition == edition }) {
-            throw IllegalArgumentException("Student is not participating in this edition")
-        }
         val points = pointsRepository.findAllByStudentAndSubcategory_Edition(user, edition)
         val bonuses = bonusesRepository.findByChestHistory_User_UserId(studentId).filter { it.points.subcategory.edition == edition }
         val categories = categoriesRepository.findByCategoryEdition_Edition(edition)
@@ -423,76 +804,74 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
     }
     @DgsQuery
     @Transactional
-    fun getCurrentUser(): Users {
-        return userMapper.getCurrentUser()
+    fun getCurrentUser(): UserWithEditions {
+        val action = "getCurrentUser"
+        val arguments = mapOf<String, Any>()
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+        val user = userMapper.getCurrentUser()
+        val editions = if (user.role == UsersRoles.COORDINATOR){
+            editionRepository.findAll()
+        } else {
+            editionRepository.findAllByGroups_UserGroups_User(user)
+        }
+        return UserWithEditions(user, editions)
     }
 
     fun isValidEmail(email: String): Boolean {
         val emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
         return email.matches(Regex(emailPattern))
     }
-    
-    private fun addUserHelper(indexNumber: Int,  nick: String,
+
+    @Transactional
+    fun addUserHelper(indexNumber: Int,  nick: String,
                                firstName: String,  secondName: String,
                                role: String,  email: String,
                                label: String = "",  createFirebaseUser: Boolean = false,
-                               sendEmail: Boolean = false): Users {
-        val currentUser = userMapper.getCurrentUser()
-
-        if (currentUser.userId != 0L && (currentUser.role != UsersRoles.COORDINATOR && currentUser.role != UsersRoles.TEACHER)) {
-            throw IllegalArgumentException("Only a coordinator or a teacher can add a user")
-        }
-
-        // TODO: Find a better way to handle adding a first coordinator
-        if (currentUser.userId == 0L ) {
-            if (UsersRoles.valueOf(role.uppercase()) != UsersRoles.COORDINATOR) {
-                throw IllegalArgumentException("Only a coordinator can be added with this bypass")
-            }
-        }
-
-        if (UsersRoles.valueOf(role.uppercase()) == UsersRoles.COORDINATOR) {
-            if (currentUser.role != UsersRoles.COORDINATOR || currentUser.userId != 0L) {
-                throw IllegalArgumentException("Only a coordinator can add a coordinator")
-            }
-        }
-
-        if (UsersRoles.valueOf(role.uppercase()) == UsersRoles.TEACHER) {
-            if (currentUser.role != UsersRoles.COORDINATOR) {
-                throw IllegalArgumentException("Only a coordinator can add a teacher")
-            }
+                               sendEmail: Boolean = false,
+                               imageFileId: Long? = null): Users {
+        val permission = usersPermissions.checkAddUserHelperPermission(indexNumber, nick, firstName, secondName, role, email, label, createFirebaseUser, sendEmail, imageFileId)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
 
-        if (usersRepository.existsByIndexNumber(indexNumber)) {
-            throw IllegalArgumentException("User with index number $indexNumber already exists")
+        val indexNumberToSet = if (indexNumber == -1) {
+            getNegativeUniqueIndexNumber()
+        } else {
+            indexNumber
         }
-        if (usersRepository.findByNick(nick) != null) {
-            throw IllegalArgumentException("User with nick $nick already exists")
+
+        val nickToBeSet = if (indexNumber == -1) {
+            "$firstName.$secondName.$indexNumberToSet"
+        } else {
+            nick
         }
-        val userRole1 = try {
-            UsersRoles.valueOf(role.uppercase())
-        } catch (e: IllegalArgumentException) {
-            throw IllegalArgumentException("Invalid role")
-        }
+
+        val userRole1 = UsersRoles.valueOf(role.uppercase())
+
         var userEmail = email
         if (email.isEmpty()) {
-            userEmail = "$indexNumber@$emailDomain"
-        } else if (!isValidEmail(userEmail)) {
-            throw IllegalArgumentException("Invalid email")
+            userEmail = "$indexNumberToSet@$emailDomain"
         }
 
-        if (usersRepository.existsByEmail(userEmail)) {
-            throw IllegalArgumentException("User with email $userEmail already exists")
-        }
         val user = Users(
-            indexNumber = indexNumber,
-            nick = nick,
+            indexNumber = indexNumberToSet,
+            nick = nickToBeSet,
             firstName = firstName,
             secondName = secondName,
             role = userRole1,
             email = userEmail,
             label = label
         )
+        user.nickSetByUser = false
+        user.avatarSetByUser = false
         usersRepository.save(user)
         if (createFirebaseUser) {
             val firebaseUid = try {
@@ -506,7 +885,17 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
             }
             user.firebaseUid = firebaseUid
         }
+        photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", user.userId, imageFileId)
+
         return user
+    }
+
+    private fun getNegativeUniqueIndexNumber(): Int {
+        var indexNumber = (0..Int.MAX_VALUE).random()
+        while (usersRepository.existsByIndexNumber(indexNumber)) {
+            indexNumber = (0..Int.MAX_VALUE).random()
+        }
+        return indexNumber
     }
 }
 
@@ -527,3 +916,24 @@ data class CategoryPointsSumType(
     val sumOfAll: Float,
     val maxPoints: Float
 )
+
+data class ParsedUsersType (
+    val users: List<Users>,
+    val usosId: Long
+)
+
+data class NotValidUser(
+    val user: Users,
+    val group: Groups
+)
+
+data class UserWithPermissions(
+    val user: Users,
+    val permissions: ListPermissionsOutput
+)
+
+data class UserWithEditions(
+    val user: Users,
+    val editions: List<Edition>
+)
+

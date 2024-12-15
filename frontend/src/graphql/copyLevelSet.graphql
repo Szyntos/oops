@@ -1,0 +1,5 @@
+mutation CopyLevelSet($levelSetId: Int!) {
+  copyLevelSet(levelSetId: $levelSetId) {
+    levelSetId
+  }
+}

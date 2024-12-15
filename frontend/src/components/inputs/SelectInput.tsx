@@ -10,6 +10,7 @@ type SelectInputProps = {
   label?: string;
   optionItems?: SelectOptionItem[];
   disabled?: boolean;
+  withEmpty?: boolean;
 };
 
 export type SelectOptionItem = {
@@ -26,6 +27,7 @@ export const SelectInput = ({
   name,
   label,
   optionItems,
+  withEmpty = true,
   disabled,
 }: SelectInputProps) => {
   return (
@@ -38,6 +40,7 @@ export const SelectInput = ({
         value={value}
         disabled={disabled}
       >
+        {withEmpty && <option value="">-</option>}
         {optionItems?.map((item, index) => (
           <option value={item.value} key={index}>
             {item.title}

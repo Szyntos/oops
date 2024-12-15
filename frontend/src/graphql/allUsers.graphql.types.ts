@@ -17,7 +17,7 @@ export type AllUsersQuery = {
 
 export const AllUsersDocument = gql`
   query AllUsers {
-    users {
+    users(orderBy: { userId: ASC }) {
       nick
       role
       userId

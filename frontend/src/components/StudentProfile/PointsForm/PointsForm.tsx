@@ -6,6 +6,7 @@ import { Styles } from "../../../utils/Styles";
 import { NumberInput } from "../../inputs/NumberInput";
 import { SelectInput } from "../../inputs/SelectInput";
 import { Category } from "../../../utils/utils";
+import { tokens } from "../../../tokens";
 
 export type PointsFormValues = z.infer<typeof ValidationSchema>;
 
@@ -32,8 +33,9 @@ export const PointsForm = ({
   variant,
   disableCategoryAndSubcategory,
 }: PointFormProps) => {
+  console.log("INIT VALUES: ", initialValues);
   const formik = useFormik({
-    initialValues: initialValues,
+    initialValues,
     validate: (values: PointsFormValues) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const errors: any = {};
@@ -152,6 +154,6 @@ const styles: Styles = {
     fontWeight: "bold",
   },
   error: {
-    color: "red",
+    color: tokens.color.state.error,
   },
 };

@@ -4,10 +4,13 @@ import UsersRolesConverter
 import backend.award.Award
 import backend.bonuses.BonusesRepository
 import backend.categories.Categories
+import backend.chestHistory.ChestHistory
 import backend.edition.Edition
 import backend.files.FileEntity
+import backend.groups.Groups
 import backend.points.Points
 import backend.points.PointsRepository
+import backend.pointsHistory.PointsHistory
 import backend.userGroups.UserGroups
 import backend.userLevel.UserLevel
 import backend.utils.HasImageFile
@@ -46,6 +49,15 @@ class Users(
     @Column(name = "firebase_uid", nullable = true, length = 256)
     var firebaseUid: String? = "",
 
+    @Column(name = "active", nullable = false, length = 256)
+    var active: Boolean = true,
+
+    @Column(name = "nick_set_by_user", nullable = false, length = 256)
+    var nickSetByUser: Boolean = false,
+
+    @Column(name = "avatar_set_by_user", nullable = false, length = 256)
+    var avatarSetByUser: Boolean = false,
+
     @Column(name = "label", nullable = false, length = 256)
     var label: String,
 
@@ -55,6 +67,30 @@ class Users(
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     val userLevels: Set<UserLevel> = HashSet(),
+
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
+    val points: Set<Points> = HashSet(),
+
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    val pointsByTeacher: Set<Points> = HashSet(),
+
+    @OneToMany(mappedBy = "updatedBy", fetch = FetchType.LAZY)
+    val pointsByUpdatedBy: Set<Points> = HashSet(),
+
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
+    val pointsHistory: Set<PointsHistory> = HashSet(),
+
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    val pointsHistoryByTeacher: Set<PointsHistory> = HashSet(),
+
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    val groups: Set<Groups> = HashSet(),
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    val chestHistory: Set<ChestHistory> = HashSet(),
+
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    val chestHistoryByTeacher: Set<ChestHistory> = HashSet(),
 
     ) : HasImageFile {
     constructor() : this(

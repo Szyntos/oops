@@ -1,40 +1,22 @@
-export enum Roles {
-  ADMIN = "admin",
-  COORDINATOR = "coordinator",
-  STUDENT = "student",
-  TEACHER = "teacher",
-  UNAUTHENTICATED_USER = "unauthenticated_user",
-}
+import { UsersRolesType } from "../__generated__/schema.graphql.types";
 
 const commonPaths = {
   Default: {
     path: "/",
     allowedRoles: [
-      Roles.UNAUTHENTICATED_USER,
-      Roles.STUDENT,
-      Roles.TEACHER,
-      Roles.ADMIN,
-      Roles.COORDINATOR,
+      UsersRolesType.UnauthenticatedUser,
+      UsersRolesType.Student,
+      UsersRolesType.Teacher,
+      UsersRolesType.Coordinator,
     ],
   },
   Welcome: {
     path: "/welcome",
     allowedRoles: [
-      Roles.UNAUTHENTICATED_USER,
-      Roles.STUDENT,
-      Roles.TEACHER,
-      Roles.ADMIN,
-      Roles.COORDINATOR,
-    ],
-  },
-  HallOfFame: {
-    path: "/hall-of-fame",
-    allowedRoles: [
-      Roles.UNAUTHENTICATED_USER,
-      Roles.STUDENT,
-      Roles.TEACHER,
-      Roles.ADMIN,
-      Roles.COORDINATOR,
+      UsersRolesType.UnauthenticatedUser,
+      UsersRolesType.Student,
+      UsersRolesType.Teacher,
+      UsersRolesType.Coordinator,
     ],
   },
 };
@@ -42,26 +24,71 @@ const commonPaths = {
 const studentPaths = {
   StudentProfile: {
     path: "/student-profile",
-    allowedRoles: [Roles.STUDENT],
+    allowedRoles: [UsersRolesType.Student],
+  },
+  HallOfFame: {
+    path: "/hall-of-fame",
+    allowedRoles: [UsersRolesType.Student],
   },
 };
 
 const teacherPaths = {
   StudentProfile: {
     path: "/teacher/student-profile/:id",
-    allowedRoles: [Roles.TEACHER, Roles.ADMIN, Roles.COORDINATOR],
+    allowedRoles: [UsersRolesType.Teacher, UsersRolesType.Coordinator],
   },
   Groups: {
     path: "/groups",
-    allowedRoles: [Roles.TEACHER, Roles.ADMIN, Roles.COORDINATOR],
+    allowedRoles: [UsersRolesType.Teacher, UsersRolesType.Coordinator],
   },
   Group: {
-    path: "/group/:id",
-    allowedRoles: [Roles.TEACHER, Roles.ADMIN, Roles.COORDINATOR],
+    path: "/group/:groupId/:teacherId",
+    allowedRoles: [UsersRolesType.Teacher, UsersRolesType.Coordinator],
   },
   Students: {
     path: "/students",
-    allowedRoles: [Roles.TEACHER, Roles.ADMIN, Roles.COORDINATOR],
+    allowedRoles: [UsersRolesType.Teacher, UsersRolesType.Coordinator],
+  },
+  HallOfFame: {
+    path: "/teacher/hall-of-fame",
+    allowedRoles: [UsersRolesType.Teacher, UsersRolesType.Coordinator],
+  },
+};
+
+const coordinatorPaths = {
+  Editions: {
+    path: "/coordinator/editions",
+    allowedRoles: [UsersRolesType.Coordinator],
+  },
+  Edition: {
+    path: "/coordinator/edition/:id",
+    allowedRoles: [UsersRolesType.Coordinator],
+    children: {
+      Awards: {
+        path: "awards",
+      },
+      Chests: {
+        path: "chests",
+      },
+      Categories: {
+        path: "categories",
+      },
+      Files: {
+        path: "files",
+      },
+      Levels: {
+        path: "levels",
+      },
+      Groups: {
+        path: "groups",
+      },
+      Users: {
+        path: "users",
+      },
+      GradingChecks: {
+        path: "grading-checks",
+      },
+    },
   },
 };
 
@@ -69,6 +96,7 @@ export const pathsWithParameters = {
   common: commonPaths,
   student: studentPaths,
   teacher: teacherPaths,
+  coordinator: coordinatorPaths,
 };
 
 export const pathsGenerator = {
@@ -80,43 +108,74 @@ export const pathsGenerator = {
   ),
   teacher: {
     Groups: teacherPaths.Groups.path,
-    Group: (id: string) => `${teacherPaths.Group.path.replace(":id", id)}`,
+    Group: (groupId: string, teacherId: string) =>
+      `${teacherPaths.Group.path.replace(":groupId", groupId).replace(":teacherId", teacherId)}`,
     StudentProfile: (id: string) =>
       `${teacherPaths.StudentProfile.path.replace(":id", id)}`,
     Students: teacherPaths.Students.path,
+    HallOfFame: teacherPaths.HallOfFame.path,
+  },
+  coordinator: {
+    Editions: coordinatorPaths.Editions.path,
+    Edition: (id: string) =>
+      `${coordinatorPaths.Edition.path.replace(":id", id)}/`,
+    EditionChildren: {
+      Awards: (id: string) =>
+        `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Awards.path}`,
+      Chests: (id: string) =>
+        `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Chests.path}`,
+      Categories: (id: string) =>
+        `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Categories.path}`,
+      Files: (id: string) =>
+        `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Files.path}`,
+      Levels: (id: string) =>
+        `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Levels.path}`,
+      Groups: (id: string) =>
+        `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Groups.path}`,
+      Users: (id: string) =>
+        `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.Users.path}`,
+      GradingChecks: (id: string) =>
+        `${coordinatorPaths.Edition.path.replace(":id", id)}/${coordinatorPaths.Edition.children.GradingChecks.path}`,
+    },
   },
 };
 
 type NavigationItem = {
   title: string;
   path: string;
-  allowedRoles: Roles[];
+  allowedRoles: UsersRolesType[];
 };
 
-export const navigationItems: NavigationItem[] = [
-  {
-    title: "Witaj",
-    path: pathsWithParameters.common.Welcome.path,
-    allowedRoles: pathsWithParameters.common.Welcome.allowedRoles,
-  },
-  {
-    title: "Profil studenta",
-    path: pathsWithParameters.student.StudentProfile.path,
-    allowedRoles: pathsWithParameters.student.StudentProfile.allowedRoles,
-  },
-  {
-    title: "Hala Chwały",
-    path: pathsWithParameters.common.HallOfFame.path,
-    allowedRoles: pathsWithParameters.common.HallOfFame.allowedRoles,
-  },
-  {
-    title: "Grupy",
-    path: pathsWithParameters.teacher.Groups.path,
-    allowedRoles: pathsWithParameters.teacher.Groups.allowedRoles,
-  },
-  {
-    title: "Studenci",
-    path: pathsWithParameters.teacher.Students.path,
-    allowedRoles: pathsWithParameters.teacher.Students.allowedRoles,
-  },
-];
+export const getNavigationItems = (isStudent: boolean): NavigationItem[] => {
+  return [
+    {
+      title: "Profil studenta",
+      path: pathsWithParameters.student.StudentProfile.path,
+      allowedRoles: pathsWithParameters.student.StudentProfile.allowedRoles,
+    },
+    {
+      title: "Hala Chwały",
+      path: isStudent
+        ? pathsWithParameters.student.HallOfFame.path
+        : pathsWithParameters.teacher.HallOfFame.path,
+      allowedRoles: isStudent
+        ? pathsWithParameters.student.HallOfFame.allowedRoles
+        : pathsWithParameters.teacher.HallOfFame.allowedRoles,
+    },
+    {
+      title: "Grupy",
+      path: pathsWithParameters.teacher.Groups.path,
+      allowedRoles: pathsWithParameters.teacher.Groups.allowedRoles,
+    },
+    {
+      title: "Studenci",
+      path: pathsWithParameters.teacher.Students.path,
+      allowedRoles: pathsWithParameters.teacher.Students.allowedRoles,
+    },
+    {
+      title: "Edycje",
+      path: pathsWithParameters.coordinator.Editions.path,
+      allowedRoles: pathsWithParameters.coordinator.Editions.allowedRoles,
+    },
+  ];
+};

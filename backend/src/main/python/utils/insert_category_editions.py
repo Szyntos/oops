@@ -3,6 +3,9 @@ import requests
 
 def insert_category_editions(hasura_url, headers, editions, category_editions_type_map, random):
 
+    admin_header = headers.copy()
+    admin_header["Authorization"] = admin_header["Authorization"][:-1] + "0"
+
     editions_type_year_map = {
         "all": [year for year in editions.keys()],
         "odd": [year for year in editions.keys() if year % 2 != 0],
@@ -44,7 +47,7 @@ def insert_category_editions(hasura_url, headers, editions, category_editions_ty
                 response = requests.post(
                     hasura_url,
                     json={"query": mutation, "variables": variables},
-                    headers=headers
+                    headers=admin_header
                 )
 
                 data = response.json()

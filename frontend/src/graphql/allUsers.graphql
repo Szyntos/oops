@@ -1,5 +1,5 @@
 query AllUsers {
-  users {
+  users(orderBy: { userId: ASC }) {
     nick
     role
     userId

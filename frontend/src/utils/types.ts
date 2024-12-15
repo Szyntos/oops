@@ -1,7 +1,10 @@
-export enum Roles {
-  ADMIN = "admin",
-  COORDINATOR = "coordinator",
-  STUDENT = "student",
-  TEACHER = "teacher",
-  UNAUTHENTICATED_USER = "unauthenticated_user",
-}
+import { User } from "../contexts/userContext";
+import { UsersRolesType } from "../__generated__/schema.graphql.types";
+
+export const defaultUnauthenticatedUser: User = {
+  nick: "Guest",
+  role: UsersRolesType.UnauthenticatedUser,
+  userId: "unauthenticated",
+  editions: [],
+  selectedEdition: undefined,
+};

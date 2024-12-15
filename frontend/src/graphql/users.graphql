@@ -1,0 +1,16 @@
+query Users {
+  users(orderBy: { fullName: ASC }) {
+    firstName
+    imageFileId
+    firstName
+    fullName
+    secondName
+    indexNumber
+    nick
+    role
+    secondName
+    userId
+    email
+    active
+  }
+}

@@ -2,9 +2,6 @@ table:
   name: chests
   schema: public
 object_relationships:
-  - name: edition
-    using:
-      foreign_key_constraint_on: edition_id
   - name: file
     using:
       foreign_key_constraint_on: image_file_id
@@ -15,6 +12,13 @@ array_relationships:
         column: chest_id
         table:
           name: chest_award
+          schema: public
+  - name: chestEditions
+    using:
+      foreign_key_constraint_on:
+        column: chest_id
+        table:
+          name: chest_edition
           schema: public
   - name: chestHistories
     using:
@@ -27,8 +31,8 @@ select_permissions:
   - role: coordinator
     permission:
       columns:
+        - award_bundle_count
         - chest_id
-        - edition_id
         - image_file_id
         - label
         - type
@@ -38,32 +42,34 @@ select_permissions:
   - role: student
     permission:
       columns:
+        - award_bundle_count
         - chest_id
-        - edition_id
         - image_file_id
         - label
         - type
       filter:
-        edition:
-          groups:
-            userGroups:
-              user_id:
-                _eq: X-Hasura-User-Id
+        chestEditions:
+          edition:
+            groups:
+              userGroups:
+                user_id:
+                  _eq: X-Hasura-User-Id
     comment: ""
   - role: teacher
     permission:
       columns:
+        - award_bundle_count
         - chest_id
-        - edition_id
         - image_file_id
         - label
         - type
       filter:
-        edition:
-          groups:
-            userGroups:
-              user_id:
-                _eq: X-Hasura-User-Id
+        chestEditions:
+          edition:
+            groups:
+              userGroups:
+                user_id:
+                  _eq: X-Hasura-User-Id
     comment: ""
 update_permissions:
   - role: coordinator
@@ -74,14 +80,16 @@ update_permissions:
         - type
       filter:
         _not:
-          edition:
-            end_date:
-              _lte: now()
+          chestEditions:
+            edition:
+              end_date:
+                _lte: now()
       check:
         _not:
-          edition:
-            end_date:
-              _lte: now()
+          chestEditions:
+            edition:
+              end_date:
+                _lte: now()
       set:
         label: '""'
     comment: ""
@@ -95,7 +103,8 @@ delete_permissions:
                 chest_history_id:
                   _is_null: false
           - _not:
-              edition:
-                start_date:
-                  _lte: now()
+              chestEditions:
+                edition:
+                  start_date:
+                    _lte: now()
     comment: ""

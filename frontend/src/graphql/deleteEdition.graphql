@@ -1,0 +1,3 @@
+mutation DeleteEdition($editionId: Int!) {
+  removeEdition(editionId: $editionId)
+}

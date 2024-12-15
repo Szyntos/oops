@@ -1,31 +1,47 @@
 package backend.graphql
 
-import backend.awardEdition.AwardEdition
+import backend.award.AwardRepository
 import backend.awardEdition.AwardEditionRepository
 import backend.categories.CategoriesRepository
 import backend.chestAward.ChestAward
 import backend.chestAward.ChestAwardRepository
+import backend.chestEdition.ChestEditionRepository
+import backend.chestHistory.ChestHistoryRepository
 import backend.chests.Chests
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
 import backend.files.FileEntityRepository
+import backend.graphql.utils.*
 import backend.groups.GroupsRepository
 import backend.points.PointsRepository
 import backend.subcategories.SubcategoriesRepository
 import backend.users.UsersRepository
-import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 
 @DgsComponent
 class ChestsDataFetcher {
+
     @Autowired
-    lateinit var userMapper: UserMapper
+    private lateinit var permissionService: PermissionService
+
+    @Autowired
+    private lateinit var chestEditionRepository: ChestEditionRepository
+
+    @Autowired
+    private lateinit var chestHistoryRepository: ChestHistoryRepository
+
+    @Autowired
+    private lateinit var awardRepository: AwardRepository
+
+    @Autowired
+    private lateinit var userMapper: UserMapper
 
     @Autowired
     private lateinit var chestAwardRepository: ChestAwardRepository
@@ -60,42 +76,107 @@ class ChestsDataFetcher {
     @Autowired
     lateinit var photoAssigner: PhotoAssigner
 
+    @DgsQuery
+    @Transactional
+    fun listSetupChests(@InputArgument editionId: Long): List<ChestWithPermissions>{
+        val arguments = mapOf("editionId" to editionId)
+        val permissionInput = PermissionInput(
+            action = "listSetupChests",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val chests = chestsRepository.findAll().map {
+            ChestWithPermissions(
+                chest = it,
+                permissions = ListPermissionsOutput(
+                    canAdd = Permission(
+                        "addChest",
+                        objectMapper.createObjectNode(),
+                        false,
+                        "Not applicable"),
+                    canEdit = permissionService.checkPartialPermission(PermissionInput("editChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
+                    canCopy = permissionService.checkPartialPermission(PermissionInput("copyChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
+                    canRemove = permissionService.checkPartialPermission(PermissionInput("removeChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
+                    canSelect = permissionService.checkPartialPermission(PermissionInput("addChestToEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
+                    canUnselect = permissionService.checkPartialPermission(PermissionInput("removeChestFromEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
+                    additional = emptyList(),
+                    canActivate = permissionService.checkPartialPermission(PermissionInput("activateChestInEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
+                    canDeactivate = permissionService.checkPartialPermission(PermissionInput("deactivateChestInEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId))))
+                )
+            )
+        }
+
+        return chests
+    }
+
     @DgsMutation
     @Transactional
     fun assignPhotoToChest(@InputArgument chestId: Long, @InputArgument fileId: Long?): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can assign photos to chests")
+        val arguments = mapOf("chestId" to chestId, "fileId" to fileId)
+        val permissionInput = PermissionInput(
+            action = "assignPhotoToChest",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
-        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
-        if (chest.edition.endDate.isBefore(java.time.LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
+
         return photoAssigner.assignPhotoToAssignee(chestsRepository, "image/chest", chestId, fileId)
     }
 
     @DgsMutation
     @Transactional
-    fun addChest(@InputArgument chestType: String, @InputArgument editionId: Long, @InputArgument label: String = ""): Chests {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can add chests")
+    fun addChest(@InputArgument chestType: String,
+                 @InputArgument fileId: Long?,
+                 @InputArgument awardBundleCount: Int,
+                 @InputArgument label: String = "",
+                 @InputArgument awardIds: List<Long>): Chests {
+        val arguments = mapOf(
+            "chestType" to chestType,
+            "fileId" to fileId,
+            "awardBundleCount" to awardBundleCount,
+            "label" to label,
+            "awardIds" to awardIds
+        )
+        val permissionInput = PermissionInput(
+            action = "addChest",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (chestsRepository.existsByChestTypeAndEditionAndActive(chestType, edition, true)) {
-            throw IllegalArgumentException("Chest with type $chestType already exists for edition ${edition.editionId}")
-        }
-        if (edition.endDate.isBefore(LocalDate.now())){
-            throw IllegalArgumentException("Edition has already ended")
-        }
         val chest = Chests(
             chestType = chestType,
             label = label,
-            edition = edition
+            awardBundleCount = awardBundleCount
         )
-        return chestsRepository.save(chest)
+        val savedChest = chestsRepository.save(chest)
+        fileId?.let {
+            photoAssigner.assignPhotoToAssignee(chestsRepository, "image/chest", savedChest.chestId, fileId)
+        }
+
+        awardIds.forEach { awardId ->
+            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+            val chestAward = ChestAward(
+                chest = savedChest,
+                award = award,
+                label = ""
+            )
+            chestAwardRepository.save(chestAward)
+        }
+
+        return savedChest
     }
 
     @DgsMutation
@@ -103,39 +184,70 @@ class ChestsDataFetcher {
     fun editChest(
         @InputArgument chestId: Long,
         @InputArgument chestType: String?,
-        @InputArgument editionId: Long?,
-        @InputArgument label: String?
+        @InputArgument fileId: Long?,
+        @InputArgument awardBundleCount: Int?,
+        @InputArgument label: String?,
+        @InputArgument awardIds: List<Long>
     ): Chests {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can edit chests")
+        val arguments = mapOf(
+            "chestId" to chestId,
+            "chestType" to chestType,
+            "fileId" to fileId,
+            "awardBundleCount" to awardBundleCount,
+            "label" to label,
+            "awardIds" to awardIds
+        )
+        val permissionInput = PermissionInput(
+            action = "editChest",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
 
-        if (chest.edition.endDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
         chestType?.let {
-            if (chest.edition.startDate.isBefore(LocalDate.now())) {
-                throw IllegalArgumentException("Edition has already started")
-            }
-            if (chestsRepository.existsByChestTypeAndEditionAndActive(it, chest.edition, true) && it != chest.chestType) {
-                throw IllegalArgumentException("Chest with type $it already exists for edition ${chest.edition.editionId}")
-            }
             chest.chestType = it
         }
 
-        editionId?.let {
-            if (chest.edition.startDate.isBefore(LocalDate.now())) {
-                throw IllegalArgumentException("Edition has already started")
-            }
-            val edition = editionRepository.findById(it).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-            chest.edition = edition
+        fileId?.let {
+            photoAssigner.assignPhotoToAssignee(chestsRepository, "image/chest", chestId, fileId)
         }
 
         label?.let {
             chest.label = it
+        }
+
+        awardBundleCount?.let {
+            chest.awardBundleCount = it
+        }
+
+        val newAwardIds = awardIds.toSet()
+
+        val oldAwardIds = chestAwardRepository.findByChest(chest).map { it.award.awardId }.toSet()
+
+        val toRemove = oldAwardIds.minus(newAwardIds)
+
+        val toAdd = newAwardIds.minus(oldAwardIds)
+
+        toRemove.forEach { awardId ->
+            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+            chestAwardRepository.findByChestAndAward(chest, award)?.let {
+                chestAwardRepository.delete(it)
+            }
+        }
+
+        toAdd.forEach { awardId ->
+            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+            val chestAward = ChestAward(
+                chest = chest,
+                award = award,
+                label = ""
+            )
+            chestAwardRepository.save(chestAward)
         }
 
         return chestsRepository.save(chest)
@@ -144,18 +256,22 @@ class ChestsDataFetcher {
     @DgsMutation
     @Transactional
     fun removeChest(@InputArgument chestId: Long): Boolean {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can remove chests")
+        val arguments = mapOf(
+            "chestId" to chestId
+        )
+        val permissionInput = PermissionInput(
+            action = "removeChest",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
-        if (chest.edition.endDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
-        if (chest.edition.startDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already started")
-        }
+
+        chestEditionRepository.deleteByChest(chest)
         chestAwardRepository.findByChest(chest).forEach {
             chestAwardRepository.delete(it)
         }
@@ -166,37 +282,38 @@ class ChestsDataFetcher {
 
     @DgsMutation
     @Transactional
-    fun copyChest(@InputArgument chestId: Long, @InputArgument editionId: Long): Chests {
-        val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
-            throw IllegalArgumentException("Only coordinators can copy chests")
+    fun copyChest(@InputArgument chestId: Long): Chests {
+        val arguments = mapOf(
+            "chestId" to chestId
+        )
+        val permissionInput = PermissionInput(
+            action = "copyChest",
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
         val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
-        val edition =
-            editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        if (chestsRepository.existsByChestTypeAndEditionAndActive(chest.chestType, edition, true)) {
-            throw IllegalArgumentException("Chest with type ${chest.chestType} already exists for edition ${edition.editionId}")
+
+        val chestTypeRoot = chest.chestType
+        var i = 1
+        while (chestsRepository.findAllByChestType("$chestTypeRoot (Copy $i)").isNotEmpty()) {
+            i++
         }
-        if (edition.endDate.isBefore(LocalDate.now())) {
-            throw IllegalArgumentException("Edition has already ended")
-        }
+        val chestType = "$chestTypeRoot (Copy $i)"
+
+
         val newChest = Chests(
-            chestType = chest.chestType,
+            chestType = chestType,
             label = chest.label,
-            edition = edition
+            awardBundleCount = chest.awardBundleCount
         )
         newChest.imageFile = chest.imageFile
         chestsRepository.save(newChest)
         chestAwardRepository.findByChest(chest).forEach { chestAward ->
-            if (chestAward.award.awardEditions.none { it.edition.editionId == editionId }) {
-                val awardEdition = AwardEdition(
-                    edition = edition,
-                    award = chestAward.award,
-                    label = ""
-                )
-                awardEditionRepository.save(awardEdition)
-            }
             val newChestAward = ChestAward(
                 chest = newChest,
                 award = chestAward.award,
@@ -207,3 +324,8 @@ class ChestsDataFetcher {
         return chestsRepository.save(newChest)
     }
 }
+
+data class ChestWithPermissions(
+    val chest: Chests,
+    val permissions: ListPermissionsOutput
+)

@@ -4,6 +4,7 @@ import backend.award.Award
 import backend.award.AwardType
 import backend.chestHistory.ChestHistory
 import backend.chests.Chests
+import backend.edition.Edition
 import backend.points.Points
 import backend.users.Users
 import org.springframework.data.jpa.repository.JpaRepository
@@ -23,5 +24,7 @@ interface BonusesRepository : JpaRepository<Bonuses, Long> {
     fun findByChestHistory_User_UserId(userId: Long): List<Bonuses>
 
     fun findAllByAward(award: Award): List<Bonuses>
-
+    fun existsByAward(award: Award): Boolean
+    fun existsByAwardAndPoints_Subcategory_Edition(award: Award, edition: Edition): Boolean
+    fun findByChestHistory_User_UserIdInAndPoints_Subcategory_Edition(userId: List<Long>, edition: Edition): List<Bonuses>
 }

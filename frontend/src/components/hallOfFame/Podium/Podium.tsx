@@ -7,18 +7,23 @@ type PodiumProps = {
 };
 
 export const Podium = ({ students }: PodiumProps) => {
-  if (students.length < 3) {
-    throw new Error(
-      "podium will not be rendered if there are less than 3 students",
-    );
-  }
+  const n = students.length;
+  const firstPlaceStudent = n > 0 ? students[0] : undefined;
+  const secondPlaceStudent = n > 1 ? students[1] : undefined;
+  const thirdPlaceStudent = n > 2 ? students[2] : undefined;
 
   return (
     <div style={styles.container}>
       <div style={styles.podium}>
-        <PodiumItem student={students[1]} place={2} />
-        <PodiumItem student={students[0]} place={1} />
-        <PodiumItem student={students[2]} place={3} />
+        {secondPlaceStudent && (
+          <PodiumItem student={secondPlaceStudent} place={2} />
+        )}
+        {firstPlaceStudent && (
+          <PodiumItem student={firstPlaceStudent} place={1} />
+        )}
+        {thirdPlaceStudent && (
+          <PodiumItem student={thirdPlaceStudent} place={3} />
+        )}
       </div>
     </div>
   );

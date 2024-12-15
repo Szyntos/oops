@@ -41,28 +41,34 @@ select_permissions:
   - role: coordinator
     permission:
       columns:
+        - created_at
         - file_id
         - file_name
         - file_type
         - label
         - path_to_file
+        - updated_at
       filter: {}
     comment: ""
   - role: student
     permission:
       columns:
+        - created_at
         - file_id
         - file_name
         - file_type
         - label
+        - updated_at
       filter: {}
     comment: ""
   - role: teacher
     permission:
       columns:
+        - created_at
         - file_id
         - file_name
         - file_type
         - label
+        - updated_at
       filter: {}
     comment: ""

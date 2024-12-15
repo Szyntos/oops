@@ -1,0 +1,73 @@
+query SetupCategories($editionId: Int!) {
+  listSetupCategories(editionId: $editionId) {
+    category {
+      categoryId
+      categoryName
+      categoryEdition {
+        edition {
+          editionId
+        }
+      }
+      subcategories {
+        edition {
+          editionId
+        }
+        subcategoryId
+        subcategoryName
+        maxPoints
+        ordinalNumber
+      }
+      canAddPoints
+    }
+    permissions {
+      canAdd {
+        allow
+        reason
+      }
+      canCopy {
+        allow
+        reason
+      }
+      canEdit {
+        allow
+        reason
+      }
+      canRemove {
+        allow
+        reason
+      }
+      canSelect {
+        allow
+        reason
+      }
+      canUnselect {
+        allow
+        reason
+      }
+      canMarkAsActive {
+        allow
+        reason
+      }
+      canMarkAsInactive {
+        allow
+        reason
+      }
+      canOverride {
+        allow
+        reason
+      }
+      canTurnOffOverride {
+        allow
+        reason
+      }
+      canActivate {
+        allow
+        reason
+      }
+      canDeactivate {
+        allow
+        reason
+      }
+    }
+  }
+}

@@ -19,15 +19,29 @@ export type GroupPointsQuery = {
       indexNumber: number;
       nick: string;
     };
+    userLevel: {
+      __typename?: "UserLevelType";
+      computedGrade: number;
+      endOfLabsLevelsReached: boolean;
+      projectPointsThresholdReached: boolean;
+      level: {
+        __typename?: "LevelType";
+        grade: string;
+        levelName: string;
+        imageFile?: { __typename?: "FileType"; fileId: string } | null;
+      };
+    };
     categoriesPoints: Array<{
       __typename?: "CategoryPointsType";
       category: {
         __typename?: "CategoryType";
         categoryId: string;
         categoryName: string;
+        lightColor: string;
+        darkColor: string;
       };
       subcategoryPoints: Array<{
-        __typename?: "SubcategoryPointsType";
+        __typename?: "SubcategoryPointsGroupType";
         createdAt: string;
         updatedAt: string;
         subcategory: {
@@ -36,11 +50,19 @@ export type GroupPointsQuery = {
           subcategoryId: string;
           subcategoryName: string;
         };
-        points: {
-          __typename?: "PurePointsType";
-          purePoints?: { __typename?: "PointType"; value: string } | null;
-        };
+        points?: { __typename?: "PointType"; value: string } | null;
       }>;
+      awardAggregate: Array<{
+        __typename?: "AwardAggregateType";
+        sumOfAll?: number | null;
+        award: { __typename?: "AwardType"; awardId: string; awardName: string };
+      }>;
+      categoryAggregate: {
+        __typename?: "CategoryAggregate";
+        sumOfAll: number;
+        sumOfBonuses: number;
+        sumOfPurePoints: number;
+      };
     }>;
   } | null>;
 };
@@ -55,10 +77,24 @@ export const GroupPointsDocument = gql`
         indexNumber
         nick
       }
+      userLevel {
+        computedGrade
+        endOfLabsLevelsReached
+        projectPointsThresholdReached
+        level {
+          grade
+          levelName
+          imageFile {
+            fileId
+          }
+        }
+      }
       categoriesPoints {
         category {
           categoryId
           categoryName
+          lightColor
+          darkColor
         }
         subcategoryPoints {
           createdAt
@@ -69,10 +105,20 @@ export const GroupPointsDocument = gql`
             subcategoryName
           }
           points {
-            purePoints {
-              value
-            }
+            value
           }
+        }
+        awardAggregate {
+          award {
+            awardId
+            awardName
+          }
+          sumOfAll
+        }
+        categoryAggregate {
+          sumOfAll
+          sumOfBonuses
+          sumOfPurePoints
         }
       }
     }

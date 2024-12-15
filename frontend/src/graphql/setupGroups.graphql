@@ -1,0 +1,91 @@
+query SetupGroups($editionId: Int!) {
+  listSetupGroups(editionId: $editionId) {
+    group {
+      groupName
+      generatedName
+      groupsId
+      startTime
+      weekday {
+        weekdayId
+        weekdayName
+      }
+      endTime
+      teacher {
+        userId
+        secondName
+        firstName
+      }
+      imageFile {
+        fileId
+      }
+      usosId
+      userGroups {
+        user {
+          firstName
+          secondName
+          imageFile {
+            fileId
+          }
+          indexNumber
+          label
+          nick
+          role
+          secondName
+          userId
+          email
+          active
+        }
+      }
+    }
+    permissions {
+      canAdd {
+        allow
+        reason
+      }
+      canCopy {
+        allow
+        reason
+      }
+      canEdit {
+        allow
+        reason
+      }
+      canRemove {
+        allow
+        reason
+      }
+      canSelect {
+        allow
+        reason
+      }
+      canUnselect {
+        allow
+        reason
+      }
+      canMarkAsActive {
+        allow
+        reason
+      }
+      canMarkAsInactive {
+        allow
+        reason
+      }
+      canOverride {
+        allow
+        reason
+      }
+      canTurnOffOverride {
+        allow
+        reason
+      }
+      canActivate {
+        allow
+        reason
+      }
+      canDeactivate {
+        allow
+        reason
+      }
+    }
+  }
+}

@@ -13,6 +13,7 @@ import {
 import { useUser } from "../../hooks/common/useUser";
 import { Group } from "../../hooks/common/useGroupsData";
 import { groupsRadioButtonOptions } from "../../utils/constants";
+import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
 
 export const Groups = () => {
   const { user } = useUser();
@@ -25,8 +26,8 @@ export const Groups = () => {
   const [teacherIds, setTeacherIds] = useState<string[]>([]);
   const [timestampIds, setTimestampIds] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<GroupRadioFilterItem>({
-    id: "all",
-    name: "wszystkie",
+    id: "yours",
+    name: "twoje",
   });
 
   const doesGroupMatchRadioButtons = useCallback(
@@ -87,57 +88,47 @@ export const Groups = () => {
   if (error) return <div>ERROR: {error?.message}</div>;
 
   return (
-    <div style={styles.container}>
-      <SideFilterBar
-        sections={[
-          {
-            pickerTitle: "Dzień Tygodnia",
-            options: weekdays,
-            onFiltersChange: (selectedIds) => setWeekdayIds(selectedIds),
-          },
-          {
-            pickerTitle: "Godzina",
-            options: timestamps,
-            onFiltersChange: (selectedIds) => setTimestampIds(selectedIds),
-          },
-          {
-            pickerTitle: "Prowadzący",
-            options: teachers,
-            onFiltersChange: (selectedIds) => setTeacherIds(selectedIds),
-          },
-        ]}
-      />
-      <div style={styles.rightSide}>
-        <div style={styles.topBar}>
-          <GroupSearchField
-            onInputChange={(input: string) => setInput(input)}
-          />
-          <RadioFilterGroups
-            options={groupsRadioButtonOptions}
-            onOptionChange={(option) => setSelectedOption(option)}
-            selectedOption={selectedOption}
-          />
-        </div>
-        <GroupsList groups={groupsWithFilterAndRadio} />
+    <ScreenContentContainer
+      sidebar={
+        <SideFilterBar
+          sections={[
+            {
+              pickerTitle: "Dzień Tygodnia",
+              options: weekdays,
+              onFiltersChange: (selectedIds) => setWeekdayIds(selectedIds),
+            },
+            {
+              pickerTitle: "Godzina",
+              options: timestamps,
+              onFiltersChange: (selectedIds) => setTimestampIds(selectedIds),
+            },
+            {
+              pickerTitle: "Prowadzący",
+              options: teachers,
+              onFiltersChange: (selectedIds) => setTeacherIds(selectedIds),
+            },
+          ]}
+        />
+      }
+    >
+      <div style={styles.topBar}>
+        <GroupSearchField onInputChange={(input: string) => setInput(input)} />
+        <RadioFilterGroups
+          options={groupsRadioButtonOptions}
+          onOptionChange={(option) => setSelectedOption(option)}
+          selectedOption={selectedOption}
+        />
       </div>
-    </div>
+      <GroupsList groups={groupsWithFilterAndRadio} />
+    </ScreenContentContainer>
   );
 };
 
 const styles: Styles = {
-  container: {
-    display: "flex",
-    gap: 20,
-    margin: 12,
-  },
-  rightSide: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-  },
   topBar: {
     display: "flex",
     flexDirection: "row",
     gap: 12,
+    alignItems: "center",
   },
 };

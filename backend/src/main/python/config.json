@@ -12,7 +12,7 @@
             "Content-Type": "application/json",
             "x-hasura-role": "admin",
             "x-hasura-admin-secret": "admin_secret",
-            "Authorization": "Bearer Bypass1"
+            "Authorization": "Bearer password1"
         }
     },
     "base_url": "http://localhost:9090",
@@ -20,6 +20,7 @@
         "old_style": false
     },
     "data_insertion": {
+        "admin_mail": "hot.mamusia.69.2137@gmail.com",
         "backend_resources_path": "../../../resources/",
         "number_of_editions": 2,
         "number_of_teachers": 7,
@@ -172,10 +173,10 @@
                 "award_type": "additive_prev",
                 "award_value": 20,
                 "category_id": 2,
-                "max_usages": 2,
+                "max_usages": 8,
                 "description": "Bardzo dobry weterynarz",
                 "label": "",
-                "editions": "all"
+                "editions": "first"
             },
             {
                 "name": "Rabat na sianko",
@@ -183,10 +184,10 @@
                 "award_type": "additive",
                 "award_value": 12,
                 "category_id": 1,
-                "max_usages": 2,
+                "max_usages": 12,
                 "description": "Sianko dla zwierzaków",
                 "label": "",
-                "editions": "all"
+                "editions": "last"
             },
             {
                 "name": "Marchewka laboratoryjna",
@@ -194,7 +195,7 @@
                 "award_type": "multiplicative",
                 "award_value": 0.3,
                 "category_id": 1,
-                "max_usages": 2,
+                "max_usages": 5,
                 "description": "Niezbędna w laboratorium",
                 "label": "",
                 "editions": "all"
@@ -205,10 +206,10 @@
                 "award_type": "multiplicative",
                 "award_value": 0.6,
                 "category_id": 3,
-                "max_usages": 2,
+                "max_usages": 6,
                 "description": "Pomaga w projekcie",
                 "label": "",
-                "editions": "random"
+                "editions": "all"
             },
             {
                 "name": "LekarstwoV2",
@@ -234,8 +235,8 @@
             }
         ],
         "subcategories_percentage": 0.6,
-        "chest_percentage": 1,
-        "open_chest_percentage": 0.9,
+        "chest_percentage": 0.6,
+        "open_chest_percentage": 0.2,
         "seed": 1234
     }
 }

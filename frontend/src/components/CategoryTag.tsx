@@ -1,27 +1,27 @@
 import { Styles } from "../utils/Styles";
 
-type Colors = {
-  [key: string]: string;
-};
-
-// TODO eventually it should be fetched from backend
-const colors: Colors = {
-  "1": "lightgreen",
-  "2": "lightyellow",
-  "3": "pink",
-  "4": "purple",
-  "5": "oragne",
-};
-
 type CategoryTagProps = {
-  id: string;
   name: string;
+  darkColor: string;
+  lightColor: string;
 };
 
-export const CategoryTag = ({ id, name }: CategoryTagProps) => {
-  const backgroundColor = colors[id] || "grey";
-
-  return <div style={{ ...styles.container, backgroundColor }}>{name}</div>;
+export const CategoryTag = ({
+  name,
+  darkColor,
+  lightColor,
+}: CategoryTagProps) => {
+  return (
+    <div
+      style={{
+        ...styles.container,
+        backgroundColor: darkColor,
+        color: lightColor,
+      }}
+    >
+      {name}
+    </div>
+  );
 };
 
 const styles: Styles = {

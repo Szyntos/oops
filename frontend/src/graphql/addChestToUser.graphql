@@ -1,0 +1,24 @@
+mutation AddChestToUser(
+  $chestId: Int!
+  $subcategoryId: Int!
+  $teacherId: Int!
+  $userId: Int!
+) {
+  addChestToUser(
+    chestId: $chestId
+    subcategoryId: $subcategoryId
+    teacherId: $teacherId
+    userId: $userId
+  ) {
+    chestHistoryId
+    createdAt
+    label
+    opened
+    updatedAt
+    user {
+      secondName
+      firstName
+      userId
+    }
+  }
+}

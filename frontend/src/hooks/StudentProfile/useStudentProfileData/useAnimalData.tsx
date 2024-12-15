@@ -1,29 +1,20 @@
 import { ApolloError } from "@apollo/client";
-import { LevelType } from "../../../__generated__/schema.graphql.types";
-import { useNeighboringLevelsQuery } from "../../../graphql/neighbouringLevels.graphql.types";
-import { Level } from "../types";
+import {
+  useNeighboringLevelsQuery,
+  NeighboringLevelsQuery,
+} from "../../../graphql/neighbouringLevels.graphql.types";
+
+export type NeighboringLevel =
+  NeighboringLevelsQuery["getNeighboringLevels"]["currLevel"];
 
 export type AnimalDataResult = {
-  prevLevel: Level | undefined;
-  currLevel: Level | undefined;
-  nextLevel: Level | undefined;
+  sumOfAllPoints: number | undefined;
+  prevLevel: NeighboringLevel | undefined;
+  currLevel: NeighboringLevel | undefined;
+  nextLevel: NeighboringLevel | undefined;
   animalDataLoading: boolean;
   animalDataError: ApolloError | Error | undefined;
   animalDataRefetch: () => void;
-};
-
-const mapToLevel = (data: LevelType | undefined): Level | undefined => {
-  if (!data) {
-    return undefined;
-  }
-  return {
-    name: data.levelName,
-    ordinalNumber: data.ordinalNumber,
-    realLevelNumber: data.ordinalNumber + 1,
-    imageId: data.imageFile?.fileId ?? undefined,
-    minimumPoints: parseFloat(data.minimumPoints),
-    maximumPoints: parseFloat(data.maximumPoints),
-  };
 };
 
 export const useAnimalData = (
@@ -38,18 +29,16 @@ export const useAnimalData = (
     },
   });
 
-  const prevLevel = mapToLevel(
-    data?.getNeighboringLevels.prevLevel ?? undefined,
-  );
-  const currLevel = mapToLevel(
-    data?.getNeighboringLevels.currLevel ?? undefined,
-  );
-  const nextLevel = mapToLevel(
-    data?.getNeighboringLevels.nextLevel ?? undefined,
-  );
+  const sumOfAllPoints = data?.getNeighboringLevels.sumOfAllPoints
+    ? parseFloat(data.getNeighboringLevels.sumOfAllPoints)
+    : undefined;
+  const prevLevel = data?.getNeighboringLevels.prevLevel ?? undefined;
+  const currLevel = data?.getNeighboringLevels.currLevel ?? undefined;
+  const nextLevel = data?.getNeighboringLevels.nextLevel ?? undefined;
 
   if (!currLevel) {
     return {
+      sumOfAllPoints: 0,
       prevLevel: undefined,
       currLevel: undefined,
       nextLevel: undefined,
@@ -60,6 +49,7 @@ export const useAnimalData = (
   }
 
   return {
+    sumOfAllPoints,
     prevLevel,
     currLevel,
     nextLevel,

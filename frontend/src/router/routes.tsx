@@ -20,7 +20,6 @@ import { UsersSection } from "../components/Edition/Sections/UsersSection/UsersS
 import { GradingChecksSection } from "../components/Edition/Sections/GradingChecksSection/GradingChecksSection";
 import { ChestsSection } from "../components/Edition/Sections/ChestsSection/ChestsSection";
 import { AvatarAndNickScreen } from "../screens/AvatarAndNick/AvatarAndNickScreen";
-import { LoginScreen } from "../screens/Login/LoginScreen";
 import { HallOfFameTeacher } from "../screens/HallOfFame/HallOfFameTeacher";
 
 const commonPaths = pathsWithParameters.common;
@@ -45,15 +44,6 @@ export const routes = createBrowserRouter([
           <ProtectedRoute
             element={<Welcome />}
             allowedRoles={commonPaths.Welcome.allowedRoles}
-          />
-        ),
-      },
-      {
-        path: commonPaths.Login.path,
-        element: (
-          <ProtectedRoute
-            element={<LoginScreen />}
-            allowedRoles={commonPaths.Login.allowedRoles}
           />
         ),
       },

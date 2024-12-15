@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Styles } from "../../utils/Styles";
 import { useLogin } from "../../hooks/auth/useLogin";
 
 export const LoginForm = () => {
@@ -33,8 +32,8 @@ export const LoginForm = () => {
   };
 
   return (
-    <div style={styles.loginForm}>
-      <h2>Login</h2>
+    <div>
+      <h2>Twoja historia zaczyna się tutaj</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>
@@ -60,13 +59,4 @@ export const LoginForm = () => {
       </form>
     </div>
   );
-};
-
-const styles: Styles = {
-  loginForm: {
-    marginTop: "20px",
-    padding: "10px",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-  },
 };

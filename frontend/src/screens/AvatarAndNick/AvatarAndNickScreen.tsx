@@ -6,13 +6,20 @@ import { useUser } from "../../hooks/common/useUser";
 import { useSetStudentAvatarMutation } from "../../graphql/setStudentAvatar.graphql.types";
 import { useFilesQuery } from "../../graphql/files.graphql.types";
 import { SelectImage } from "../../components/inputs/SelectImage";
+import { useConfirmPopup } from "../../hooks/common/useConfirmPopup";
+import { ConfirmAvatarNickPopupDialog } from "../../components/dialogs/ConfirmAvatarNickPopupDialog.tsx/ConfirmAvatarNickPopupDialog.tsx";
+import { useNavigate } from "react-router-dom";
+import { pathsGenerator } from "../../router/paths";
 
 export const AvatarAndNickScreen = () => {
   const [nick, setNick] = useState("");
   const [nickError, setNickError] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const { user } = useUser();
   const [setStudentNick] = useSetStudentNickMutation();
   const [setStudentAvatar] = useSetStudentAvatarMutation();
+  const { openConfirmPopup } = useConfirmPopup();
+  const navigate = useNavigate();
 
   const setUserNick = async (userNick: string, userId: number) => {
     const { errors } = await setStudentNick({
@@ -40,16 +47,20 @@ export const AvatarAndNickScreen = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleConfirmClick = () => {
+    openConfirmPopup(async () => {
+      try {
+        if (nick) await setUserNick(nick, parseInt(user.userId));
+        if (selectedAvatar)
+          await setUserAvatar(parseInt(user.userId), parseInt(selectedAvatar));
+        setNickError("");
 
-    try {
-      await setUserNick(nick, parseInt(user.userId));
-      setNickError("");
-    } catch (error) {
-      console.error("ERROR: ", error);
-      setNickError((error as Error).message);
-    }
+        navigate(pathsGenerator.student.StudentProfile);
+      } catch (error) {
+        console.error("ERROR: ", error);
+        setNickError((error as Error).message);
+      }
+    });
   };
 
   const {
@@ -67,7 +78,7 @@ export const AvatarAndNickScreen = () => {
 
   return (
     <div style={styles.container}>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
           <label>Nick:</label>
           <input
@@ -79,7 +90,6 @@ export const AvatarAndNickScreen = () => {
         </div>
 
         {nickError && <p className="error">{nickError}</p>}
-        <button type="submit">Set Nick</button>
       </form>
 
       <SelectImage
@@ -89,15 +99,20 @@ export const AvatarAndNickScreen = () => {
             e.files.map((e2) => e2.file.fileId),
           ) ?? []
         }
-        selectedIds={[]}
+        selectedIds={selectedAvatar ? [selectedAvatar] : []}
         onSelectClick={(updatedIds: string[]) =>
-          setUserAvatar(parseInt(user.userId), parseInt(updatedIds[0]))
+          setSelectedAvatar(updatedIds[0] ?? null)
         }
         error={undefined}
         touched={undefined}
         selectVariant={"single"}
         title="Select Image:"
       />
+
+      <button onClick={handleConfirmClick}>Confirm</button>
+
+      {/* Render the ConfirmPopupDialog */}
+      <ConfirmAvatarNickPopupDialog />
     </div>
   );
 };
@@ -105,17 +120,8 @@ export const AvatarAndNickScreen = () => {
 const styles: Styles = {
   container: {
     display: "flex",
+    flexDirection: "column",
     gap: 20,
     margin: 12,
-  },
-  rightSide: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-  },
-  topBar: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 12,
   },
 };

@@ -5,6 +5,7 @@ type SelectedUserInfoProps = {
 };
 
 export const SelectedUserInfo = ({ user }: SelectedUserInfoProps) => {
+  // TODO: Change this data
   return (
     <div>
       <h2>Zalogowany użytkownik:</h2>

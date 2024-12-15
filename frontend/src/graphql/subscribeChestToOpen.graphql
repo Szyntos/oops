@@ -26,7 +26,6 @@ subscription SubscribeChestToOpen($userId: bigint!) {
             maxUsages
           }
         }
-        active
         awardBundleCount
         imageFileId
         label

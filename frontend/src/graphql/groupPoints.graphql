@@ -23,6 +23,8 @@ query GroupPoints($groupId: Int!) {
       category {
         categoryId
         categoryName
+        lightColor
+        darkColor
       }
       subcategoryPoints {
         createdAt

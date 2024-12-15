@@ -31,7 +31,6 @@ select_permissions:
   - role: coordinator
     permission:
       columns:
-        - active
         - award_bundle_count
         - chest_id
         - image_file_id
@@ -43,7 +42,6 @@ select_permissions:
   - role: student
     permission:
       columns:
-        - active
         - award_bundle_count
         - chest_id
         - image_file_id
@@ -60,7 +58,6 @@ select_permissions:
   - role: teacher
     permission:
       columns:
-        - active
         - award_bundle_count
         - chest_id
         - image_file_id

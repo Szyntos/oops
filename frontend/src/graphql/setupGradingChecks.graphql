@@ -43,6 +43,14 @@ query SetupGradingChecks($editionId: Int!) {
         allow
         reason
       }
+      canActivate {
+        allow
+        reason
+      }
+      canDeactivate {
+        allow
+        reason
+      }
     }
   }
 }

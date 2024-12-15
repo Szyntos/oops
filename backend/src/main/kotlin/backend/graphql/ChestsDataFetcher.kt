@@ -1,6 +1,5 @@
 package backend.graphql
 
-import backend.award.Award
 import backend.award.AwardRepository
 import backend.awardEdition.AwardEditionRepository
 import backend.categories.CategoriesRepository
@@ -104,7 +103,9 @@ class ChestsDataFetcher {
                     canRemove = permissionService.checkPartialPermission(PermissionInput("removeChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
                     canSelect = permissionService.checkPartialPermission(PermissionInput("addChestToEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
                     canUnselect = permissionService.checkPartialPermission(PermissionInput("removeChestFromEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
-                    additional = emptyList()
+                    additional = emptyList(),
+                    canActivate = permissionService.checkPartialPermission(PermissionInput("activateChestInEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId)))),
+                    canDeactivate = permissionService.checkPartialPermission(PermissionInput("deactivateChestInEdition", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId, "editionId" to editionId))))
                 )
             )
         }
@@ -205,7 +206,7 @@ class ChestsDataFetcher {
             throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
         }
 
-        var chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
+        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
 
         chestType?.let {
             chest.chestType = it
@@ -233,31 +234,6 @@ class ChestsDataFetcher {
 
         toRemove.forEach { awardId ->
             val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
-            if (chestHistoryRepository.findByChest(chest).any { it.opened }) {
-                chest.active = false
-                chestsRepository.save(chest)
-                val newChest = Chests(
-                    chestType = chest.chestType,
-                    label = chest.label,
-                    awardBundleCount = chest.awardBundleCount
-                )
-                newChest.imageFile = chest.imageFile
-                chestsRepository.save(newChest)
-                chestAwardRepository.findByChest(chest).forEach {
-                    chestAwardRepository.save(
-                        ChestAward(
-                            award = it.award,
-                            chest = newChest,
-                            label = it.label
-                        )
-                    )
-                }
-                chestHistoryRepository.findByChest(chest).filter { !it.opened }.forEach {
-                    it.chest = newChest
-                    chestHistoryRepository.save(it)
-                }
-                chest = newChest
-            }
             chestAwardRepository.findByChestAndAward(chest, award)?.let {
                 chestAwardRepository.delete(it)
             }
@@ -265,31 +241,6 @@ class ChestsDataFetcher {
 
         toAdd.forEach { awardId ->
             val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
-            if (chestHistoryRepository.findByChest(chest).any { it.opened }) {
-                chest.active = false
-                chestsRepository.save(chest)
-                val newChest = Chests(
-                    chestType = chest.chestType,
-                    label = chest.label,
-                    awardBundleCount = chest.awardBundleCount
-                )
-                newChest.imageFile = chest.imageFile
-                chestsRepository.save(newChest)
-                chestAwardRepository.findByChest(chest).forEach {
-                    chestAwardRepository.save(
-                        ChestAward(
-                            award = it.award,
-                            chest = newChest,
-                            label = it.label
-                        )
-                    )
-                }
-                chestHistoryRepository.findByChest(chest).filter { !it.opened }.forEach {
-                    it.chest = newChest
-                    chestHistoryRepository.save(it)
-                }
-                chest = newChest
-            }
             val chestAward = ChestAward(
                 chest = chest,
                 award = award,

@@ -1,14 +1,19 @@
+import { tokens } from "../../tokens";
 import { Styles } from "../../utils/Styles";
-import { Avatar } from "../images/Avatar";
+import { getLinearGradient } from "../../utils/utils";
+import { CustomText } from "../CustomText";
+import { Avatar } from "../avatars/Avatar";
 
 export const HALL_OF_FAME_STUDENT_CARD_ID_PREFIX = "student-";
 
 type HallOfFameStudentCardProps = {
   student: HallOfFameStudentData;
   isHighlighted?: boolean;
+  showStudentName: boolean;
 };
 
 export type HallOfFameStudentData = {
+  displayName?: string;
   position: number;
   id: string;
   nick: string;
@@ -22,33 +27,56 @@ export type HallOfFameStudentData = {
 export const HallOfFameStudentCard = ({
   student,
   isHighlighted,
+  showStudentName,
 }: HallOfFameStudentCardProps) => {
   return (
     <div
       id={HALL_OF_FAME_STUDENT_CARD_ID_PREFIX + student.id}
       style={{
         ...styles.item,
-        backgroundColor: isHighlighted ? "pink" : "white",
+        background: isHighlighted
+          ? getLinearGradient(tokens.color.accent.light, tokens.color.card.dark)
+          : undefined,
       }}
     >
-      <div>{student.position}.</div>
+      <CustomText style={styles.position}>{student.position}.</CustomText>
       <Avatar id={student.avatarImgId} size={"xs"} />
-      <div>{student.nick}</div>
+      <div style={styles.nickAndNAmeContainer}>
+        <CustomText bold={true}>{student.nick}</CustomText>
+        {showStudentName && (
+          <CustomText color={tokens.color.text.secondary}>
+            {student.displayName}
+          </CustomText>
+        )}
+      </div>
       <Avatar id={student.levelImgId} size={"xs"} />
-      <div>{student.levelName}</div>
-      <div>{student.totalPoints.toFixed(2)} pkt</div>
+      <CustomText style={styles.animalName}>{student.levelName}</CustomText>
+      <CustomText>{student.totalPoints.toFixed(2)}pkt</CustomText>
     </div>
   );
 };
 
 const styles: Styles = {
   item: {
-    display: "grid",
-    gridTemplateColumns: "0.5fr 0.5fr 3fr 1fr 2fr 1fr",
+    display: "flex",
     alignItems: "center",
-    border: "1px solid black",
-    gap: 12,
+    gap: 32,
     padding: 12,
-    boxSizing: "border-box",
+    paddingLeft: 24,
+    paddingRight: 24,
+    backgroundColor: tokens.color.card.dark,
+  },
+  position: {
+    width: 18,
+  },
+  nickAndNAmeContainer: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    gap: 6,
+  },
+  animalName: {
+    flex: 1,
+    textAlign: "center",
   },
 };

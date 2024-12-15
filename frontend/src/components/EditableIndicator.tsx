@@ -1,3 +1,4 @@
+import { tokens } from "../tokens";
 import { Styles } from "../utils/Styles";
 
 export const EditableIndicator = () => {
@@ -11,7 +12,7 @@ export const EditableIndicator = () => {
 const styles: Styles = {
   editable: {
     borderRadius: "100%",
-    backgroundColor: "black",
+    backgroundColor: tokens.color.accent.dark,
     width: 36,
     height: 36,
     display: "flex",
@@ -20,6 +21,6 @@ const styles: Styles = {
   },
   editIcon: {
     fontSize: 22,
-    color: "white",
+    color: tokens.color.text.primary,
   },
 };

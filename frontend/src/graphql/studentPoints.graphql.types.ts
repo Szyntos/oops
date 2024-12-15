@@ -25,6 +25,8 @@ export type StudentPointsQuery = {
       userLevels: Array<{
         __typename?: "UserLevelType";
         computedGrade: number;
+        endOfLabsLevelsReached: boolean;
+        projectPointsThresholdReached: boolean;
         edition: { __typename?: "EditionType"; editionId: string };
       } | null>;
       imageFile?: { __typename?: "FileType"; fileId: string } | null;
@@ -113,6 +115,8 @@ export const StudentPointsDocument = gql`
           edition {
             editionId
           }
+          endOfLabsLevelsReached
+          projectPointsThresholdReached
         }
         firstName
         indexNumber

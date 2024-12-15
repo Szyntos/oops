@@ -1,5 +1,4 @@
 import {
-  createTheme,
   Paper,
   Table,
   TableBody,
@@ -7,7 +6,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  ThemeProvider,
 } from "@mui/material";
 import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
 import { Styles } from "../../../utils/Styles";
@@ -27,12 +25,6 @@ export const GroupTable = ({
   handleSubcategoryClick,
   editable,
 }: GroupTableProps) => {
-  const darkTheme = createTheme({
-    palette: {
-      mode: "dark",
-    },
-  });
-
   // order: subcategories, pure points sum, awards, bonus points sum
   const getRowValues = (row: GroupTableRow) => {
     // add subcategories, awards and sums
@@ -121,55 +113,53 @@ export const GroupTable = ({
   };
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <TableContainer component={Paper} sx={{ maxHeight: 560 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell style={styles.headerStudentCell}>Student</TableCell>
-              {getHeaderNames().map((entry, index) => (
-                <TableCell
-                  key={index}
-                  onClick={() => {
-                    if (entry.subcategory && editable) {
-                      handleSubcategoryClick(entry.subcategory);
-                    }
-                  }}
-                  style={{
-                    ...styles.headerCell,
-                    color: entry.color,
-                  }}
-                >
-                  {entry.name}
+    <TableContainer component={Paper} sx={{ maxHeight: 560 }}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell style={styles.headerStudentCell}>Student</TableCell>
+            {getHeaderNames().map((entry, index) => (
+              <TableCell
+                key={index}
+                onClick={() => {
+                  if (entry.subcategory && editable) {
+                    handleSubcategoryClick(entry.subcategory);
+                  }
+                }}
+                style={{
+                  ...styles.headerCell,
+                  color: entry.color,
+                }}
+              >
+                {entry.name}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {rows.map((row, index) => (
+            <TableRow key={row.student.id}>
+              <TableCell
+                style={styles.regularStudentCell}
+                onClick={() => {
+                  if (editable) {
+                    handleStudentClick(row.student);
+                  }
+                }}
+              >
+                {index + 1}. {row.student.fullName}
+              </TableCell>
+              {getRowValues(row).map((value, index) => (
+                <TableCell key={`${index}`}>
+                  {value ?? EMPTY_FIELD_STRING}
                 </TableCell>
               ))}
             </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={row.student.id}>
-                <TableCell
-                  style={styles.regularStudentCell}
-                  onClick={() => {
-                    if (editable) {
-                      handleStudentClick(row.student);
-                    }
-                  }}
-                >
-                  {index + 1}. {row.student.fullName}
-                </TableCell>
-                {getRowValues(row).map((value, index) => (
-                  <TableCell key={`${index}`}>
-                    {value ?? EMPTY_FIELD_STRING}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </ThemeProvider>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

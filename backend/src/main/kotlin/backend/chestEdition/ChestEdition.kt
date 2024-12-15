@@ -21,6 +21,9 @@ class ChestEdition(
     @JoinColumn(name = "edition_id", referencedColumnName = "edition_id")
     var edition: Edition,
 
+    @Column(name = "active", nullable = false, length = 256)
+    var active: Boolean = true,
+
     @Column(name = "label", nullable = false, length = 256)
     var label: String,
 ) {

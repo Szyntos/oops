@@ -92,34 +92,7 @@ class ChestsAwardDataFetcher {
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
-        var chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
-
-        if (chestHistoryRepository.findByChest(chest).any { it.opened }){
-            chest.active = false
-            chestsRepository.save(chest)
-            val newChest = Chests(
-                chestType = chest.chestType,
-                label = chest.label,
-                awardBundleCount = chest.awardBundleCount
-            )
-            newChest.imageFile = chest.imageFile
-            chestsRepository.save(newChest)
-            chestAwardRepository.findByChest(chest).forEach {
-                chestAwardRepository.save(
-                    ChestAward(
-                        award = it.award,
-                        chest = newChest,
-                        label = it.label
-                    )
-                )
-            }
-            chestHistoryRepository.findByChest(chest).filter { !it.opened }.forEach {
-                it.chest = newChest
-                chestHistoryRepository.save(it)
-            }
-            chest = newChest
-        }
-
+        val chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
 
         val chestAward = ChestAward(
             award = award,
@@ -147,33 +120,7 @@ class ChestsAwardDataFetcher {
         }
 
         val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
-        var chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
-
-        if (chestHistoryRepository.findByChest(chest).any { it.opened }){
-            chest.active = false
-            chestsRepository.save(chest)
-            val newChest = Chests(
-                chestType = chest.chestType,
-                label = chest.label,
-                awardBundleCount = chest.awardBundleCount
-            )
-            newChest.imageFile = chest.imageFile
-            chestsRepository.save(newChest)
-            chestAwardRepository.findByChest(chest).forEach {
-                chestAwardRepository.save(
-                    ChestAward(
-                        award = it.award,
-                        chest = newChest,
-                        label = it.label
-                    )
-                )
-            }
-            chestHistoryRepository.findByChest(chest).filter { !it.opened }.forEach {
-                it.chest = newChest
-                chestHistoryRepository.save(it)
-            }
-            chest = newChest
-        }
+        val chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
 
         chestAwardRepository.deleteByAwardAndChest(award, chest)
         return true

@@ -1,7 +1,6 @@
 query SetupChests($editionId: Int!) {
   listSetupChests(editionId: $editionId) {
     chest {
-      active
       awardBundleCount
       chestId
       imageFile {
@@ -13,6 +12,7 @@ query SetupChests($editionId: Int!) {
         edition {
           editionId
         }
+        active
       }
       chestAward {
         award {
@@ -70,6 +70,14 @@ query SetupChests($editionId: Int!) {
         reason
       }
       canTurnOffOverride {
+        allow
+        reason
+      }
+      canActivate {
+        allow
+        reason
+      }
+      canDeactivate {
         allow
         reason
       }

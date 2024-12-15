@@ -149,15 +149,6 @@ class ChestHistoryPermissions {
                 reason = "Invalid chest ID"
             )
 
-        if (!chest.active){
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Chest is not active"
-            )
-        }
-
         val chestEditions = chest.chestEdition.map { it.edition }
 
         if (userEditions.none { it in chestEditions }) {
@@ -183,7 +174,7 @@ class ChestHistoryPermissions {
                 reason = "Teacher must be a teacher or coordinator"
             )
         }
-        if (teacher.userGroups.isEmpty()) {
+        if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.isEmpty()) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -191,7 +182,7 @@ class ChestHistoryPermissions {
                 reason = "Teacher has no groups"
             )
         }
-        if (teacher.userGroups.map { it.group.edition }.none { it in chestEditions }) {
+        if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.map { it.group.edition }.none { it in chestEditions }) {
             return Permission(
                 action = action,
                 arguments = arguments,
@@ -236,6 +227,16 @@ class ChestHistoryPermissions {
                 arguments = arguments,
                 allow = false,
                 reason = "Subcategory and chest must have the same edition"
+            )
+        }
+
+        val editionToAdd = subcategory.edition
+        if (chest.chestEdition.filter { it.edition == editionToAdd }.none { it.active }) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Chest must be active in this edition"
             )
         }
 
@@ -416,12 +417,13 @@ class ChestHistoryPermissions {
                     reason = "Chest and user must have the same edition"
                 )
             }
-            if (!chest.active){
+            // check if chest is active in this edition
+            if (chest.chestEdition.filter { it.edition == chestHistory.subcategory.edition }.none { it.active }) {
                 return Permission(
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Chest is not active"
+                    reason = "Chest must be active in this edition"
                 )
             }
             chestHistory.chest = chest
@@ -455,7 +457,7 @@ class ChestHistoryPermissions {
                     reason = "Teacher must be a teacher or coordinator"
                 )
             }
-            if (teacher.userGroups.isEmpty()) {
+            if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.isEmpty()) {
                 return Permission(
                     action = action,
                     arguments = arguments,
@@ -463,7 +465,7 @@ class ChestHistoryPermissions {
                     reason = "Teacher has no groups"
                 )
             }
-            if (teacher.userGroups.map { group -> group.group.edition }.none { edition -> edition in chestEditions }) {
+            if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.map { group -> group.group.edition }.none { edition -> edition in chestEditions }) {
                 return Permission(
                     action = action,
                     arguments = arguments,

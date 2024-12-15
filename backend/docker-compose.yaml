@@ -38,6 +38,7 @@ services:
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "unauthenticated_user"
       HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"  # This one is needed so IDs are sent as strings to FE
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
+      BACKEND_GRAPHQL_URL: ${BACKEND_GRAPHQL_URL}
 
 volumes:
   postgres_data:

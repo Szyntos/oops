@@ -48,6 +48,14 @@ query SetupEditions {
         allow
         reason
       }
+      canActivate {
+        allow
+        reason
+      }
+      canDeactivate {
+        allow
+        reason
+      }
     }
   }
 }

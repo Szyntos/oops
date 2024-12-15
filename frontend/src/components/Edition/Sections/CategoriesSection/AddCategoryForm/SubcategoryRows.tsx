@@ -44,7 +44,6 @@ export const SubcategoryRows = ({
           maxPoints: 0,
           ordinal: subcategories.length + 1,
         }}
-        disabled={false}
         handleAdd={handleAdd}
         handleDelete={handleDelete}
         handleUp={() => {}}

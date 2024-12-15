@@ -10,6 +10,7 @@ import { useError } from "../common/useGlobalError";
 import { useRegenerateGradeMutation } from "../../graphql/regenerateGrade.graphql.types";
 import { useConfirmPopup } from "../common/useConfirmPopup";
 import { useApolloClient } from "@apollo/client";
+import { isChestActive } from "../../utils/utils";
 
 export type Chest = ChestsQuery["chests"][number];
 
@@ -23,7 +24,13 @@ export const useCoordinatorActions = (studentId: string, teacherId: string) => {
     skip: !editionId,
   });
 
-  const chests: Chest[] = data?.chests ?? [];
+  const chests: Chest[] =
+    data?.chests.filter((chest) =>
+      isChestActive(
+        chest.chestEditions.map((e) => ({ id: e.editionId, active: e.active })),
+        selectedEdition?.editionId ?? "",
+      ),
+    ) ?? [];
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
 

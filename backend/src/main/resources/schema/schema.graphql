@@ -363,6 +363,16 @@ type Mutation {
     chestId: Int!,
   ): ChestType
 
+  activateChestInEdition(
+    chestId: Int!
+    editionId: Int!
+  ): Boolean
+
+  deactivateChestInEdition(
+    chestId: Int!
+    editionId: Int!
+  ): Boolean
+
   addChestToEdition(
     chestId: Int!,
     editionId: Int!
@@ -521,7 +531,6 @@ type ChestType {
   chestId: ID!
   chestType: String!
   label: String!
-  active: Boolean!
   awardBundleCount: Int!
   chestHistory: [ChestHistoryType]!
   chestAward: [ChestAwardType!]!
@@ -832,6 +841,7 @@ type ChestEditionType {
   chestEditionId: ID!
   chest: ChestType!
   edition: EditionType!
+  active: Boolean!
   label: String!
 }
 
@@ -905,6 +915,8 @@ type ListPermissionsOutputType{
   canTurnOffOverride: PermissionType
   canMarkAsActive: PermissionType
   canMarkAsInactive: PermissionType
+  canActivate: PermissionType
+  canDeactivate: PermissionType
 }
 
 type UserWithEditionsType{

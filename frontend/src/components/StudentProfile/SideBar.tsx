@@ -1,12 +1,13 @@
 import { ProgressBarProps } from "../bars/ProgressBar";
 import { StudentCard } from "./cards/StudentCard";
 import { CategoriesCard } from "./cards/CategoriesCard";
-import { Styles } from "../../utils/Styles";
 import { StudentCardData } from "../../hooks/StudentProfile/useStudentProfileData/useStudentData";
 import { AnimalCard } from "./cards/AnimalCard/AnimalCard";
 import { BonusesCard } from "./cards/BonusesCard";
 import { Bonus } from "../../hooks/StudentProfile";
 import { NeighboringLevel } from "../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
+import { CustomSideBar } from "../layout/CustomSideBar";
+import { ChecksCard } from "./cards/ChecksCard";
 
 type SideBarProps = {
   student: StudentCardData;
@@ -28,7 +29,7 @@ export const SideBar = ({
   bonuses,
 }: SideBarProps) => {
   return (
-    <div style={styles.container}>
+    <CustomSideBar>
       <StudentCard {...student} />
       <AnimalCard
         prevLevel={prevLevel}
@@ -36,19 +37,15 @@ export const SideBar = ({
         nextLevel={nextLevel}
         totalPoints={sumOfAllPoints}
       />
-      <CategoriesCard categoriesBarProps={categoriesBarProps} />
+      <ChecksCard
+        levelCheck={student.levelCheck}
+        projectCheck={student.projectCheck}
+      />
+      <CategoriesCard
+        categoriesBarProps={categoriesBarProps}
+        totalPoints={sumOfAllPoints ?? 0}
+      />
       <BonusesCard bonuses={bonuses} />
-    </div>
+    </CustomSideBar>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 20,
-    borderRight: "2px solid red",
-    paddingRight: 24,
-    width: 360,
-  },
 };

@@ -4,6 +4,7 @@ import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { AddEditionForm } from "../../components/Editions/AddEditionForm";
 import { EditionsList } from "../../components/Editions/EditionsList/EditionsList";
 import { useEditionsScreen } from "../../hooks/Editions/useEditionsScreen";
+import { LoadingScreen } from "../Loading/LoadingScreen";
 
 export const EditionsScreen = () => {
   const {
@@ -31,7 +32,7 @@ export const EditionsScreen = () => {
     handleDeleteClick,
   } = useEditionsScreen();
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <LoadingScreen />;
   if (error) return <div>ERROR: {error?.message}</div>;
 
   return (

@@ -12,6 +12,7 @@ import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
 import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenContentContainer";
+import { LoadingScreen } from "../Loading/LoadingScreen";
 
 export const GroupScreen = () => {
   const params = useParams();
@@ -40,7 +41,7 @@ export const GroupScreen = () => {
     selectedSubcategory,
   } = useGroupScreenData(groupId, userId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <LoadingScreen />;
   if (error) return <div>ERROR: {error.message}</div>;
   if (!teacherId) return <div>ERROR: something went worng</div>;
 

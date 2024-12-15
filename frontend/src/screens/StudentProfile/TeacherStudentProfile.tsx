@@ -22,6 +22,7 @@ import { useChangeGroup } from "../../hooks/common/useChangeGroup";
 import { useOverrideGrade } from "../../hooks/common/useOverrideGrade";
 import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
 import { CustomButton } from "../../components/CustomButton";
+import { LoadingScreen } from "../Loading/LoadingScreen";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -86,7 +87,7 @@ export function TeacherStudentProfile() {
   if (!studentId) return <p>StudentId is undefined</p>;
   if (!userId) return <p>TeacherId is undefined</p>;
 
-  if (loading || formDataLoading || chestsLoading) return <p>Loading...</p>;
+  if (loading || formDataLoading || chestsLoading) return <LoadingScreen />;
   if (error) return <p>Error: {error.message}</p>;
   if (formDataError) return <p>Error: {formDataError.message}</p>;
   if (chestsError) return <p>Error: {chestsError.message}</p>;

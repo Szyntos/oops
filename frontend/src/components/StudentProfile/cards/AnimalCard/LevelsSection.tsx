@@ -1,6 +1,8 @@
 import { Level } from "../../../../hooks/StudentProfile";
 import { useLevelsData } from "../../../../hooks/StudentProfile/useLevelsData";
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
+import { LoadingCircle } from "../../../../screens/Loading/LoadingCircle";
+import { Styles } from "../../../../utils/Styles";
 import { AvatarShadowSize } from "../../../avatars/Avatar";
 import { CustomImageList } from "../ImageList";
 
@@ -15,7 +17,12 @@ export const LevelsSection = ({
 }: LevelsSectionProps) => {
   const { levels, loading, error } = useLevelsData();
 
-  if (loading) return <div>loading...</div>;
+  if (loading)
+    return (
+      <div style={styles.loadingContainer}>
+        <LoadingCircle />
+      </div>
+    );
   if (error) return <div>ERROR: {error.message}</div>;
 
   const getShadow = (level: Level): AvatarShadowSize => {
@@ -37,4 +44,11 @@ export const LevelsSection = ({
       type="animal"
     />
   );
+};
+
+const styles: Styles = {
+  loadingContainer: {
+    display: "flex",
+    justifyContent: "center",
+  },
 };

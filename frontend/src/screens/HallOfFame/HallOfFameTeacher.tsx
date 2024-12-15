@@ -8,6 +8,7 @@ import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame
 import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenContentContainer";
 import { tokens } from "../../tokens";
 import { useHallOfFameDataTeacher } from "../../hooks/HallOfFame/useHallOfFameDataTeacher";
+import { LoadingScreen } from "../Loading/LoadingScreen";
 
 export const HallOfFameTeacher = () => {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
@@ -31,7 +32,7 @@ export const HallOfFameTeacher = () => {
     }
   }, [scrollToStudent, highlightedStudent?.id, showStudentsFromAllGroups]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen />;
   if (error) return <p>Error: {error.message}</p>;
 
   const displayStudents = showStudentsFromAllGroups

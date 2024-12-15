@@ -15,6 +15,7 @@ import { Group } from "../../hooks/common/useGroupsData";
 import { groupsRadioButtonOptions } from "../../utils/constants";
 import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
 import { getGroupTimeString } from "../../utils/utils";
+import { LoadingScreen } from "../Loading/LoadingScreen";
 
 export const GroupsScreen = () => {
   const { user } = useUser();
@@ -89,7 +90,7 @@ export const GroupsScreen = () => {
 
   // TODO is it possible to reduce number of rerenders?
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <LoadingScreen />;
   if (error) return <div>ERROR: {error?.message}</div>;
 
   return (

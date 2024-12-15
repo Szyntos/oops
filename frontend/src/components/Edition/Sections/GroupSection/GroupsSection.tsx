@@ -33,21 +33,21 @@ export const GroupsSection = () => {
     handleMarkAllPassingStudents,
   } = useGroupsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
     <div>
       <div>
-        <button onClick={() => openAddGroup("select")}>add group</button>
-        <button onClick={() => openAddGroup("import")}>import group</button>
+        <button onClick={() => openAddGroup("select")}>Dodaj grupę</button>
+        <button onClick={() => openAddGroup("import")}>Zaimportuj grupę</button>
         <button onClick={handleMarkAllPassingStudents}>
-          mark all passing students as inactive
+          Deaktywuj wszystkich zdających studentów
         </button>
       </div>
       <GroupsList
         groups={groups}
-        title="groups"
+        title="Grupy"
         editClick={openEditDialog}
         deleteClick={handleDeleteGroup}
       />
@@ -63,7 +63,7 @@ export const GroupsSection = () => {
           handleUploadStudents={handleUploadStudents}
           editionId={editionId}
           variant={variant}
-          title={"Add group"}
+          title={"Dodaj grupę"}
         />
       </Dialog>
 
@@ -95,7 +95,7 @@ export const GroupsSection = () => {
                 }
               : undefined
           }
-          title="Edit group"
+          title="Edytuj grupę"
         />
       </Dialog>
     </div>

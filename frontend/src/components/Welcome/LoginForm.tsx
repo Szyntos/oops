@@ -35,7 +35,7 @@ export const LoginForm = () => {
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label>Hasło:</label>
           <input
             type="password"
             value={password}
@@ -44,7 +44,7 @@ export const LoginForm = () => {
           />
         </div>
         {loginError && <p className="error">{loginError}</p>}
-        <button type="submit">Login</button>
+        <button type="submit">Zaloguj się</button>
       </form>
     </div>
   );

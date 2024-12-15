@@ -13,12 +13,12 @@ export const ChecksCard = ({ levelCheck, projectCheck }: ChecksCardProps) => {
     <Section title="Warunki zaliczenia">
       <div style={styles.checksContainer}>
         <div style={styles.checkRow}>
-          <CustomText>status wyklucia:</CustomText>
+          <CustomText>Status wyklucia:</CustomText>
           <IconMapper icon={levelCheck ? "yes" : "no"} />
         </div>
 
         <div style={styles.checkRow}>
-          <CustomText>status projektu:</CustomText>
+          <CustomText>Status projektu:</CustomText>
           <IconMapper icon={projectCheck ? "yes" : "no"} />
         </div>
       </div>

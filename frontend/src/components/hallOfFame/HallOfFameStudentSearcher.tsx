@@ -21,7 +21,7 @@ export const HallOfFameStudentSearcher = ({
       handleChange={handleSearchInputChange}
       value={searchInputValue}
       name="searchHallOfFameStudent"
-      placeholder="wyszukaj studenta"
+      placeholder="Wyszukaj studenta"
     />
   );
 };

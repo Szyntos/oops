@@ -31,7 +31,7 @@ export const HallOfFame = () => {
     }
   }, [scrollToStudent, highlightedStudent?.id, showStudentsFromAllGroups]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>Ładowanie...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   const displayStudents = showStudentsFromAllGroups

@@ -18,7 +18,7 @@ export const AwardWithTooltip = ({ bonus, size }: AwardWithTooltipProps) => {
         <div style={styles.container}>
           <div style={styles.title}>{bonus.award.name}</div>
           <div>{bonus.award.description}</div>
-          <div>points: {bonus.award.value.toFixed(2)}</div>
+          <div>Punkty: {bonus.award.value.toFixed(2)}</div>
           <div>{displayDate.toLocaleDateString("pl-PL", dateOptions)}</div>
         </div>
       }

@@ -115,23 +115,23 @@ export const GroupTable = ({
             },
           });
         }
-        headers.push({ cell: { data: "zdobyte punkty", colored: true } });
+        headers.push({ cell: { data: "Zdobyte punkty", colored: true } });
         for (const award of category.awards) {
           headers.push({ cell: { data: award.name } });
         }
-        headers.push({ cell: { data: "punkty bonusowe", colored: true } });
+        headers.push({ cell: { data: "Punkty za łupy", colored: true } });
       }
     }
     // add aggregate values
-    headers.push({ cell: { data: "zdobyte punkty", colored: true } });
-    headers.push({ cell: { data: "punkty bonusowe", colored: true } });
-    headers.push({ cell: { data: "razem", colored: true } });
+    headers.push({ cell: { data: "dobyte punkty", colored: true } });
+    headers.push({ cell: { data: "Zagregowane łupy", colored: true } });
+    headers.push({ cell: { data: "Razem", colored: true } });
     // levels...
-    headers.push({ cell: { data: "zdobyty zwierzak", colored: true } });
-    headers.push({ cell: { data: "przewidywana ocena", colored: true } });
-    headers.push({ cell: { data: "status wyklucia", colored: true } });
-    headers.push({ cell: { data: "status projektu", colored: true } });
-    headers.push({ cell: { data: "coena końcowa", colored: true } });
+    headers.push({ cell: { data: "Poziom", colored: true } });
+    headers.push({ cell: { data: "Przewidywana ocena", colored: true } });
+    headers.push({ cell: { data: "Status wyklucia", colored: true } });
+    headers.push({ cell: { data: "Status projektu", colored: true } });
+    headers.push({ cell: { data: "Ocena końcowa", colored: true } });
     return headers;
   };
 

@@ -20,7 +20,7 @@ export const StudentSelection = ({
       <SelectedStudentsList
         students={selectedStudents}
         handleDelete={handleDelete}
-        title="Selected Students"
+        title="Wybrani studenci"
       />
       <SelectStudent students={students} handleAddStudent={handleAdd} />
     </div>

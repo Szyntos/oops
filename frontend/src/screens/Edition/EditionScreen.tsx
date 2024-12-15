@@ -19,9 +19,9 @@ export const EditionScreen = () => {
     <div style={styles.screenContainer}>
       <div style={styles.header}>
         <button onClick={() => navigate(pathsGenerator.coordinator.Editions)}>
-          go back to editions list
+          Powrót do listy edycji
         </button>
-        <div>params - edition id: {editionId}</div>
+        <div>parametry - id edycji: {editionId}</div>
       </div>
       <SectionsBar editionId={editionId} />
       <Dialog open={isShowDialogOpen}>

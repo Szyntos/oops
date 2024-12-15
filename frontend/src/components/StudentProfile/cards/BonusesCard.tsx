@@ -8,7 +8,7 @@ type BonusesCardProps = {
 
 export const BonusesCard = ({ bonuses }: BonusesCardProps) => {
   return (
-    <Section title="Bonusy">
+    <Section title="Łupy">
       <CustomImageList
         items={bonuses.map((b) => ({ bonus: b, type: "bonus" }))}
         type={"bonus"}

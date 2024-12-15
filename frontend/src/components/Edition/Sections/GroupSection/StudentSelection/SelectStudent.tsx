@@ -22,7 +22,7 @@ export const SelectStudent = ({
         <Select
           name="studentId"
           value={student?.userId}
-          placeholder="choose student"
+          placeholder="Wybierz studenta"
           onChange={(e) =>
             setStudent(students.find((s) => s.userId === e.target.value))
           }
@@ -43,7 +43,7 @@ export const SelectStudent = ({
         }}
         type="button"
       >
-        add student
+        Dodaj studenta
       </button>
     </div>
   );

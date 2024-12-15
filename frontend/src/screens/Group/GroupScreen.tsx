@@ -40,9 +40,9 @@ export const GroupScreen = () => {
     selectedSubcategory,
   } = useGroupScreenData(groupId, userId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
-  if (!teacherId) return <div>ERROR: something went worng</div>;
+  if (!teacherId) return <div>ERROR: coś posxło nie tak</div>;
 
   const hasEditableRights =
     teacherId === userId || user.role === UsersRolesType.Coordinator;

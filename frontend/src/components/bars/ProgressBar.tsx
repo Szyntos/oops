@@ -35,10 +35,10 @@ export const ProgressBar = ({
   darkColor = tokens.color.accent.dark,
 }: ProgressBarProps) => {
   if (points < 0) {
-    console.error("points cannot be a negative number");
+    console.error("Punkty nie mogą być ujemne.");
   }
   if (points < bounds.lower) {
-    console.error("points cannot be lower than the lower bound");
+    console.error("Punkty nie mogą być mniejsze nić ograniczenie dolne.");
   }
 
   const diff = bounds.lower;

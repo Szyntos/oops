@@ -19,19 +19,15 @@ export type GroupFormValues = z.infer<typeof ValidationSchema>;
 const timeRegex = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
 
 const ValidationSchema = z.object({
-  startTime: z
-    .string()
-    .min(1, { message: "required " })
-    .regex(timeRegex, { message: "Start Time must be in hh:mm format" }),
-  endTime: z
-    .string()
-    .min(1, { message: "required " })
-    .regex(timeRegex, { message: "End Time must be in hh:mm format" }),
-  weekdayId: z.string().min(1, { message: "required" }),
-  teacherId: z.string().min(1, { message: "required" }),
-  usosId: z
-    .number()
-    .min(1, { message: "USOS ID must be a non-negative number" }),
+  startTime: z.string().min(1, { message: "wymagane " }).regex(timeRegex, {
+    message: "Godzina rozpoczęcia musi być w formacie hh:mm",
+  }),
+  endTime: z.string().min(1, { message: "wymagane " }).regex(timeRegex, {
+    message: "Godzina zakończenia musi być w formacie hh:mm",
+  }),
+  weekdayId: z.string().min(1, { message: "wymagane" }),
+  teacherId: z.string().min(1, { message: "wymagane" }),
+  usosId: z.number().min(1, { message: "USOS ID nie może być liczbą ujemną." }),
 });
 
 type AddGroupFormProps = {
@@ -100,7 +96,7 @@ export const AddGroupForm = ({
           (startHour === endHour && startMinute < endMinute);
 
         if (!isEndTimeValid) {
-          errors.endTime = `end time must be after start time`;
+          errors.endTime = `Czas zakończenia musi być po czasie startu.`;
         }
 
         return errors;
@@ -175,7 +171,7 @@ export const AddGroupForm = ({
           <TextField
             fullWidth
             name="startTime"
-            label="Start Time"
+            label="Czas startu"
             variant="outlined"
             placeholder="hh:mm"
             value={formik.values.startTime}
@@ -188,7 +184,7 @@ export const AddGroupForm = ({
           <TextField
             fullWidth
             name="endTime"
-            label="End Time"
+            label="Czas zakończenia"
             variant="outlined"
             placeholder="hh:mm"
             value={formik.values.endTime}
@@ -199,7 +195,7 @@ export const AddGroupForm = ({
           />
 
           <FormControl fullWidth>
-            <InputLabel>Weekday</InputLabel>
+            <InputLabel>Dzień Tygodnia</InputLabel>
             <Select
               name="weekdayId"
               value={formik.values.weekdayId}
@@ -221,7 +217,7 @@ export const AddGroupForm = ({
           </FormControl>
 
           <FormControl fullWidth>
-            <InputLabel>Teacher</InputLabel>
+            <InputLabel>Prowadzący</InputLabel>
             <Select
               name="teacherId"
               value={formik.values.teacherId}
@@ -265,7 +261,7 @@ export const AddGroupForm = ({
           ) : (
             <div>
               <button type="button" onClick={handleUploadClick}>
-                import students
+                Importuj studentów
               </button>
               <input
                 type="file"
@@ -274,7 +270,7 @@ export const AddGroupForm = ({
                 onChange={handleFileChange}
                 style={{ display: "none" }}
               />
-              {importedFile && <div>imported file: {importedFile}</div>}
+              {importedFile && <div>Zaimportowany plik: {importedFile}</div>}
               {selectedStudents.map((s, index) => (
                 <div>
                   {index + 1}. {s.firstName} {s.secondName}
@@ -284,7 +280,7 @@ export const AddGroupForm = ({
           )}
         </div>
 
-        <button type="submit">confirm</button>
+        <button type="submit">Potwierdź</button>
       </form>
 
       {createError && <p style={styles.error}>Error: {createError}</p>}

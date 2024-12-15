@@ -68,7 +68,7 @@ export const StudentsScreen = () => {
 
   // TODO is it possible to reduce number of rerenders?
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error?.message}</div>;
 
   return (

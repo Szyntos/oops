@@ -42,18 +42,18 @@ export const ChestsSection = () => {
     handleActivateChest,
   } = useChestsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddChest}>add chest</button>
+      <button onClick={openAddChest}>Dodaj skrzynkę</button>
 
       <ChestsList
         chests={selectedChests}
         selectedChests={selectedChests}
         handleSelectChest={handleSelectChest}
-        title={"Selected chests"}
+        title={"Wybrane skrzynki"}
         handleEditChest={openEditChest}
         handleDeleteChest={handleDeleteChest}
         handleCopyChest={handleCopyChest}
@@ -64,7 +64,7 @@ export const ChestsSection = () => {
         chests={chests}
         selectedChests={selectedChests}
         handleSelectChest={handleSelectChest}
-        title={"All chests"}
+        title={"Wszystkie skrzynki"}
         handleEditChest={openEditChest}
         handleDeleteChest={handleDeleteChest}
         handleCopyChest={handleCopyChest}
@@ -77,7 +77,7 @@ export const ChestsSection = () => {
         <AddChestForm
           formError={formError}
           handleConfirm={handleAddChest}
-          title="Add Chest"
+          title="Dodaj skrzynkę"
           imageIds={imageIds}
           awardsThisEdition={selectedAwards}
           awardsNotThisEdition={awards.filter(
@@ -126,7 +126,7 @@ export const ChestsSection = () => {
                 }
               : undefined
           }
-          title="Edit Chest"
+          title="Edytuj skrzynkę"
         />
       </Dialog>
     </div>

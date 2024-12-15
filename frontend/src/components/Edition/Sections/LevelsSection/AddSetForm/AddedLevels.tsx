@@ -16,7 +16,7 @@ export const AddedLevels = ({
 }: AddedLevelsProps) => {
   return (
     <div>
-      <div>Added levels: </div>
+      <div>Dodane poziomy: </div>
       {levels.length > 0
         ? levels.map((level, index) => (
             <LevelRow

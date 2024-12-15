@@ -19,7 +19,7 @@ export const StudentsListSearcher = ({ onInputChange }: SearchStudentProps) => {
       handleChange={handleSearchInputChange}
       value={searchInputValue}
       name={"searchStudent"}
-      placeholder="wyszukaj studenta"
+      placeholder="Wyszukaj studenta"
     />
   );
 };

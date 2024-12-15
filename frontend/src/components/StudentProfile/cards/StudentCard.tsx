@@ -3,7 +3,6 @@ import { StudentCardData } from "../../../hooks/StudentProfile/useStudentProfile
 import { Section } from "./Section/Section";
 import { ItemWithIcon, ItemWithIconProps } from "./Section/ItemWithIcon";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
-import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { tokens } from "../../../tokens";
 import { Avatar } from "../../avatars/Avatar";
@@ -19,25 +18,25 @@ export function StudentCard({
   totalPoints,
 }: StudentCardData) {
   const profileItems: ItemWithIconProps[] = [
-    { icon: "Imię", title: displayName },
-    { icon: "Email", title: `${index}@student.agh.edu.pl` },
-    { icon: "Indeks", title: index },
+    { icon: "name", title: displayName },
+    { icon: "email", title: `${index}@student.agh.edu.pl` },
+    { icon: "index", title: index },
   ];
 
   const performanceItems: ItemWithIconProps[] = [
-    { icon: "Ocena", title: grade },
-    { icon: "Wynik", title: totalPoints },
+    { icon: "grade", title: grade },
+    { icon: "score", title: totalPoints },
   ];
 
   const centerItems: ItemWithIconProps[] = [
     {
-      icon: "Grupa",
+      icon: "group",
       title: group
         ? `${group.name}, ${group.weekday.name} ${getTimeWithoutSeconds(group.time.start)}-${getTimeWithoutSeconds(group.time.end)}`
         : EMPTY_FIELD_STRING,
     },
     {
-      icon: "Nauczyciel",
+      icon: "instructor",
       title: group ? group.teacherDisplayName : EMPTY_FIELD_STRING,
     },
   ];

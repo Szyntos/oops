@@ -6,6 +6,7 @@ import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useCategoriesSection } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { useParams } from "react-router-dom";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 
 export const CategoriesSection = () => {
   const params = useParams();
@@ -32,7 +33,7 @@ export const CategoriesSection = () => {
   } = useCategoriesSection(editionId);
 
   if (loading) return <LoadingScreen type="edition" />;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
     <div style={styles.container}>

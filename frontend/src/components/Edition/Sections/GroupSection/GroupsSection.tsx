@@ -6,6 +6,7 @@ import { useGroupsSection } from "../../../../hooks/Edition/useGroupsSection";
 import { useParams } from "react-router-dom";
 import { UsersRolesType } from "../../../../__generated__/schema.graphql.types";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 
 export const GroupsSection = () => {
   const params = useParams();
@@ -35,7 +36,7 @@ export const GroupsSection = () => {
   } = useGroupsSection(editionId);
 
   if (loading) return <LoadingScreen type="edition" />;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
     <div>

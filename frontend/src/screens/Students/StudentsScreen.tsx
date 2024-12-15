@@ -15,6 +15,7 @@ import { useStudentsScreenData } from "../../hooks/Students/useStudentsScreenDat
 import { groupsRadioButtonOptions } from "../../utils/constants";
 import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
 import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
 
 export const StudentsScreen = () => {
   const { teacherId, groups, students, loading, error } =
@@ -74,7 +75,7 @@ export const StudentsScreen = () => {
   // TODO is it possible to reduce number of rerenders?
 
   if (loading) return <LoadingScreen />;
-  if (error) return <div>ERROR: {error?.message}</div>;
+  if (error) return <ErrorScreen />;
 
   return (
     <ScreenContentContainer

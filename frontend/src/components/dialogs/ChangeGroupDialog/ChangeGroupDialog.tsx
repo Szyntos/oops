@@ -6,6 +6,8 @@ import {
   useGroupsQuery,
 } from "../../../graphql/groups.graphql.types";
 import { ChangeGroupForm } from "./ChangeGroupForm";
+import { ERROR_MESSAGE } from "../../../utils/utils";
+import { CustomText } from "../../CustomText";
 
 export type Group = NonNullable<GroupsQuery["editionByPk"]>["groups"][number];
 
@@ -27,8 +29,9 @@ export const ChangeGroupDialog = () => {
 
   const getDialogContent = () => {
     if (loading) return <></>;
-    if (error) return <div>ERROR: {error.message}</div>;
-    if (!data || !initData) return <div>something went wrong...</div>;
+    if (error || !data || !initData)
+      return <CustomText>{ERROR_MESSAGE}</CustomText>;
+
     return (
       <ChangeGroupForm
         handleConfirm={handleChangeGroupConfirm}

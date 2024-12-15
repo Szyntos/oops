@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { ChestsList } from "./ChestsList/ChestsList";
 import { AddChestForm } from "./AddChestForm/AddChestForm";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 
 export const ChestsSection = () => {
   const params = useParams();
@@ -44,7 +45,7 @@ export const ChestsSection = () => {
   } = useChestsSection(editionId);
 
   if (loading) return <LoadingScreen type="edition" />;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
     <div style={styles.container}>

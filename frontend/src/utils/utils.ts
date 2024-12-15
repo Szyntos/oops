@@ -80,3 +80,5 @@ export const getTimeWithoutSeconds = (time: string) => {
 export const getGroupTimeString = (group: Group) => {
   return `${group.weekday.name}, ${getTimeWithoutSeconds(group.time.start)}-${getTimeWithoutSeconds(group.time.end)}`;
 };
+
+export const ERROR_MESSAGE = "Wystąpił błąd...";

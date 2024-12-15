@@ -3,7 +3,9 @@ import { useLevelsData } from "../../../../hooks/StudentProfile/useLevelsData";
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
 import { LoadingCircle } from "../../../../screens/Loading/LoadingCircle";
 import { Styles } from "../../../../utils/Styles";
+import { ERROR_MESSAGE } from "../../../../utils/utils";
 import { AvatarShadowSize } from "../../../avatars/Avatar";
+import { CustomText } from "../../../CustomText";
 import { CustomImageList } from "../ImageList";
 
 type LevelsSectionProps = {
@@ -23,7 +25,7 @@ export const LevelsSection = ({
         <LoadingCircle />
       </div>
     );
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (error) return <CustomText>{ERROR_MESSAGE}</CustomText>;
 
   const getShadow = (level: Level): AvatarShadowSize => {
     if (level.name === levels[levels.length - 1].name) {

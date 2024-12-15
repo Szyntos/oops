@@ -5,6 +5,7 @@ import { AddEditionForm } from "../../components/Editions/AddEditionForm";
 import { EditionsList } from "../../components/Editions/EditionsList/EditionsList";
 import { useEditionsScreen } from "../../hooks/Editions/useEditionsScreen";
 import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
 
 export const EditionsScreen = () => {
   const {
@@ -33,7 +34,7 @@ export const EditionsScreen = () => {
   } = useEditionsScreen();
 
   if (loading) return <LoadingScreen />;
-  if (error) return <div>ERROR: {error?.message}</div>;
+  if (error) return <ErrorScreen />;
 
   return (
     <div style={styles.container}>

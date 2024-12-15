@@ -13,6 +13,7 @@ import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
 import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenContentContainer";
 import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
 
 export const GroupScreen = () => {
   const params = useParams();
@@ -42,8 +43,7 @@ export const GroupScreen = () => {
   } = useGroupScreenData(groupId, userId);
 
   if (loading) return <LoadingScreen />;
-  if (error) return <div>ERROR: {error.message}</div>;
-  if (!teacherId) return <div>ERROR: something went worng</div>;
+  if (error || !teacherId) return <ErrorScreen />;
 
   const hasEditableRights =
     teacherId === userId || user.role === UsersRolesType.Coordinator;

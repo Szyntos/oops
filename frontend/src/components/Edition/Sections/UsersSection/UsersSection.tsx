@@ -14,6 +14,7 @@ import { useState } from "react";
 import { RadioFilterGroups } from "../../../Groups/RadioFilterGroup";
 import { isPartOfAString } from "../../../../utils/strings";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 
 const activeRadioOptions = [
   { id: "active", name: "active" },
@@ -57,7 +58,7 @@ export const UsersSection = () => {
   const [showActiveUsers, setShowActiveUsers] = useState(true);
 
   if (loading) return <LoadingScreen type="edition" />;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (error) return <ErrorScreen type="edition" />;
 
   const doesFilterMatch = (user: User) => {
     const matchActiveState = showActiveUsers

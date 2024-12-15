@@ -23,6 +23,7 @@ import { useOverrideGrade } from "../../hooks/common/useOverrideGrade";
 import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
 import { CustomButton } from "../../components/CustomButton";
 import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -88,12 +89,8 @@ export function TeacherStudentProfile() {
   if (!userId) return <p>TeacherId is undefined</p>;
 
   if (loading || formDataLoading || chestsLoading) return <LoadingScreen />;
-  if (error) return <p>Error: {error.message}</p>;
-  if (formDataError) return <p>Error: {formDataError.message}</p>;
-  if (chestsError) return <p>Error: {chestsError.message}</p>;
-
-  if (!studentData) return <p>Student is undefined</p>;
-  if (!currLevel) return <p>Curr level is undefined</p>;
+  if (error || formDataError || chestsError || !studentData || !currLevel)
+    return <ErrorScreen />;
 
   const hasEditableRights =
     studentData.group?.teacherId === userId ||

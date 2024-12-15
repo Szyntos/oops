@@ -7,6 +7,7 @@ import { AddAwardForm } from "./AddAwardForm/AddAwardForm";
 
 import { useParams } from "react-router-dom";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 
 export const AwardsSection = () => {
   const params = useParams();
@@ -40,7 +41,7 @@ export const AwardsSection = () => {
   } = useAwardsSection(editionId);
 
   if (loading) return <LoadingScreen type="edition" />;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
     <div style={styles.container}>

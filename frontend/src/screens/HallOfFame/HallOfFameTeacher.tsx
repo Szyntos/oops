@@ -9,6 +9,7 @@ import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenCon
 import { tokens } from "../../tokens";
 import { useHallOfFameDataTeacher } from "../../hooks/HallOfFame/useHallOfFameDataTeacher";
 import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
 
 export const HallOfFameTeacher = () => {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
@@ -33,7 +34,7 @@ export const HallOfFameTeacher = () => {
   }, [scrollToStudent, highlightedStudent?.id, showStudentsFromAllGroups]);
 
   if (loading) return <LoadingScreen />;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) return <ErrorScreen />;
 
   const displayStudents = showStudentsFromAllGroups
     ? students

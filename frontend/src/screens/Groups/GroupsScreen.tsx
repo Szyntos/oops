@@ -14,8 +14,9 @@ import { useUser } from "../../hooks/common/useUser";
 import { Group } from "../../hooks/common/useGroupsData";
 import { groupsRadioButtonOptions } from "../../utils/constants";
 import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
+import { getGroupTimeString } from "../../utils/utils";
 
-export const Groups = () => {
+export const GroupsScreen = () => {
   const { user } = useUser();
   const teacherId = user.userId;
   const { groups, weekdays, teachers, timestamps, loading, error } =
@@ -59,7 +60,11 @@ export const Groups = () => {
       const doesInputMatch =
         input === "undefined" ||
         input === "" ||
-        isPartOfAString(input, [group.name]);
+        isPartOfAString(input, [
+          group.name,
+          group.teacher.fullName,
+          getGroupTimeString(group),
+        ]);
 
       return (
         doesWeekdayMatch &&

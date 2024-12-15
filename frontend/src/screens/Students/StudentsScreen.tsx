@@ -48,7 +48,11 @@ export const StudentsScreen = () => {
       const doesInputMatch =
         input === "undefined" ||
         input === "" ||
-        isPartOfAString(input, [`${student.firstName} ${student.secondName}`]);
+        isPartOfAString(input, [
+          `${student.firstName} ${student.secondName}`,
+          student.index.toString(),
+          student.group.name,
+        ]);
 
       return doesGroupMatch && doesInputMatch;
     },

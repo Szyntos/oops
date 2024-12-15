@@ -67,6 +67,8 @@ export const UsersSection = () => {
       input === "" ||
       isPartOfAString(input, [
         `${user.user.firstName} ${user.user.secondName}`,
+        user.user.nick,
+        user.user.indexNumber.toString(),
       ]);
     return matchActiveState && matchInput;
   };

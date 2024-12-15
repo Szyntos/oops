@@ -44,7 +44,6 @@ export const HallOfFameTeacher = () => {
           return { ...student, position: index + 1 };
         }) ?? [];
 
-  console.log(students);
   return (
     <div style={styles.container}>
       <div style={styles.leftSide}>

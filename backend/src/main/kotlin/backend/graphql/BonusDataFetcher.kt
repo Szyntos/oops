@@ -36,12 +36,6 @@ class BonusDataFetcher {
     private lateinit var permissionService: PermissionService
 
     @Autowired
-    private lateinit var chestAwardRepository: ChestAwardRepository
-
-    @Autowired
-    private lateinit var userMapper: UserMapper
-
-    @Autowired
     lateinit var bonusesRepository: BonusesRepository
 
     @Autowired

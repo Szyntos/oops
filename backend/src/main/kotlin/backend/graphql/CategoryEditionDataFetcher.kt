@@ -27,13 +27,13 @@ class CategoryEditionDataFetcher {
     private lateinit var permissionService: PermissionService
 
     @Autowired
-    private lateinit var subcategoriesRepository: SubcategoriesRepository
+    lateinit var subcategoriesRepository: SubcategoriesRepository
 
     @Autowired
-    private lateinit var userMapper: UserMapper
+    lateinit var userMapper: UserMapper
 
     @Autowired
-    private lateinit var categoryEditionRepository: CategoryEditionRepository
+    lateinit var categoryEditionRepository: CategoryEditionRepository
 
     @Autowired
     lateinit var editionRepository: EditionRepository

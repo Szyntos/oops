@@ -34,7 +34,7 @@ class Groups(
     var teacher: Users,
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    val userGroups: Set<UserGroups> = HashSet(),
+    var userGroups: Set<UserGroups> = HashSet(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "weekday_id", nullable = false)

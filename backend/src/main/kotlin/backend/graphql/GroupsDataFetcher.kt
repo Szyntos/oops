@@ -62,7 +62,7 @@ class GroupsDataFetcher {
     private lateinit var levelsRepository: LevelsRepository
 
     @Autowired
-    private lateinit var userMapper: UserMapper
+    lateinit var userMapper: UserMapper
 
     @Autowired
     private lateinit var bonusesRepository: BonusesRepository

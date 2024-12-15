@@ -23,16 +23,16 @@ import org.springframework.transaction.annotation.Transactional
 class AwardEditionDataFetcher {
 
     @Autowired
+    lateinit var userMapper: UserMapper
+
+    @Autowired
     private lateinit var awardEditionPermissions: AwardEditionPermissions
 
     @Autowired
     private lateinit var permissionService: PermissionService
 
     @Autowired
-    private lateinit var userMapper: UserMapper
-
-    @Autowired
-    private lateinit var awardEditionRepository: AwardEditionRepository
+    lateinit var awardEditionRepository: AwardEditionRepository
 
     @Autowired
     lateinit var pointsRepository: PointsRepository

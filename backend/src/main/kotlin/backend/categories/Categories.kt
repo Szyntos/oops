@@ -4,7 +4,6 @@ import backend.award.Award
 import backend.categoryEdition.CategoryEdition
 import backend.gradingChecks.GradingChecks
 import backend.subcategories.Subcategories
-import backend.userLevel.UserLevel
 import jakarta.persistence.*
 
 @Entity

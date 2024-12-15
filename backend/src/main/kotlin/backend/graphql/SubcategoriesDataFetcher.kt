@@ -32,7 +32,7 @@ class SubcategoriesDataFetcher {
     private lateinit var userMapper: UserMapper
 
     @Autowired
-    private lateinit var subcategoriesRepository: SubcategoriesRepository
+    lateinit var subcategoriesRepository: SubcategoriesRepository
 
     @Autowired
     lateinit var editionRepository: EditionRepository

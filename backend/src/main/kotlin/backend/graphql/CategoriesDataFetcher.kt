@@ -24,23 +24,12 @@ import java.math.RoundingMode
 
 @DgsComponent
 class CategoriesDataFetcher {
-    @Autowired
-    private lateinit var editionRepository: EditionRepository
 
     @Autowired
     private lateinit var permissionService: PermissionService
 
     @Autowired
     private lateinit var categoryEditionRepository: CategoryEditionRepository
-
-    @Autowired
-    private lateinit var gradingChecksRepository: GradingChecksRepository
-
-    @Autowired
-    private lateinit var awardRepository: AwardRepository
-
-    @Autowired
-    private lateinit var userMapper: UserMapper
 
     @Autowired
     lateinit var categoriesRepository: CategoriesRepository

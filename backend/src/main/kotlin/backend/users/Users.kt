@@ -41,7 +41,7 @@ class Users(
     var role: UsersRoles,
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    val userGroups: Set<UserGroups> = HashSet(),
+    var userGroups: Set<UserGroups> = HashSet(),
 
     @Column(name = "email", nullable = false, length = 256)
     var email: String,

@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @DgsComponent
 class ChestsDataFetcher {
+
     @Autowired
     private lateinit var permissionService: PermissionService
 

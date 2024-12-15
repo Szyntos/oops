@@ -7,7 +7,6 @@ import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { PointsForm } from "../../components/StudentProfile/PointsForm/PointsForm";
 import { useUser } from "../../hooks/common/useUser";
 import { GroupPointsForm } from "../../components/Group/GroupPointsForm";
-import { NotEditableInfo } from "../../components/StudentProfile/NotEditableInfo";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
@@ -56,19 +55,15 @@ export const GroupScreen = () => {
 
   return (
     <div style={styles.screenContainer}>
-      {disableEditMode && (
-        <NotEditableInfo
-          hasEditableRights={hasEditableRights}
-          isSelectedEditionActive={isSelectedEditionActive}
-        />
-      )}
-
       <GroupTableWithFilters
         rows={rows}
         categories={categories}
         handleStudentClick={hasEditableRights ? openStudent : () => {}}
         handleSubcategoryClick={hasEditableRights ? openSubcategory : () => {}}
         editable={!disableEditMode}
+        disableEditMode={disableEditMode}
+        hasEditableRights={hasEditableRights}
+        isSelectedEditionActive={isSelectedEditionActive}
       />
 
       <Dialog open={isStudentOpen}>

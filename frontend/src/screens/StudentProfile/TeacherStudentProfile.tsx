@@ -85,11 +85,16 @@ export function TeacherStudentProfile() {
   const { openChangeGroup } = useChangeGroup();
   const { openOverrideGrade } = useOverrideGrade();
 
-  if (!studentId) return <p>Id studentanie jest zdefiniowany</p>;
-  if (!userId) return <p>Id nauczyciela nie jest zdefiniowany</p>;
-
   if (loading || formDataLoading || chestsLoading) return <LoadingScreen />;
-  if (error || formDataError || chestsError || !studentData || !currLevel)
+  if (
+    error ||
+    formDataError ||
+    chestsError ||
+    !studentData ||
+    !currLevel ||
+    !studentId ||
+    !userId
+  )
     return <ErrorScreen />;
 
   const hasEditableRights =
@@ -173,15 +178,16 @@ export function TeacherStudentProfile() {
       }
     >
       {/* no rights info */}
-      {disableEditMode && (
+      {disableEditMode ? (
         <NotEditableInfo
           hasEditableRights={hasEditableRights}
           isSelectedEditionActive={isSelectedEditionActive}
+          type={"student"}
         />
+      ) : (
+        // teacher action buttons
+        getTeacherActionButtons()
       )}
-
-      {/* teacher action buttons */}
-      {getTeacherActionButtons()}
 
       {/* table */}
       <StudentTableWithFilters

@@ -8,6 +8,7 @@ import { isPartOfAString } from "../../utils/strings";
 import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame/HallOfFameStudentCard";
 import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenContentContainer";
 import { tokens } from "../../tokens";
+import { StatisticsBox } from "../../components/hallOfFame/StatisticsBox";
 
 export const HallOfFame = () => {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
@@ -46,6 +47,10 @@ export const HallOfFame = () => {
     <div style={styles.container}>
       <div style={styles.leftSide}>
         <Podium students={displayStudents} />
+        <StatisticsBox
+          students={displayStudents}
+          highlightedStudent={highlightedStudent}
+        />
       </div>
 
       <div style={styles.sideBarContainer}>

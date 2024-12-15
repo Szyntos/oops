@@ -1,8 +1,8 @@
+import { Styles } from "../../../utils/Styles";
 import { StudentCardData } from "../../../hooks/StudentProfile/useStudentProfileData/useStudentData";
 import { Section } from "./Section/Section";
 import { ItemWithIcon, ItemWithIconProps } from "./Section/ItemWithIcon";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
-import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { tokens } from "../../../tokens";
 import { Avatar } from "../../avatars/Avatar";

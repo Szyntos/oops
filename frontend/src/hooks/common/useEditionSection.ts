@@ -5,7 +5,7 @@ export function useEditionSections() {
   const context = useContext(EditionSectionsContext);
   if (!context) {
     throw new Error(
-      "useEditionSections must be used within a EditionSectionsProvider",
+      "useEditionSections musi być użyte z EditionSectionsProvider",
     );
   }
   return context;

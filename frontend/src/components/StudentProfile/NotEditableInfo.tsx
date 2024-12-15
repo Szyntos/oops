@@ -11,12 +11,12 @@ export const NotEditableInfo = ({
   return (
     <div style={styles.card}>
       <div style={styles.title}>
-        You cannot manage this student points, because:
+        Nie możesz zarządzać punktami tego studenta, bo:
       </div>
       <div style={styles.reasonsContainer}>
-        {!hasEditableRights && <div>- you don't own this student's group</div>}
+        {!hasEditableRights && <div>- nie jesteś nauczycielem jego grupy</div>}
         {!isSelectedEditionActive && (
-          <div>- selected edition is not active</div>
+          <div>- wybrana edycja nie jest aktywna</div>
         )}
       </div>
     </div>

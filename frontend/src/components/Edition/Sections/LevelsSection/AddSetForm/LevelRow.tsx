@@ -42,7 +42,7 @@ export const LevelRow = ({
 
       <TextField
         name="ordinal"
-        label="ordinal"
+        label="Liczba porządkowa"
         variant="outlined"
         type="number"
         value={level.ordinal}
@@ -52,7 +52,7 @@ export const LevelRow = ({
 
       <TextField
         name="min"
-        label="min"
+        label="Minimalna liczba punktów"
         variant="outlined"
         value={level.minPoints}
         style={styles.points}
@@ -61,7 +61,7 @@ export const LevelRow = ({
 
       <TextField
         name="maxPoints"
-        label="max"
+        label="Maksymalna liczba punktów"
         variant="outlined"
         value={level.maxPoints}
         style={styles.points}
@@ -71,7 +71,7 @@ export const LevelRow = ({
 
       <TextField
         name="name"
-        label="name"
+        label="Nazwa"
         variant="outlined"
         value={level.name}
         style={styles.number}
@@ -79,8 +79,8 @@ export const LevelRow = ({
       />
 
       <FormControl fullWidth style={styles.number} disabled>
-        <InputLabel>Grade</InputLabel>
-        <Select value={level.grade} label="Grade">
+        <InputLabel>Ocena</InputLabel>
+        <Select value={level.grade} label="Ocena">
           {GRADE_STRINGS.map((gradeOption) => (
             <MenuItem key={gradeOption} value={gradeOption}>
               {gradeOption}
@@ -91,10 +91,10 @@ export const LevelRow = ({
 
       <div>
         <button type="button" onClick={handleUp} disabled={blockUp}>
-          up
+          Góra
         </button>
         <button type="button" onClick={handleDown} disabled={blockDown}>
-          down
+          Dół
         </button>
         <button type="button" onClick={handleDelete}>
           -

@@ -43,7 +43,7 @@ export const EditionsScreen = () => {
         <AddEditionForm
           createError={formError}
           handleAddEdition={handleCreateClick}
-          title={"Add Edition"}
+          title={"Dodaj edycję"}
         />
       </Dialog>
 
@@ -52,7 +52,7 @@ export const EditionsScreen = () => {
         <AddEditionForm
           createError={formError}
           handleAddEdition={handleCopyClick}
-          title={"Copy Edition"}
+          title={"Kopiuj edycję"}
           initialValues={
             selectedEdition
               ? {
@@ -69,7 +69,7 @@ export const EditionsScreen = () => {
         <AddEditionForm
           createError={formError}
           handleAddEdition={handleEditClick}
-          title={"Edit Edition"}
+          title={"Edytuj edycję"}
           initialValues={
             selectedEdition
               ? {

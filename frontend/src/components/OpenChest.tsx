@@ -36,7 +36,7 @@ export const OpenChest = ({
   return (
     <div style={styles.container}>
       <div style={styles.title}>{chest.chest.type}</div>
-      <div>select {chest.chest.awardBundleCount} awards :)</div>
+      <div>Wybierz {chest.chest.awardBundleCount} nagród :)</div>
 
       <div style={styles.awardsContainer}>
         {chest.chest.chestAwards.map((a) => (
@@ -57,7 +57,7 @@ export const OpenChest = ({
           handleOpenChestClick(selectedAwards, chest.chestHistoryId)
         }
       >
-        confirm
+        Potwierdź
       </button>
     </div>
   );

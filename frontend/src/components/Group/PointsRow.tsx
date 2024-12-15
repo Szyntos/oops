@@ -49,7 +49,7 @@ export const PointsRow = ({
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedPoints = e.target.value === "" ? null : Number(e.target.value);
-    formik.setFieldValue("points", updatedPoints);
+    formik.setFieldValue("Punkty", updatedPoints);
     onPointsChange({ ...data, points: updatedPoints ?? undefined });
   };
 
@@ -61,7 +61,7 @@ export const PointsRow = ({
         </div>
         <TextField
           style={styles.points}
-          name="points"
+          name="Punkty"
           variant="outlined"
           type="number"
           value={formik.values.points !== null ? formik.values.points : ""}

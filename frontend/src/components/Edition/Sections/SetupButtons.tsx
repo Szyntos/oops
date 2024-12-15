@@ -39,7 +39,7 @@ export const SetupButtons = ({
         handleClick: handleCopy,
         isClickable: permissions.canCopy.allow,
         reason: permissions.canCopy.reason,
-        title: "copy",
+        title: "Kopiuj",
       }
     : undefined;
 
@@ -48,7 +48,7 @@ export const SetupButtons = ({
         handleClick: handleEdit,
         isClickable: permissions.canEdit.allow,
         reason: permissions.canEdit.reason,
-        title: "edit",
+        title: "Edytuj",
       }
     : undefined;
 
@@ -61,7 +61,7 @@ export const SetupButtons = ({
         reason: isSelected
           ? permissions.canUnselect.reason
           : permissions.canSelect.reason,
-        title: isSelected ? "unselect" : "select",
+        title: isSelected ? "Odrzuć" : "Wybierz",
       }
     : undefined;
 
@@ -70,7 +70,7 @@ export const SetupButtons = ({
         handleClick: handleDelete,
         isClickable: permissions.canRemove.allow,
         reason: permissions.canRemove.reason,
-        title: "delete",
+        title: "Usuń",
       }
     : undefined;
 
@@ -86,7 +86,7 @@ export const SetupButtons = ({
           reason: isStudentActive
             ? permissions.canMarkAsInactive?.reason
             : permissions.canMarkAsActive?.reason,
-          title: isStudentActive ? "deactivate" : "activate",
+          title: isStudentActive ? "Dezaktywuj" : "Aktywuj",
         }
       : undefined;
 
@@ -102,7 +102,7 @@ export const SetupButtons = ({
           reason: isChestActive
             ? permissions.canDeactivate?.reason
             : permissions.canActivate?.reason,
-          title: isChestActive ? "deactivate" : "activate",
+          title: isChestActive ? "Dezaktywuj" : "Aktywuj",
         }
       : undefined;
 
@@ -111,7 +111,7 @@ export const SetupButtons = ({
         handleClick: handleShow,
         isClickable: true,
         reason: undefined,
-        title: "show",
+        title: "Pokaż",
       }
     : undefined;
 
@@ -120,7 +120,7 @@ export const SetupButtons = ({
         handleClick: handleAdd,
         isClickable: permissions.canAdd.allow,
         reason: permissions.canAdd.reason,
-        title: "add",
+        title: "Dodaj",
       }
     : undefined;
 
@@ -145,7 +145,7 @@ type SetupButtonProps = {
   title: string;
 };
 
-const emptyReason = "no reason";
+const emptyReason = "Brak powodu";
 
 const SetupButton = ({
   handleClick,

@@ -45,13 +45,13 @@ export const AwardsSection = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddAward}>add award</button>
+      <button onClick={openAddAward}>Dodaj nagrodę</button>
 
       <AwardsList
         awards={selectedAwards}
         selectedAwards={selectedAwards}
         handleSelectAward={handleSelectAward}
-        title={"Selected awards"}
+        title={"Wybrane nagrody"}
         handleEditAward={openEditAward}
         handleDeleteAward={handleDeleteAward}
         handleCopyAward={handleCopyAward}
@@ -60,7 +60,7 @@ export const AwardsSection = () => {
         awards={awards}
         selectedAwards={selectedAwards}
         handleSelectAward={handleSelectAward}
-        title={"All awards"}
+        title={"Wszystkie nagrody"}
         handleEditAward={openEditAward}
         handleDeleteAward={handleDeleteAward}
         handleCopyAward={handleCopyAward}
@@ -72,7 +72,7 @@ export const AwardsSection = () => {
           formError={formError}
           handleConfirm={handleAddAward}
           categories={formCategories}
-          title="Add Award"
+          title="Dodaj nagrodę"
           imageIds={imageIds}
         />
       </Dialog>
@@ -95,7 +95,7 @@ export const AwardsSection = () => {
                 }
               : undefined
           }
-          title="Edit Award"
+          title="Edytuj nagrodę"
         />
       </Dialog>
     </div>

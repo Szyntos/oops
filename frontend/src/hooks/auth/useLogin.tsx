@@ -60,7 +60,9 @@ export const useLogin = () => {
 
     if (error || !user) {
       await logout();
-      throw new Error(error?.message ?? "Fetched current user is undefined");
+      throw new Error(
+        error?.message ?? "Zaciągnięty użytkownik nie jest zdefiniowany.",
+      );
     }
 
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
@@ -110,7 +112,9 @@ export const useLogin = () => {
 
     if (error || !user) {
       await logout();
-      throw new Error(error?.message ?? "Fetched current user is undefined");
+      throw new Error(
+        error?.message ?? "Zaciągnięty użytkownik nie jest zdefiniowany.",
+      );
     }
     // set cookie user
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
@@ -126,7 +130,7 @@ export const useLogin = () => {
     );
     const token = await auth.currentUser?.getIdToken();
     if (!token) {
-      throw new Error("Token is null - sign in failed.");
+      throw new Error("Token jest nullem - błąd logowania");
     }
     return token;
   };
@@ -142,7 +146,7 @@ export const useLogin = () => {
         navigate(pathsGenerator.student.StudentProfile);
         break;
       default:
-        throw new Error("should never happen.");
+        throw new Error("To się nigdy nie powinno wydarzyć ;_;.");
     }
   };
 

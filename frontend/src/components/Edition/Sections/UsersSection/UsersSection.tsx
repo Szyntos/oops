@@ -17,8 +17,8 @@ import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 
 const activeRadioOptions = [
-  { id: "active", name: "active" },
-  { id: "inactive", name: "inactive" },
+  { id: "active", name: "Aktywny" },
+  { id: "inactive", name: "Nieaktywny" },
 ];
 
 export const UsersSection = () => {
@@ -86,8 +86,8 @@ export const UsersSection = () => {
   return (
     <div>
       <div style={styles.buttonsContainer}>
-        <button onClick={openAddStudent}>add student</button>
-        <button onClick={openAddTeacher}>add teacher</button>
+        <button onClick={openAddStudent}>Dodaj studenta</button>
+        <button onClick={openAddTeacher}>Dodaj nauczyciela</button>
       </div>
       <div>
         <div style={styles.topBar}>
@@ -105,13 +105,13 @@ export const UsersSection = () => {
 
         <UsersList
           users={displayTeachers}
-          title="TEACHERS"
+          title="NAUCZYCIELE"
           handleDeleteClick={handleDeleteConfirm}
           handleEditClick={openEditTeacher}
         />
         <UsersList
           users={displayStudents}
-          title="STUDENTS"
+          title="STUDENCI"
           handleDeleteClick={handleDeleteConfirm}
           handleEditClick={openEditStudent}
           handleStudentActiveness={handleStudentActiveness}
@@ -123,7 +123,7 @@ export const UsersSection = () => {
         <AddStudentForm
           formError={formError}
           handleConfirm={handleAddStudentConfirm}
-          title={"Add student"}
+          title={"Dodaj studenta"}
         />
       </Dialog>
 
@@ -133,7 +133,7 @@ export const UsersSection = () => {
           formError={formError}
           handleConfirm={handleEditStudentConfirm}
           initialValues={selectedUser?.user}
-          title={"Edit student"}
+          title={"Edytuj studenta"}
         />
       </Dialog>
 
@@ -143,7 +143,7 @@ export const UsersSection = () => {
           formError={formError}
           handleConfirm={handleEditTeacherConfirm}
           initialValues={selectedUser?.user}
-          title={"Add teacher"}
+          title={"Dodaj nauczyciela"}
         />
       </Dialog>
 
@@ -152,7 +152,7 @@ export const UsersSection = () => {
         <AddTeacherForm
           formError={formError}
           handleConfirm={handleAddTeacherConfirm}
-          title={"Edit teacher"}
+          title={"Edytuj nauczyciela"}
         />
       </Dialog>
     </div>

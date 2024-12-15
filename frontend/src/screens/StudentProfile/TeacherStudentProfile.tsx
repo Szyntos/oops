@@ -118,47 +118,44 @@ export function TeacherStudentProfile() {
         <CustomButton onClick={openAddDialog} disabled={disableEditMode}>
           dodaj punkty
         </CustomButton>
-        {user.role === UsersRolesType.Coordinator && (
-          <>
-            <CustomButton onClick={openChestDialog} disabled={disableEditMode}>
-              dodaj skrzynkę
-            </CustomButton>
-            <CustomButton
-              onClick={() =>
-                openOverrideGrade({
-                  studentId,
-                  editionId: selectedEdition?.editionId as string,
-                  grade: studentData.grade,
-                })
-              }
-              disabled={disableEditMode || !selectedEdition?.editionId}
-            >
-              nadpisz ocenę
-            </CustomButton>
-            <CustomButton
-              onClick={() => handleRegenerateGrade(studentId)}
-              disabled={disableEditMode || !selectedEdition?.editionId}
-            >
-              wygeneruj ocenę
-            </CustomButton>
-            <CustomButton
-              onClick={() =>
-                openChangeGroup({
-                  studentId,
-                  groupId: studentData.group?.id as string,
-                  editionId: selectedEdition?.editionId as string,
-                })
-              }
-              disabled={
-                disableEditMode ||
-                !studentData.group?.id ||
-                !selectedEdition?.editionId
-              }
-            >
-              zmień grupę
-            </CustomButton>
-          </>
-        )}
+
+        <CustomButton onClick={openChestDialog} disabled={disableEditMode}>
+          dodaj skrzynkę
+        </CustomButton>
+        <CustomButton
+          onClick={() =>
+            openOverrideGrade({
+              studentId,
+              editionId: selectedEdition?.editionId as string,
+              grade: studentData.grade,
+            })
+          }
+          disabled={disableEditMode || !selectedEdition?.editionId}
+        >
+          nadpisz ocenę
+        </CustomButton>
+        <CustomButton
+          onClick={() => handleRegenerateGrade(studentId)}
+          disabled={disableEditMode || !selectedEdition?.editionId}
+        >
+          wygeneruj ocenę
+        </CustomButton>
+        <CustomButton
+          onClick={() =>
+            openChangeGroup({
+              studentId,
+              groupId: studentData.group?.id as string,
+              editionId: selectedEdition?.editionId as string,
+            })
+          }
+          disabled={
+            disableEditMode ||
+            !studentData.group?.id ||
+            !selectedEdition?.editionId
+          }
+        >
+          zmień grupę
+        </CustomButton>
       </div>
     );
   };

@@ -1,0 +1,7 @@
+mutation RegenerateGrade($userId: Int!, $editionId: Int!) {
+  turnOffOverrideComputedGradeForUser(userId: $userId, editionId: $editionId) {
+    user {
+      userId
+    }
+  }
+}

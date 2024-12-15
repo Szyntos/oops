@@ -5,6 +5,7 @@ import { useRemovePointsMutation } from "../../graphql/removePoints.graphql.type
 import { FormPoints } from "../../components/StudentProfile/PointsForm/types";
 import { Points } from "./types";
 import { useError } from "../common/useGlobalError";
+import { useConfirmPopup } from "../common/useConfirmPopup";
 
 // TODO: maybe this hook should be separated to 3: add, edit, delete
 export const useTeacherActions = (
@@ -85,11 +86,14 @@ export const useTeacherActions = (
   };
 
   // DELETE
+  const { openConfirmPopup } = useConfirmPopup();
   const [removePoints] = useRemovePointsMutation();
   const handleDeletePointsClick = async (pointsId: string) => {
-    globalErrorWrapper(async () => {
-      await removePoints({ variables: { pointsId: parseInt(pointsId) } });
-      refetchStudentScreenData();
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await removePoints({ variables: { pointsId: parseInt(pointsId) } });
+        refetchStudentScreenData();
+      });
     });
   };
 

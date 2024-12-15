@@ -7,10 +7,24 @@ query GroupPoints($groupId: Int!) {
       indexNumber
       nick
     }
+    userLevel {
+      computedGrade
+      endOfLabsLevelsReached
+      projectPointsThresholdReached
+      level {
+        grade
+        levelName
+        imageFile {
+          fileId
+        }
+      }
+    }
     categoriesPoints {
       category {
         categoryId
         categoryName
+        lightColor
+        darkColor
       }
       subcategoryPoints {
         createdAt
@@ -23,6 +37,18 @@ query GroupPoints($groupId: Int!) {
         points {
           value
         }
+      }
+      awardAggregate {
+        award {
+          awardId
+          awardName
+        }
+        sumOfAll
+      }
+      categoryAggregate {
+        sumOfAll
+        sumOfBonuses
+        sumOfPurePoints
       }
     }
   }

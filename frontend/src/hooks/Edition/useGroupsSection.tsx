@@ -9,27 +9,26 @@ import {
   GroupFormValues,
 } from "../../components/Edition/Sections/GroupSection/GroupAddForm";
 import { useSetupGroupCreateMutation } from "../../graphql/setupGroupCreate.graphql.types";
-import {
-  SetupUsersQuery,
-  useSetupUsersQuery,
-} from "../../graphql/setupUsers.graphql.types";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useSetupGroupCsvParseMutation } from "../../graphql/setupGroupCSVParse.graphql.types";
 import { useSetupGroupEditMutation } from "../../graphql/setupGroupEdit.graphql.types";
 import { useDeleteGroupMutation } from "../../graphql/deleteGroup.graphql.types";
 import { useError } from "../common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../utils/constants";
-import { mockPermissions } from "../../utils/utils";
+import { useApolloClient } from "@apollo/client";
+import { useMarkPassingStudentsInactiveMutation } from "../../graphql/markPassingStudentsInactive.graphql.types";
+import { useConfirmPopup } from "../common/useConfirmPopup";
+import { UsersQuery, useUsersQuery } from "../../graphql/users.graphql.types";
 
 export type Group = SetupGroupsQuery["listSetupGroups"][number];
 
 // TODO check if those types are ok
-export type Teacher = SetupUsersQuery["listSetupUsers"][number];
-export type Student = SetupUsersQuery["listSetupUsers"][number];
-export type GroupStudent = Student["user"];
+export type Teacher = UsersQuery["users"][number];
+export type Student = UsersQuery["users"][number];
 
 export const useGroupsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();
+  const client = useApolloClient();
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
@@ -45,6 +44,7 @@ export const useGroupsSection = (editionId: number) => {
 
   const { data, loading, error, refetch } = useSetupGroupsQuery({
     variables: { editionId },
+    fetchPolicy: "no-cache",
   });
 
   const groups: Group[] = data?.listSetupGroups ?? [];
@@ -59,20 +59,21 @@ export const useGroupsSection = (editionId: number) => {
     data: usersData,
     loading: usersLoading,
     error: UsersError,
-  } = useSetupUsersQuery({ variables: { editionId } });
+  } = useUsersQuery();
 
   const teachers: Teacher[] =
-    usersData?.listSetupUsers.filter(
+    usersData?.users.filter(
       (u) =>
-        u.user.role.toLocaleUpperCase() === UsersRolesType.Coordinator ||
-        u.user.role.toLocaleUpperCase() === UsersRolesType.Teacher,
+        u.role.toLocaleUpperCase() === UsersRolesType.Coordinator ||
+        u.role.toLocaleUpperCase() === UsersRolesType.Teacher,
     ) ?? [];
   const students: Student[] =
-    usersData?.listSetupUsers.filter(
-      (u) =>
-        u.user.role.toLocaleUpperCase() === UsersRolesType.Student &&
-        u.user.active,
+    usersData?.users.filter(
+      (u) => u.role.toLocaleUpperCase() === UsersRolesType.Student && u.active,
     ) ?? [];
+
+  console.log("TEACHERS: ", teachers);
+  console.log("STUDENTS: ", students);
 
   // ADD
   const [createGroup] = useSetupGroupCreateMutation();
@@ -89,15 +90,14 @@ export const useGroupsSection = (editionId: number) => {
           startTime: values.startTime,
           teacherId: parseInt(values.teacherId),
           weekdayId: parseInt(values.weekdayId),
-          users: selectedStudents.map((u) => {
-            const s = u.user;
+          users: selectedStudents.map((s) => {
             return {
               indexNumber: s.indexNumber,
               nick: s.nick,
               firstName: s.firstName,
               secondName: s.secondName,
               role: s.role,
-              imageFileId: parseInt(s.imageFile?.fileId as string),
+              imageFileId: parseInt(s.imageFileId as string),
               // TODO: change to true on production
               createFirebaseUser: false,
               email: s.email,
@@ -142,7 +142,7 @@ export const useGroupsSection = (editionId: number) => {
           usosId: values.usosId,
           weekdayId: parseInt(values.weekdayId),
           users: {
-            userIds: selectedStudents.map((s) => parseInt(s.user.userId)) ?? [],
+            userIds: selectedStudents.map((s) => parseInt(s.userId)) ?? [],
           },
         },
       });
@@ -152,13 +152,16 @@ export const useGroupsSection = (editionId: number) => {
   };
 
   // DELETE
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteGroup] = useDeleteGroupMutation();
   const handleDeleteGroup = async (group: Group) => {
-    globalErrorWrapper(async () => {
-      await deleteGroup({
-        variables: { groupId: parseInt(group.group.groupsId) },
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteGroup({
+          variables: { groupId: parseInt(group.group.groupsId) },
+        });
+        refetch();
       });
-      refetch();
     });
   };
 
@@ -188,17 +191,9 @@ export const useGroupsSection = (editionId: number) => {
 
       const uploadedStudents: Student[] =
         parseRes.data?.parseUsersFromCsv.users.map((u) => ({
-          __typename: "UserWithPermissionsType",
-          user: {
-            __typename: "UserType",
-            ...u,
-            imageFile: {
-              __typename: "FileType",
-              fileId: "",
-            },
-          },
-          // mockPermissions only form type match
-          permissions: mockPermissions,
+          ...u,
+          __typename: "Users",
+          firebaseUid: null,
         })) ?? [];
 
       return uploadedStudents;
@@ -211,14 +206,17 @@ export const useGroupsSection = (editionId: number) => {
     }
   };
 
-  // GROUP CHANGE
-  const handleStudentGroupChange = (
-    userId: string,
-    groupId: string | undefined,
-  ) => {
-    console.log(userId);
-    console.log(groupId);
-    // TODO change user group
+  // MARK PASSING STUDENTS AS INACTIVE
+  const [markPassingStudentsActive] = useMarkPassingStudentsInactiveMutation();
+  const handleMarkAllPassingStudents = () => {
+    globalErrorWrapper(async () => {
+      await markPassingStudentsActive({
+        variables: { editionId },
+      });
+      client.refetchQueries({
+        include: "active",
+      });
+    });
   };
 
   return {
@@ -242,9 +240,10 @@ export const useGroupsSection = (editionId: number) => {
     handleDeleteGroup,
 
     handleUploadStudents,
-    handleStudentGroupChange,
 
     variant,
     selectedGroup,
+
+    handleMarkAllPassingStudents,
   };
 };

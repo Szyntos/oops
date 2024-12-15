@@ -1,59 +1,30 @@
 import { useLevelsData } from "../../../../hooks/StudentProfile/useLevelsData";
 import { NeighboringLevel } from "../../../../hooks/StudentProfile/useStudentProfileData/useAnimalData";
-import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
-import { Styles } from "../../../../utils/Styles";
-import { AnimalWithTooltip } from "../../../images/AnimalWithTooltip";
+import { CustomImageList } from "../ImageList";
 
 type LevelsSectionProps = {
   studentLevel: NeighboringLevel;
+  currLevel: NeighboringLevel;
 };
 
-export const LevelsSection = ({ studentLevel }: LevelsSectionProps) => {
+export const LevelsSection = ({
+  studentLevel,
+  currLevel,
+}: LevelsSectionProps) => {
   const { levels, loading, error } = useLevelsData();
 
   if (loading) return <div>loading...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>All levels</div>
-      {levels.length > 0 ? (
-        <div style={styles.levelsContainer}>
-          {levels?.map((level) => (
-            <AnimalWithTooltip
-              level={level}
-              size={"xs"}
-              disabled={level.ordinalNumber > studentLevel.ordinalNumber}
-            />
-          ))}
-        </div>
-      ) : (
-        <div>{EMPTY_FIELD_STRING}</div>
-      )}
-    </div>
+    <CustomImageList
+      items={levels.map((level) => ({
+        level,
+        disabled: level.ordinalNumber > studentLevel.ordinalNumber,
+        current: currLevel.ordinalNumber === level.ordinalNumber,
+        type: "animal",
+      }))}
+      type="animal"
+    />
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  levelMiniaturesContainer: {
-    display: "flex",
-    flexDirection: "row",
-  },
-  levelMiniatureSpaceWrapper: {
-    flex: 1,
-  },
-  levelsContainer: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 12,
-    flexWrap: "wrap",
-  },
 };

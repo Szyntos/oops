@@ -11,11 +11,16 @@ export const CategoryTag = ({
   darkColor,
   lightColor,
 }: CategoryTagProps) => {
-  const backgroundColor = darkColor || "grey";
-  const color = lightColor || "white";
-
   return (
-    <div style={{ ...styles.container, backgroundColor, color }}>{name}</div>
+    <div
+      style={{
+        ...styles.container,
+        backgroundColor: darkColor,
+        color: lightColor,
+      }}
+    >
+      {name}
+    </div>
   );
 };
 

@@ -1,10 +1,8 @@
 package backend.chests
 
-import backend.categoryEdition.CategoryEdition
 import backend.chestAward.ChestAward
 import backend.chestEdition.ChestEdition
 import backend.chestHistory.ChestHistory
-import backend.edition.Edition
 import backend.files.FileEntity
 import backend.utils.HasImageFile
 import jakarta.persistence.*
@@ -19,9 +17,6 @@ class Chests(
 
     @Column(name = "type", nullable = false)
     var chestType: String,
-
-    @Column(name="active", nullable = false)
-    var active: Boolean = true,
 
     @Column(name = "award_bundle_count", nullable = false)
     var awardBundleCount: Int,

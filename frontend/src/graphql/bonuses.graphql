@@ -18,5 +18,8 @@ query Bonuses($studentId: bigint!, $editionId: bigint!) {
     }
     updatedAt
     createdAt
+    point {
+      value
+    }
   }
 }

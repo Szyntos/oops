@@ -45,6 +45,30 @@ query SetupAwards($editionId: Int!) {
         allow
         reason
       }
+      canMarkAsActive {
+        allow
+        reason
+      }
+      canMarkAsInactive {
+        allow
+        reason
+      }
+      canOverride {
+        allow
+        reason
+      }
+      canTurnOffOverride {
+        allow
+        reason
+      }
+      canActivate {
+        allow
+        reason
+      }
+      canDeactivate {
+        allow
+        reason
+      }
     }
   }
 }

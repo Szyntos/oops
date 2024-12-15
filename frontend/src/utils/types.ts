@@ -8,4 +8,5 @@ export const defaultUnauthenticatedUser: User = {
   editions: [],
   avatarSetByUser: false,
   nickSetByUser: false,
+  selectedEdition: undefined,
 };

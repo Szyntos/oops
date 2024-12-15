@@ -1,3 +1,4 @@
+import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Group } from "../../../../../hooks/Edition/useGroupsSection";
 import { Styles } from "../../../../../utils/Styles";
 import { SetupButtons } from "../../SetupButtons";
@@ -13,6 +14,8 @@ export const GroupCard = ({
   editClick,
   deleteClick,
 }: GroupCardProps) => {
+  const { openShowDialog } = useEditionSections();
+
   return (
     <div style={styles.card}>
       <div>{group.group.generatedName}</div>
@@ -25,9 +28,9 @@ export const GroupCard = ({
       </div>
       <SetupButtons
         permissions={group.permissions}
-        isSelected={false}
         handleEdit={editClick}
         handleDelete={deleteClick}
+        handleShow={() => openShowDialog(group)}
       />
     </div>
   );

@@ -1,7 +1,6 @@
 import { FormHelperText } from "@mui/material";
 import { Styles } from "../../utils/Styles";
-import { AwardImage } from "../images/AwardImage";
-import { Image } from "../images/Image";
+import { Avatar } from "../avatars/Avatar";
 import { Award } from "../../hooks/Edition/useAwardsSection";
 import { TooltipWrapper } from "../TooltipWrapper";
 
@@ -71,8 +70,8 @@ export const SelectImage = ({
                 </div>
               }
             >
-              <AwardImage
-                id={award.award.imageFile?.fileId as string}
+              <Avatar
+                id={award.award.imageFile?.fileId}
                 size={"l"}
                 disabled={!selectedIds.some((id) => id === award.award.awardId)}
               />
@@ -85,9 +84,9 @@ export const SelectImage = ({
             style={styles.imageWrapper}
             onClick={() => handleSelect(imageId)}
           >
-            <Image
+            <Avatar
               id={imageId}
-              size={64}
+              size="s"
               disabled={!selectedIds.some((id) => id === imageId)}
             />
           </div>
@@ -98,9 +97,9 @@ export const SelectImage = ({
             style={styles.imageWrapper}
             onClick={() => handleSelect(imageId)}
           >
-            <Image
+            <Avatar
               id={imageId}
-              size={64}
+              size="s"
               disabled={!selectedIds.some((id) => id === imageId)}
             />
           </div>
@@ -113,7 +112,7 @@ export const SelectImage = ({
       <div style={styles.title}>{title}</div>
       <div style={styles.listContainer}>{getOptionsImagesBasedOnType()}</div>
       {error && touched && (
-        <FormHelperText style={{ color: "red" }}>{error}</FormHelperText>
+        <FormHelperText style={styles.error}>{error}</FormHelperText>
       )}
     </div>
   );

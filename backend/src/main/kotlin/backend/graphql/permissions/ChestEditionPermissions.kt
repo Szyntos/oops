@@ -334,4 +334,106 @@ class ChestEditionPermissions {
             reason = null
         )
     }
+
+    fun checkActivateChestInEditionPermission(arguments: JsonNode): Permission {
+        val action = "activateChestInEdition"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can activate chests in editions"
+            )
+        }
+
+        val chestId = arguments.getLongField("chestId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'chestId'"
+        )
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+        val chestEdition = chestEditionRepository.findByChest_ChestIdAndEdition_EditionId(chestId, editionId)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "ChestEdition not found"
+            )
+
+        if (chestEdition.active){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Chest is already active in this edition"
+            )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkDeactivateChestInEditionPermission(arguments: JsonNode): Permission {
+        val action = "deactivateChestInEdition"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Only coordinators can deactivate chests in editions"
+            )
+        }
+
+        val chestId = arguments.getLongField("chestId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'chestId'"
+        )
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+        val chestEdition = chestEditionRepository.findByChest_ChestIdAndEdition_EditionId(chestId, editionId)
+            ?: return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "ChestEdition not found"
+            )
+
+        if (!chestEdition.active){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Chest is already inactive in this edition"
+            )
+        }
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
 }

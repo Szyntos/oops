@@ -14,7 +14,36 @@ export type SubscribeChestToOpenSubscription = {
     chestHistories: Array<{
       __typename?: "ChestHistory";
       chestHistoryId: string;
+      chestId: string;
+      createdAt: string;
+      label: string;
       opened: boolean;
+      subcategoryId: string;
+      updatedAt: string;
+      teacherId: string;
+      userId: string;
+      chest: {
+        __typename?: "Chests";
+        awardBundleCount: number;
+        imageFileId?: string | null;
+        label: string;
+        type: string;
+        chestAwards: Array<{
+          __typename?: "ChestAward";
+          award: {
+            __typename?: "Award";
+            awardId: string;
+            awardName: string;
+            awardType: string;
+            awardValue: string;
+            categoryId: string;
+            description: string;
+            imageFileId?: string | null;
+            label: string;
+            maxUsages: number;
+          };
+        }>;
+      };
     }>;
   }>;
 };
@@ -26,7 +55,33 @@ export const SubscribeChestToOpenDocument = gql`
         where: { opened: { _eq: false }, userId: { _eq: $userId } }
       ) {
         chestHistoryId
+        chestId
+        createdAt
+        label
         opened
+        subcategoryId
+        updatedAt
+        teacherId
+        userId
+        chest {
+          chestAwards {
+            award {
+              awardId
+              awardName
+              awardType
+              awardValue
+              categoryId
+              description
+              imageFileId
+              label
+              maxUsages
+            }
+          }
+          awardBundleCount
+          imageFileId
+          label
+          type
+        }
       }
     }
   }

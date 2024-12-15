@@ -47,6 +47,10 @@ const studentPaths = {
     path: "/avatar-and-nick",
     allowedRoles: [UsersRolesType.Student],
   },
+  HallOfFame: {
+    path: "/hall-of-fame",
+    allowedRoles: [UsersRolesType.Student],
+  },
 };
 
 const teacherPaths = {
@@ -64,6 +68,10 @@ const teacherPaths = {
   },
   Students: {
     path: "/students",
+    allowedRoles: [UsersRolesType.Teacher, UsersRolesType.Coordinator],
+  },
+  HallOfFame: {
+    path: "/teacher/hall-of-fame",
     allowedRoles: [UsersRolesType.Teacher, UsersRolesType.Coordinator],
   },
 };
@@ -126,6 +134,7 @@ export const pathsGenerator = {
     StudentProfile: (id: string) =>
       `${teacherPaths.StudentProfile.path.replace(":id", id)}`,
     Students: teacherPaths.Students.path,
+    HallOfFame: teacherPaths.HallOfFame.path,
   },
   coordinator: {
     Editions: coordinatorPaths.Editions.path,
@@ -158,30 +167,36 @@ type NavigationItem = {
   allowedRoles: UsersRolesType[];
 };
 
-export const navigationItems: NavigationItem[] = [
-  {
-    title: "Profil studenta",
-    path: pathsWithParameters.student.StudentProfile.path,
-    allowedRoles: pathsWithParameters.student.StudentProfile.allowedRoles,
-  },
-  {
-    title: "Hala Chwały",
-    path: pathsWithParameters.common.HallOfFame.path,
-    allowedRoles: pathsWithParameters.common.HallOfFame.allowedRoles,
-  },
-  {
-    title: "Grupy",
-    path: pathsWithParameters.teacher.Groups.path,
-    allowedRoles: pathsWithParameters.teacher.Groups.allowedRoles,
-  },
-  {
-    title: "Studenci",
-    path: pathsWithParameters.teacher.Students.path,
-    allowedRoles: pathsWithParameters.teacher.Students.allowedRoles,
-  },
-  {
-    title: "Edycje",
-    path: pathsWithParameters.coordinator.Editions.path,
-    allowedRoles: pathsWithParameters.coordinator.Editions.allowedRoles,
-  },
-];
+export const getNavigationItems = (isStudent: boolean): NavigationItem[] => {
+  return [
+    {
+      title: "Profil studenta",
+      path: pathsWithParameters.student.StudentProfile.path,
+      allowedRoles: pathsWithParameters.student.StudentProfile.allowedRoles,
+    },
+    {
+      title: "Hala Chwały",
+      path: isStudent
+        ? pathsWithParameters.student.HallOfFame.path
+        : pathsWithParameters.teacher.HallOfFame.path,
+      allowedRoles: isStudent
+        ? pathsWithParameters.student.HallOfFame.allowedRoles
+        : pathsWithParameters.teacher.HallOfFame.allowedRoles,
+    },
+    {
+      title: "Grupy",
+      path: pathsWithParameters.teacher.Groups.path,
+      allowedRoles: pathsWithParameters.teacher.Groups.allowedRoles,
+    },
+    {
+      title: "Studenci",
+      path: pathsWithParameters.teacher.Students.path,
+      allowedRoles: pathsWithParameters.teacher.Students.allowedRoles,
+    },
+    {
+      title: "Edycje",
+      path: pathsWithParameters.coordinator.Editions.path,
+      allowedRoles: pathsWithParameters.coordinator.Editions.allowedRoles,
+    },
+  ];
+};

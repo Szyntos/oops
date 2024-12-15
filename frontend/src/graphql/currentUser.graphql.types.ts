@@ -8,49 +8,44 @@ export type CurrentUserQueryVariables = Types.Exact<{ [key: string]: never }>;
 export type CurrentUserQuery = {
   __typename?: "query_root";
   getCurrentUser: {
-    __typename?: "UserType";
-    nick: string;
-    role: Types.UsersRolesType;
-    userId: string;
-    avatarSetByUser: boolean;
-    nickSetByUser: boolean;
-    userGroups: Array<{
-      __typename?: "UserGroupType";
-      group: {
-        __typename?: "GroupType";
-        edition: {
-          __typename?: "EditionType";
-          editionId: string;
-          editionName: string;
-          editionYear: number;
-          endDate: string;
-          label: string;
-          startDate: string;
-        };
-      };
-    } | null>;
+    __typename?: "UserWithEditionsType";
+    editions: Array<{
+      __typename?: "EditionType";
+      editionName: string;
+      editionId: string;
+      editionYear: number;
+      endDate: string;
+      label: string;
+      startDate: string;
+    }>;
+    user: {
+      __typename?: "UserType";
+      nick: string;
+      role: Types.UsersRolesType;
+      userId: string;
+      avatarSetByUser: boolean;
+      nickSetByUser: boolean;
+    };
   };
 };
 
 export const CurrentUserDocument = gql`
   query CurrentUser {
     getCurrentUser {
-      nick
-      role
-      userId
-      avatarSetByUser
-      nickSetByUser
-      userGroups {
-        group {
-          edition {
-            editionId
-            editionName
-            editionYear
-            endDate
-            label
-            startDate
-          }
-        }
+      editions {
+        editionName
+        editionId
+        editionYear
+        endDate
+        label
+        startDate
+      }
+      user {
+        nick
+        role
+        userId
+        avatarSetByUser
+        nickSetByUser
       }
     }
   }

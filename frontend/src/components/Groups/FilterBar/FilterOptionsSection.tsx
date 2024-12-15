@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Styles } from "../../../utils/Styles";
+import { Section } from "../../StudentProfile/cards/Section/Section";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import { tokens } from "../../../tokens";
+import { CustomText } from "../../CustomText";
 
 export type FilterItem = {
   id: string;
@@ -19,7 +23,7 @@ export const FilterOptionsSection = ({
 }: FilterOptionsSectionProps) => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const handleOptionClick = (optionId: string) => {
+  const handleOptionChange = (optionId: string) => {
     const updatedIds = selectedIds.includes(optionId)
       ? selectedIds.filter((id) => id !== optionId)
       : [...selectedIds, optionId];
@@ -29,51 +33,44 @@ export const FilterOptionsSection = ({
   };
 
   return (
-    <div style={styles.card}>
-      <div style={styles.title}>{pickerTitle}</div>
-      {options.map((option) => (
-        <div
-          key={option.id}
-          style={styles.optionContainer}
-          onClick={() => handleOptionClick(option.id)}
-        >
-          <div
-            style={{
-              ...styles.radio,
-              ...(selectedIds.includes(option.id) ? styles.active : undefined),
-            }}
-          />
-          <div>{option.name}</div>
-        </div>
-      ))}
-    </div>
+    <Section title={pickerTitle}>
+      <div style={styles.optionsContainer}>
+        {options.map((option) => (
+          <div key={option.id} style={styles.optionContainer}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedIds.includes(option.id)}
+                  onChange={() => handleOptionChange(option.id)}
+                  sx={{
+                    color: tokens.color.text.primary,
+                    "&.Mui-checked": {
+                      color: tokens.color.accent.dark,
+                    },
+                    padding: 0,
+                  }}
+                />
+              }
+              label={<CustomText>{option.name}</CustomText>}
+              sx={{
+                display: "flex",
+                gap: "6px",
+                alignItems: "center",
+                transform: "translateX(11px)",
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </Section>
   );
 };
 
 const styles: Styles = {
-  card: {
-    padding: 20,
-    gap: 12,
-    border: "1px solid black",
+  optionsContainer: {
+    gap: 8,
     display: "flex",
     flexDirection: "column",
-  },
-  optionContainer: {
-    padding: 4,
-    gap: 4,
-    display: "flex",
-    flexDirection: "row",
     cursor: "pointer",
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  radio: {
-    width: 16,
-    height: 16,
-    border: "1px solid black",
-  },
-  active: {
-    backgroundColor: "black",
   },
 };

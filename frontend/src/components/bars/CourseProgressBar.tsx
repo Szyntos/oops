@@ -4,9 +4,13 @@ import { ProgressBar } from "./ProgressBar";
 
 type CourseProgressBarProps = {
   totalPoints: number;
+  title: string;
 };
 
-export const CourseProgressBar = ({ totalPoints }: CourseProgressBarProps) => {
+export const CourseProgressBar = ({
+  totalPoints,
+  title,
+}: CourseProgressBarProps) => {
   const { levels, error, loading } = useLevelsData();
 
   if (loading) return <div>loading...</div>;
@@ -27,6 +31,7 @@ export const CourseProgressBar = ({ totalPoints }: CourseProgressBarProps) => {
         };
       })}
       showPoints={true}
+      title={title}
     />
   );
 };

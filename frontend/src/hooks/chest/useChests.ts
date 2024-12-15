@@ -1,37 +1,36 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../common/useUser";
 import {
-  ChestsToOpenQuery,
-  useChestsToOpenQuery,
-} from "../../graphql/chestsToOpen.graphql.types";
-import { useSubscribeChestToOpenSubscription } from "../../graphql/subscribeChestToOpen.graphql.types";
+  SubscribeChestToOpenSubscription,
+  useSubscribeChestToOpenSubscription,
+} from "../../graphql/subscribeChestToOpen.graphql.types";
 import { useSelectAwardFromChestMutation } from "../../graphql/selectAwardFromChest.graphql.types";
 import { useError } from "../common/useGlobalError";
 import { useApolloClient } from "@apollo/client";
+import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 
 export type Chest =
-  ChestsToOpenQuery["users"][number]["chestHistories"][number];
+  SubscribeChestToOpenSubscription["users"][number]["chestHistories"][number];
 
-// probably refetch will not be needed when subscription works
 export const useChests = () => {
   const { user } = useUser();
   const client = useApolloClient();
-  const { localErrorWrapper } = useError();
+  const { localErrorWrapper, globalErrorWrapper } = useError();
 
-  const { data, refetch } = useChestsToOpenQuery({
+  const { data, error } = useSubscribeChestToOpenSubscription({
     variables: { userId: user.userId },
-  });
-
-  const { data: subscribeData } = useSubscribeChestToOpenSubscription({
-    variables: { userId: user.userId },
+    skip: !user.userId || user.role === UsersRolesType.UnauthenticatedUser,
   });
 
   useEffect(() => {
-    console.log("SUBSCRIPTION FIRED");
-    refetch();
-  }, [refetch, subscribeData]);
+    if (error) {
+      globalErrorWrapper(() => {
+        throw new Error(error.message);
+      });
+    }
+  }, [globalErrorWrapper, error]);
 
-  const chestsToOpen: Chest[] = data?.users[0].chestHistories ?? [];
+  const chestsToOpen: Chest[] = data?.users[0]?.chestHistories ?? [];
 
   // OPEN
   const [chestError, setChestError] = useState<string | undefined>(undefined);

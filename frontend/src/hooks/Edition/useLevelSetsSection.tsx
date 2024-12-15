@@ -12,14 +12,17 @@ import { useDeleteLevelSetMutation } from "../../graphql/deleteLevelSet.graphql.
 import { useFilesQuery } from "../../graphql/files.graphql.types";
 import { AddedLevel } from "../../components/Edition/Sections/LevelsSection/AddSetForm/LevelRow";
 import { useCopyLevelSetMutation } from "../../graphql/copyLevelSet.graphql.types";
+import { useConfirmPopup } from "../common/useConfirmPopup";
 
 export type LevelSet = SetupLevelSetsQuery["listSetupLevelSets"][number];
+export type Level = LevelSet["levelSet"]["levels"][number];
 
 export const useLevelSetsSection = (editionId: number) => {
   const { globalErrorWrapper, localErrorWrapper } = useError();
 
   const { data, loading, error, refetch } = useSetupLevelSetsQuery({
     variables: { editionId },
+    fetchPolicy: "no-cache",
   });
 
   const levelSets: LevelSet[] = data?.listSetupLevelSets ?? [];
@@ -32,7 +35,10 @@ export const useLevelSetsSection = (editionId: number) => {
     data: imageData,
     loading: imageLoading,
     error: imageError,
-  } = useFilesQuery({ variables: { paths: ["image/level"] } });
+  } = useFilesQuery({
+    variables: { paths: ["image/level"] },
+    fetchPolicy: "no-cache",
+  });
 
   const imageIds: string[] =
     imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>
@@ -123,13 +129,16 @@ export const useLevelSetsSection = (editionId: number) => {
   };
 
   // DELETE
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteSet] = useDeleteLevelSetMutation();
   const handleDeleteSet = (set: LevelSet) => {
-    globalErrorWrapper(async () => {
-      await deleteSet({
-        variables: { levelSetId: parseInt(set.levelSet.levelSetId) },
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteSet({
+          variables: { levelSetId: parseInt(set.levelSet.levelSetId) },
+        });
+        refetch();
       });
-      refetch();
     });
   };
 

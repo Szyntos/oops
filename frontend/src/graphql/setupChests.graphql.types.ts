@@ -13,7 +13,6 @@ export type SetupChestsQuery = {
     __typename?: "ChestWithPermissionsType";
     chest: {
       __typename?: "ChestType";
-      active: boolean;
       awardBundleCount: number;
       chestId: string;
       label: string;
@@ -21,6 +20,7 @@ export type SetupChestsQuery = {
       imageFile?: { __typename?: "FileType"; fileId: string } | null;
       chestEdition: Array<{
         __typename?: "ChestEditionType";
+        active: boolean;
         edition: { __typename?: "EditionType"; editionId: string };
       } | null>;
       chestAward: Array<{
@@ -71,6 +71,36 @@ export type SetupChestsQuery = {
         allow: boolean;
         reason?: string | null;
       };
+      canMarkAsActive?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canMarkAsInactive?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canOverride?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canTurnOffOverride?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canActivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canDeactivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
     };
   }>;
 };
@@ -79,7 +109,6 @@ export const SetupChestsDocument = gql`
   query SetupChests($editionId: Int!) {
     listSetupChests(editionId: $editionId) {
       chest {
-        active
         awardBundleCount
         chestId
         imageFile {
@@ -91,6 +120,7 @@ export const SetupChestsDocument = gql`
           edition {
             editionId
           }
+          active
         }
         chestAward {
           award {
@@ -132,6 +162,30 @@ export const SetupChestsDocument = gql`
           reason
         }
         canUnselect {
+          allow
+          reason
+        }
+        canMarkAsActive {
+          allow
+          reason
+        }
+        canMarkAsInactive {
+          allow
+          reason
+        }
+        canOverride {
+          allow
+          reason
+        }
+        canTurnOffOverride {
+          allow
+          reason
+        }
+        canActivate {
+          allow
+          reason
+        }
+        canDeactivate {
           allow
           reason
         }

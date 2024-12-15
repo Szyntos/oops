@@ -41,6 +41,7 @@ dependencies {
 	implementation("com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter")
 	implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("io.github.cdimascio:dotenv-java:3.0.0")
 
 
 }

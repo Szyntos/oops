@@ -15,6 +15,10 @@ import {
 import { ChestFormValues } from "../../components/Edition/Sections/ChestsSection/AddChestForm/AddChestForm";
 import { useAwardsSection } from "./useAwardsSection";
 import { useSetupChestCreateMutation } from "../../graphql/setupChestCreate.graphql.types";
+import { useConfirmPopup } from "../common/useConfirmPopup";
+import { useActivateChestMutation } from "../../graphql/activateChest.graphql.types";
+import { useDeactivateChestMutation } from "../../graphql/deactivateChest.graphql.types";
+import { isChestActive } from "../../utils/utils";
 
 export type Chest = SetupChestsQuery["listSetupChests"][number];
 
@@ -26,13 +30,19 @@ export const useChestsSection = (editionId: number) => {
     loading: chestsLoading,
     error: chestsError,
     refetch,
-  } = useSetupChestsQuery({ variables: { editionId } });
+  } = useSetupChestsQuery({
+    variables: { editionId },
+    fetchPolicy: "no-cache",
+  });
 
   const {
     data: imageData,
     loading: imageLoading,
     error: imageError,
-  } = useFilesQuery({ variables: { paths: ["image/chest"] } });
+  } = useFilesQuery({
+    variables: { paths: ["image/chest"] },
+    fetchPolicy: "no-cache",
+  });
 
   const imageIds: string[] =
     imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((i) =>
@@ -138,15 +148,18 @@ export const useChestsSection = (editionId: number) => {
   };
 
   // DELETE CHEST
+  const { openConfirmPopup } = useConfirmPopup();
   const [deleteChest] = useDeleteChestMutation();
   const handleDeleteChest = (chest: Chest) => {
-    globalErrorWrapper(async () => {
-      await deleteChest({
-        variables: {
-          chestId: parseInt(chest.chest.chestId),
-        },
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteChest({
+          variables: {
+            chestId: parseInt(chest.chest.chestId),
+          },
+        });
+        refetch();
       });
-      refetch();
     });
   };
 
@@ -159,6 +172,32 @@ export const useChestsSection = (editionId: number) => {
           chestId: parseInt(chest.chest.chestId),
         },
       });
+      refetch();
+    });
+  };
+
+  // ACTIVATE / DEACTIVATE
+  const [activateChest] = useActivateChestMutation();
+  const [deactivateChest] = useDeactivateChestMutation();
+  const handleActivateChest = (chest: Chest) => {
+    globalErrorWrapper(async () => {
+      const isActive = isChestActive(
+        chest.chest.chestEdition.map((e) => ({
+          id: e?.edition.editionId ?? "",
+          active: Boolean(e?.active ?? false),
+        })),
+        editionId.toString(),
+      );
+
+      const variables = {
+        variables: {
+          chestId: parseInt(chest.chest.chestId),
+          editionId: editionId,
+        },
+      };
+      isActive
+        ? await deactivateChest(variables)
+        : await activateChest(variables);
       refetch();
     });
   };
@@ -189,5 +228,7 @@ export const useChestsSection = (editionId: number) => {
 
     handleDeleteChest,
     handleCopyChest,
+
+    handleActivateChest,
   };
 };

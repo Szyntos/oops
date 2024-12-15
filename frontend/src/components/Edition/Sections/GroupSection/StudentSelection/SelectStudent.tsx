@@ -2,6 +2,7 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { Styles } from "../../../../../utils/Styles";
 import { Student } from "../../../../../hooks/Edition/useGroupsSection";
+import { tokens } from "../../../../../tokens";
 
 type SelectStudentProps = {
   students: Student[];
@@ -20,15 +21,15 @@ export const SelectStudent = ({
         <InputLabel>Student</InputLabel>
         <Select
           name="studentId"
-          value={student?.user.userId}
+          value={student?.userId}
           placeholder="choose student"
           onChange={(e) =>
-            setStudent(students.find((s) => s.user.userId === e.target.value))
+            setStudent(students.find((s) => s.userId === e.target.value))
           }
         >
           {students.map((student) => (
-            <MenuItem key={student.user.userId} value={student.user.userId}>
-              {student.user.firstName} {student.user.secondName}
+            <MenuItem key={student.userId} value={student.userId}>
+              {student.firstName} {student.secondName}
             </MenuItem>
           ))}
         </Select>
@@ -59,6 +60,10 @@ const styles: Styles = {
   points: {
     width: 80,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
 };

@@ -7,11 +7,15 @@ import {
 import { useAddChestToUserMutation } from "../../graphql/addChestToUser.graphql.types";
 import { useEditionSelection } from "../common/useEditionSelection";
 import { useError } from "../common/useGlobalError";
+import { useRegenerateGradeMutation } from "../../graphql/regenerateGrade.graphql.types";
+import { useConfirmPopup } from "../common/useConfirmPopup";
+import { useApolloClient } from "@apollo/client";
+import { isChestActive } from "../../utils/utils";
 
 export type Chest = ChestsQuery["chests"][number];
 
 export const useCoordinatorActions = (studentId: string, teacherId: string) => {
-  const { localErrorWrapper } = useError();
+  const { localErrorWrapper, globalErrorWrapper } = useError();
   const { selectedEdition } = useEditionSelection();
   const editionId = selectedEdition?.editionId;
 
@@ -20,7 +24,13 @@ export const useCoordinatorActions = (studentId: string, teacherId: string) => {
     skip: !editionId,
   });
 
-  const chests: Chest[] = data?.chests ?? [];
+  const chests: Chest[] =
+    data?.chests.filter((chest) =>
+      isChestActive(
+        chest.chestEditions.map((e) => ({ id: e.editionId, active: e.active })),
+        selectedEdition?.editionId ?? "",
+      ),
+    ) ?? [];
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
@@ -51,6 +61,23 @@ export const useCoordinatorActions = (studentId: string, teacherId: string) => {
     });
   };
 
+  const client = useApolloClient();
+  const { openConfirmPopup } = useConfirmPopup();
+  const [regenerateGrade] = useRegenerateGradeMutation();
+  const handleRegenerateGrade = (userId: string) => {
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await regenerateGrade({
+          variables: {
+            userId: parseInt(userId),
+            editionId: parseInt(editionId as string),
+          },
+        });
+        client.refetchQueries({ include: "all" });
+      });
+    });
+  };
+
   return {
     chests,
     loading,
@@ -60,5 +87,6 @@ export const useCoordinatorActions = (studentId: string, teacherId: string) => {
     closeAddDialog,
     handleAddChestConfirmation,
     formError,
+    handleRegenerateGrade,
   };
 };

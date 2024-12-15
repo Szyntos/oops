@@ -1,6 +1,8 @@
+import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
+import { tokens } from "../../../../../tokens";
 import { Styles } from "../../../../../utils/Styles";
-import { AwardImage } from "../../../../images/AwardImage";
+import { Avatar } from "../../../../avatars/Avatar";
 import { SetupButtons } from "../../SetupButtons";
 
 type AwardCardProps = {
@@ -20,6 +22,8 @@ export const AwardCard = ({
   onDeleteClick,
   onCopyClick,
 }: AwardCardProps) => {
+  const { openShowDialog } = useEditionSections();
+
   return (
     <div
       style={{
@@ -27,7 +31,7 @@ export const AwardCard = ({
         backgroundColor: isSelected ? "pink" : undefined,
       }}
     >
-      <AwardImage id={award.award.imageFile?.fileId ?? undefined} size="l" />
+      <Avatar id={award.award.imageFile?.fileId} size="l" />
       <div>{award.award.awardName}</div>
       <div style={styles.subtitle}>{award.award.awardType}</div>
 
@@ -37,6 +41,7 @@ export const AwardCard = ({
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
+        handleShow={() => openShowDialog(award)}
         permissions={award.permissions}
       />
     </div>
@@ -49,6 +54,6 @@ const styles: Styles = {
     padding: 12,
   },
   subtitle: {
-    color: "grey",
+    color: tokens.color.state.disabled,
   },
 };

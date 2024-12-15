@@ -15,6 +15,7 @@ import backend.graphql.permissions.GroupsPermissions
 import backend.graphql.utils.*
 import backend.groups.Groups
 import backend.groups.GroupsRepository
+import backend.levels.Levels
 import backend.levels.LevelsRepository
 import backend.points.Points
 import backend.points.PointsRepository
@@ -22,6 +23,7 @@ import backend.subcategories.Subcategories
 import backend.subcategories.SubcategoriesRepository
 import backend.userGroups.UserGroups
 import backend.userGroups.UserGroupsRepository
+import backend.userLevel.UserLevel
 import backend.users.UsersRepository
 import backend.users.Users
 import backend.users.UsersRoles
@@ -660,14 +662,15 @@ class GroupsDataFetcher {
         return users.map { user ->
             UserPointsType(
                 user = user,
-                categoriesPoints = categories.map { category ->
+                userLevel = user.userLevels.find { it.edition == group.edition } ?: UserLevel(),
+                categoriesPoints = categories.filter { it.canAddPoints }.map { category ->
                     val categoryPurePoints = purePointsByUserAndCategory[user.userId]?.get(category.categoryId) ?: emptyList()
                     val categoryBonuses = bonusesByUserAndCategory[user.userId]?.get(category.categoryId) ?: emptyList()
                     val awardTypes = allAvailableAwards.filter { it.category == category }
 
                     CategoryPointsType(
                         category = category,
-                        subcategoryPoints = subcategories.filter { it.category == category }.map { subcategory ->
+                        subcategoryPoints = subcategories.filter { it.category == category }.sortedBy{ it.ordinalNumber }.map { subcategory ->
                             val subcategoryPurePoints = categoryPurePoints.firstOrNull { it.subcategory == subcategory }
                             SubcategoryPointsGroupType(
                                 subcategory = subcategory,
@@ -682,7 +685,7 @@ class GroupsDataFetcher {
                             sumOfPurePoints = categoryPurePoints.sumOf { it.value }.toFloat(),
                             sumOfBonuses = categoryBonuses.sumOf { it.points.value }.toFloat(),
                             sumOfAll = categoryPurePoints.sumOf { it.value }.toFloat() +
-                                    categoryBonuses.sumOf { it.points.value }.toFloat()
+                                    categoryBonuses.sumOf { it.points.value }.toFloat(),
                         ),
                         awardAggregate = awardTypes.map { awardType ->
                             val awardPoints = categoryBonuses.filter { it.award == awardType }.map { it.points }
@@ -697,7 +700,7 @@ class GroupsDataFetcher {
                             )
                         }
                     )
-                }
+                }.sortedBy { it.category.categoryId }
             )
         }
     }
@@ -817,7 +820,8 @@ class GroupsDataFetcher {
 
 data class UserPointsType(
     val user: Users,
-    val categoriesPoints: List<CategoryPointsType>
+    val userLevel: UserLevel,
+    val categoriesPoints: List<CategoryPointsType>,
 )
 
 data class CategoryPointsType(

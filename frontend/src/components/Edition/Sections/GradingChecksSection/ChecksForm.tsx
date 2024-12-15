@@ -9,7 +9,8 @@ import {
 } from "@mui/material";
 import { Styles } from "../../../../utils/Styles";
 import { Category } from "../../../../hooks/Edition/categories/useCategoriesSection";
-import { LevelSet } from "../../../../hooks/Edition/useLevelSetsSection";
+import { Level } from "../../../../hooks/Edition/useLevelSetsSection";
+import { tokens } from "../../../../tokens";
 
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // 'YYYY-MM-DD'
 
@@ -28,7 +29,7 @@ export type GradingChecksFormValues = z.infer<typeof ValidationSchema>;
 type GradingChecksFormProps = {
   handleConfirm: (values: GradingChecksFormValues) => void;
   formError?: string;
-  levelSet: LevelSet;
+  levels: Level[];
   initialValues?: GradingChecksFormValues;
   title: string;
   categories: Category[];
@@ -43,7 +44,7 @@ const defaultInitialValues: GradingChecksFormValues = {
 
 export const ChecksForm = ({
   handleConfirm,
-  levelSet,
+  levels,
   formError,
   initialValues = defaultInitialValues,
   title,
@@ -100,14 +101,14 @@ export const ChecksForm = ({
                   formik.errors.endOfLabsLevelsThreshold,
               )}
             >
-              {levelSet.levelSet.levels.map((level) => (
+              {levels.map((level) => (
                 <MenuItem key={level.levelName} value={level.levelId}>
                   {level.levelName}
                 </MenuItem>
               ))}
             </Select>
             {formik.touched.projectId && formik.errors.projectId && (
-              <div style={{ color: "red" }}>{formik.errors.projectId}</div>
+              <div style={styles.error}>{formik.errors.projectId}</div>
             )}
           </FormControl>
           <TextField
@@ -149,7 +150,7 @@ export const ChecksForm = ({
               ))}
             </Select>
             {formik.touched.projectId && formik.errors.projectId && (
-              <div style={{ color: "red" }}>{formik.errors.projectId}</div>
+              <div style={styles.error}>{formik.errors.projectId}</div>
             )}
           </FormControl>
         </div>
@@ -168,8 +169,12 @@ const styles: Styles = {
     padding: 12,
     width: 500,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
   fieldsContainer: {
     display: "flex",
     flexDirection: "column",

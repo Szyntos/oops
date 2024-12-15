@@ -22,6 +22,13 @@ export type StudentPointsQuery = {
       nick: string;
       secondName: string;
       userId: string;
+      userLevels: Array<{
+        __typename?: "UserLevelType";
+        computedGrade: number;
+        endOfLabsLevelsReached: boolean;
+        projectPointsThresholdReached: boolean;
+        edition: { __typename?: "EditionType"; editionId: string };
+      } | null>;
       imageFile?: { __typename?: "FileType"; fileId: string } | null;
       userGroups: Array<{
         __typename?: "UserGroupType";
@@ -103,6 +110,14 @@ export const StudentPointsDocument = gql`
   query StudentPoints($editionId: Int!, $studentId: Int!) {
     getStudentPoints(editionId: $editionId, studentId: $studentId) {
       user {
+        userLevels {
+          computedGrade
+          edition {
+            editionId
+          }
+          endOfLabsLevelsReached
+          projectPointsThresholdReached
+        }
         firstName
         indexNumber
         nick

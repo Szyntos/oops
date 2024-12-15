@@ -1,21 +1,32 @@
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
-import { Image } from "../../../../images/Image";
+import { Avatar } from "../../../../avatars/Avatar";
+import { Permissions, SetupButtons } from "../../SetupButtons";
 
-type ImagesListProps = {
-  imageIds: string[];
-  title: string;
+export type FileItem = {
+  id: string;
+  permissions: Permissions;
 };
 
-export const ImagesList = ({ imageIds, title }: ImagesListProps) => {
+type ImagesListProps = {
+  files: FileItem[];
+  title: string;
+  handleDelete: (imageId: string) => void;
+};
+
+export const ImagesList = ({ files, title, handleDelete }: ImagesListProps) => {
   return (
     <div>
       <div style={styles.title}>{title}</div>
       <div style={styles.container}>
-        {imageIds.length !== 0
-          ? imageIds.map((id) => (
-              <div>
-                <Image id={id} size={128} disabled={false} />
+        {files.length !== 0
+          ? files.map((entry) => (
+              <div style={styles.imageContainer}>
+                <Avatar id={entry.id} size="l" />
+                <SetupButtons
+                  permissions={entry.permissions}
+                  handleDelete={() => handleDelete(entry.id)}
+                />
               </div>
             ))
           : EMPTY_FIELD_STRING}
@@ -30,6 +41,10 @@ const styles: Styles = {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 12,
+  },
+  imageContainer: {
+    display: "flex",
+    flexDirection: "column",
   },
   title: {
     color: "blue",

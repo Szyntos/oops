@@ -1,0 +1,3 @@
+mutation MakeStudentActive($userId: Int!) {
+  markStudentAsActive(userId: $userId)
+}

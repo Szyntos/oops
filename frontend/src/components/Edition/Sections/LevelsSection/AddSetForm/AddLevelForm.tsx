@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import { WithAddedLevelsValidateErrors } from "./AddSetForm";
 import { SelectImage } from "../../../../inputs/SelectImage";
+import { GRADE_STRINGS } from "../../../../../utils/utils";
+import { tokens } from "../../../../../tokens";
 
 const ValidationSchema = z.object({
   name: z.string().min(1),
@@ -37,8 +39,6 @@ const defaultInitialValues: LevelFormValues = {
   grade: "2.0",
   imageId: "",
 };
-
-export const grades = ["2.0", "3.0", "3.5", "4.0", "4.5", "5.0"];
 
 export const AddLevelForm = ({
   handleAdd,
@@ -135,14 +135,14 @@ export const AddLevelForm = ({
                 onBlur={formik.handleBlur}
                 error={Boolean(formik.touched.grade && formik.errors.grade)}
               >
-                {grades.map((g) => (
+                {GRADE_STRINGS.map((g) => (
                   <MenuItem key={g} value={g}>
                     {g}
                   </MenuItem>
                 ))}
               </Select>
               {formik.touched.grade && formik.errors.grade && (
-                <div style={{ color: "red" }}>{formik.errors.grade}</div>
+                <div style={styles.error}>{formik.errors.grade}</div>
               )}
             </FormControl>
           </div>
@@ -182,8 +182,12 @@ const styles: Styles = {
     flexDirection: "column",
     gap: 12,
   },
-  title: { fontWeight: "bold" },
-  error: { color: "red" },
+  title: {
+    fontWeight: "bold",
+  },
+  error: {
+    color: tokens.color.state.error,
+  },
   fieldsContainer: {
     display: "flex",
     flexDirection: "row",

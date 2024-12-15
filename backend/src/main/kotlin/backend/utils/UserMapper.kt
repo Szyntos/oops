@@ -17,22 +17,26 @@ class UserMapper(
         val authorizationHeader = request.getHeader("Authorization") ?: return null
 
         val token = authorizationHeader.removePrefix("Bearer ").trim()
-        // TODO: Remove this bypass
-        if (token.startsWith("Bypass")) {
-            val id = token.substringAfter("Bypass").toLongOrNull()
-            if (id?.toInt() == 0){
-                return Users(
-                    userId = 0,
-                    indexNumber = 0,
-                    nick = "Bypass",
-                    firstName = "Bypass",
-                    secondName = "Bypass",
-                    role = UsersRoles.COORDINATOR,
-                    email = "Bypass",
-                    label = "Bypass"
-                )
+        val bypassAuth = System.getProperty("BYPASS_AUTH") ?: System.getenv("BYPASS_AUTH")
+        if (bypassAuth == "true") {
+            val bypassToken = System.getProperty("VITE_BYPASS_TOKEN") ?: System.getenv("VITE_BYPASS_TOKEN")
+
+            if (token.startsWith(bypassToken)) {
+                val id = token.substringAfter(bypassToken).toLongOrNull()
+                if (id?.toInt() == 0){
+                    return Users(
+                        userId = 0,
+                        indexNumber = 0,
+                        nick = "Bypass",
+                        firstName = "Bypass",
+                        secondName = "Bypass",
+                        role = UsersRoles.COORDINATOR,
+                        email = "Bypass",
+                        label = "Bypass"
+                    )
+                }
+                return id?.let { usersRepository.findById(it).orElse(null) }
             }
-            return id?.let { usersRepository.findById(it).orElse(null) }
         }
         return try {
             val decodedToken = FirebaseAuth.getInstance().verifyIdToken(token)

@@ -363,6 +363,16 @@ type Mutation {
     chestId: Int!,
   ): ChestType
 
+  activateChestInEdition(
+    chestId: Int!
+    editionId: Int!
+  ): Boolean
+
+  deactivateChestInEdition(
+    chestId: Int!
+    editionId: Int!
+  ): Boolean
+
   addChestToEdition(
     chestId: Int!,
     editionId: Int!
@@ -384,6 +394,16 @@ type Mutation {
     userId: Int!
   ): Boolean
 
+  overrideComputedGradeForUser(
+    userId: Int!,
+    editionId: Int!,
+    grade: Float!
+  ): UserLevelType
+
+  turnOffOverrideComputedGradeForUser(
+    userId: Int!,
+    editionId: Int!
+  ): UserLevelType
 }
 
 type Query {
@@ -398,7 +418,7 @@ type Query {
   getPossibleGroupDates(editionId: Int!): [GroupDateType!]!
   getNeighboringLevels(studentId: Int!, editionId: Int!): NeighboringLevelsType!
   getGroupsInEdition(editionId: Int!, teacherId: Int!): [GroupTeacherType!]!
-  getCurrentUser: UserType!
+  getCurrentUser: UserWithEditionsType!
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   validateUsersToBeAdded(userIndexes: [Int!]!, editionId: Int!): [NotValidUserType!]!
@@ -511,7 +531,6 @@ type ChestType {
   chestId: ID!
   chestType: String!
   label: String!
-  active: Boolean!
   awardBundleCount: Int!
   chestHistory: [ChestHistoryType]!
   chestAward: [ChestAwardType!]!
@@ -640,9 +659,10 @@ type UserLevelType {
   user: UserType!
   level: LevelType!
   edition: EditionType!
-  end_of_labs_levels_reached: Boolean!,
-  project_points_threshold_reached: Boolean!,
-  computed_grade: Float!
+  endOfLabsLevelsReached: Boolean!,
+  projectPointsThresholdReached: Boolean!,
+  coordinatorOverride: Boolean!,
+  computedGrade: Float!
   label: String!
   userLevelId: ID!
 }
@@ -721,6 +741,7 @@ type AddBonusReturnType {
 
 type UserPointsType {
   user: UserType!
+  userLevel: UserLevelType!
   categoriesPoints: [CategoryPointsType!]!
 }
 
@@ -820,6 +841,7 @@ type ChestEditionType {
   chestEditionId: ID!
   chest: ChestType!
   edition: EditionType!
+  active: Boolean!
   label: String!
 }
 
@@ -889,6 +911,17 @@ type ListPermissionsOutputType{
   canSelect: PermissionType!
   canUnselect: PermissionType!
   additional: [PermissionType!]!
+  canOverride: PermissionType
+  canTurnOffOverride: PermissionType
+  canMarkAsActive: PermissionType
+  canMarkAsInactive: PermissionType
+  canActivate: PermissionType
+  canDeactivate: PermissionType
+}
+
+type UserWithEditionsType{
+  user: UserType!,
+  editions: [EditionType!]!
 }
 
 input SubcategoryInputType {

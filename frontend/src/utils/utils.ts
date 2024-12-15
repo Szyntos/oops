@@ -1,6 +1,6 @@
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
-import { Edition } from "../hooks/common/useGroupsData";
 import { Permissions } from "../components/Edition/Sections/SetupButtons";
+import { Edition } from "../contexts/userContext";
 
 type User = {
   role: string;
@@ -10,12 +10,15 @@ export type Category = {
   id: string;
   name: string;
   subcategories: Subcategory[];
+  lightColor: string;
+  darkColor: string;
 };
 
 export type Subcategory = {
   id: string;
   name: string;
   maxPoints: number;
+  categoryId: number;
 };
 
 export const hasRole = (user: User, allowedRoles: UsersRolesType[]) => {
@@ -48,3 +51,27 @@ export const mockPermissions = {
     allow: false,
   },
 } as Permissions;
+
+export const GRADE_STRINGS = ["2.0", "3.0", "3.5", "4.0", "4.5", "5.0"];
+
+type ChestEdition = {
+  id: string;
+  active: boolean;
+};
+export const isChestActive = (editions: ChestEdition[], edition: string) => {
+  return Boolean(editions.find((e) => e.id === edition && e.active));
+};
+
+export const BACKGROUND_COLOR_ANIMATION = "background-color 0.3s ease";
+export const COLOR_TRANSITION_ANIMATION = "color 0.3s ease";
+
+export const getLinearGradient = (
+  firstColor: string,
+  secondColor: string,
+): string => {
+  return `linear-gradient(to right, ${firstColor}, ${secondColor})`;
+};
+
+export const getTimeWithoutSeconds = (time: string) => {
+  return time.slice(0, -3);
+};

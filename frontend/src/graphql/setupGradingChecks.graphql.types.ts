@@ -4,29 +4,132 @@ import { gql } from "@apollo/client";
 import * as Apollo from "@apollo/client";
 const defaultOptions = {} as const;
 export type SetupGradingChecksQueryVariables = Types.Exact<{
-  editionId: Types.Scalars["bigint"]["input"];
+  editionId: Types.Scalars["Int"]["input"];
 }>;
 
 export type SetupGradingChecksQuery = {
   __typename?: "query_root";
-  gradingChecks: Array<{
-    __typename?: "GradingChecks";
-    endOfLabsDate: string;
-    endOfLabsLevelsThreshold: string;
-    projectPointsThreshold: number;
-    projectId: string;
-    gradingCheckId: string;
-  }>;
+  listSetupGradingChecks: {
+    __typename?: "GradingCheckWithPermissions";
+    gradingCheck?: {
+      __typename?: "GradingChecksType";
+      gradingCheckId: string;
+      endOfLabsDate: string;
+      projectPointsThreshold: number;
+      endOfLabsLevelsThreshold: {
+        __typename?: "LevelType";
+        grade: string;
+        highest: boolean;
+        label: string;
+        levelId: string;
+        levelName: string;
+        maximumPoints: string;
+        minimumPoints: string;
+        ordinalNumber: number;
+      };
+      project: { __typename?: "CategoryType"; categoryId: string };
+    } | null;
+    permissions: {
+      __typename?: "ListPermissionsOutputType";
+      canAdd: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canCopy: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canEdit: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canRemove: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canSelect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canUnselect: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      };
+      canActivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+      canDeactivate?: {
+        __typename?: "PermissionType";
+        allow: boolean;
+        reason?: string | null;
+      } | null;
+    };
+  };
 };
 
 export const SetupGradingChecksDocument = gql`
-  query SetupGradingChecks($editionId: bigint!) {
-    gradingChecks(where: { editionId: { _eq: $editionId } }) {
-      endOfLabsDate
-      endOfLabsLevelsThreshold
-      projectPointsThreshold
-      projectId
-      gradingCheckId
+  query SetupGradingChecks($editionId: Int!) {
+    listSetupGradingChecks(editionId: $editionId) {
+      gradingCheck {
+        gradingCheckId
+        endOfLabsDate
+        endOfLabsLevelsThreshold {
+          grade
+          highest
+          label
+          levelId
+          levelName
+          maximumPoints
+          minimumPoints
+          ordinalNumber
+        }
+        projectPointsThreshold
+        project {
+          categoryId
+        }
+      }
+      permissions {
+        canAdd {
+          allow
+          reason
+        }
+        canCopy {
+          allow
+          reason
+        }
+        canEdit {
+          allow
+          reason
+        }
+        canRemove {
+          allow
+          reason
+        }
+        canSelect {
+          allow
+          reason
+        }
+        canUnselect {
+          allow
+          reason
+        }
+        canActivate {
+          allow
+          reason
+        }
+        canDeactivate {
+          allow
+          reason
+        }
+      }
     }
   }
 `;

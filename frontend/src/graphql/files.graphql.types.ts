@@ -26,6 +26,69 @@ export type FilesQuery = {
         pathToFile: string;
         updatedAt: string;
       };
+      permissions: {
+        __typename?: "ListPermissionsOutputType";
+        canAdd: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canCopy: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canEdit: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canRemove: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canSelect: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canUnselect: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        };
+        canMarkAsActive?: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        } | null;
+        canMarkAsInactive?: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        } | null;
+        canOverride?: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        } | null;
+        canTurnOffOverride?: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        } | null;
+        canActivate?: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        } | null;
+        canDeactivate?: {
+          __typename?: "PermissionType";
+          allow: boolean;
+          reason?: string | null;
+        } | null;
+      };
     }>;
   }>;
 };
@@ -43,6 +106,56 @@ export const FilesDocument = gql`
           label
           pathToFile
           updatedAt
+        }
+        permissions {
+          canAdd {
+            allow
+            reason
+          }
+          canCopy {
+            allow
+            reason
+          }
+          canEdit {
+            allow
+            reason
+          }
+          canRemove {
+            allow
+            reason
+          }
+          canSelect {
+            allow
+            reason
+          }
+          canUnselect {
+            allow
+            reason
+          }
+          canMarkAsActive {
+            allow
+            reason
+          }
+          canMarkAsInactive {
+            allow
+            reason
+          }
+          canOverride {
+            allow
+            reason
+          }
+          canTurnOffOverride {
+            allow
+            reason
+          }
+          canActivate {
+            allow
+            reason
+          }
+          canDeactivate {
+            allow
+            reason
+          }
         }
       }
     }

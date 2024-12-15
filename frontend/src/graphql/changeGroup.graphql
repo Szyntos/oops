@@ -1,0 +1,5 @@
+mutation ChangeGroup($groupId: Int!, $userId: Int!) {
+  changeStudentGroup(groupId: $groupId, userId: $userId) {
+    userGroupsId
+  }
+}

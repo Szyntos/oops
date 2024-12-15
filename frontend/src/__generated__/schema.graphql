@@ -3446,6 +3446,8 @@ input ChestAwardVarianceOrderBy {
 columns and relationships of "chest_edition"
 """
 type ChestEdition {
+  active: Boolean!
+
   """
   An object relationship
   """
@@ -3470,6 +3472,8 @@ type ChestEditionAggregate {
 }
 
 input ChestEditionAggregateBoolExp {
+  bool_and: chestEditionAggregateBoolExpBool_and
+  bool_or: chestEditionAggregateBoolExpBool_or
   count: chestEditionAggregateBoolExpCount
 }
 
@@ -3544,6 +3548,7 @@ input ChestEditionBoolExp {
   _and: [ChestEditionBoolExp!]
   _not: ChestEditionBoolExp
   _or: [ChestEditionBoolExp!]
+  active: BooleanComparisonExp
   chest: ChestsBoolExp
   chestEditionId: BigintComparisonExp
   chestId: BigintComparisonExp
@@ -3580,6 +3585,7 @@ input ChestEditionIncInput {
 input type for inserting data into table "chest_edition"
 """
 input ChestEditionInsertInput {
+  active: Boolean
   chest: ChestsObjRelInsertInput
   chestEditionId: bigint
   chestId: bigint
@@ -3656,6 +3662,7 @@ input ChestEditionOnConflict {
 Ordering options when selecting data from "chest_edition".
 """
 input ChestEditionOrderBy {
+  active: OrderBy
   chest: ChestsOrderBy
   chestEditionId: OrderBy
   chestId: OrderBy
@@ -3679,6 +3686,11 @@ enum ChestEditionSelectColumn {
   """
   column name
   """
+  active
+
+  """
+  column name
+  """
   chestEditionId
 
   """
@@ -3698,9 +3710,30 @@ enum ChestEditionSelectColumn {
 }
 
 """
+select "chestEditionAggregateBoolExpBool_andArgumentsColumns" columns of table "chest_edition"
+"""
+enum ChestEditionSelectColumnChestEditionAggregateBoolExpBool_andArgumentsColumns {
+  """
+  column name
+  """
+  active
+}
+
+"""
+select "chestEditionAggregateBoolExpBool_orArgumentsColumns" columns of table "chest_edition"
+"""
+enum ChestEditionSelectColumnChestEditionAggregateBoolExpBool_orArgumentsColumns {
+  """
+  column name
+  """
+  active
+}
+
+"""
 input type for updating data in table "chest_edition"
 """
 input ChestEditionSetInput {
+  active: Boolean
   chestEditionId: bigint
   chestId: bigint
   editionId: bigint
@@ -3780,6 +3813,7 @@ input ChestEditionStreamCursorInput {
 Initial value of the column from where the streaming should start
 """
 input ChestEditionStreamCursorValueInput {
+  active: Boolean
   chestEditionId: bigint
   chestId: bigint
   editionId: bigint
@@ -3805,6 +3839,7 @@ input ChestEditionSumOrderBy {
 }
 
 type ChestEditionType {
+  active: Boolean!
   chest: ChestType!
   chestEditionId: ID!
   edition: EditionType!
@@ -3815,6 +3850,11 @@ type ChestEditionType {
 update columns of table "chest_edition"
 """
 enum ChestEditionUpdateColumn {
+  """
+  column name
+  """
+  active
+
   """
   column name
   """
@@ -4617,7 +4657,6 @@ input ChestHistoryVarianceOrderBy {
 }
 
 type ChestType {
-  active: Boolean!
   awardBundleCount: Int!
   chestAward: [ChestAwardType!]!
   chestEdition: [ChestEditionType]!
@@ -4637,7 +4676,6 @@ type ChestWithPermissionsType {
 columns and relationships of "chests"
 """
 type Chests {
-  active: Boolean!
   awardBundleCount: Int!
 
   """
@@ -4839,8 +4877,6 @@ type ChestsAggregate {
 }
 
 input ChestsAggregateBoolExp {
-  bool_and: chestsAggregateBoolExpBool_and
-  bool_or: chestsAggregateBoolExpBool_or
   count: chestsAggregateBoolExpCount
 }
 
@@ -4915,7 +4951,6 @@ input ChestsBoolExp {
   _and: [ChestsBoolExp!]
   _not: ChestsBoolExp
   _or: [ChestsBoolExp!]
-  active: BooleanComparisonExp
   awardBundleCount: IntComparisonExp
   chestAwards: ChestAwardBoolExp
   chestAwardsAggregate: ChestAwardAggregateBoolExp
@@ -4953,7 +4988,6 @@ input ChestsIncInput {
 input type for inserting data into table "chests"
 """
 input ChestsInsertInput {
-  active: Boolean
   awardBundleCount: Int
   chestAwards: ChestAwardArrRelInsertInput
   chestEditions: ChestEditionArrRelInsertInput
@@ -5049,7 +5083,6 @@ input ChestsOnConflict {
 Ordering options when selecting data from "chests".
 """
 input ChestsOrderBy {
-  active: OrderBy
   awardBundleCount: OrderBy
   chestAwardsAggregate: ChestAwardAggregateOrderBy
   chestEditionsAggregate: ChestEditionAggregateOrderBy
@@ -5072,11 +5105,6 @@ input ChestsPkColumnsInput {
 select columns of table "chests"
 """
 enum ChestsSelectColumn {
-  """
-  column name
-  """
-  active
-
   """
   column name
   """
@@ -5104,30 +5132,9 @@ enum ChestsSelectColumn {
 }
 
 """
-select "chestsAggregateBoolExpBool_andArgumentsColumns" columns of table "chests"
-"""
-enum ChestsSelectColumnChestsAggregateBoolExpBool_andArgumentsColumns {
-  """
-  column name
-  """
-  active
-}
-
-"""
-select "chestsAggregateBoolExpBool_orArgumentsColumns" columns of table "chests"
-"""
-enum ChestsSelectColumnChestsAggregateBoolExpBool_orArgumentsColumns {
-  """
-  column name
-  """
-  active
-}
-
-"""
 input type for updating data in table "chests"
 """
 input ChestsSetInput {
-  active: Boolean
   awardBundleCount: Int
   chestId: bigint
   imageFileId: bigint
@@ -5208,7 +5215,6 @@ input ChestsStreamCursorInput {
 Initial value of the column from where the streaming should start
 """
 input ChestsStreamCursorValueInput {
-  active: Boolean
   awardBundleCount: Int
   chestId: bigint
   imageFileId: bigint
@@ -5238,11 +5244,6 @@ input ChestsSumOrderBy {
 update columns of table "chests"
 """
 enum ChestsUpdateColumn {
-  """
-  column name
-  """
-  active
-
   """
   column name
   """
@@ -8918,6 +8919,7 @@ columns and relationships of "hall_of_fame"
 """
 type HallOfFame {
   editionId: bigint
+  firstName: String
   generatedName: String
   groupName: String
   groupsId: bigint
@@ -8925,6 +8927,7 @@ type HallOfFame {
   levelImageId: bigint
   levelName: String
   nick: String
+  secondName: String
   sumOfPoints: numeric
   userId: bigint
   userImageId: bigint
@@ -8976,6 +8979,7 @@ input HallOfFameBoolExp {
   _not: HallOfFameBoolExp
   _or: [HallOfFameBoolExp!]
   editionId: BigintComparisonExp
+  firstName: StringComparisonExp
   generatedName: StringComparisonExp
   groupName: StringComparisonExp
   groupsId: BigintComparisonExp
@@ -8983,6 +8987,7 @@ input HallOfFameBoolExp {
   levelImageId: BigintComparisonExp
   levelName: StringComparisonExp
   nick: StringComparisonExp
+  secondName: StringComparisonExp
   sumOfPoints: NumericComparisonExp
   userId: BigintComparisonExp
   userImageId: BigintComparisonExp
@@ -8993,6 +8998,7 @@ aggregate max on columns
 """
 type HallOfFameMaxFields {
   editionId: bigint
+  firstName: String
   generatedName: String
   groupName: String
   groupsId: bigint
@@ -9000,6 +9006,7 @@ type HallOfFameMaxFields {
   levelImageId: bigint
   levelName: String
   nick: String
+  secondName: String
   sumOfPoints: numeric
   userId: bigint
   userImageId: bigint
@@ -9010,6 +9017,7 @@ aggregate min on columns
 """
 type HallOfFameMinFields {
   editionId: bigint
+  firstName: String
   generatedName: String
   groupName: String
   groupsId: bigint
@@ -9017,6 +9025,7 @@ type HallOfFameMinFields {
   levelImageId: bigint
   levelName: String
   nick: String
+  secondName: String
   sumOfPoints: numeric
   userId: bigint
   userImageId: bigint
@@ -9027,6 +9036,7 @@ Ordering options when selecting data from "hall_of_fame".
 """
 input HallOfFameOrderBy {
   editionId: OrderBy
+  firstName: OrderBy
   generatedName: OrderBy
   groupName: OrderBy
   groupsId: OrderBy
@@ -9034,6 +9044,7 @@ input HallOfFameOrderBy {
   levelImageId: OrderBy
   levelName: OrderBy
   nick: OrderBy
+  secondName: OrderBy
   sumOfPoints: OrderBy
   userId: OrderBy
   userImageId: OrderBy
@@ -9047,6 +9058,11 @@ enum HallOfFameSelectColumn {
   column name
   """
   editionId
+
+  """
+  column name
+  """
+  firstName
 
   """
   column name
@@ -9082,6 +9098,11 @@ enum HallOfFameSelectColumn {
   column name
   """
   nick
+
+  """
+  column name
+  """
+  secondName
 
   """
   column name
@@ -9158,6 +9179,7 @@ Initial value of the column from where the streaming should start
 """
 input HallOfFameStreamCursorValueInput {
   editionId: bigint
+  firstName: String
   generatedName: String
   groupName: String
   groupsId: bigint
@@ -9165,6 +9187,7 @@ input HallOfFameStreamCursorValueInput {
   levelImageId: bigint
   levelName: String
   nick: String
+  secondName: String
   sumOfPoints: numeric
   userId: bigint
   userImageId: bigint
@@ -10474,11 +10497,17 @@ input LevelsVarianceOrderBy {
 
 type ListPermissionsOutputType {
   additional: [PermissionType!]!
+  canActivate: PermissionType
   canAdd: PermissionType!
   canCopy: PermissionType!
+  canDeactivate: PermissionType
   canEdit: PermissionType!
+  canMarkAsActive: PermissionType
+  canMarkAsInactive: PermissionType
+  canOverride: PermissionType
   canRemove: PermissionType!
   canSelect: PermissionType!
+  canTurnOffOverride: PermissionType
   canUnselect: PermissionType!
 }
 
@@ -13289,6 +13318,7 @@ columns and relationships of "user_level"
 """
 type UserLevel {
   computedGrade: float8!
+  coordinatorOverride: Boolean!
 
   """
   An object relationship
@@ -13411,6 +13441,7 @@ input UserLevelBoolExp {
   _not: UserLevelBoolExp
   _or: [UserLevelBoolExp!]
   computedGrade: Float8ComparisonExp
+  coordinatorOverride: BooleanComparisonExp
   edition: EditionBoolExp
   editionId: BigintComparisonExp
   endOfLabsLevelsReached: BooleanComparisonExp
@@ -13454,6 +13485,7 @@ input type for inserting data into table "user_level"
 """
 input UserLevelInsertInput {
   computedGrade: float8
+  coordinatorOverride: Boolean
   edition: EditionObjRelInsertInput
   editionId: bigint
   endOfLabsLevelsReached: Boolean
@@ -13543,6 +13575,7 @@ Ordering options when selecting data from "user_level".
 """
 input UserLevelOrderBy {
   computedGrade: OrderBy
+  coordinatorOverride: OrderBy
   edition: EditionOrderBy
   editionId: OrderBy
   endOfLabsLevelsReached: OrderBy
@@ -13571,6 +13604,11 @@ enum UserLevelSelectColumn {
   column name
   """
   computedGrade
+
+  """
+  column name
+  """
+  coordinatorOverride
 
   """
   column name
@@ -13625,6 +13663,11 @@ enum UserLevelSelectColumnUserLevelAggregateBoolExpBool_andArgumentsColumns {
   """
   column name
   """
+  coordinatorOverride
+
+  """
+  column name
+  """
   endOfLabsLevelsReached
 
   """
@@ -13637,6 +13680,11 @@ enum UserLevelSelectColumnUserLevelAggregateBoolExpBool_andArgumentsColumns {
 select "userLevelAggregateBoolExpBool_orArgumentsColumns" columns of table "user_level"
 """
 enum UserLevelSelectColumnUserLevelAggregateBoolExpBool_orArgumentsColumns {
+  """
+  column name
+  """
+  coordinatorOverride
+
   """
   column name
   """
@@ -13723,6 +13771,7 @@ input type for updating data in table "user_level"
 """
 input UserLevelSetInput {
   computedGrade: float8
+  coordinatorOverride: Boolean
   editionId: bigint
   endOfLabsLevelsReached: Boolean
   label: String
@@ -13818,6 +13867,7 @@ Initial value of the column from where the streaming should start
 """
 input UserLevelStreamCursorValueInput {
   computedGrade: float8
+  coordinatorOverride: Boolean
   editionId: bigint
   endOfLabsLevelsReached: Boolean
   label: String
@@ -13850,12 +13900,13 @@ input UserLevelSumOrderBy {
 }
 
 type UserLevelType {
-  computed_grade: Float!
+  computedGrade: Float!
+  coordinatorOverride: Boolean!
   edition: EditionType!
-  end_of_labs_levels_reached: Boolean!
+  endOfLabsLevelsReached: Boolean!
   label: String!
   level: LevelType!
-  project_points_threshold_reached: Boolean!
+  projectPointsThresholdReached: Boolean!
   user: UserType!
   userLevelId: ID!
 }
@@ -13868,6 +13919,11 @@ enum UserLevelUpdateColumn {
   column name
   """
   computedGrade
+
+  """
+  column name
+  """
+  coordinatorOverride
 
   """
   column name
@@ -13991,6 +14047,7 @@ input UserLevelVarianceOrderBy {
 type UserPointsType {
   categoriesPoints: [CategoryPointsType!]!
   user: UserType!
+  userLevel: UserLevelType!
 }
 
 type UserType {
@@ -14017,6 +14074,11 @@ type UserType {
   userGroups: [UserGroupType]!
   userId: ID!
   userLevels: [UserLevelType]!
+}
+
+type UserWithEditionsType {
+  editions: [EditionType!]!
+  user: UserType!
 }
 
 type UserWithPermissionsType {
@@ -15829,6 +15891,20 @@ input chestAwardAggregateBoolExpCount {
   predicate: IntComparisonExp!
 }
 
+input chestEditionAggregateBoolExpBool_and {
+  arguments: ChestEditionSelectColumnChestEditionAggregateBoolExpBool_andArgumentsColumns!
+  distinct: Boolean
+  filter: ChestEditionBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input chestEditionAggregateBoolExpBool_or {
+  arguments: ChestEditionSelectColumnChestEditionAggregateBoolExpBool_orArgumentsColumns!
+  distinct: Boolean
+  filter: ChestEditionBoolExp
+  predicate: BooleanComparisonExp!
+}
+
 input chestEditionAggregateBoolExpCount {
   arguments: [ChestEditionSelectColumn!]
   distinct: Boolean
@@ -15855,20 +15931,6 @@ input chestHistoryAggregateBoolExpCount {
   distinct: Boolean
   filter: ChestHistoryBoolExp
   predicate: IntComparisonExp!
-}
-
-input chestsAggregateBoolExpBool_and {
-  arguments: ChestsSelectColumnChestsAggregateBoolExpBool_andArgumentsColumns!
-  distinct: Boolean
-  filter: ChestsBoolExp
-  predicate: BooleanComparisonExp!
-}
-
-input chestsAggregateBoolExpBool_or {
-  arguments: ChestsSelectColumnChestsAggregateBoolExpBool_orArgumentsColumns!
-  distinct: Boolean
-  filter: ChestsBoolExp
-  predicate: BooleanComparisonExp!
 }
 
 input chestsAggregateBoolExpCount {
@@ -15994,6 +16056,7 @@ input levelsAggregateBoolExpCount {
 mutation root
 """
 type mutation_root {
+  activateChestInEdition(chestId: Int!, editionId: Int!): Boolean
   addAward(
     awardName: String!
     awardType: String!
@@ -16120,6 +16183,7 @@ type mutation_root {
     editionYear: Int!
   ): EditionType
   copyLevelSet(levelSetId: Int!): LevelSetType!
+  deactivateChestInEdition(chestId: Int!, editionId: Int!): Boolean
 
   """
   delete data from the table: "award"
@@ -17256,6 +17320,11 @@ type mutation_root {
   markPassingStudentsFromEditionAsInactive(editionId: Int!): Boolean
   markStudentAsActive(userId: Int!): Boolean
   markStudentAsInactive(userId: Int!): Boolean
+  overrideComputedGradeForUser(
+    editionId: Int!
+    grade: Float!
+    userId: Int!
+  ): UserLevelType
   parseUsersFromCsv(editionId: Int!, fileId: Int!): ParsedUsersTypeType!
   removeAward(awardId: Int!): Boolean
   removeAwardFromChest(awardId: Int!, chestId: Int!): Boolean
@@ -17278,6 +17347,10 @@ type mutation_root {
   resetPassword(userId: Int!): Boolean
   resetPasswordByEmail(email: String!): Boolean
   setStudentNick(nick: String!, userId: Int!): UserType
+  turnOffOverrideComputedGradeForUser(
+    editionId: Int!
+    userId: Int!
+  ): UserLevelType
 
   """
   update data of the table: "award"
@@ -19138,7 +19211,7 @@ type query_root {
   fetch data from the table: "flyway_schema_history" using primary key columns
   """
   flywaySchemaHistoryByPk(installedRank: Int!): FlywaySchemaHistory
-  getCurrentUser: UserType!
+  getCurrentUser: UserWithEditionsType!
   getFilesGroupedByType: [FileGroupType!]!
   getFilesGroupedByTypeBySelectedTypes(fileTypes: [String!]!): [FileGroupType!]!
   getGroupsInEdition(editionId: Int!, teacherId: Int!): [GroupTeacherType!]!

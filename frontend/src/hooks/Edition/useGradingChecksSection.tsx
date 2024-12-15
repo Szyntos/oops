@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCategoriesSection } from "./categories/useCategoriesSection";
 import { useError } from "../common/useGlobalError";
 import { useLevelSetsSection } from "./useLevelSetsSection";
@@ -9,27 +9,20 @@ import {
 } from "../../graphql/setupGradingChecks.graphql.types";
 import { useSetupGradingChecksEditMutation } from "../../graphql/setupGradingChecksEdit.graphql.types";
 import { GradingChecksFormValues } from "../../components/Edition/Sections/GradingChecksSection/ChecksForm";
+import { useConfirmPopup } from "../common/useConfirmPopup";
+import { useSetupGradingChecksDeleteMutation } from "../../graphql/setupGradingChecksDelete.graphql.types";
 
-export type GradingChecks = SetupGradingChecksQuery["gradingChecks"][number];
+export type GradingChecks = SetupGradingChecksQuery["listSetupGradingChecks"];
 
 export const useGradingChecksSection = (editionId: number) => {
-  const { localErrorWrapper } = useError();
+  const { localErrorWrapper, globalErrorWrapper } = useError();
 
   const { data, loading, error, refetch } = useSetupGradingChecksQuery({
-    variables: { editionId: editionId.toString() },
+    variables: { editionId },
+    fetchPolicy: "no-cache",
   });
 
-  const [gradingChecks, setGradingChecks] = useState<GradingChecks | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    if (!error && !loading && data && data.gradingChecks.length > 0) {
-      setGradingChecks(data.gradingChecks[0]);
-    } else {
-      setGradingChecks(undefined);
-    }
-  }, [data, error, loading]);
+  const gradingChecks: GradingChecks | undefined = data?.listSetupGradingChecks;
 
   const {
     selectedCategories,
@@ -71,7 +64,7 @@ export const useGradingChecksSection = (editionId: number) => {
     });
   };
 
-  // EDIT AWARD
+  // EDIT
   const [isEditOpened, setIsEditOpened] = useState(false);
   const openEdit = () => {
     setIsEditOpened(true);
@@ -86,7 +79,9 @@ export const useGradingChecksSection = (editionId: number) => {
     localErrorWrapper(setFormError, async () => {
       await editGradingChecks({
         variables: {
-          gradingCheckId: parseInt(gradingChecks?.gradingCheckId as string),
+          gradingCheckId: parseInt(
+            gradingChecks?.gradingCheck?.gradingCheckId as string,
+          ),
           endOfLabsDate: values.endOfLabsDate,
           endOfLabsLevelsThreshold: parseFloat(values.endOfLabsLevelsThreshold),
           projectId: parseInt(values.projectId),
@@ -98,10 +93,28 @@ export const useGradingChecksSection = (editionId: number) => {
     });
   };
 
+  // DELETE
+  const [deleteGradingChecks] = useSetupGradingChecksDeleteMutation();
+  const { openConfirmPopup } = useConfirmPopup();
+  const handleDelete = () => {
+    openConfirmPopup(() => {
+      globalErrorWrapper(async () => {
+        await deleteGradingChecks({
+          variables: {
+            gradingChecksId: parseInt(
+              gradingChecks?.gradingCheck?.gradingCheckId as string,
+            ),
+          },
+        });
+        refetch();
+      });
+    });
+  };
+
   return {
     gradingChecks,
     formCategories: selectedCategories,
-    formLevelSet: selectedLevelSet,
+    formLevels: selectedLevelSet ? selectedLevelSet.levelSet.levels : [],
     loading: loading || categoriesLoading || levelsLoading,
     error: error || categoriesError || levelsError,
 
@@ -116,5 +129,7 @@ export const useGradingChecksSection = (editionId: number) => {
     openEdit,
     closeEdit,
     handleEdit,
+
+    handleDelete,
   };
 };

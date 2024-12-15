@@ -1,0 +1,61 @@
+query SetupEditions {
+  listSetupEditions {
+    edition {
+      editionId
+      startDate
+      endDate
+      editionName
+      editionYear
+    }
+    permissions {
+      canAdd {
+        allow
+        reason
+      }
+      canCopy {
+        allow
+        reason
+      }
+      canEdit {
+        allow
+        reason
+      }
+      canRemove {
+        allow
+        reason
+      }
+      canSelect {
+        allow
+        reason
+      }
+      canUnselect {
+        allow
+        reason
+      }
+      canMarkAsActive {
+        allow
+        reason
+      }
+      canMarkAsInactive {
+        allow
+        reason
+      }
+      canOverride {
+        allow
+        reason
+      }
+      canTurnOffOverride {
+        allow
+        reason
+      }
+      canActivate {
+        allow
+        reason
+      }
+      canDeactivate {
+        allow
+        reason
+      }
+    }
+  }
+}

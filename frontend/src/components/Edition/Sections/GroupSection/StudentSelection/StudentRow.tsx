@@ -9,9 +9,11 @@ type StudentRowProps = {
 export const StudentRow = ({ student, handleDelete }: StudentRowProps) => {
   return (
     <div style={styles.container}>
-      <button onClick={() => handleDelete(student)}>-</button>
+      <button type="button" onClick={() => handleDelete(student)}>
+        -
+      </button>
       <div>
-        {student.user.firstName} {student.user.secondName}
+        {student.firstName} {student.secondName}
       </div>
     </div>
   );

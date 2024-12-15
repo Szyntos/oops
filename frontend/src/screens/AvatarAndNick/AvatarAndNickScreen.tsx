@@ -10,6 +10,7 @@ import { useConfirmPopup } from "../../hooks/common/useConfirmPopup";
 import { ConfirmAvatarNickPopupDialog } from "../../components/dialogs/ConfirmAvatarNickPopupDialog.tsx/ConfirmAvatarNickPopupDialog.tsx";
 import { useNavigate } from "react-router-dom";
 import { pathsGenerator } from "../../router/paths";
+import TextField from "@mui/material/TextField";
 
 export const AvatarAndNickScreen = () => {
   const [nick, setNick] = useState("");
@@ -79,17 +80,34 @@ export const AvatarAndNickScreen = () => {
   return (
     <div style={styles.container}>
       <form>
-        <div>
-          <label>Nick:</label>
-          <input
-            type="text"
-            value={nick}
-            onChange={(e) => setNick(e.target.value)}
-            required
-          />
-        </div>
-
-        {nickError && <p className="error">{nickError}</p>}
+        <TextField
+          label="Nick"
+          variant="outlined"
+          value={nick}
+          onChange={(e) => setNick(e.target.value)}
+          error={!!nickError}
+          helperText={nickError}
+          fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "black",
+              },
+              "&:hover fieldset": {
+                borderColor: "black",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "black",
+              },
+            },
+            "& .MuiInputBase-input": {
+              color: "black",
+            },
+            "& .MuiFormLabel-root": {
+              color: "black",
+            },
+          }}
+        />
       </form>
 
       <SelectImage
@@ -111,7 +129,6 @@ export const AvatarAndNickScreen = () => {
 
       <button onClick={handleConfirmClick}>Confirm</button>
 
-      {/* Render the ConfirmPopupDialog */}
       <ConfirmAvatarNickPopupDialog />
     </div>
   );

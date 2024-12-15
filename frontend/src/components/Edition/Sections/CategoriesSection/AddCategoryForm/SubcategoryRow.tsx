@@ -14,7 +14,7 @@ const ValidationSchema = z.object({
 
 type SubcategoryRowProps = {
   initialValues: SubcategoriesFormValues;
-  disabled?: boolean;
+  variant: "edit" | "add";
   blockUp?: boolean;
   blockDown?: boolean;
   handleAdd: (subcategory: SubcategoriesFormValues) => void;
@@ -27,7 +27,7 @@ type SubcategoryRowProps = {
 
 export const SubcategoryRow = ({
   initialValues,
-  disabled = false,
+  variant,
   blockUp = false,
   blockDown = false,
   handleAdd,
@@ -60,7 +60,7 @@ export const SubcategoryRow = ({
         helperText={undefined}
         style={styles.points}
         type="number"
-        disabled={disabled}
+        disabled={variant === "edit"}
       />
 
       <TextField
@@ -74,10 +74,10 @@ export const SubcategoryRow = ({
         error={undefined}
         helperText={undefined}
         style={styles.number}
-        disabled={disabled}
+        disabled={variant === "edit"}
       />
 
-      {disabled ? (
+      {variant === "edit" ? (
         <div>
           <button
             type="button"

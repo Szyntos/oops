@@ -75,7 +75,7 @@ export const AddChestToUserForm = ({
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>Add Chest to User</div>
+      <div style={styles.title}>Przyznaj skrzynkę studentowi</div>
       <form onSubmit={formik.handleSubmit}>
         <SelectInput
           handleChange={handleCategoryChange}
@@ -88,7 +88,7 @@ export const AddChestToUserForm = ({
             value: category.id,
             title: category.name,
           }))}
-          label="Category"
+          label="Kategoria"
         />
         <SelectInput
           handleChange={formik.handleChange}
@@ -101,7 +101,7 @@ export const AddChestToUserForm = ({
             value: subcategory.id,
             title: subcategory.name,
           }))}
-          label="Subcategory"
+          label="Subkategoria"
         />
         <SelectInput
           handleChange={formik.handleChange}
@@ -114,9 +114,9 @@ export const AddChestToUserForm = ({
             value: chest.chestId,
             title: chest.chestId,
           }))}
-          label="ChestId"
+          label="Id skrzynki"
         />
-        <button type="submit">Confirm</button>
+        <button type="submit">Powierdź</button>
       </form>
       {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>

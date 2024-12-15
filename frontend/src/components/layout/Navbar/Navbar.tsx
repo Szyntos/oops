@@ -122,8 +122,7 @@ const styles: Styles = {
     paddingRight: tokens.padding.xl,
     paddingLeft: tokens.padding.xl,
     minHeight: NAV_BAR_HEIGHT,
-    backgroundColor: tokens.color.card.blue,
-    borderBottom: `1px solid ${tokens.color.accent.dark}`,
+    backgroundColor: tokens.color.card.dark,
   },
   itemsContainer: {
     display: "flex",

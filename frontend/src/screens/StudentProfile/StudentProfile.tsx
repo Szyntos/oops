@@ -22,10 +22,10 @@ export function StudentProfile() {
 
   // TODO: add components for loading state and error message
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>Ładowanie...</p>;
   if (error) return <p>Error: {error.message}</p>;
-  if (!studentData) return <p>Student is undefined</p>;
-  if (!currLevel) return <p>Curr level is undefined</p>;
+  if (!studentData) return <p>Student nie jest zdefiniowany</p>;
+  if (!currLevel) return <p>Obecny poziom nie jest zdefiniowany</p>;
 
   return (
     <ScreenContentContainer

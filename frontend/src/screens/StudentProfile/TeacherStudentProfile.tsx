@@ -83,16 +83,16 @@ export function TeacherStudentProfile() {
   const { openChangeGroup } = useChangeGroup();
   const { openOverrideGrade } = useOverrideGrade();
 
-  if (!studentId) return <p>StudentId is undefined</p>;
-  if (!userId) return <p>TeacherId is undefined</p>;
+  if (!studentId) return <p>Id studentanie jest zdefiniowany</p>;
+  if (!userId) return <p>Id nauczyciela nie jest zdefiniowany</p>;
 
-  if (loading || formDataLoading || chestsLoading) return <p>Loading...</p>;
+  if (loading || formDataLoading || chestsLoading) return <p>Ładowanie..</p>;
   if (error) return <p>Error: {error.message}</p>;
   if (formDataError) return <p>Error: {formDataError.message}</p>;
   if (chestsError) return <p>Error: {chestsError.message}</p>;
 
-  if (!studentData) return <p>Student is undefined</p>;
-  if (!currLevel) return <p>Curr level is undefined</p>;
+  if (!studentData) return <p>Student nie jest zdefiniowany</p>;
+  if (!currLevel) return <p>Obecny poziom nie jest zdefiniowany</p>;
 
   const hasEditableRights =
     studentData.group?.teacherId === userId ||
@@ -116,12 +116,12 @@ export function TeacherStudentProfile() {
     return (
       <div style={styles.buttonsContainer}>
         <CustomButton onClick={openAddDialog} disabled={disableEditMode}>
-          dodaj punkty
+          Dodaj punkty
         </CustomButton>
         {user.role === UsersRolesType.Coordinator && (
           <>
             <CustomButton onClick={openChestDialog} disabled={disableEditMode}>
-              dodaj skrzynkę
+              Dodaj skrzynkę
             </CustomButton>
             <CustomButton
               onClick={() =>
@@ -133,13 +133,13 @@ export function TeacherStudentProfile() {
               }
               disabled={disableEditMode || !selectedEdition?.editionId}
             >
-              nadpisz ocenę
+              Nadpisz ocenę
             </CustomButton>
             <CustomButton
               onClick={() => handleRegenerateGrade(studentId)}
               disabled={disableEditMode || !selectedEdition?.editionId}
             >
-              wygeneruj ocenę
+              Wygeneruj ocenę
             </CustomButton>
             <CustomButton
               onClick={() =>
@@ -155,7 +155,7 @@ export function TeacherStudentProfile() {
                 !selectedEdition?.editionId
               }
             >
-              zmień grupę
+              Zmień grupę
             </CustomButton>
           </>
         )}

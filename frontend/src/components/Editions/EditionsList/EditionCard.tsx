@@ -32,7 +32,7 @@ export const EditionCard = ({
           navigate(pathsGenerator.coordinator.Edition(edition.editionId))
         }
       >
-        show
+        pokaż
       </button>
       <SetupButtons
         handleDelete={handleDeleteClick}

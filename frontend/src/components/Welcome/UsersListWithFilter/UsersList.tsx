@@ -23,8 +23,8 @@ export const UsersList = ({ users, handleUserClick }: UsersListProps) => {
       <thead>
         <tr>
           <th>Nick</th>
-          <th>Role</th>
-          <th>User ID</th>
+          <th>Rola</th>
+          <th>ID użytkownika</th>
         </tr>
       </thead>
       <tbody>

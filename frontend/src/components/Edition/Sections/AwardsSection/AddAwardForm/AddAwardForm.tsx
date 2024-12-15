@@ -80,7 +80,7 @@ export const AddAwardForm = ({
           <TextField
             fullWidth
             name="awardName"
-            label="Award Name"
+            label="Nazwa nagrody"
             variant="outlined"
             value={formik.values.awardName}
             onChange={formik.handleChange}
@@ -89,7 +89,7 @@ export const AddAwardForm = ({
             helperText={formik.touched.awardName && formik.errors.awardName}
           />
           <FormControl fullWidth>
-            <InputLabel>Category</InputLabel>
+            <InputLabel>Kategoria</InputLabel>
             <Select
               name="categoryId"
               value={formik.values.categoryId}
@@ -113,7 +113,7 @@ export const AddAwardForm = ({
             )}
           </FormControl>
           <FormControl fullWidth>
-            <InputLabel>Award Type</InputLabel>
+            <InputLabel>Typ nagrody</InputLabel>
             <Select
               name="awardType"
               value={formik.values.awardType}
@@ -136,7 +136,7 @@ export const AddAwardForm = ({
           <TextField
             fullWidth
             name="awardValue"
-            label="Award Value"
+            label="Wartość nagrody"
             type="number"
             variant="outlined"
             value={formik.values.awardValue}
@@ -150,7 +150,7 @@ export const AddAwardForm = ({
           <TextField
             fullWidth
             name="description"
-            label="Description"
+            label="Opis"
             variant="outlined"
             value={formik.values.description}
             onChange={formik.handleChange}
@@ -162,8 +162,8 @@ export const AddAwardForm = ({
           />
           <TextField
             fullWidth
-            name="maxUsages"
-            label="Max Usages"
+            name="Maksymalna liczba użyć"
+            label="Maksymalna liczba użyć"
             type="number"
             variant="outlined"
             value={formik.values.maxUsages}
@@ -186,10 +186,10 @@ export const AddAwardForm = ({
             error={formik.errors.imageId}
             touched={formik.touched.imageId}
             selectVariant={"single"}
-            title="select image:"
+            title="Wybierz ikonę:"
           />
         </div>
-        <button type="submit">confirm</button>
+        <button type="submit">Potwierdź</button>
       </form>
       {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>

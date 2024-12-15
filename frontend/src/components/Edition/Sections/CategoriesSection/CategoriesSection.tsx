@@ -35,7 +35,7 @@ export const CategoriesSection = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddCategory}>add category</button>
+      <button onClick={openAddCategory}>Dodaj kategorię</button>
 
       <CategoriesList
         categories={selectedCategories}
@@ -44,7 +44,7 @@ export const CategoriesSection = () => {
         handleEditClick={openEditCategory}
         handleDeleteClick={handleDeleteCategory}
         handleCopyClick={handleCopyCategory}
-        title="Selected categories"
+        title="Wybrane kategorie"
       />
       <CategoriesList
         categories={categories}
@@ -53,7 +53,7 @@ export const CategoriesSection = () => {
         handleEditClick={openEditCategory}
         handleDeleteClick={handleDeleteCategory}
         handleCopyClick={handleCopyCategory}
-        title="All categories"
+        title="Wszystkie kategorie"
       />
 
       <Dialog open={isAddCategory}>
@@ -61,7 +61,7 @@ export const CategoriesSection = () => {
         <AddCategoryForm
           formError={formError}
           handleConfirm={handleAddCategory}
-          title={"Add Category"}
+          title={"Dodaj kategorię"}
         />
       </Dialog>
 
@@ -70,7 +70,7 @@ export const CategoriesSection = () => {
         <AddCategoryForm
           formError={formError}
           handleConfirm={handleEditCategory}
-          title={"Edit Category"}
+          title={"Edytuj kategorię"}
           initialValues={selectedCategory?.category}
           initialSelectedSubcategories={
             selectedCategory?.category.subcategories.map((s) => ({

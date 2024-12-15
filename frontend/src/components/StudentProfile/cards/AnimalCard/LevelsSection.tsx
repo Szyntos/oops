@@ -13,7 +13,7 @@ export const LevelsSection = ({
 }: LevelsSectionProps) => {
   const { levels, loading, error } = useLevelsData();
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (

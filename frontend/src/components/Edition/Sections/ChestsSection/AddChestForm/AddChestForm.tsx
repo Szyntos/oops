@@ -56,16 +56,16 @@ export const AddChestForm = ({
       }
 
       if (values.fileId === "") {
-        errors.fileId = "select file";
+        errors.fileId = "Wybierz plik";
       }
 
       if (values.awardThisEditionIds.length === 0) {
-        errors.awardThisEditionIds = "select at least one award";
+        errors.awardThisEditionIds = "Wybierz co najmniej jedną nagrodę";
       }
 
       if (values.awardThisEditionIds.length < values.awardBundleCount) {
         errors.awardThisEditionIds =
-          "number of selected awards in this edition cannot be smaller than awardBundleCount";
+          "Liczba wybranych nagród  edycji nie może być mniejsza niż maksymalna liczba nagród do wyboru ze skrzynki";
       }
 
       return errors;
@@ -82,8 +82,8 @@ export const AddChestForm = ({
         <div style={styles.fieldsContainer}>
           <TextField
             fullWidth
-            name="awardBundleCount"
-            label="awardBundleCount"
+            name="Maksymalna liczba nagród do wyboru ze skrzynki"
+            label="Maksymalna liczba nagród do wyboru ze skrzynki"
             variant="outlined"
             type="number"
             value={formik.values.awardBundleCount}
@@ -99,7 +99,7 @@ export const AddChestForm = ({
           <TextField
             fullWidth
             name="name"
-            label="name"
+            label="Nazwa"
             variant="outlined"
             value={formik.values.name}
             onChange={formik.handleChange}
@@ -121,7 +121,7 @@ export const AddChestForm = ({
             error={formik.errors.fileId as string}
             touched={formik.touched.fileId}
             selectVariant={"single"}
-            title="select image:"
+            title="Wybierz ikonę:"
           />
 
           <SelectImage
@@ -137,7 +137,7 @@ export const AddChestForm = ({
             error={formik.errors.awardThisEditionIds as string}
             touched={formik.touched.awardThisEditionIds}
             selectVariant={"multiple"}
-            title={"selected awards from this edition:"}
+            title={"Wybrane nagrody z tej edycji:"}
           />
 
           <SelectImage
@@ -153,10 +153,10 @@ export const AddChestForm = ({
             error={undefined}
             touched={undefined}
             selectVariant={"multiple"}
-            title={"selected awards form other editions:"}
+            title={"Wybrane nagrody z innych edycji:"}
           />
         </div>
-        <button type="submit">confirm</button>
+        <button type="submit">Potwierdź</button>
       </form>
       {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>

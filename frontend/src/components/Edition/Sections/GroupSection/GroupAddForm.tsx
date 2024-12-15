@@ -195,7 +195,7 @@ export const AddGroupForm = ({
           />
 
           <FormControl fullWidth>
-            <InputLabel>Weekday</InputLabel>
+            <InputLabel>Dzień Tygodnia</InputLabel>
             <Select
               name="weekdayId"
               value={formik.values.weekdayId}
@@ -217,7 +217,7 @@ export const AddGroupForm = ({
           </FormControl>
 
           <FormControl fullWidth>
-            <InputLabel>Teacher</InputLabel>
+            <InputLabel>Prowadzący</InputLabel>
             <Select
               name="teacherId"
               value={formik.values.teacherId}
@@ -261,7 +261,7 @@ export const AddGroupForm = ({
           ) : (
             <div>
               <button type="button" onClick={handleUploadClick}>
-                import students
+                Importuj studentów
               </button>
               <input
                 type="file"
@@ -270,7 +270,7 @@ export const AddGroupForm = ({
                 onChange={handleFileChange}
                 style={{ display: "none" }}
               />
-              {importedFile && <div>imported file: {importedFile}</div>}
+              {importedFile && <div>Zaimportowany plik: {importedFile}</div>}
               {selectedStudents.map((s, index) => (
                 <div>
                   {index + 1}. {s.firstName} {s.secondName}
@@ -280,7 +280,7 @@ export const AddGroupForm = ({
           )}
         </div>
 
-        <button type="submit">potwierdź</button>
+        <button type="submit">Potwierdź</button>
       </form>
 
       {createError && <p style={styles.error}>Error: {createError}</p>}

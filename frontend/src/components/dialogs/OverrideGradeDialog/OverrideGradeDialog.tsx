@@ -21,7 +21,7 @@ export const OverrideGradeDialog = () => {
       {data ? (
         <OverrideGradeForm
           handleConfirm={handleOverrideGradeConfirm}
-          title={"Nadpisz ocenę studenta."}
+          title={"Nadpisz ocenę studenta"}
           initGrade={data.grade}
           formError={formError}
         />

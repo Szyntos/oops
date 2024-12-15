@@ -75,7 +75,7 @@ export const AddChestToUserForm = ({
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>Add Chest to User</div>
+      <div style={styles.title}>Przyznaj skrzynkę studentowi</div>
       <form onSubmit={formik.handleSubmit}>
         <SelectInput
           handleChange={handleCategoryChange}

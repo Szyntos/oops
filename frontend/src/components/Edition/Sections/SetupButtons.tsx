@@ -61,7 +61,7 @@ export const SetupButtons = ({
         reason: isSelected
           ? permissions.canUnselect.reason
           : permissions.canSelect.reason,
-        title: isSelected ? "Odznacz" : "Zaznacz",
+        title: isSelected ? "Odrzuć" : "Wybierz",
       }
     : undefined;
 

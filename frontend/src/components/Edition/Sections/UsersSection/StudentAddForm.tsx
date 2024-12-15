@@ -117,7 +117,7 @@ export const AddStudentForm = ({
           />
         </div>
 
-        <button type="submit">potwierdź</button>
+        <button type="submit">Potwierdź</button>
       </form>
 
       {formError && <p style={styles.error}>Error: {formError}</p>}

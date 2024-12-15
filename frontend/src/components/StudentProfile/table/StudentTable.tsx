@@ -36,7 +36,7 @@ type HeaderTitle = {
 
 const headerTitles: HeaderTitle[] = [
   { name: "Nazwa", align: "center" },
-  { name: "Bonusy", align: "center" },
+  { name: "Łupy", align: "center" },
   { name: "Kategoria", align: "center" },
   { name: "Punkty", align: "center" },
   { name: "Max punktów", align: "center" },

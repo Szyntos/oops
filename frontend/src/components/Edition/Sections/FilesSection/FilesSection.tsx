@@ -10,11 +10,11 @@ import { useDeleteFileMutation } from "../../../../graphql/deleteFile.graphql.ty
 import { useConfirmPopup } from "../../../../hooks/common/useConfirmPopup";
 
 const folders: Folder[] = [
-  { title: "award", pathPrefix: `image/award` },
-  { title: "chest", pathPrefix: `image/chest` },
-  { title: "group", pathPrefix: `image/group` },
-  { title: "level", pathPrefix: `image/level` },
-  { title: "users", pathPrefix: `image/user` },
+  { title: "Łupy", pathPrefix: `image/award` },
+  { title: "Skrzynki", pathPrefix: `image/chest` },
+  { title: "Grupy", pathPrefix: `image/group` },
+  { title: "Poziomy", pathPrefix: `image/level` },
+  { title: "Awatary", pathPrefix: `image/user` },
 ];
 
 export const FilesSection = () => {
@@ -96,7 +96,7 @@ export const FilesSection = () => {
 
       <ImagesList
         files={files}
-        title={`Wszystkie ${activeFolder.title} pliki`}
+        title={`Wszystkie pliki -> ${activeFolder.title} `}
         handleDelete={handleDelete}
       />
     </div>

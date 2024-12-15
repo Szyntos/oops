@@ -76,7 +76,7 @@ export const ChecksForm = ({
           <TextField
             fullWidth
             name="endOfLabsDate"
-            label="Data końca laboratoriów"
+            label="Data końca laboratorium"
             placeholder="YYYY-MM-DD"
             variant="outlined"
             value={formik.values.endOfLabsDate}
@@ -90,7 +90,9 @@ export const ChecksForm = ({
             }
           />
           <FormControl fullWidth>
-            <InputLabel>End of Labs</InputLabel>
+            <InputLabel>
+              Poziom do zdobycia przed końcem laboratorium
+            </InputLabel>
             <Select
               name="endOfLabsLevelsThreshold"
               value={formik.values.endOfLabsLevelsThreshold}
@@ -111,26 +113,8 @@ export const ChecksForm = ({
               <div style={styles.error}>{formik.errors.projectId}</div>
             )}
           </FormControl>
-          <TextField
-            fullWidth
-            name="projectPointsThreshold"
-            label="Próg punktowy dla projektu"
-            type="number"
-            variant="outlined"
-            value={formik.values.projectPointsThreshold}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={Boolean(
-              formik.touched.projectPointsThreshold &&
-                formik.errors.projectPointsThreshold,
-            )}
-            helperText={
-              formik.touched.projectPointsThreshold &&
-              formik.errors.projectPointsThreshold
-            }
-          />
           <FormControl fullWidth>
-            <InputLabel>Project</InputLabel>
+            <InputLabel>Kategoria</InputLabel>
             <Select
               name="projectId"
               value={formik.values.projectId}
@@ -153,8 +137,26 @@ export const ChecksForm = ({
               <div style={styles.error}>{formik.errors.projectId}</div>
             )}
           </FormControl>
+          <TextField
+            fullWidth
+            name="projectPointsThreshold"
+            label="Liczba punktów do zdobycia za daną kategorię"
+            type="number"
+            variant="outlined"
+            value={formik.values.projectPointsThreshold}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={Boolean(
+              formik.touched.projectPointsThreshold &&
+                formik.errors.projectPointsThreshold,
+            )}
+            helperText={
+              formik.touched.projectPointsThreshold &&
+              formik.errors.projectPointsThreshold
+            }
+          />
         </div>
-        <button type="submit">potwierdź</button>
+        <button type="submit">Potwierdź</button>
       </form>
       {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>

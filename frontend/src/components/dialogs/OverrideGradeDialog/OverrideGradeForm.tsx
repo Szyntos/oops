@@ -48,7 +48,7 @@ export const OverrideGradeForm = ({
       <form onSubmit={formik.handleSubmit}>
         <div style={styles.fieldsContainer}>
           <FormControl>
-            <InputLabel>Grade</InputLabel>
+            <InputLabel>Nowa ocena</InputLabel>
             <Select
               name="grade"
               value={formik.values.grade}
@@ -66,7 +66,7 @@ export const OverrideGradeForm = ({
               <div style={styles.error}>{formik.errors.grade}</div>
             )}
           </FormControl>
-          <button type="submit">potwierdź</button>
+          <button type="submit">Potwierdź</button>
         </div>
       </form>
       {formError && <p style={styles.error}>Error: {formError}</p>}

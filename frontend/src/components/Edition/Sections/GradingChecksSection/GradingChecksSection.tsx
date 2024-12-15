@@ -64,17 +64,19 @@ export const GradingChecksSection = () => {
 
       <div>
         <div>
-          dataKońcaLabów:{" "}
+          Data końca laboratorium:{" "}
           {gradingChecks.gradingCheck?.endOfLabsDate ?? EMPTY_FIELD_STRING}
         </div>
         <div>
-          prógPunktowyPoziomów: {level?.levelName ?? EMPTY_FIELD_STRING}
+          Poziom do zdobycia przed końcem laboratorium:{" "}
+          {level?.levelName ?? EMPTY_FIELD_STRING}
         </div>
         <div>
-          projectId: {category?.category.categoryName ?? EMPTY_FIELD_STRING}
+          Wybrana kategoria:{" "}
+          {category?.category.categoryName ?? EMPTY_FIELD_STRING}
         </div>
         <div>
-          prógPunktowyProjektu:{" "}
+          Liczba punktów do zdobycia za daną kategorię:{" "}
           {gradingChecks.gradingCheck?.projectPointsThreshold ??
             EMPTY_FIELD_STRING}
         </div>

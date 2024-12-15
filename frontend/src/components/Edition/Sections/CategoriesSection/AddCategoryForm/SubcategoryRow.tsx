@@ -42,7 +42,7 @@ export const SubcategoryRow = ({
     <div style={styles.innerContainer}>
       <TextField
         name="ordinal"
-        label="liczebnik porządkowy"
+        label="Liczba porządkowa"
         variant="outlined"
         value={initialValues.ordinal}
         style={styles.points}
@@ -51,7 +51,7 @@ export const SubcategoryRow = ({
 
       <TextField
         name="maxPoints"
-        label="max"
+        label="Maksymalna liczba punktów"
         variant="outlined"
         value={maxPoints}
         onChange={(e) => setMaxPoints(parseInt(e.target.value))}

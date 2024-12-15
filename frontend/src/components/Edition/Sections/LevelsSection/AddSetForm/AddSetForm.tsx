@@ -132,7 +132,7 @@ export const AddSetForm = ({
       : "Niekonsekwentność w ocenach";
 
     const imageError = levels.find((l) => l.imageId === values.imageId)
-      ? "Zduplikowany obrazek"
+      ? "Zduplikowana ikona"
       : undefined;
 
     return {
@@ -161,7 +161,7 @@ export const AddSetForm = ({
         onClick={() => handleConfirm(levels)}
         disabled={levels.length === 0}
       >
-        potwierdź
+        Potwierdź
       </button>
       <div style={styles.error}>{formError}</div>
     </div>

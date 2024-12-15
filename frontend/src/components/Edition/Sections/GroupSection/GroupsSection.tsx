@@ -42,7 +42,7 @@ export const GroupsSection = () => {
         <button onClick={() => openAddGroup("select")}>Dodaj grupę</button>
         <button onClick={() => openAddGroup("import")}>Zaimportuj grupę</button>
         <button onClick={handleMarkAllPassingStudents}>
-          Zaznacz wszystkich zdających studentów jako nieaktywnych
+          Deaktywuj wszystkich zdających studentów
         </button>
       </div>
       <GroupsList

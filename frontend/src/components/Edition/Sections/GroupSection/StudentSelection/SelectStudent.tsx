@@ -43,7 +43,7 @@ export const SelectStudent = ({
         }}
         type="button"
       >
-        add student
+        Dodaj studenta
       </button>
     </div>
   );

@@ -66,7 +66,7 @@ export const ChangeEditionForm = ({
             <div style={styles.error}>{formik.errors.editionId}</div>
           )}
         </FormControl>
-        <button type="submit">potwierdź</button>
+        <button type="submit">Potwierdź</button>
       </div>
     </form>
   );

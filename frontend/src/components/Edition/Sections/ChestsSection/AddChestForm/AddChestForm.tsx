@@ -65,7 +65,7 @@ export const AddChestForm = ({
 
       if (values.awardThisEditionIds.length < values.awardBundleCount) {
         errors.awardThisEditionIds =
-          "Liczba wybranych nagród  edycji nie może być mniejsza niż awardBundleCount";
+          "Liczba wybranych nagród  edycji nie może być mniejsza niż maksymalna liczba nagród do wyboru ze skrzynki";
       }
 
       return errors;
@@ -82,8 +82,8 @@ export const AddChestForm = ({
         <div style={styles.fieldsContainer}>
           <TextField
             fullWidth
-            name="awardBundleCount"
-            label="awardBundleCount"
+            name="Maksymalna liczba nagród do wyboru ze skrzynki"
+            label="Maksymalna liczba nagród do wyboru ze skrzynki"
             variant="outlined"
             type="number"
             value={formik.values.awardBundleCount}
@@ -121,7 +121,7 @@ export const AddChestForm = ({
             error={formik.errors.fileId as string}
             touched={formik.touched.fileId}
             selectVariant={"single"}
-            title="Wybierz obrazek:"
+            title="Wybierz ikonę:"
           />
 
           <SelectImage
@@ -156,7 +156,7 @@ export const AddChestForm = ({
             title={"Wybrane nagrody z innych edycji:"}
           />
         </div>
-        <button type="submit">potwierdź</button>
+        <button type="submit">Potwierdź</button>
       </form>
       {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>

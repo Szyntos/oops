@@ -48,7 +48,7 @@ export const LevelSetsSection = () => {
       <button onClick={openAddSet}>Dodaj zbiór poziomów</button>
 
       <div>
-        <div>Wybrany zbiór:</div>
+        <div>Wybrany zbiór poziomów:</div>
         {activeSet ? (
           <SelectedSetCard
             levelSet={activeSet}
@@ -71,7 +71,7 @@ export const LevelSetsSection = () => {
         handleEdit={openEditSet}
         handleDelete={handleDeleteSet}
         handleCopy={handleCopySet}
-        title={"Dodaj zbiór poziomów"}
+        title={"Wszystkie zbiory poziomów"}
       />
 
       <Dialog open={isAddSetOpen} maxWidth={"lg"}>

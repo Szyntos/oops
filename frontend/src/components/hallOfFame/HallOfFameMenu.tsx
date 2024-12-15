@@ -25,7 +25,7 @@ export const HallOfFameMenu = ({
     <div style={styles.container}>
       {isUserRoleStudent ? (
         <>
-          <CustomButton onClick={scrollToStudent}>wyszukaj mnie</CustomButton>
+          <CustomButton onClick={scrollToStudent}>Wyszukaj mnie</CustomButton>
           <HallOfFameStudentSearcher onInputChange={onSearchChange} />
           <FilterButton
             option={"Moja grupa"}

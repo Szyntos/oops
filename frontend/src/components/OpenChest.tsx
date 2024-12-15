@@ -57,7 +57,7 @@ export const OpenChest = ({
           handleOpenChestClick(selectedAwards, chest.chestHistoryId)
         }
       >
-        potwierdź
+        Potwierdź
       </button>
     </div>
   );

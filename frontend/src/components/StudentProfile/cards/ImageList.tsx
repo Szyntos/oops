@@ -2,6 +2,7 @@ import { Bonus, Level } from "../../../hooks/StudentProfile";
 import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { AnimalWithTooltip } from "../../avatars/AnimalWithTooltip";
+import { AvatarShadowSize } from "../../avatars/Avatar";
 import { AwardWithTooltip } from "../../avatars/AwardWithTooltip";
 
 type CustomImageListProps =
@@ -17,7 +18,7 @@ type CustomImageListProps =
 export type AnimalItem = {
   level: Level;
   disabled: boolean;
-  current: boolean;
+  shadow: AvatarShadowSize;
   type: "animal";
 };
 
@@ -34,7 +35,7 @@ export const CustomImageList = ({ items }: CustomImageListProps) => {
           level={item.level}
           size={"xs"}
           disabled={item.disabled}
-          shadow={item.current}
+          shadow={item.shadow}
         />
       );
     }

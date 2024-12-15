@@ -1,14 +1,17 @@
 import { CSSProperties } from "react";
 import { FETCH_FILES_URL } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
+import { tokens } from "../../tokens";
 
 export type AvatarProps = {
   id: string | undefined;
   size: AvatarSize;
   disabled?: boolean;
-  shadow?: boolean;
+  shadow?: AvatarShadowSize;
   imageStyle?: CSSProperties;
 };
+
+export type AvatarShadowSize = "none" | "small" | "big";
 
 const sizeMap: Record<AvatarSize, number> = {
   xs: 48,
@@ -23,7 +26,7 @@ export const Avatar = ({
   size,
   id,
   disabled,
-  shadow,
+  shadow = "none",
   imageStyle,
 }: AvatarProps) => {
   return (
@@ -38,9 +41,10 @@ export const Avatar = ({
         alt={`img id ${id}`}
         style={{
           ...styles.img,
-          boxShadow: shadow
-            ? "0px 0px 6px rgba(255, 255, 255, 0.6)"
-            : undefined,
+          boxShadow:
+            shadow !== "none"
+              ? `0px 0px ${shadow === "small" ? 6 : 16}px ${shadow === "small" ? tokens.color.shadow.white : tokens.color.shadow.accent}`
+              : undefined,
           ...imageStyle,
           ...{
             width: sizeMap[size],

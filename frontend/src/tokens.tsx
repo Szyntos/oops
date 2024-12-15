@@ -26,6 +26,10 @@ export const tokens = {
       error: "red",
       success: "green",
     },
+    shadow: {
+      white: "rgba(255, 255, 255, 0.6)",
+      accent: "rgba(231, 216, 239, 0.8)",
+    },
   },
   padding: {
     xxs: 4,

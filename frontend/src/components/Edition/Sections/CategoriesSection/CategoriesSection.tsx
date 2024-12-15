@@ -5,6 +5,7 @@ import { CategoriesList } from "./CategoriesList/CategoriesList";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useCategoriesSection } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { useParams } from "react-router-dom";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 
 export const CategoriesSection = () => {
   const params = useParams();
@@ -30,7 +31,7 @@ export const CategoriesSection = () => {
     handleCopyCategory,
   } = useCategoriesSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <LoadingScreen type="edition" />;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (

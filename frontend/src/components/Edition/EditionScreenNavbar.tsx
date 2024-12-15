@@ -3,7 +3,9 @@ import { pathsGenerator } from "../../router/paths";
 import { useLocation, useNavigate } from "react-router-dom";
 import { tokens } from "../../tokens";
 
-type SectionBarProps = {
+export const EDITION_NAVBAR_HEIGHT = 24;
+
+type EditionScreenNavbarProps = {
   editionId: number;
 };
 
@@ -56,7 +58,9 @@ const sections: Section[] = [
   },
 ];
 
-export const SectionsBar = ({ editionId }: SectionBarProps) => {
+export const EditionScreenNavbar = ({
+  editionId,
+}: EditionScreenNavbarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -99,5 +103,6 @@ const styles: Styles = {
     flexDirection: "row",
     gap: 12,
     borderBottom: "1px solid black",
+    height: EDITION_NAVBAR_HEIGHT,
   },
 };

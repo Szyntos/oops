@@ -8,6 +8,7 @@ import { useError } from "../../../../hooks/common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../../../utils/constants";
 import { useDeleteFileMutation } from "../../../../graphql/deleteFile.graphql.types";
 import { useConfirmPopup } from "../../../../hooks/common/useConfirmPopup";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 
 const folders: Folder[] = [
   { title: "award", pathPrefix: `image/award` },
@@ -75,7 +76,7 @@ export const FilesSection = () => {
     });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingScreen type="edition" />;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (

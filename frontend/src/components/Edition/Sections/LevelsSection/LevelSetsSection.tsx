@@ -8,6 +8,7 @@ import { LevelSetsList } from "./LevelSetsList/LevelSetsList";
 import { AddSetForm } from "./AddSetForm/AddSetForm";
 import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { SelectedSetCard } from "./LevelSetsList/SelectedSetCard";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 
 export const LevelSetsSection = () => {
   const params = useParams();
@@ -40,7 +41,7 @@ export const LevelSetsSection = () => {
     handleCopySet,
   } = useLevelSetsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <LoadingScreen type="edition" />;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (

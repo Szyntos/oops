@@ -6,6 +6,7 @@ import { useChestsSection } from "../../../../hooks/Edition/useChestsSection";
 import { useParams } from "react-router-dom";
 import { ChestsList } from "./ChestsList/ChestsList";
 import { AddChestForm } from "./AddChestForm/AddChestForm";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 
 export const ChestsSection = () => {
   const params = useParams();
@@ -42,7 +43,7 @@ export const ChestsSection = () => {
     handleActivateChest,
   } = useChestsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <LoadingScreen type="edition" />;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (

@@ -6,6 +6,7 @@ import { useAwardsSection } from "../../../../hooks/Edition/useAwardsSection";
 import { AddAwardForm } from "./AddAwardForm/AddAwardForm";
 
 import { useParams } from "react-router-dom";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 
 export const AwardsSection = () => {
   const params = useParams();
@@ -38,7 +39,7 @@ export const AwardsSection = () => {
     handleCopyAward,
   } = useAwardsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <LoadingScreen type="edition" />;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (

@@ -13,6 +13,7 @@ import { StudentsListSearcher } from "../../../Students/StudentsListSearcher";
 import { useState } from "react";
 import { RadioFilterGroups } from "../../../Groups/RadioFilterGroup";
 import { isPartOfAString } from "../../../../utils/strings";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 
 const activeRadioOptions = [
   { id: "active", name: "active" },
@@ -55,7 +56,7 @@ export const UsersSection = () => {
   const [input, setInput] = useState("");
   const [showActiveUsers, setShowActiveUsers] = useState(true);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <LoadingScreen type="edition" />;
   if (error) return <div>ERROR: {error.message}</div>;
 
   const doesFilterMatch = (user: User) => {

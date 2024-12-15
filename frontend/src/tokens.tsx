@@ -24,6 +24,7 @@ export const tokens = {
     state: {
       disabled: "grey",
       error: "red",
+      success: "green",
     },
   },
   padding: {

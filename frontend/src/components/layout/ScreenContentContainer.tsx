@@ -7,7 +7,7 @@ type ScreenContentContainerProps = {
   children: ReactNode;
 };
 
-export const CONTENT_CONTAINER_HEIGHT = `calc(100vh - ${NAV_BAR_HEIGHT + 1}px)`;
+export const CONTENT_CONTAINER_HEIGHT_CALC = `calc(100vh - ${NAV_BAR_HEIGHT + 1}px)`;
 
 export const ScreenContentContainer = ({
   sidebar,
@@ -24,7 +24,7 @@ export const ScreenContentContainer = ({
 const styles: Styles = {
   container: {
     display: "flex",
-    minHeight: CONTENT_CONTAINER_HEIGHT,
+    minHeight: CONTENT_CONTAINER_HEIGHT_CALC,
   },
   contentContainer: {
     flex: 1,

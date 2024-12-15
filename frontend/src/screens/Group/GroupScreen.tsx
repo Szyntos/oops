@@ -11,6 +11,7 @@ import { NotEditableInfo } from "../../components/StudentProfile/NotEditableInfo
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
+import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenContentContainer";
 
 export const GroupScreen = () => {
   const params = useParams();
@@ -105,9 +106,9 @@ export const GroupScreen = () => {
 
 const styles: Styles = {
   screenContainer: {
-    margin: 12,
     display: "flex",
     flexDirection: "column",
     gap: 12,
+    height: CONTENT_CONTAINER_HEIGHT_CALC,
   },
 };

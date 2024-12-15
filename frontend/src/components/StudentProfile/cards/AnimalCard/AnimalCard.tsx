@@ -21,11 +21,11 @@ export const AnimalCard = ({
 }: AnimalCardProps) => {
   const items: ItemWithIconProps[] = [
     { icon: "monster", title: currLevel.levelName },
-    { icon: "level", title: `lvl. ${currLevel.ordinalNumber + 1}` },
-    { icon: "level", title: currLevel.grade },
+    { icon: "level2", title: `lvl. ${currLevel.ordinalNumber + 1}` },
+    { icon: "grade", title: currLevel.grade },
     {
-      icon: "points",
-      title: `${parseFloat(currLevel.minimumPoints).toFixed(2)} - ${parseFloat(currLevel.maximumPoints).toFixed(2)}`,
+      icon: "score",
+      title: `${parseFloat(currLevel.minimumPoints).toFixed(2)} pkt - ${parseFloat(currLevel.maximumPoints).toFixed(2)} pkt`,
     },
   ];
 

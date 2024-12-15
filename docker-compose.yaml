@@ -137,7 +137,7 @@ services:
       echo 'Waiting for Hasura metadata to be applied...' &&
       sleep 5 &&
       echo 'Executing insert_data.py...' &&
-      python3 insert_data.py config_for_demo.json ${INIT_DATA}"
+      python3 insert_data.py true config_for_demo.json ${INIT_DATA}"
 
 volumes:
   postgres_data:

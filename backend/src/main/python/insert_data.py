@@ -247,15 +247,20 @@ def check_if_coordinator_present():
 
 if __name__ == '__main__':
     path_to_config = "config.json"
+    safe = "false"
+    if len(sys.argv) > 1:
+        safe = sys.argv[1]
+
+    print(f"Safe insertion: {safe}")
 
     # Check if a path is provided as a command-line argument
-    if len(sys.argv) > 1:
-        path_to_config = sys.argv[1]
+    if len(sys.argv) > 2:
+        path_to_config = sys.argv[2]
 
     print(f"Path to config: {path_to_config}")
 
-    if len(sys.argv) > 2:
-        redirect_to_init_data = sys.argv[2]
+    if len(sys.argv) > 3:
+        redirect_to_init_data = sys.argv[3]
         if redirect_to_init_data == "true":
             print("Redirecting to init_data.py")
             os.system("python init_data.py")
@@ -293,7 +298,7 @@ if __name__ == '__main__':
         headers["Authorization"] = f"Bearer {os.getenv('VITE_BYPASS_TOKEN')}1"
         admin_mail = os.getenv("ADMIN_MAIL")
         print("Configuration for demo loaded successfully.")
-    if check_if_coordinator_present():
+    if safe == "true" and check_if_coordinator_present():
         print("Coordinator already present. Exiting.")
         exit(0)
 

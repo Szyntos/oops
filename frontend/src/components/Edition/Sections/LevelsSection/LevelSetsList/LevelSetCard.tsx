@@ -14,6 +14,8 @@ type LevelSetCardProps = {
   onCopyClick: () => void;
 };
 
+// poziomy: id, ocena, max point, nazwa
+
 export const LevelSetCard = ({
   levelSet,
   isSelected,

@@ -37,6 +37,7 @@ export const SelectedSetCard = ({
                   minimumPoints: parseFloat(l.minimumPoints),
                   maximumPoints: parseFloat(l.maximumPoints),
                   name: l.levelName,
+                  grade: parseFloat(l.grade),
                 }}
                 size={"m"}
               />

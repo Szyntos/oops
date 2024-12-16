@@ -3,6 +3,8 @@ import { Category } from "../../../../../hooks/Edition/categories/useCategoriesS
 import { SetupButtons } from "../../SetupButtons";
 import { cardStyles, getCardStyles } from "../../../../../utils/utils";
 import { CustomText } from "../../../../CustomText";
+import { Styles } from "../../../../../utils/Styles";
+import { tokens } from "../../../../../tokens";
 
 type CategoryCardProps = {
   category: Category;
@@ -23,23 +25,26 @@ export const CategoryCard = ({
 }: CategoryCardProps) => {
   const { openShowDialog } = useEditionSections();
 
-  const getSubcategoriesString = (category: Category) => {
-    const subcategoryNames = category.category.subcategories.map(
-      (subcategory) => subcategory.subcategoryName,
-    );
-    const n = subcategoryNames.length;
-    return `(${n}) ${subcategoryNames.splice(0, Math.min(2, n)).join(", ")}${n > 2 ? "..." : ""}`;
-  };
-
   return (
-    <div style={getCardStyles(isSelected)}>
+    <div
+      style={{ ...getCardStyles(isSelected), justifyContent: "space-between" }}
+    >
       <div style={cardStyles.textContainer}>
         <CustomText style={cardStyles.title}>
           {category.category.categoryName}
         </CustomText>
-        <CustomText>
-          subkategorie: {getSubcategoriesString(category)}
-        </CustomText>
+        {category.category.subcategories.map((s, index) => {
+          return (
+            <div style={styles.subcategoryRow}>
+              <CustomText>
+                {index + 1}. {s.subcategoryName}{" "}
+              </CustomText>
+              <CustomText color={tokens.color.text.tertiary}>
+                {s.maxPoints}pkt
+              </CustomText>
+            </div>
+          );
+        })}
       </div>
 
       <SetupButtons
@@ -53,4 +58,11 @@ export const CategoryCard = ({
       />
     </div>
   );
+};
+
+const styles: Styles = {
+  subcategoryRow: {
+    display: "flex",
+    gap: 8,
+  },
 };

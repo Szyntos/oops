@@ -20,6 +20,7 @@ export type Level = {
   imageId: string | undefined;
   minimumPoints: number;
   maximumPoints: number;
+  grade: number;
 };
 
 export type Points =

@@ -52,7 +52,7 @@ export const GradingChecksSection = () => {
 
   return (
     <div style={styles.container}>
-      <div>Zasady oceniania: {editionId}</div>
+      <div>Warunki zaliczenia: {editionId}</div>
 
       <SetupButtons
         permissions={gradingChecks.permissions}
@@ -88,7 +88,7 @@ export const GradingChecksSection = () => {
           formError={formError}
           handleConfirm={handleAdd}
           categories={formCategories}
-          title="Dodaj zasady oceniania"
+          title="Dodaj"
           levels={formLevels}
         />
       </Dialog>
@@ -112,7 +112,7 @@ export const GradingChecksSection = () => {
                 }
               : undefined
           }
-          title="Edytuj zasady oceniania"
+          title="Edytuj"
         />
       </Dialog>
     </div>

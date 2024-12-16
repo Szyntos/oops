@@ -1,8 +1,8 @@
 import { UsersRolesType } from "../../../../../__generated__/schema.graphql.types";
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { User } from "../../../../../hooks/Edition/users/useUsersSection";
-import { tokens } from "../../../../../tokens";
 import { cardStyles, getCardStyles } from "../../../../../utils/utils";
+import { Avatar } from "../../../../avatars/Avatar";
 import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
@@ -22,15 +22,24 @@ export const UserCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div style={getCardStyles(false)}>
-      <div style={cardStyles.textContainer}>
-        <CustomText color={tokens.color.text.primary} bold={true}>
-          {user.user.firstName} {user.user.secondName}
-        </CustomText>
-        {user.user.role === UsersRolesType.Student && (
-          <CustomText>{user.user.nick}</CustomText>
-        )}
-      </div>
+    <div style={{ ...getCardStyles(false), minWidth: 260 }}>
+      {user.user.role === UsersRolesType.Student ? (
+        <div style={cardStyles.avatarContainer}>
+          <Avatar id={user.user.imageFile?.fileId} size={"xs"} />
+          <div style={cardStyles.textContainer}>
+            <CustomText style={cardStyles.title}>
+              {user.user.firstName} {user.user.secondName}
+            </CustomText>
+            <CustomText>{user.user.nick}</CustomText>
+          </div>
+        </div>
+      ) : (
+        <div style={cardStyles.textContainer}>
+          <CustomText style={cardStyles.title}>
+            {user.user.firstName} {user.user.secondName}
+          </CustomText>
+        </div>
+      )}
 
       {handleStudentActiveness ? (
         <SetupButtons

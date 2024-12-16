@@ -1,7 +1,5 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
-import { tokens } from "../../../../../tokens";
-import { Styles } from "../../../../../utils/Styles";
 import { cardStyles, getCardStyles } from "../../../../../utils/utils";
 import { Avatar } from "../../../../avatars/Avatar";
 import { CustomText } from "../../../../CustomText";
@@ -28,15 +26,13 @@ export const AwardCard = ({
 
   return (
     <div style={getCardStyles(isSelected)}>
-      <div style={styles.contentContainer}>
+      <div style={cardStyles.avatarContainer}>
         <Avatar id={award.award.imageFile?.fileId} size="s" />
         <div style={cardStyles.textContainer}>
-          <CustomText color={tokens.color.text.primary} bold={true}>
+          <CustomText style={cardStyles.title}>
             {award.award.awardName}
           </CustomText>
-          <CustomText color={tokens.color.text.secondary}>
-            {award.award.awardType}
-          </CustomText>
+          <CustomText>{award.award.awardType}</CustomText>
         </div>
       </div>
 
@@ -51,12 +47,4 @@ export const AwardCard = ({
       />
     </div>
   );
-};
-
-const styles: Styles = {
-  contentContainer: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 12,
-  },
 };

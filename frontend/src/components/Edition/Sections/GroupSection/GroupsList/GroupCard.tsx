@@ -1,6 +1,5 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Group } from "../../../../../hooks/Edition/useGroupsSection";
-import { tokens } from "../../../../../tokens";
 import { cardStyles, getCardStyles } from "../../../../../utils/utils";
 import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
@@ -21,10 +20,10 @@ export const GroupCard = ({
   return (
     <div style={getCardStyles(false)}>
       <div style={{ ...cardStyles.textContainer, flex: 1 }}>
-        <CustomText color={tokens.color.text.primary} bold={true}>
+        <CustomText style={cardStyles.title}>
           {group.group.generatedName}
         </CustomText>
-        <div>
+        <div style={cardStyles.textContainer}>
           {group.group.userGroups.map((student, index) => (
             <CustomText>
               {index + 1}. {student.user.firstName} {student.user.secondName}

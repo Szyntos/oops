@@ -3,7 +3,6 @@ import { Category } from "../../../../../hooks/Edition/categories/useCategoriesS
 import { SetupButtons } from "../../SetupButtons";
 import { cardStyles, getCardStyles } from "../../../../../utils/utils";
 import { CustomText } from "../../../../CustomText";
-import { tokens } from "../../../../../tokens";
 
 type CategoryCardProps = {
   category: Category;
@@ -35,7 +34,7 @@ export const CategoryCard = ({
   return (
     <div style={getCardStyles(isSelected)}>
       <div style={cardStyles.textContainer}>
-        <CustomText color={tokens.color.text.primary} bold={true}>
+        <CustomText style={cardStyles.title}>
           {category.category.categoryName}
         </CustomText>
         <CustomText>

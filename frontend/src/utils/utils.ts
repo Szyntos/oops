@@ -96,4 +96,15 @@ export const cardStyles: Styles = {
     flexDirection: "column",
     gap: 4,
   },
+  avatarContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 12,
+  },
+  title: {
+    fontSize: tokens.font.title,
+    color: tokens.color.text.primary,
+    fontWeight: "bold",
+    paddingBottom: 4,
+  },
 };

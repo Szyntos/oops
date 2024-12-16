@@ -1,9 +1,12 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
-import { tokens } from "../../../../../tokens";
-import { Styles } from "../../../../../utils/Styles";
-import { isChestActive } from "../../../../../utils/utils";
+import {
+  cardStyles,
+  getCardStyles,
+  isChestActive,
+} from "../../../../../utils/utils";
 import { Avatar } from "../../../../avatars/Avatar";
+import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
 type ChestCardProps = {
@@ -30,15 +33,15 @@ export const ChestCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div
-      style={{
-        ...styles.card,
-        backgroundColor: isSelected ? "pink" : undefined,
-      }}
-    >
-      <Avatar id={chest.chest.imageFile?.fileId} size="xs" />
-      <div>[{chest.chest.chestId}]</div>
-      <div style={styles.subtitle}>{chest.chest.chestType}</div>
+    <div style={getCardStyles(isSelected)}>
+      <div style={cardStyles.avatarContainer}>
+        <Avatar id={chest.chest.imageFile?.fileId} size="xs" />
+        <div style={cardStyles.textContainer}>
+          <CustomText style={cardStyles.title}>
+            {chest.chest.chestType}
+          </CustomText>
+        </div>
+      </div>
 
       <SetupButtons
         isSelected={isSelected}
@@ -59,14 +62,4 @@ export const ChestCard = ({
       />
     </div>
   );
-};
-
-const styles: Styles = {
-  card: {
-    border: "1px solid black",
-    padding: 12,
-  },
-  subtitle: {
-    color: tokens.color.state.disabled,
-  },
 };

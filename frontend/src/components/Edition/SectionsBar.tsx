@@ -16,7 +16,7 @@ export type Section = {
     | "Poziomy"
     | "Pliki"
     | "Użytkownicy"
-    | "Zasady oceniania";
+    | "Warunki zaliczenia";
 
   path: (editionId: string) => string;
 };
@@ -31,7 +31,7 @@ const sections: Section[] = [
     path: pathsGenerator.coordinator.EditionChildren.Levels,
   },
   {
-    title: "Zasady oceniania",
+    title: "Warunki zaliczenia",
     path: pathsGenerator.coordinator.EditionChildren.GradingChecks,
   },
   {

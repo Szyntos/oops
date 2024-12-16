@@ -1,3 +1,4 @@
+import { SetupChestsQuery } from "../../../../../graphql/setupChests.graphql.types";
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
 import {
@@ -7,6 +8,10 @@ import {
 } from "../../../../../utils/utils";
 import { Avatar } from "../../../../avatars/Avatar";
 import { CustomText } from "../../../../CustomText";
+import {
+  BonusItem,
+  CustomImageList,
+} from "../../../../StudentProfile/cards/ImageList";
 import { SetupButtons } from "../../SetupButtons";
 
 type ChestCardProps = {
@@ -20,6 +25,9 @@ type ChestCardProps = {
   editionId: number;
 };
 
+export type Award =
+  SetupChestsQuery["listSetupChests"][number]["chest"]["chestAward"];
+
 export const ChestCard = ({
   chest,
   isSelected,
@@ -31,17 +39,34 @@ export const ChestCard = ({
   editionId,
 }: ChestCardProps) => {
   const { openShowDialog } = useEditionSections();
+  const awardItems: BonusItem[] = chest.chest.chestAward.map((a) => ({
+    bonus: {
+      id: a.award.awardId,
+      name: a.award.awardName,
+      description: a.award.description,
+      imageId: a.award.imageFile?.fileId ?? "",
+      maxUsage: a.award.maxUsages,
+      typeValue: parseFloat(a.award.awardValue),
+      type: a.award.awardType,
+    },
+    type: "bonus",
+  }));
 
   return (
     <div style={getCardStyles(isSelected)}>
       <div style={cardStyles.avatarContainer}>
-        <Avatar id={chest.chest.imageFile?.fileId} size="xs" />
+        <Avatar id={chest.chest.imageFile?.fileId} size="s" />
         <div style={cardStyles.textContainer}>
           <CustomText style={cardStyles.title}>
             {chest.chest.chestType}
           </CustomText>
+          <CustomText>
+            łupy do zgarnięcia: {chest.chest.awardBundleCount}
+          </CustomText>
         </div>
       </div>
+
+      <CustomImageList items={awardItems} type="bonus" />
 
       <SetupButtons
         isSelected={isSelected}

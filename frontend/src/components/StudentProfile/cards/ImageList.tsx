@@ -1,8 +1,11 @@
-import { Bonus, Level } from "../../../hooks/StudentProfile";
+import { Level } from "../../../hooks/StudentProfile";
 import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { AnimalWithTooltip } from "../../avatars/AnimalWithTooltip";
-import { AwardWithTooltip } from "../../avatars/AwardWithTooltip";
+import {
+  AwardWithTooltip,
+  AwardTooltipProps,
+} from "../../avatars/AwardWithTooltip";
 
 type CustomImageListProps =
   | {
@@ -22,7 +25,7 @@ export type AnimalItem = {
 };
 
 export type BonusItem = {
-  bonus: Bonus;
+  bonus: AwardTooltipProps;
   type: "bonus";
 };
 
@@ -39,11 +42,7 @@ export const CustomImageList = ({ items }: CustomImageListProps) => {
       );
     }
     return (
-      <AwardWithTooltip
-        key={item.bonus.award.id}
-        bonus={item.bonus}
-        size="xs"
-      />
+      <AwardWithTooltip key={item.bonus.id} props={item.bonus} size="xs" />
     );
   };
 

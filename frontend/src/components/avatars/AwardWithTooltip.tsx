@@ -1,29 +1,75 @@
-import { Bonus } from "../../hooks/StudentProfile";
 import { TooltipWrapper } from "../TooltipWrapper";
 import { dateOptions } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
 import { Avatar, AvatarSize } from "./Avatar";
+import { AwardTypeType } from "../../__generated__/schema.graphql.types";
 
 type AwardWithTooltipProps = {
-  bonus: Bonus;
+  props: AwardTooltipProps;
   size: AvatarSize;
 };
 
-export const AwardWithTooltip = ({ bonus, size }: AwardWithTooltipProps) => {
-  const displayDate = new Date(bonus.updatedAt ?? bonus.createdAt);
+export type AwardTooltipProps = {
+  id: string;
+  updatedAt?: string;
+  createdAt?: string;
+  name: string;
+  description: string;
+  value?: number;
+  imageId: string | undefined;
+  maxUsage?: number;
+  typeValue?: number;
+  type?: AwardTypeType;
+};
 
+// TODO add type  value
+export const AwardWithTooltip = ({ props, size }: AwardWithTooltipProps) => {
+  const {
+    updatedAt,
+    createdAt,
+    name,
+    description,
+    value,
+    imageId,
+    maxUsage,
+    typeValue,
+    type,
+  } = props;
+
+  const displayDate =
+    updatedAt || createdAt
+      ? new Date(updatedAt ?? (createdAt as string))
+      : undefined;
+
+  // MULTIPLICATIVE
   return (
     <TooltipWrapper
       tooltipContent={
         <div style={styles.container}>
-          <div style={styles.title}>{bonus.award.name}</div>
-          <div>{bonus.award.description}</div>
-          <div>Punkty: {bonus.award.value.toFixed(2)}</div>
-          <div>{displayDate.toLocaleDateString("pl-PL", dateOptions)}</div>
+          <div style={styles.title}>{name}</div>
+          {type && <div>{type}</div>}
+          {maxUsage && (
+            <div>
+              Ograniczenie posiadanych sztuk:{" "}
+              {maxUsage === -1 ? "brak" : maxUsage}
+            </div>
+          )}
+          {typeValue && type && (
+            <div>
+              {type === AwardTypeType.Multiplicative
+                ? `Mnożnik: ${typeValue * 100}%`
+                : `Wartość: ${typeValue.toFixed(2)}pkt`}
+            </div>
+          )}
+          <div>{description}</div>
+          {value && <div>Punkty: {value.toFixed(2)}</div>}
+          {displayDate && (
+            <div>{displayDate.toLocaleDateString("pl-PL", dateOptions)}</div>
+          )}
         </div>
       }
     >
-      <Avatar id={bonus.award.imgId} size={size} />
+      <Avatar id={imageId} size={size} />
     </TooltipWrapper>
   );
 };

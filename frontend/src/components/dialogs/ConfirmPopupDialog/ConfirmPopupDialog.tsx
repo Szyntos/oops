@@ -7,7 +7,7 @@ export const ConfirmPopupDialog = () => {
   return (
     <Dialog open={isConfirmOpen}>
       <div>
-        <div>are you sure you want to delete this item?</div>
+        <div>Czy na pewno chcesz usunąć ten element?</div>
         <button onClick={handleConfirm}>yes</button>
         <button onClick={closeConfirmPopup}>no</button>
       </div>

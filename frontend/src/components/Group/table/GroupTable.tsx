@@ -11,6 +11,9 @@ import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
 import { Styles } from "../../../utils/Styles";
 import { Subcategory } from "../../../utils/utils";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
+import { IconMapper } from "../../IconMapper";
+import { tokens } from "../../../tokens";
+import { HooverWrapper } from "../../HooverWrapper";
 
 type GroupTableProps = {
   rows: GroupTableRow[];
@@ -19,41 +22,59 @@ type GroupTableProps = {
   editable: boolean;
 };
 
+const OPACITY = 0.7;
+
 export const GroupTable = ({
   rows,
   handleStudentClick,
   handleSubcategoryClick,
   editable,
 }: GroupTableProps) => {
+  type CellValueType = {
+    data: number | string | boolean | undefined;
+    minWidth?: number;
+    colored?: boolean;
+    clickable?: boolean;
+  };
+
   // order: subcategories, pure points sum, awards, bonus points sum
-  const getRowValues = (row: GroupTableRow) => {
+  const getRowValues = (row: GroupTableRow): CellValueType[] => {
     // add subcategories, awards and sums
-    const values: (number | string | boolean | undefined)[] = [];
+    const values: CellValueType[] = [];
     for (const category of row.categories) {
       for (const subcategory of category.subcategories) {
-        values.push(subcategory.pure);
+        values.push({ data: subcategory.pure });
       }
-      values.push(category.sums.sumOfPurePoints);
+      values.push({ data: category.sums.sumOfPurePoints, colored: true });
       for (const award of category.awards) {
-        values.push(award.value);
+        values.push({ data: award.value });
       }
-      values.push(category.sums.sumOfBonuses);
+      values.push({ data: category.sums.sumOfBonuses, colored: true });
     }
     // add aggregate values
     const sums = getOverallSumValues(row);
-    values.push(sums.purePointsSum);
-    values.push(sums.bonusesSum);
-    values.push(sums.overallSum);
+    values.push({ data: sums.purePointsSum, colored: true });
+    values.push({ data: sums.bonusesSum, colored: true });
+    values.push({ data: sums.overallSum, colored: true });
     // add grade values
-    values.push(row.student.computedValues.level.levelName);
-    values.push(row.student.computedValues.level.grade);
-    values.push(
-      row.student.computedValues.endOfLabsLevelsReached ? "tak" : "nie",
-    );
-    values.push(
-      row.student.computedValues.projectPointsThresholdReached ? "tak" : "nie",
-    );
-    values.push(row.student.computedValues.computedGrade.toFixed(1));
+    values.push({
+      data: row.student.computedValues.level.levelName,
+      colored: true,
+    });
+    values.push({
+      data: row.student.computedValues.level.grade,
+      colored: true,
+    });
+    values.push({
+      data: Boolean(row.student.computedValues.endOfLabsLevelsReached),
+    });
+    values.push({
+      data: Boolean(row.student.computedValues.projectPointsThresholdReached),
+    });
+    values.push({
+      data: row.student.computedValues.computedGrade.toFixed(1),
+      colored: true,
+    });
     return values;
   };
 
@@ -71,49 +92,80 @@ export const GroupTable = ({
     return { purePointsSum, bonusesSum, overallSum };
   };
 
+  type HeaderCellType = {
+    subcategory?: Subcategory;
+    cell: CellValueType;
+  };
   const getHeaderNames = () => {
-    const headers: {
-      name: string;
-      subcategory?: Subcategory;
-      color?: string;
-    }[] = [];
+    const headers: HeaderCellType[] = [];
     // add subcategories, awards and sums
     if (rows.length > 0) {
       const row = rows[0];
       for (const category of row.categories) {
         for (const subcategory of category.subcategories) {
           headers.push({
-            name: subcategory.subcategoryName,
             subcategory: {
               name: subcategory.subcategoryName,
               id: subcategory.subcategoryId,
               maxPoints: subcategory.maxPoints,
               categoryId: parseInt(subcategory.categoryId),
             },
+            cell: {
+              data: subcategory.subcategoryName,
+            },
           });
         }
-        headers.push({ name: "sum of pure points", color: "blue" });
+        headers.push({ cell: { data: "Zdobyte punkty", colored: true } });
         for (const award of category.awards) {
-          headers.push({ name: award.name });
+          headers.push({ cell: { data: award.name } });
         }
-        headers.push({ name: "sum of bonuses", color: "blue" });
+        headers.push({ cell: { data: "Punkty za łupy", colored: true } });
       }
     }
     // add aggregate values
-    headers.push({ name: "overall pure points", color: "blue" });
-    headers.push({ name: "overall bonuses", color: "blue" });
-    headers.push({ name: "overall", color: "blue" });
+    headers.push({ cell: { data: "dobyte punkty", colored: true } });
+    headers.push({ cell: { data: "Zagregowane łupy", colored: true } });
+    headers.push({ cell: { data: "Razem", colored: true } });
     // levels...
-    headers.push({ name: "level", color: "blue" });
-    headers.push({ name: "level grade", color: "blue" });
-    headers.push({ name: "endOfLabs", color: "blue" });
-    headers.push({ name: "projectPoints", color: "blue" });
-    headers.push({ name: "computed grade", color: "blue" });
+    headers.push({ cell: { data: "Poziom", colored: true } });
+    headers.push({ cell: { data: "Przewidywana ocena", colored: true } });
+    headers.push({ cell: { data: "Status wyklucia", colored: true } });
+    headers.push({ cell: { data: "Status projektu", colored: true } });
+    headers.push({ cell: { data: "Ocena końcowa", colored: true } });
     return headers;
   };
 
+  const getCellContent = (
+    value: string | number | boolean | undefined | null,
+  ) => {
+    if (value === null || value === undefined) {
+      return EMPTY_FIELD_STRING;
+    }
+    if (typeof value === "string") {
+      return value;
+    }
+    if (typeof value === "number") {
+      return value.toFixed(2);
+    }
+    if (typeof value === "boolean") {
+      return (
+        <IconMapper
+          icon={value ? "yes" : "no"}
+          color={value ? tokens.color.state.success : tokens.color.state.error}
+        />
+      );
+    }
+    return EMPTY_FIELD_STRING;
+  };
+
+  const getCellColor = (cell: CellValueType) => {
+    return cell.colored ? tokens.color.accent.light : undefined;
+  };
+
+  // TODO last 4 columns could be centered
+
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 560 }}>
+    <TableContainer component={Paper} sx={{ maxHeight: "100%" }}>
       <Table>
         <TableHead>
           <TableRow>
@@ -128,10 +180,18 @@ export const GroupTable = ({
                 }}
                 style={{
                   ...styles.headerCell,
-                  color: entry.color,
+                  color: getCellColor(entry.cell),
+                  cursor: entry.subcategory && editable ? "pointer" : "auto",
                 }}
+                align="center"
               >
-                {entry.name}
+                {entry.subcategory && editable ? (
+                  <HooverWrapper opacity={OPACITY}>
+                    <div>{entry.cell.data}</div>
+                  </HooverWrapper>
+                ) : (
+                  entry.cell.data
+                )}
               </TableCell>
             ))}
           </TableRow>
@@ -141,18 +201,33 @@ export const GroupTable = ({
           {rows.map((row, index) => (
             <TableRow key={row.student.id}>
               <TableCell
-                style={styles.regularStudentCell}
+                style={{
+                  ...styles.regularStudentCell,
+                  cursor: editable ? "pointer" : "auto",
+                }}
                 onClick={() => {
                   if (editable) {
                     handleStudentClick(row.student);
                   }
                 }}
               >
-                {index + 1}. {row.student.fullName}
+                {editable ? (
+                  <HooverWrapper opacity={OPACITY}>
+                    <div>
+                      {index + 1}. {row.student.fullName}
+                    </div>
+                  </HooverWrapper>
+                ) : (
+                  `${index + 1}. ${row.student.fullName}`
+                )}
               </TableCell>
               {getRowValues(row).map((value, index) => (
-                <TableCell key={`${index}`}>
-                  {value ?? EMPTY_FIELD_STRING}
+                <TableCell
+                  key={`${index}`}
+                  align="center"
+                  style={{ color: getCellColor(value) }}
+                >
+                  {getCellContent(value.data)}
                 </TableCell>
               ))}
             </TableRow>

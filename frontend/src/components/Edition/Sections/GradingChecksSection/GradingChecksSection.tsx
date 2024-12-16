@@ -35,9 +35,9 @@ export const GradingChecksSection = () => {
     handleDelete,
   } = useGradingChecksSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
-  if (!gradingChecks) return <div>something went wrong...</div>;
+  if (!gradingChecks) return <div>coś poszło nie tak :c ...</div>;
 
   const level = formLevels.find(
     (l) =>
@@ -52,7 +52,7 @@ export const GradingChecksSection = () => {
 
   return (
     <div style={styles.container}>
-      <div>grading checks: {editionId}</div>
+      <div>Zasady oceniania: {editionId}</div>
 
       <SetupButtons
         permissions={gradingChecks.permissions}
@@ -64,17 +64,19 @@ export const GradingChecksSection = () => {
 
       <div>
         <div>
-          endOfLabsDate:{" "}
+          Data końca laboratorium:{" "}
           {gradingChecks.gradingCheck?.endOfLabsDate ?? EMPTY_FIELD_STRING}
         </div>
         <div>
-          endOfLabsLevelsThreshold: {level?.levelName ?? EMPTY_FIELD_STRING}
+          Poziom do zdobycia przed końcem laboratorium:{" "}
+          {level?.levelName ?? EMPTY_FIELD_STRING}
         </div>
         <div>
-          projectId: {category?.category.categoryName ?? EMPTY_FIELD_STRING}
+          Wybrana kategoria:{" "}
+          {category?.category.categoryName ?? EMPTY_FIELD_STRING}
         </div>
         <div>
-          projectPointsThreshold:{" "}
+          Liczba punktów do zdobycia za daną kategorię:{" "}
           {gradingChecks.gradingCheck?.projectPointsThreshold ??
             EMPTY_FIELD_STRING}
         </div>
@@ -86,7 +88,7 @@ export const GradingChecksSection = () => {
           formError={formError}
           handleConfirm={handleAdd}
           categories={formCategories}
-          title="Add Grading Checks"
+          title="Dodaj zasady oceniania"
           levels={formLevels}
         />
       </Dialog>
@@ -110,7 +112,7 @@ export const GradingChecksSection = () => {
                 }
               : undefined
           }
-          title="Edit Grading Checks"
+          title="Edytuj zasady oceniania"
         />
       </Dialog>
     </div>

@@ -36,7 +36,7 @@ export const CategoriesSection = () => {
 
   return (
     <div style={styles.container}>
-      <CustomButton onClick={openAddCategory}>dodaj kategorię</CustomButton>
+      <CustomButton onClick={openAddCategory}>Dodaj kategorię</CustomButton>
 
       <CategoriesList
         categories={selectedCategories}
@@ -62,7 +62,7 @@ export const CategoriesSection = () => {
         <AddCategoryForm
           formError={formError}
           handleConfirm={handleAddCategory}
-          title={"Add Category"}
+          title={"Dodaj kategorię"}
         />
       </Dialog>
 
@@ -71,7 +71,7 @@ export const CategoriesSection = () => {
         <AddCategoryForm
           formError={formError}
           handleConfirm={handleEditCategory}
-          title={"Edit Category"}
+          title={"Edytuj kategorię"}
           initialValues={selectedCategory?.category}
           initialSelectedSubcategories={
             selectedCategory?.category.subcategories.map((s) => ({

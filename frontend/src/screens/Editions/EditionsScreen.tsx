@@ -31,7 +31,7 @@ export const EditionsScreen = () => {
     handleDeleteClick,
   } = useEditionsScreen();
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error?.message}</div>;
 
   return (
@@ -41,7 +41,7 @@ export const EditionsScreen = () => {
         <AddEditionForm
           createError={formError}
           handleAddEdition={handleCreateClick}
-          title={"Add Edition"}
+          title={"Dodaj edycję"}
         />
       </Dialog>
 
@@ -50,7 +50,7 @@ export const EditionsScreen = () => {
         <AddEditionForm
           createError={formError}
           handleAddEdition={handleCopyClick}
-          title={"Copy Edition"}
+          title={"Kopiuj edycję"}
           initialValues={
             selectedEdition
               ? {
@@ -67,7 +67,7 @@ export const EditionsScreen = () => {
         <AddEditionForm
           createError={formError}
           handleAddEdition={handleEditClick}
-          title={"Edit Edition"}
+          title={"Edytuj edycję"}
           initialValues={
             selectedEdition
               ? {

@@ -1,9 +1,9 @@
-import { Styles } from "../../../utils/Styles";
 import { useState } from "react";
 import { GroupTable } from "./GroupTable";
 import { Category, Subcategory } from "../../../utils/utils";
 import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
 import FilterMenu from "../../StudentProfile/table/FilterMenu/FilterMenu";
+import { Styles } from "../../../utils/Styles";
 
 type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
@@ -37,36 +37,45 @@ export const GroupTableWithFilters = ({
   });
 
   return (
-    <div style={styles.container}>
-      <FilterMenu
-        pickedCategoryIds={selectedCategoryIds}
-        onSelectChange={(selectedIds) => {
-          setSelectedCategoryIds(selectedIds);
-        }}
-        filterItems={categories.map((c) => {
-          return {
-            id: c.id,
-            name: c.name,
-            lightColor: c.lightColor,
-            darkColor: c.darkColor,
-          };
-        })}
-      />
+    <>
+      <div style={styles.filterWrapper}>
+        <FilterMenu
+          pickedCategoryIds={selectedCategoryIds}
+          onSelectChange={(selectedIds) => {
+            setSelectedCategoryIds(selectedIds);
+          }}
+          filterItems={categories.map((c) => {
+            return {
+              id: c.id,
+              name: c.name,
+              lightColor: c.lightColor,
+              darkColor: c.darkColor,
+            };
+          })}
+        />
+      </div>
 
-      <GroupTable
-        rows={rowsToDisplay}
-        handleStudentClick={handleStudentClick}
-        handleSubcategoryClick={handleSubcategoryClick}
-        editable={editable}
-      />
-    </div>
+      <div style={styles.tableWrapper}>
+        <GroupTable
+          rows={rowsToDisplay}
+          handleStudentClick={handleStudentClick}
+          handleSubcategoryClick={handleSubcategoryClick}
+          editable={editable}
+        />
+      </div>
+    </>
   );
 };
 
 const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
+  filterWrapper: {
+    padding: 12,
+    paddingBottom: 0,
+  },
+  tableWrapper: {
+    flex: 1,
+    overflowY: "auto",
+    padding: 12,
+    paddingTop: 0,
   },
 };

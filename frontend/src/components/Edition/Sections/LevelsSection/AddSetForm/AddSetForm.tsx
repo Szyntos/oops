@@ -105,12 +105,12 @@ export const AddSetForm = ({
   ): WithAddedLevelsValidateErrors => {
     // check if name not duplicated
     const nameError = levels.find((l) => l.name === values.name)
-      ? "duplicated name"
+      ? "Zduplikowana nazwa"
       : undefined;
 
     // check if max points not duplicated
     const maxPointsError = levels.find((l) => l.maxPoints === values.maxPoints)
-      ? "duplicated maxPoints"
+      ? "Zduplikowane maksymalne punkty"
       : undefined;
 
     const newLevel: AddedLevel = {
@@ -129,10 +129,10 @@ export const AddSetForm = ({
       return parseFloat(array[index - 1].grade) <= parseFloat(l1.grade);
     })
       ? undefined
-      : "grade inconsistency";
+      : "Niekonsekwentność w ocenach";
 
     const imageError = levels.find((l) => l.imageId === values.imageId)
-      ? "duplicated image"
+      ? "Zduplikowana ikona"
       : undefined;
 
     return {
@@ -153,7 +153,7 @@ export const AddSetForm = ({
       />
       <AddLevelForm
         handleAdd={handleAdd}
-        title={"Add level form"}
+        title={"Formularz dodania poziomu"}
         imageIds={imageIds}
         validateWithAddedLevels={validateWithAddedLevels}
       />
@@ -161,7 +161,7 @@ export const AddSetForm = ({
         onClick={() => handleConfirm(levels)}
         disabled={levels.length === 0}
       >
-        confirm
+        Potwierdź
       </button>
       <div style={styles.error}>{formError}</div>
     </div>

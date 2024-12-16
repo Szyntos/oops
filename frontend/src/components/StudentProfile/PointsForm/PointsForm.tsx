@@ -11,9 +11,9 @@ import { tokens } from "../../../tokens";
 export type PointsFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  categoryId: z.string().min(1, "required"),
-  subcategoryId: z.string().min(1, "required"),
-  points: z.number().min(0, "min number of points is 0"),
+  categoryId: z.string().min(1, "Wymagane"),
+  subcategoryId: z.string().min(1, "Wymagane"),
+  points: z.number().min(0, "Minimalna liczba punktów to 0"),
 });
 
 type PointFormProps = {
@@ -33,7 +33,7 @@ export const PointsForm = ({
   variant,
   disableCategoryAndSubcategory,
 }: PointFormProps) => {
-  console.log("INIT VALUES: ", initialValues);
+  console.log("POCZĄTKOWE WARTOŚCI: ", initialValues);
   const formik = useFormik({
     initialValues,
     validate: (values: PointsFormValues) => {
@@ -61,7 +61,7 @@ export const PointsForm = ({
         selectedSubcategory &&
         values.points > selectedSubcategory.maxPoints
       ) {
-        errors.points = `max is ${selectedSubcategory.maxPoints}`;
+        errors.points = `Max to ${selectedSubcategory.maxPoints}`;
       }
 
       return errors;
@@ -87,14 +87,14 @@ export const PointsForm = ({
         ?.subcategories ?? [];
     setSubcategories(updatedSubcategories);
 
-    formik.setFieldValue("categoryId", categoryId);
-    formik.setFieldValue("subcategoryId", updatedSubcategories[0]?.id ?? "");
+    formik.setFieldValue("Id kategorii", categoryId);
+    formik.setFieldValue("id subkategorii", updatedSubcategories[0]?.id ?? "");
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.title}>
-        {variant === "edit" ? "Edit Points" : "Add Points"}
+        {variant === "edit" ? "Edytuj punkty" : "Dodaj punkty"}
       </div>
       <form onSubmit={formik.handleSubmit}>
         <SelectInput
@@ -108,7 +108,7 @@ export const PointsForm = ({
             value: category.id,
             title: category.name,
           }))}
-          label="Category"
+          label="Kategoria"
           disabled={disableCategoryAndSubcategory}
         />
         <SelectInput
@@ -122,7 +122,7 @@ export const PointsForm = ({
             value: subcategory.id,
             title: subcategory.name,
           }))}
-          label="Subcategory"
+          label="Subkategoria"
           disabled={disableCategoryAndSubcategory}
         />
         <NumberInput
@@ -132,9 +132,9 @@ export const PointsForm = ({
           error={formik.errors.points}
           touched={formik.touched.points}
           name="points"
-          label="Points"
+          label="Punkty"
         />
-        <button type="submit">confirm</button>
+        <button type="submit">Potwierdź</button>
       </form>
       {mutationError && <p style={styles.error}>Error: {mutationError}</p>}
     </div>

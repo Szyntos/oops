@@ -67,7 +67,7 @@ export const ChangeGroupForm = ({
             <div style={styles.error}>{formik.errors.groupId}</div>
           )}
         </FormControl>
-        <button type="submit">confirm</button>
+        <button type="submit">potwiedź</button>
       </form>
       {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>

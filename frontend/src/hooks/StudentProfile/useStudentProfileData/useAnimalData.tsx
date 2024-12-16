@@ -43,7 +43,7 @@ export const useAnimalData = (
       currLevel: undefined,
       nextLevel: undefined,
       animalDataLoading: loading,
-      animalDataError: error ?? new Error("Animal card levels are missing."),
+      animalDataError: error ?? new Error("Brakuje karty poziomów zwierzaka."),
       animalDataRefetch: refetch,
     };
   }

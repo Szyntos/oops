@@ -39,12 +39,12 @@ export const AwardsSection = () => {
     handleCopyAward,
   } = useAwardsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
   if (error) return <div>ERROR: {error.message}</div>;
 
   return (
     <div style={styles.container}>
-      <CustomButton onClick={openAddAward}>dodaj nagrodę</CustomButton>
+      <CustomButton onClick={openAddAward}>Dodaj nagrodę</CustomButton>
 
       <AwardsList
         awards={selectedAwards}
@@ -71,7 +71,7 @@ export const AwardsSection = () => {
           formError={formError}
           handleConfirm={handleAddAward}
           categories={formCategories}
-          title="Add Award"
+          title="Dodaj nagrodę"
           imageIds={imageIds}
         />
       </Dialog>
@@ -94,7 +94,7 @@ export const AwardsSection = () => {
                 }
               : undefined
           }
-          title="Edit Award"
+          title="Edytuj nagrodę"
         />
       </Dialog>
     </div>

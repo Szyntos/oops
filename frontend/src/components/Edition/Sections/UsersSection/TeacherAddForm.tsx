@@ -55,7 +55,7 @@ export const AddTeacherForm = ({
           <TextField
             fullWidth
             name="firstName"
-            label="firstName"
+            label="Imię"
             variant="outlined"
             value={formik.values.firstName}
             onChange={formik.handleChange}
@@ -67,7 +67,7 @@ export const AddTeacherForm = ({
           <TextField
             fullWidth
             name="secondName"
-            label="secondName"
+            label="Nazwisko"
             variant="outlined"
             value={formik.values.secondName}
             onChange={formik.handleChange}
@@ -81,7 +81,7 @@ export const AddTeacherForm = ({
           <TextField
             fullWidth
             name="email"
-            label="email"
+            label="Email"
             variant="outlined"
             value={formik.values.email}
             onChange={formik.handleChange}
@@ -91,7 +91,7 @@ export const AddTeacherForm = ({
           />
         </div>
 
-        <button type="submit">confirm</button>
+        <button type="submit">Potwierdź</button>
       </form>
 
       {formError && <p style={styles.error}>Error: {formError}</p>}

@@ -6,6 +6,8 @@ import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { ShowEntryContent } from "../../components/Edition/ShowEntryContent/ShowEntryContent";
 import { useEditionSections } from "../../hooks/common/useEditionSection";
 
+export const EDITION_MARGIN_VERTICAL = 20;
+
 export const EditionScreen = () => {
   const params = useParams();
   const editionId = params.id ? parseInt(params.id) : -1;
@@ -30,6 +32,8 @@ export const EditionScreen = () => {
 const styles: Styles = {
   screenContainer: {
     margin: 12,
+    marginTop: EDITION_MARGIN_VERTICAL,
+    marginBottom: EDITION_MARGIN_VERTICAL,
     display: "flex",
     flexDirection: "column",
     gap: 12,

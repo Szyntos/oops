@@ -1,10 +1,11 @@
 import { FilterItem } from "../../../components/Groups/FilterBar/FilterOptionsSection";
 import { useGroupTimestampsQuery } from "../../../graphql/groupTimestamps.graphql.types";
+import { getTimeWithoutSeconds } from "../../../utils/utils";
 import { Timestamp } from "../../common/useGroupsData";
 
 // assuming backend data is unique
 export const getTimestampUniqueString = (timestamp: Timestamp) => {
-  return `${timestamp.start}-${timestamp.end}`;
+  return `${getTimeWithoutSeconds(timestamp.start)}-${getTimeWithoutSeconds(timestamp.end)}`;
 };
 
 export const useTimestampsData = (editionId: string | undefined) => {

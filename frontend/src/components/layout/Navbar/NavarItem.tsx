@@ -24,7 +24,11 @@ export const NavbarItem = ({
         ...(onClick && styles.clickable),
       }}
     >
-      <CustomText style={{ ...(isActive && styles.active) }} color={color}>
+      <CustomText
+        style={{ ...(isActive && styles.active) }}
+        color={color}
+        bold={Boolean(onClick)}
+      >
         {title}
       </CustomText>
     </div>

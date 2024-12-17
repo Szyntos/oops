@@ -8,6 +8,8 @@ import { ChecksForm } from "./ChecksForm";
 import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { Category } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { SetupButtons } from "../SetupButtons";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 
 export const GradingChecksSection = () => {
   const params = useParams();
@@ -35,9 +37,8 @@ export const GradingChecksSection = () => {
     handleDelete,
   } = useGradingChecksSection(editionId);
 
-  if (loading) return <div>Ładowanie...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
-  if (!gradingChecks) return <div>coś poszło nie tak :c ...</div>;
+  if (loading) return <LoadingScreen type="edition" />;
+  if (error || !gradingChecks) return <ErrorScreen type="edition" />;
 
   const level = formLevels.find(
     (l) =>

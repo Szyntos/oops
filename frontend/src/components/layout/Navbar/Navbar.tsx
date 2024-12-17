@@ -19,8 +19,11 @@ import { tokens } from "../../../tokens";
 import { NavbarItem } from "./NavarItem";
 import { IconMapper } from "../../IconMapper";
 import { ChestsNavbarItem } from "./ChestsNavbarItem";
+import { CustomText } from "../../CustomText";
 
-export const NAV_BAR_HEIGHT = 52;
+const NAV_BAR_HEIGHT = 64;
+const BORDER_HEIGHT = 2;
+export const NAV_BAR_HEIGHT_WITH_BORDER = NAV_BAR_HEIGHT + BORDER_HEIGHT;
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -53,42 +56,49 @@ export const Navbar = () => {
   return (
     <div style={styles.navbar}>
       <div style={styles.itemsContainer}>
-        {navigationItems
-          .filter((item) => hasRole(user, item.allowedRoles))
-          .map((item) => (
-            <NavbarItem
-              onClick={() => navigate(item.path)}
-              title={item.title}
-              isActive={item.path === location.pathname}
-            />
-          ))}
+        <div style={styles.leftItemsContainer}>
+          {navigationItems
+            .filter((item) => hasRole(user, item.allowedRoles))
+            .map((item) => (
+              <NavbarItem
+                onClick={() => navigate(item.path)}
+                title={item.title}
+                isActive={item.path === location.pathname}
+              />
+            ))}
+        </div>
       </div>
 
+      <CustomText style={styles.logo} size={tokens.font.header}>
+        LOGO
+      </CustomText>
+
       <div style={styles.itemsContainer}>
-        {/* logged in user items */}
-        {user.role !== UsersRolesType.UnauthenticatedUser && (
-          <>
-            <NavbarItem
-              color={tokens.color.accent.light}
-              title={
-                selectedEdition
-                  ? `${selectedEdition.name}${isEditionActive(selectedEdition) ? "" : " [not active]"}`
-                  : "no edition selected"
-              }
-            />
-            {/* student items */}
-            {user.role === UsersRolesType.Student && (
-              <ChestsNavbarItem
-                quantity={chestsToOpen.length}
-                onClick={openChestDialog}
+        <div style={styles.rightItemsContainer}>
+          {/* logged in user items */}
+          {user.role !== UsersRolesType.UnauthenticatedUser && (
+            <>
+              <NavbarItem
+                title={
+                  selectedEdition
+                    ? `${selectedEdition.name}${isEditionActive(selectedEdition) ? "" : " [not active]"}`
+                    : "no edition selected"
+                }
               />
-            )}
-            <IconMapper onClick={async () => await logout()} icon="logout" />
-            {editions.length > 1 && (
-              <IconMapper onClick={openSettings} icon="settings" />
-            )}
-          </>
-        )}
+              {/* student items */}
+              {user.role === UsersRolesType.Student && (
+                <ChestsNavbarItem
+                  quantity={chestsToOpen.length}
+                  onClick={openChestDialog}
+                />
+              )}
+              <IconMapper onClick={async () => await logout()} icon="logout" />
+              {editions.length > 1 && (
+                <IconMapper onClick={openSettings} icon="settings" />
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       <Dialog open={isChestDialogOpen}>
@@ -118,19 +128,29 @@ export const Navbar = () => {
 const styles: Styles = {
   navbar: {
     display: "flex",
-    justifyContent: "space-between",
+    alignItems: "center",
     paddingRight: tokens.padding.xl,
     paddingLeft: tokens.padding.xl,
-    minHeight: NAV_BAR_HEIGHT,
+    height: NAV_BAR_HEIGHT,
     backgroundColor: tokens.color.card.dark,
+    borderBottom: `${BORDER_HEIGHT}px solid ${tokens.color.text.secondary}`,
+    position: "sticky",
+    top: 0,
+    zIndex: 1000,
   },
   itemsContainer: {
     display: "flex",
-    gap: tokens.padding.l,
     alignItems: "center",
+    flex: 1,
   },
-  editionName: {
-    marginLeft: "auto",
-    padding: 12,
+  leftItemsContainer: {
+    gap: tokens.padding.l,
+    display: "flex",
+  },
+  rightItemsContainer: {
+    flex: 1,
+    gap: tokens.padding.m,
+    display: "flex",
+    justifyContent: "end",
   },
 };

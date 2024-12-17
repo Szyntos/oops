@@ -4,6 +4,7 @@ import { Category, Subcategory } from "../../../utils/utils";
 import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
 import FilterMenu from "../../StudentProfile/table/FilterMenu/FilterMenu";
 import { Styles } from "../../../utils/Styles";
+import { NotEditableInfo } from "../../StudentProfile/NotEditableInfo";
 
 type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
@@ -11,6 +12,9 @@ type GroupTableWithFiltersProps = {
   handleStudentClick: (student: Student) => void;
   handleSubcategoryClick: (subcategory: Subcategory) => void;
   editable: boolean;
+  disableEditMode: boolean;
+  hasEditableRights: boolean;
+  isSelectedEditionActive: boolean;
 };
 
 export const GroupTableWithFilters = ({
@@ -19,6 +23,9 @@ export const GroupTableWithFilters = ({
   handleStudentClick,
   handleSubcategoryClick,
   editable,
+  disableEditMode,
+  hasEditableRights,
+  isSelectedEditionActive,
 }: GroupTableWithFiltersProps) => {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
 
@@ -39,6 +46,14 @@ export const GroupTableWithFilters = ({
   return (
     <>
       <div style={styles.filterWrapper}>
+        {disableEditMode && (
+          <NotEditableInfo
+            hasEditableRights={hasEditableRights}
+            isSelectedEditionActive={isSelectedEditionActive}
+            type={"group"}
+          />
+        )}
+
         <FilterMenu
           pickedCategoryIds={selectedCategoryIds}
           onSelectChange={(selectedIds) => {
@@ -71,6 +86,9 @@ const styles: Styles = {
   filterWrapper: {
     padding: 12,
     paddingBottom: 0,
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
   },
   tableWrapper: {
     flex: 1,

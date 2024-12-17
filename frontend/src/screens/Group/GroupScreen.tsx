@@ -7,11 +7,12 @@ import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { PointsForm } from "../../components/StudentProfile/PointsForm/PointsForm";
 import { useUser } from "../../hooks/common/useUser";
 import { GroupPointsForm } from "../../components/Group/GroupPointsForm";
-import { NotEditableInfo } from "../../components/StudentProfile/NotEditableInfo";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
 import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenContentContainer";
+import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
 
 export const GroupScreen = () => {
   const params = useParams();
@@ -40,9 +41,8 @@ export const GroupScreen = () => {
     selectedSubcategory,
   } = useGroupScreenData(groupId, userId);
 
-  if (loading) return <div>Ładowanie...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
-  if (!teacherId) return <div>ERROR: coś posxło nie tak</div>;
+  if (loading) return <LoadingScreen />;
+  if (error || !teacherId) return <ErrorScreen />;
 
   const hasEditableRights =
     teacherId === userId || user.role === UsersRolesType.Coordinator;
@@ -55,19 +55,15 @@ export const GroupScreen = () => {
 
   return (
     <div style={styles.screenContainer}>
-      {disableEditMode && (
-        <NotEditableInfo
-          hasEditableRights={hasEditableRights}
-          isSelectedEditionActive={isSelectedEditionActive}
-        />
-      )}
-
       <GroupTableWithFilters
         rows={rows}
         categories={categories}
         handleStudentClick={hasEditableRights ? openStudent : () => {}}
         handleSubcategoryClick={hasEditableRights ? openSubcategory : () => {}}
         editable={!disableEditMode}
+        disableEditMode={disableEditMode}
+        hasEditableRights={hasEditableRights}
+        isSelectedEditionActive={isSelectedEditionActive}
       />
 
       <Dialog open={isStudentOpen}>

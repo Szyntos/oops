@@ -29,14 +29,16 @@ export const LevelSetCard = ({
   return (
     <div style={getCardStyles(isSelected)}>
       <div style={coordinatorStyles.textContainer}>
-        {levelSet.levelSet.levels.length > 0
-          ? levelSet.levelSet.levels.map((l) => (
-              <CustomText>
-                {l.ordinalNumber + 1}. {l.levelName}, {l.minimumPoints}-
-                {l.maximumPoints}
-              </CustomText>
-            ))
-          : EMPTY_FIELD_STRING}
+        {levelSet.levelSet.levels.length > 0 ? (
+          levelSet.levelSet.levels.map((l) => (
+            <CustomText>
+              {l.ordinalNumber + 1}. {l.levelName}, {l.minimumPoints}-
+              {l.maximumPoints}
+            </CustomText>
+          ))
+        ) : (
+          <CustomText>{EMPTY_FIELD_STRING}</CustomText>
+        )}
       </div>
 
       <SetupButtons

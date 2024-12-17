@@ -14,6 +14,7 @@ import { EMPTY_FIELD_STRING } from "../../../utils/constants";
 import { IconMapper } from "../../IconMapper";
 import { tokens } from "../../../tokens";
 import { HooverWrapper } from "../../HooverWrapper";
+import { CustomText } from "../../CustomText";
 
 type GroupTableProps = {
   rows: GroupTableRow[];
@@ -155,7 +156,7 @@ export const GroupTable = ({
         />
       );
     }
-    return EMPTY_FIELD_STRING;
+    return <CustomText>{EMPTY_FIELD_STRING}</CustomText>;
   };
 
   const getCellColor = (cell: CellValueType) => {

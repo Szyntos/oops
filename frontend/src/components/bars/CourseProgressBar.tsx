@@ -18,7 +18,7 @@ export const CourseProgressBar = ({
   if (loading) return <></>;
   if (error) return <CustomText>{ERROR_MESSAGE}</CustomText>;
 
-  if (levels.length < 2) return <div>{EMPTY_FIELD_STRING}</div>;
+  if (levels.length < 2) return <CustomText>{EMPTY_FIELD_STRING}</CustomText>;
 
   const upperBound = levels[levels.length - 1].maximumPoints;
 

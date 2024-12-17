@@ -4,6 +4,7 @@ import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { Styles } from "../../../../../utils/Styles";
 import { getCardStyles } from "../../../../../utils/utils";
 import { AnimalWithTooltip } from "../../../../avatars/AnimalWithTooltip";
+import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
 type SelectedSetCardProps = {
@@ -44,7 +45,7 @@ export const SelectedSetCard = ({
             ))}
           </div>
         ) : (
-          EMPTY_FIELD_STRING
+          <CustomText>{EMPTY_FIELD_STRING}</CustomText>
         )}
       </div>
 

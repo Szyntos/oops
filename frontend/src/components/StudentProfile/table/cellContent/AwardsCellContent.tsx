@@ -2,6 +2,7 @@ import { Points } from "../../../../hooks/StudentProfile";
 import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { Styles } from "../../../../utils/Styles";
 import { AwardWithTooltip } from "../../../avatars/AwardWithTooltip";
+import { CustomText } from "../../../CustomText";
 
 type AwardsCellContentProps = {
   points: Points;
@@ -11,7 +12,7 @@ export const AwardsCellContent = ({ points }: AwardsCellContentProps) => {
   const bonuses = points.points.partialBonusType;
 
   if (bonuses.length === 0) {
-    return <div>{EMPTY_FIELD_STRING}</div>;
+    return <CustomText>{EMPTY_FIELD_STRING}</CustomText>;
   }
 
   // TODO better map

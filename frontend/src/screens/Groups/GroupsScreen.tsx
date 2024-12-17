@@ -65,7 +65,11 @@ export const GroupsScreen = () => {
         isPartOfAString(input, [
           group.name,
           group.teacher.fullName,
-          getGroupTimeString(group),
+          getGroupTimeString(
+            group.weekday.name,
+            group.time.start,
+            group.time.end,
+          ),
         ]);
 
       return (

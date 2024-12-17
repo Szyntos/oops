@@ -7,7 +7,6 @@ import { Permissions } from "../components/Edition/Sections/SetupButtons";
 import { Edition } from "../contexts/userContext";
 import { tokens } from "../tokens";
 import { Styles } from "./Styles";
-import { Group } from "../hooks/common/useGroupsData";
 
 type User = {
   role: string;
@@ -114,8 +113,12 @@ export const cardStyles: Styles = {
   },
 };
 
-export const getGroupTimeString = (group: Group) => {
-  return `${group.weekday.name}, ${getTimeWithoutSeconds(group.time.start)}-${getTimeWithoutSeconds(group.time.end)}`;
+export const getGroupTimeString = (
+  weekday: string,
+  startTime: string,
+  endTime: string,
+) => {
+  return `${weekday}, ${getTimeWithoutSeconds(startTime)}-${getTimeWithoutSeconds(endTime)}`;
 };
 
 export const ERROR_MESSAGE = "Wystąpił błąd...";

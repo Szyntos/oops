@@ -1,6 +1,7 @@
 import { Category } from "../../../hooks/Edition/categories/useCategoriesSection";
 import { tokens } from "../../../tokens";
 import { Styles } from "../../../utils/Styles";
+import { HooverWrapper } from "../../HooverWrapper";
 
 import { TooltipWrapper } from "../../TooltipWrapper";
 
@@ -156,15 +157,7 @@ const SetupButton = ({
 }: SetupButtonProps) => {
   {
     return isClickable ? (
-      <button
-        disabled={!isClickable}
-        onClick={handleClick}
-        style={styles.button}
-      >
-        {title}
-      </button>
-    ) : (
-      <TooltipWrapper tooltipContent={<div>{reason ?? emptyReason}</div>}>
+      <HooverWrapper>
         <button
           disabled={!isClickable}
           onClick={handleClick}
@@ -172,6 +165,18 @@ const SetupButton = ({
         >
           {title}
         </button>
+      </HooverWrapper>
+    ) : (
+      <TooltipWrapper tooltipContent={<div>{reason ?? emptyReason}</div>}>
+        <HooverWrapper>
+          <button
+            disabled={!isClickable}
+            onClick={handleClick}
+            style={{ ...styles.button, ...styles.disabled }}
+          >
+            {title}
+          </button>
+        </HooverWrapper>
       </TooltipWrapper>
     );
   }
@@ -193,5 +198,9 @@ const styles: Styles = {
     paddingLeft: 8,
     paddingRight: 8,
     backgroundColor: tokens.color.accent.light,
+  },
+  disabled: {
+    cursor: "auto",
+    backgroundColor: tokens.color.state.disabled,
   },
 };

@@ -145,3 +145,5 @@ export const getAwardValueString = (
     ? `mnożnik: ${typeValue * 100}%`
     : `wartość: ${typeValue.toFixed(2)}pkt`;
 };
+
+export const MULTIPLICATIVE_TYPE_STRING = "MULTIPLICATIVE";

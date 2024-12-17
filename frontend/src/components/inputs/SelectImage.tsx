@@ -1,8 +1,10 @@
-import { FormHelperText } from "@mui/material";
 import { Styles } from "../../utils/Styles";
 import { Avatar } from "../avatars/Avatar";
 import { Award } from "../../hooks/Edition/useAwardsSection";
 import { TooltipWrapper } from "../TooltipWrapper";
+import { CustomText } from "../CustomText";
+import { tokens } from "../../tokens";
+import { FormError } from "../form/FormError";
 
 type SelectImageProps = {
   selectedIds: string[];
@@ -90,26 +92,32 @@ export const SelectImage = ({
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+      <CustomText color={tokens.color.text.tertiary} style={styles.label}>
+        {title}
+      </CustomText>
       <div style={styles.listContainer}>{getOptionsImagesBasedOnType()}</div>
-      {error && touched && (
-        <FormHelperText style={styles.error}>{error}</FormHelperText>
-      )}
+      {error && touched && <FormError error={error} />}
     </div>
   );
 };
 
 const styles: Styles = {
+  label: {
+    color: tokens.color.text.tertiary,
+    paddingLeft: 12,
+    fontSize: 13,
+  },
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 8,
+    gap: 12,
+    paddingTop: 4,
   },
   listContainer: {
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
+    gap: 8,
   },
   imageWrapper: {
     cursor: "pointer",

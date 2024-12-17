@@ -17,6 +17,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import FunctionsIcon from "@mui/icons-material/Functions";
+import CloseIcon from "@mui/icons-material/Close";
 import { MdAutoGraph } from "react-icons/md";
 import { PiTreasureChestLight } from "react-icons/pi";
 import { GiBackForth } from "react-icons/gi";
@@ -54,7 +55,8 @@ type MUIIcons =
   | "points"
   | "yes"
   | "no"
-  | "sum";
+  | "sum"
+  | "close";
 
 type ReactIcons = "grade" | "level2" | "chest2" | "startEnd";
 
@@ -86,6 +88,7 @@ const iconMap = {
   level2: MdAutoGraph,
   chest2: PiTreasureChestLight,
   startEnd: GiBackForth,
+  close: CloseIcon,
 };
 
 export const IconMapper = ({

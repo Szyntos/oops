@@ -10,7 +10,8 @@ export const tokens = {
     text: {
       primary: "#77BA67",
       secondary: "#FFFFFF",
-      tertiary: "lightgrey",
+      // MUI
+      tertiary: "#c4c4c4",
     },
     accent: {
       light: "#6cd85d",
@@ -23,7 +24,8 @@ export const tokens = {
     },
     state: {
       disabled: "grey",
-      error: "red",
+      // MUI
+      error: "#f44336",
       success: "green",
     },
     shadow: {

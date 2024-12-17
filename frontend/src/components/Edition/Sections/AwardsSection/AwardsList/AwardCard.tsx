@@ -1,6 +1,11 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
-import { cardStyles, getCardStyles } from "../../../../../utils/utils";
+import {
+  cardStyles,
+  getAwardMaxUsageString,
+  getAwardValueString,
+  getCardStyles,
+} from "../../../../../utils/utils";
 import { Avatar } from "../../../../avatars/Avatar";
 import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
@@ -33,6 +38,15 @@ export const AwardCard = ({
             {award.award.awardName}
           </CustomText>
           <CustomText>{award.award.awardType}</CustomText>
+          <CustomText>
+            {getAwardValueString(
+              award.award.awardType,
+              parseFloat(award.award.awardValue),
+            )}
+          </CustomText>
+          <CustomText>
+            {getAwardMaxUsageString(award.award.maxUsages)}
+          </CustomText>
         </div>
       </div>
 

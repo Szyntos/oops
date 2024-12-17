@@ -1,5 +1,8 @@
 import { CSSProperties } from "react";
-import { UsersRolesType } from "../__generated__/schema.graphql.types";
+import {
+  AwardTypeType,
+  UsersRolesType,
+} from "../__generated__/schema.graphql.types";
 import { Permissions } from "../components/Edition/Sections/SetupButtons";
 import { Edition } from "../contexts/userContext";
 import { tokens } from "../tokens";
@@ -115,3 +118,16 @@ export const getGroupTimeString = (group: Group) => {
 };
 
 export const ERROR_MESSAGE = "Wystąpił błąd...";
+
+export const getAwardMaxUsageString = (maxUsage: number): string => {
+  return `Ograniczenie posiadanych sztuk: ${maxUsage === -1 ? "brak" : maxUsage}`;
+};
+
+export const getAwardValueString = (
+  type: AwardTypeType,
+  typeValue: number,
+): string => {
+  return type === AwardTypeType.Multiplicative
+    ? `Mnożnik: ${typeValue * 100}%`
+    : `Wartość: ${typeValue.toFixed(2)}pkt`;
+};

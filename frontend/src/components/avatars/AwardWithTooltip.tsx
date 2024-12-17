@@ -3,6 +3,7 @@ import { dateOptions } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
 import { Avatar, AvatarSize } from "./Avatar";
 import { AwardTypeType } from "../../__generated__/schema.graphql.types";
+import { getAwardMaxUsageString, getAwardValueString } from "../../utils/utils";
 
 type AwardWithTooltipProps = {
   props: AwardTooltipProps;
@@ -22,7 +23,6 @@ export type AwardTooltipProps = {
   type?: AwardTypeType;
 };
 
-// TODO add type  value
 export const AwardWithTooltip = ({ props, size }: AwardWithTooltipProps) => {
   const {
     updatedAt,
@@ -41,25 +41,15 @@ export const AwardWithTooltip = ({ props, size }: AwardWithTooltipProps) => {
       ? new Date(updatedAt ?? (createdAt as string))
       : undefined;
 
-  // MULTIPLICATIVE
   return (
     <TooltipWrapper
       tooltipContent={
         <div style={styles.container}>
           <div style={styles.title}>{name}</div>
           {type && <div>{type}</div>}
-          {maxUsage && (
-            <div>
-              Ograniczenie posiadanych sztuk:{" "}
-              {maxUsage === -1 ? "brak" : maxUsage}
-            </div>
-          )}
+          {maxUsage && <div>{getAwardMaxUsageString(maxUsage)}</div>}
           {typeValue && type && (
-            <div>
-              {type === AwardTypeType.Multiplicative
-                ? `Mnożnik: ${typeValue * 100}%`
-                : `Wartość: ${typeValue.toFixed(2)}pkt`}
-            </div>
+            <div>{getAwardValueString(type, typeValue)}</div>
           )}
           <div>{description}</div>
           {value && <div>Punkty: {value.toFixed(2)}</div>}

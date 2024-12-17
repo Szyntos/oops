@@ -1,6 +1,7 @@
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
 import { Permissions } from "../components/Edition/Sections/SetupButtons";
 import { Edition } from "../contexts/userContext";
+import { Group } from "../hooks/common/useGroupsData";
 
 type User = {
   role: string;
@@ -75,3 +76,9 @@ export const getLinearGradient = (
 export const getTimeWithoutSeconds = (time: string) => {
   return time.slice(0, -3);
 };
+
+export const getGroupTimeString = (group: Group) => {
+  return `${group.weekday.name}, ${getTimeWithoutSeconds(group.time.start)}-${getTimeWithoutSeconds(group.time.end)}`;
+};
+
+export const ERROR_MESSAGE = "Wystąpił błąd...";

@@ -22,6 +22,8 @@ import { useChangeGroup } from "../../hooks/common/useChangeGroup";
 import { useOverrideGrade } from "../../hooks/common/useOverrideGrade";
 import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
 import { CustomButton } from "../../components/CustomButton";
+import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -83,16 +85,17 @@ export function TeacherStudentProfile() {
   const { openChangeGroup } = useChangeGroup();
   const { openOverrideGrade } = useOverrideGrade();
 
-  if (!studentId) return <p>Id studentanie jest zdefiniowany</p>;
-  if (!userId) return <p>Id nauczyciela nie jest zdefiniowany</p>;
-
-  if (loading || formDataLoading || chestsLoading) return <p>Ładowanie..</p>;
-  if (error) return <p>Error: {error.message}</p>;
-  if (formDataError) return <p>Error: {formDataError.message}</p>;
-  if (chestsError) return <p>Error: {chestsError.message}</p>;
-
-  if (!studentData) return <p>Student nie jest zdefiniowany</p>;
-  if (!currLevel) return <p>Obecny poziom nie jest zdefiniowany</p>;
+  if (loading || formDataLoading || chestsLoading) return <LoadingScreen />;
+  if (
+    error ||
+    formDataError ||
+    chestsError ||
+    !studentData ||
+    !currLevel ||
+    !studentId ||
+    !userId
+  )
+    return <ErrorScreen />;
 
   const hasEditableRights =
     studentData.group?.teacherId === userId ||
@@ -118,47 +121,44 @@ export function TeacherStudentProfile() {
         <CustomButton onClick={openAddDialog} disabled={disableEditMode}>
           Dodaj punkty
         </CustomButton>
-        {user.role === UsersRolesType.Coordinator && (
-          <>
-            <CustomButton onClick={openChestDialog} disabled={disableEditMode}>
-              Dodaj skrzynkę
-            </CustomButton>
-            <CustomButton
-              onClick={() =>
-                openOverrideGrade({
-                  studentId,
-                  editionId: selectedEdition?.editionId as string,
-                  grade: studentData.grade,
-                })
-              }
-              disabled={disableEditMode || !selectedEdition?.editionId}
-            >
-              Nadpisz ocenę
-            </CustomButton>
-            <CustomButton
-              onClick={() => handleRegenerateGrade(studentId)}
-              disabled={disableEditMode || !selectedEdition?.editionId}
-            >
-              Wygeneruj ocenę
-            </CustomButton>
-            <CustomButton
-              onClick={() =>
-                openChangeGroup({
-                  studentId,
-                  groupId: studentData.group?.id as string,
-                  editionId: selectedEdition?.editionId as string,
-                })
-              }
-              disabled={
-                disableEditMode ||
-                !studentData.group?.id ||
-                !selectedEdition?.editionId
-              }
-            >
-              Zmień grupę
-            </CustomButton>
-          </>
-        )}
+
+        <CustomButton onClick={openChestDialog} disabled={disableEditMode}>
+          Dodaj skrzynkę
+        </CustomButton>
+        <CustomButton
+          onClick={() =>
+            openOverrideGrade({
+              studentId,
+              editionId: selectedEdition?.editionId as string,
+              grade: studentData.grade,
+            })
+          }
+          disabled={disableEditMode || !selectedEdition?.editionId}
+        >
+          Nadpisz ocenę
+        </CustomButton>
+        <CustomButton
+          onClick={() => handleRegenerateGrade(studentId)}
+          disabled={disableEditMode || !selectedEdition?.editionId}
+        >
+          Wygeneruj ocenę
+        </CustomButton>
+        <CustomButton
+          onClick={() =>
+            openChangeGroup({
+              studentId,
+              groupId: studentData.group?.id as string,
+              editionId: selectedEdition?.editionId as string,
+            })
+          }
+          disabled={
+            disableEditMode ||
+            !studentData.group?.id ||
+            !selectedEdition?.editionId
+          }
+        >
+          Zmień grupę
+        </CustomButton>
       </div>
     );
   };
@@ -178,15 +178,16 @@ export function TeacherStudentProfile() {
       }
     >
       {/* no rights info */}
-      {disableEditMode && (
+      {disableEditMode ? (
         <NotEditableInfo
           hasEditableRights={hasEditableRights}
           isSelectedEditionActive={isSelectedEditionActive}
+          type={"student"}
         />
+      ) : (
+        // teacher action buttons
+        getTeacherActionButtons()
       )}
-
-      {/* teacher action buttons */}
-      {getTeacherActionButtons()}
 
       {/* table */}
       <StudentTableWithFilters

@@ -24,6 +24,7 @@ export const SubcategoryRows = ({
     <div>
       {subcategories.map((row, index) => (
         <SubcategoryRow
+          variant="edit"
           key={index + row.name}
           initialValues={{
             name: row.name,
@@ -39,6 +40,7 @@ export const SubcategoryRows = ({
         />
       ))}
       <SubcategoryRow
+        variant="add"
         initialValues={{
           name: "",
           maxPoints: 0,

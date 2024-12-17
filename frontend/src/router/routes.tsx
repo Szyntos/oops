@@ -4,7 +4,7 @@ import { HallOfFame } from "../screens/HallOfFame/HallOfFame";
 import { pathsWithParameters } from "./paths";
 import { StudentProfile } from "../screens/StudentProfile/StudentProfile";
 import { TeacherStudentProfile } from "../screens/StudentProfile/TeacherStudentProfile";
-import { Groups } from "../screens/Groups/Groups";
+import { GroupsScreen } from "../screens/Groups/GroupsScreen";
 import { GroupScreen } from "../screens/Group/GroupScreen";
 import { Welcome } from "../screens/Welcome/Welcome";
 import { ProtectedRoute } from "./protectedRoute";
@@ -67,7 +67,7 @@ export const routes = createBrowserRouter([
         path: teacherPaths.Groups.path,
         element: (
           <ProtectedRoute
-            element={<Groups />}
+            element={<GroupsScreen />}
             allowedRoles={teacherPaths.Groups.allowedRoles}
           />
         ),

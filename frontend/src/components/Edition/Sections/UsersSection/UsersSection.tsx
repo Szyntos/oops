@@ -13,6 +13,8 @@ import { StudentsListSearcher } from "../../../Students/StudentsListSearcher";
 import { useState } from "react";
 import { RadioFilterGroups } from "../../../Groups/RadioFilterGroup";
 import { isPartOfAString } from "../../../../utils/strings";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 
 const activeRadioOptions = [
   { id: "active", name: "Aktywny" },
@@ -55,8 +57,8 @@ export const UsersSection = () => {
   const [input, setInput] = useState("");
   const [showActiveUsers, setShowActiveUsers] = useState(true);
 
-  if (loading) return <div>Ładowanie...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (loading) return <LoadingScreen type="edition" />;
+  if (error) return <ErrorScreen type="edition" />;
 
   const doesFilterMatch = (user: User) => {
     const matchActiveState = showActiveUsers
@@ -67,6 +69,8 @@ export const UsersSection = () => {
       input === "" ||
       isPartOfAString(input, [
         `${user.user.firstName} ${user.user.secondName}`,
+        user.user.nick,
+        user.user.indexNumber.toString(),
       ]);
     return matchActiveState && matchInput;
   };

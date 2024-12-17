@@ -1,14 +1,12 @@
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { Styles } from "../../utils/Styles";
-import { pathsGenerator } from "../../router/paths";
-import { SectionsBar } from "../../components/Edition/SectionsBar";
+import { EditionScreenNavbar } from "../../components/Edition/EditionScreenNavbar";
 import { Dialog } from "@mui/material";
 import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { ShowEntryContent } from "../../components/Edition/ShowEntryContent/ShowEntryContent";
 import { useEditionSections } from "../../hooks/common/useEditionSection";
 
 export const EditionScreen = () => {
-  const navigate = useNavigate();
   const params = useParams();
   const editionId = params.id ? parseInt(params.id) : -1;
 
@@ -16,19 +14,15 @@ export const EditionScreen = () => {
     useEditionSections();
 
   return (
-    <div style={styles.screenContainer}>
-      <div style={styles.header}>
-        <button onClick={() => navigate(pathsGenerator.coordinator.Editions)}>
-          Powrót do listy edycji
-        </button>
-        <div>parametry - id edycji: {editionId}</div>
+    <div>
+      <EditionScreenNavbar editionId={editionId} />
+      <div style={styles.screenContainer}>
+        <Dialog open={isShowDialogOpen}>
+          <CloseHeader onCloseClick={closeShowDialog} />
+          <ShowEntryContent selectedEntry={selectedEntry} />
+        </Dialog>
+        <Outlet />
       </div>
-      <SectionsBar editionId={editionId} />
-      <Dialog open={isShowDialogOpen}>
-        <CloseHeader onCloseClick={closeShowDialog} />
-        <ShowEntryContent selectedEntry={selectedEntry} />
-      </Dialog>
-      <Outlet />
     </div>
   );
 };
@@ -38,11 +32,6 @@ const styles: Styles = {
     margin: 12,
     display: "flex",
     flexDirection: "column",
-    gap: 12,
-  },
-  header: {
-    display: "flex",
-    flexDirection: "row",
     gap: 12,
   },
 };

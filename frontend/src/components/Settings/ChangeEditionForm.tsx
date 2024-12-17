@@ -49,7 +49,7 @@ export const ChangeEditionForm = ({
         <FormControl fullWidth>
           <InputLabel>Edition</InputLabel>
           <Select
-            name="Id edycji"
+            name="editionId"
             value={formik.values.editionId}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

@@ -15,6 +15,8 @@ import { RadioFilterGroups } from "../../../Groups/RadioFilterGroup";
 import { isPartOfAString } from "../../../../utils/strings";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
 
 const activeRadioOptions = [
   { id: "active", name: "Aktywny" },
@@ -84,39 +86,39 @@ export const UsersSection = () => {
   );
 
   return (
-    <div>
-      <div style={styles.buttonsContainer}>
-        <button onClick={openAddStudent}>Dodaj studenta</button>
-        <button onClick={openAddTeacher}>Dodaj nauczyciela</button>
-      </div>
-      <div>
-        <div style={styles.topBar}>
-          <StudentsListSearcher
-            onInputChange={(input: string) => setInput(input)}
-          />
-          <RadioFilterGroups
-            options={activeRadioOptions}
-            onOptionChange={(option) =>
-              setShowActiveUsers(option.id === "active")
-            }
-            selectedOption={activeRadioOptions[showActiveUsers ? 0 : 1]}
-          />
+    <div style={coordinatorStyles.container}>
+      <div style={styles.topBar}>
+        <div style={coordinatorStyles.buttonsContainer}>
+          <CustomButton onClick={openAddStudent}>Dodaj studenta</CustomButton>
+          <CustomButton onClick={openAddTeacher}>
+            Dodaj nauczyciela
+          </CustomButton>
         </div>
-
-        <UsersList
-          users={displayTeachers}
-          title="NAUCZYCIELE"
-          handleDeleteClick={handleDeleteConfirm}
-          handleEditClick={openEditTeacher}
+        <StudentsListSearcher
+          onInputChange={(input: string) => setInput(input)}
         />
-        <UsersList
-          users={displayStudents}
-          title="STUDENCI"
-          handleDeleteClick={handleDeleteConfirm}
-          handleEditClick={openEditStudent}
-          handleStudentActiveness={handleStudentActiveness}
+        <RadioFilterGroups
+          options={activeRadioOptions}
+          onOptionChange={(option) =>
+            setShowActiveUsers(option.id === "active")
+          }
+          selectedOption={activeRadioOptions[showActiveUsers ? 0 : 1]}
         />
       </div>
+
+      <UsersList
+        users={displayTeachers}
+        title="Prowadzący"
+        handleDeleteClick={handleDeleteConfirm}
+        handleEditClick={openEditTeacher}
+      />
+      <UsersList
+        users={displayStudents}
+        title="Studenci"
+        handleDeleteClick={handleDeleteConfirm}
+        handleEditClick={openEditStudent}
+        handleStudentActiveness={handleStudentActiveness}
+      />
 
       <Dialog open={isAddStudentOpen}>
         <CloseHeader onCloseClick={closeAddStudent} />
@@ -160,11 +162,6 @@ export const UsersSection = () => {
 };
 
 const styles: Styles = {
-  buttonsContainer: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 12,
-  },
   topBar: {
     display: "flex",
     flexDirection: "row",

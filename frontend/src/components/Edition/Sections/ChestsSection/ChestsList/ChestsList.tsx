@@ -1,6 +1,5 @@
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
-import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
-import { Styles } from "../../../../../utils/Styles";
+import { CardsSection } from "../../../CardsSection";
 import { ChestCard } from "./ChestCard";
 
 type ChestsListProps = {
@@ -27,39 +26,23 @@ export const ChestsList = ({
   editionId,
 }: ChestsListProps) => {
   return (
-    <div>
-      <div style={styles.title}>{title}</div>
-      <div style={styles.container}>
-        {chests.length !== 0
-          ? chests.map((chest) => (
-              <ChestCard
-                key={chest.chest.chestId}
-                chest={chest}
-                isSelected={selectedChests.some(
-                  (c) => c.chest.chestId === chest.chest.chestId,
-                )}
-                onSelectClick={() => handleSelectChest(chest)}
-                onEditClick={() => handleEditChest(chest)}
-                onDeleteClick={() => handleDeleteChest(chest)}
-                onCopyClick={() => handleCopyChest(chest)}
-                onChestActivateClick={() => handleActivateChest(chest)}
-                editionId={editionId}
-              />
-            ))
-          : EMPTY_FIELD_STRING}
-      </div>
-    </div>
+    <CardsSection
+      cards={chests.map((chest) => (
+        <ChestCard
+          key={chest.chest.chestId}
+          chest={chest}
+          isSelected={selectedChests.some(
+            (c) => c.chest.chestId === chest.chest.chestId,
+          )}
+          onSelectClick={() => handleSelectChest(chest)}
+          onEditClick={() => handleEditChest(chest)}
+          onDeleteClick={() => handleDeleteChest(chest)}
+          onCopyClick={() => handleCopyChest(chest)}
+          onChestActivateClick={() => handleActivateChest(chest)}
+          editionId={editionId}
+        />
+      ))}
+      title={title}
+    ></CardsSection>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  title: {
-    color: "blue",
-  },
 };

@@ -1,6 +1,5 @@
 import { Group } from "../../../../../hooks/Edition/useGroupsSection";
-import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
-import { Styles } from "../../../../../utils/Styles";
+import { CardsSection } from "../../../CardsSection";
 import { GroupCard } from "./GroupCard";
 
 type GroupsListProps = {
@@ -17,31 +16,15 @@ export const GroupsList = ({
   deleteClick,
 }: GroupsListProps) => {
   return (
-    <div>
-      <div style={styles.title}>{title}</div>
-      <div style={styles.container}>
-        {groups.length > 0
-          ? groups.map((group) => (
-              <GroupCard
-                group={group}
-                editClick={() => editClick(group)}
-                deleteClick={() => deleteClick(group)}
-              />
-            ))
-          : EMPTY_FIELD_STRING}
-      </div>
-    </div>
+    <CardsSection
+      title={title}
+      cards={groups.map((group) => (
+        <GroupCard
+          group={group}
+          editClick={() => editClick(group)}
+          deleteClick={() => deleteClick(group)}
+        />
+      ))}
+    />
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  title: {
-    color: "blue",
-  },
 };

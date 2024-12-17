@@ -1,6 +1,5 @@
 import { User } from "../../../../../hooks/Edition/users/useUsersSection";
-import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
-import { Styles } from "../../../../../utils/Styles";
+import { CardsSection } from "../../../CardsSection";
 import { UserCard } from "./UserCard";
 
 type UsersListProps = {
@@ -19,39 +18,16 @@ export const UsersList = ({
   handleStudentActiveness,
 }: UsersListProps) => {
   return (
-    <div style={styles.wrap}>
-      <div style={styles.title}>{title}</div>
-      {users.length > 0 ? (
-        <div style={styles.container}>
-          {users.map((user) => (
-            <UserCard
-              user={user}
-              handleDeleteClick={() => handleDeleteClick(user)}
-              handleEditClick={() => handleEditClick(user)}
-              handleStudentActiveness={handleStudentActiveness}
-            />
-          ))}
-        </div>
-      ) : (
-        <div>{EMPTY_FIELD_STRING}</div>
-      )}
-    </div>
+    <CardsSection
+      title={title}
+      cards={users.map((user) => (
+        <UserCard
+          user={user}
+          handleDeleteClick={() => handleDeleteClick(user)}
+          handleEditClick={() => handleEditClick(user)}
+          handleStudentActiveness={handleStudentActiveness}
+        />
+      ))}
+    />
   );
-};
-
-const styles: Styles = {
-  wrap: {
-    margin: 10,
-    display: "flex",
-    flexDirection: "column",
-  },
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  title: {
-    color: "blue",
-  },
 };

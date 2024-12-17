@@ -7,6 +7,8 @@ import { useParams } from "react-router-dom";
 import { UsersRolesType } from "../../../../__generated__/schema.graphql.types";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
 
 export const GroupsSection = () => {
   const params = useParams();
@@ -39,13 +41,17 @@ export const GroupsSection = () => {
   if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div>
-      <div>
-        <button onClick={() => openAddGroup("select")}>Dodaj grupę</button>
-        <button onClick={() => openAddGroup("import")}>Zaimportuj grupę</button>
-        <button onClick={handleMarkAllPassingStudents}>
+    <div style={coordinatorStyles.container}>
+      <div style={coordinatorStyles.buttonsContainer}>
+        <CustomButton onClick={() => openAddGroup("select")}>
+          Dodaj grupę
+        </CustomButton>
+        <CustomButton onClick={() => openAddGroup("import")}>
+          Zaimportuj grupę
+        </CustomButton>
+        <CustomButton onClick={handleMarkAllPassingStudents}>
           Deaktywuj wszystkich zdających studentów
-        </button>
+        </CustomButton>
       </div>
       <GroupsList
         groups={groups}

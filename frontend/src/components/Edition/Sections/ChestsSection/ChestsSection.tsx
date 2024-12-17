@@ -1,5 +1,4 @@
 import { Dialog } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useChestsSection } from "../../../../hooks/Edition/useChestsSection";
 
@@ -8,6 +7,8 @@ import { ChestsList } from "./ChestsList/ChestsList";
 import { AddChestForm } from "./AddChestForm/AddChestForm";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
 
 export const ChestsSection = () => {
   const params = useParams();
@@ -48,8 +49,8 @@ export const ChestsSection = () => {
   if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
-      <button onClick={openAddChest}>Dodaj skrzynkę</button>
+    <div style={coordinatorStyles.container}>
+      <CustomButton onClick={openAddChest}>Dodaj skrzynkę</CustomButton>
 
       <ChestsList
         chests={selectedChests}
@@ -133,12 +134,4 @@ export const ChestsSection = () => {
       </Dialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

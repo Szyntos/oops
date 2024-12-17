@@ -1,9 +1,17 @@
+import { SetupChestsQuery } from "../../../../../graphql/setupChests.graphql.types";
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
-import { tokens } from "../../../../../tokens";
-import { Styles } from "../../../../../utils/Styles";
-import { isChestActive } from "../../../../../utils/utils";
+import {
+  coordinatorStyles,
+  getCardStyles,
+  isChestActive,
+} from "../../../../../utils/utils";
 import { Avatar } from "../../../../avatars/Avatar";
+import { CustomText } from "../../../../CustomText";
+import {
+  BonusItem,
+  CustomImageList,
+} from "../../../../StudentProfile/cards/ImageList";
 import { SetupButtons } from "../../SetupButtons";
 
 type ChestCardProps = {
@@ -17,6 +25,9 @@ type ChestCardProps = {
   editionId: number;
 };
 
+export type Award =
+  SetupChestsQuery["listSetupChests"][number]["chest"]["chestAward"];
+
 export const ChestCard = ({
   chest,
   isSelected,
@@ -28,17 +39,36 @@ export const ChestCard = ({
   editionId,
 }: ChestCardProps) => {
   const { openShowDialog } = useEditionSections();
+  const awardItems: BonusItem[] = chest.chest.chestAward.map((a) => ({
+    bonus: {
+      id: a.award.awardId,
+      name: a.award.awardName,
+      description: a.award.description,
+      imageId: a.award.imageFile?.fileId ?? "",
+      maxUsage: a.award.maxUsages,
+      typeValue: parseFloat(a.award.awardValue),
+      type: a.award.awardType,
+    },
+    type: "bonus",
+  }));
 
   return (
-    <div
-      style={{
-        ...styles.card,
-        backgroundColor: isSelected ? "pink" : undefined,
-      }}
-    >
-      <Avatar id={chest.chest.imageFile?.fileId} size="xs" />
-      <div>[{chest.chest.chestId}]</div>
-      <div style={styles.subtitle}>{chest.chest.chestType}</div>
+    <div style={getCardStyles(isSelected)}>
+      <div style={coordinatorStyles.avatarContainer}>
+        <Avatar id={chest.chest.imageFile?.fileId} size="l" />
+        <div style={{ ...coordinatorStyles.textContainer, gap: 12 }}>
+          <div style={coordinatorStyles.textContainer}>
+            <CustomText style={coordinatorStyles.title}>
+              {chest.chest.chestType}
+            </CustomText>
+            <CustomText>
+              łupy do zebrania: {chest.chest.awardBundleCount}
+            </CustomText>
+          </div>
+
+          <CustomImageList items={awardItems} type="bonus" />
+        </div>
+      </div>
 
       <SetupButtons
         isSelected={isSelected}
@@ -59,14 +89,4 @@ export const ChestCard = ({
       />
     </div>
   );
-};
-
-const styles: Styles = {
-  card: {
-    border: "1px solid black",
-    padding: 12,
-  },
-  subtitle: {
-    color: tokens.color.state.disabled,
-  },
 };

@@ -54,9 +54,9 @@ export const Navbar = () => {
   );
 
   return (
-    <div style={styles.navbar}>
-      <div style={styles.itemsContainer}>
-        <div style={styles.leftItemsContainer}>
+    <div style={navbarStyles.navbar}>
+      <div style={navbarStyles.itemsContainer}>
+        <div style={navbarStyles.leftItemsContainer}>
           {navigationItems
             .filter((item) => hasRole(user, item.allowedRoles))
             .map((item) => (
@@ -69,12 +69,12 @@ export const Navbar = () => {
         </div>
       </div>
 
-      <CustomText style={styles.logo} size={tokens.font.header}>
+      <CustomText style={navbarStyles.logo} size={tokens.font.header}>
         LOGO
       </CustomText>
 
-      <div style={styles.itemsContainer}>
-        <div style={styles.rightItemsContainer}>
+      <div style={navbarStyles.itemsContainer}>
+        <div style={navbarStyles.rightItemsContainer}>
           {/* logged in user items */}
           {user.role !== UsersRolesType.UnauthenticatedUser && (
             <>
@@ -125,7 +125,7 @@ export const Navbar = () => {
   );
 };
 
-const styles: Styles = {
+export const navbarStyles: Styles = {
   navbar: {
     display: "flex",
     alignItems: "center",

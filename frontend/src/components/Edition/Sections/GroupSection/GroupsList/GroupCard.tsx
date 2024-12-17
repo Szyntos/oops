@@ -1,6 +1,12 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Group } from "../../../../../hooks/Edition/useGroupsSection";
-import { Styles } from "../../../../../utils/Styles";
+import { tokens } from "../../../../../tokens";
+import {
+  coordinatorStyles,
+  getCardStyles,
+  getGroupTimeString,
+} from "../../../../../utils/utils";
+import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
 type GroupCardProps = {
@@ -17,15 +23,34 @@ export const GroupCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div style={styles.card}>
-      <div>{group.group.generatedName}</div>
-      <div>
+    <div style={getCardStyles(false)}>
+      <div style={{ ...coordinatorStyles.textContainer, minWidth: 220 }}>
+        <CustomText style={coordinatorStyles.title}>
+          {group.group.generatedName}
+        </CustomText>
+
+        <div style={coordinatorStyles.CustomText}>
+          <CustomText>
+            {getGroupTimeString(
+              group.group.weekday.weekdayName,
+              group.group.startTime,
+              group.group.endTime,
+            )}
+          </CustomText>
+          <CustomText>
+            {group.group.teacher.firstName} {group.group.teacher.secondName}
+          </CustomText>
+        </div>
+      </div>
+
+      <div style={{ ...coordinatorStyles.textContainer, flex: 1 }}>
         {group.group.userGroups.map((student, index) => (
-          <div>
+          <CustomText color={tokens.color.text.tertiary}>
             {index + 1}. {student.user.firstName} {student.user.secondName}
-          </div>
+          </CustomText>
         ))}
       </div>
+
       <SetupButtons
         permissions={group.permissions}
         handleEdit={editClick}
@@ -34,11 +59,4 @@ export const GroupCard = ({
       />
     </div>
   );
-};
-
-const styles: Styles = {
-  card: {
-    padding: 12,
-    border: "1px solid black",
-  },
 };

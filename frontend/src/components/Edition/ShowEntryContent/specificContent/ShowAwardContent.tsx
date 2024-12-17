@@ -7,7 +7,7 @@ export const ShowAwardContent = ({ entry }: ShowAwardContentProps) => {
   return (
     <div>
       {entry.award.awardName}
-      <pre>{JSON.stringify(entry)}</pre>
+      <pre>{JSON.stringify(entry, null, 2)}</pre>
     </div>
   );
 };

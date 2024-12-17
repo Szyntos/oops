@@ -25,7 +25,7 @@ export function StudentCard({
 
   const performanceItems: ItemWithIconProps[] = [
     { icon: "grade", title: grade },
-    { icon: "score", title: totalPoints },
+    { title: "∑ " + totalPoints },
   ];
 
   const centerItems: ItemWithIconProps[] = [

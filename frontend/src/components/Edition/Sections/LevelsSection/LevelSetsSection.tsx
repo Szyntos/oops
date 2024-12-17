@@ -7,6 +7,8 @@ import { useLevelSetsSection } from "../../../../hooks/Edition/useLevelSetsSecti
 import { LevelSetsList } from "./LevelSetsList/LevelSetsList";
 import { AddSetForm } from "./AddSetForm/AddSetForm";
 import { SelectedSetCard } from "./LevelSetsList/SelectedSetCard";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
 import { CardsSection } from "../../CardsSection";
 
@@ -41,8 +43,8 @@ export const LevelSetsSection = () => {
     handleCopySet,
   } = useLevelSetsSection(editionId);
 
-  if (loading) return <div>Ładowanie...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (loading) return <LoadingScreen type="edition" />;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
     <div style={styles.container}>

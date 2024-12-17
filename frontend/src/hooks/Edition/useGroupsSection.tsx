@@ -72,9 +72,6 @@ export const useGroupsSection = (editionId: number) => {
       (u) => u.role.toLocaleUpperCase() === UsersRolesType.Student && u.active,
     ) ?? [];
 
-  console.log("TEACHERS: ", teachers);
-  console.log("STUDENTS: ", students);
-
   // ADD
   const [createGroup] = useSetupGroupCreateMutation();
   const handleAddGroup = async (

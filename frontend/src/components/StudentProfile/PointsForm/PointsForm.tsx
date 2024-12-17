@@ -33,7 +33,6 @@ export const PointsForm = ({
   variant,
   disableCategoryAndSubcategory,
 }: PointFormProps) => {
-  console.log("POCZĄTKOWE WARTOŚCI: ", initialValues);
   const formik = useFormik({
     initialValues,
     validate: (values: PointsFormValues) => {

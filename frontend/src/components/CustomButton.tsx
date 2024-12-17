@@ -14,7 +14,22 @@ export const CustomButton = ({
   children,
   disabled,
 }: CustomButtonProps) => {
-  return (
+  return disabled ? (
+    <CustomText
+      style={{
+        ...styles.button,
+        ...(disabled ? styles.disabled : undefined),
+      }}
+      size={tokens.font.text}
+      onClick={() => {
+        if (!disabled) {
+          onClick();
+        }
+      }}
+    >
+      {children}
+    </CustomText>
+  ) : (
     <HooverWrapper>
       <CustomText
         style={{
@@ -43,6 +58,7 @@ const styles: Styles = {
     borderRadius: 6,
     cursor: "pointer",
     display: "inline-block",
+    userSelect: "none",
   },
   disabled: {
     cursor: "auto",

@@ -1,22 +1,33 @@
+import { tokens } from "../../tokens";
 import { Styles } from "../../utils/Styles";
+import { CustomText } from "../CustomText";
 
 type NotEditableInfoProps = {
   hasEditableRights: boolean;
   isSelectedEditionActive: boolean;
+  type: "student" | "group";
 };
+
 export const NotEditableInfo = ({
   hasEditableRights,
   isSelectedEditionActive,
+  type,
 }: NotEditableInfoProps) => {
   return (
     <div style={styles.card}>
-      <div style={styles.title}>
-        Nie możesz zarządzać punktami tego studenta, bo:
-      </div>
+      <CustomText color={tokens.color.state.error} bold={true}>
+        Nie możesz zarządzać punktami{" "}
+        {type === "student" ? "tego studenta" : "tej grupy"}, bo:
+      </CustomText>
       <div style={styles.reasonsContainer}>
-        {!hasEditableRights && <div>- nie jesteś nauczycielem jego grupy</div>}
+        {!hasEditableRights && (
+          <CustomText>
+            - nie jesteś prowadzącym{" "}
+            {type === "student" ? "jego grupy" : "tej grupy"}
+          </CustomText>
+        )}
         {!isSelectedEditionActive && (
-          <div>- wybrana edycja nie jest aktywna</div>
+          <CustomText>- wybrana edycja nie jest aktywna</CustomText>
         )}
       </div>
     </div>
@@ -25,14 +36,12 @@ export const NotEditableInfo = ({
 
 const styles: Styles = {
   card: {
-    border: "1px solid red",
     padding: 12,
     display: "flex",
     flexDirection: "column",
     gap: 8,
-  },
-  title: {
-    fontWeight: "bold",
+    borderRadius: 4,
+    border: `2px solid ${tokens.color.state.error}`,
   },
   reasonsContainer: {
     display: "flex",

@@ -5,6 +5,8 @@ import { AddGroupForm } from "./GroupAddForm";
 import { useGroupsSection } from "../../../../hooks/Edition/useGroupsSection";
 import { useParams } from "react-router-dom";
 import { UsersRolesType } from "../../../../__generated__/schema.graphql.types";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
 import { Styles } from "../../../../utils/Styles";
 
@@ -35,8 +37,8 @@ export const GroupsSection = () => {
     handleMarkAllPassingStudents,
   } = useGroupsSection(editionId);
 
-  if (loading) return <div>Ładowanie...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (loading) return <LoadingScreen type="edition" />;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
     <div style={styles.container}>

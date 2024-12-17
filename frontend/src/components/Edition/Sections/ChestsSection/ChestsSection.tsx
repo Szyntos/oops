@@ -8,6 +8,7 @@ import { ChestsList } from "./ChestsList/ChestsList";
 import { AddChestForm } from "./AddChestForm/AddChestForm";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
 
 export const ChestsSection = () => {
   const params = useParams();
@@ -49,7 +50,7 @@ export const ChestsSection = () => {
 
   return (
     <div style={styles.container}>
-      <button onClick={openAddChest}>Dodaj skrzynkę</button>
+      <CustomButton onClick={openAddChest}>Dodaj skrzynkę</CustomButton>
 
       <ChestsList
         chests={selectedChests}
@@ -139,6 +140,6 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    gap: 12,
+    gap: 20,
   },
 };

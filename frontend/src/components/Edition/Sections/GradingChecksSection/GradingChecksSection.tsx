@@ -78,6 +78,9 @@ export const GradingChecksSection = () => {
         title={"Warunki zaliczenia"}
         cards={[
           <div style={{ ...getCardStyles(true), minWidth: 400 }}>
+            <CustomText style={coordinatorStyles.title}>
+              Warunki zaliczenia
+            </CustomText>
             <div style={coordinatorStyles.textContainer}>
               <div style={styles.row}>
                 <CustomText>Data końca laboratorium: </CustomText>
@@ -117,6 +120,8 @@ export const GradingChecksSection = () => {
         title={"Podgląd"}
         cards={[
           <div style={{ ...getCardStyles(true), maxWidth: 420 }}>
+            <CustomText style={coordinatorStyles.title}>Podgląd</CustomText>
+
             <CustomText>
               "Aby zaliczyć przedmiot Twój zwierzak musi być na koniec co
               najmniej {displayLevel} oraz powinien zdobyć co najmniej{" "}

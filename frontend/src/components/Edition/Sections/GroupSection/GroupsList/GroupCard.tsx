@@ -1,5 +1,6 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Group } from "../../../../../hooks/Edition/useGroupsSection";
+import { tokens } from "../../../../../tokens";
 import {
   coordinatorStyles,
   getCardStyles,
@@ -44,7 +45,7 @@ export const GroupCard = ({
 
       <div style={{ ...coordinatorStyles.textContainer, flex: 1 }}>
         {group.group.userGroups.map((student, index) => (
-          <CustomText>
+          <CustomText color={tokens.color.text.tertiary}>
             {index + 1}. {student.user.firstName} {student.user.secondName}
           </CustomText>
         ))}

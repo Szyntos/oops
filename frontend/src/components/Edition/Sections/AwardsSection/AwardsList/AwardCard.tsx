@@ -44,11 +44,10 @@ export const AwardCard = ({
               parseFloat(award.award.awardValue),
             )}
           </CustomText>
-          <CustomText>
-            {getAwardMaxUsageString(award.award.maxUsages)}
-          </CustomText>
         </div>
       </div>
+
+      <CustomText>{getAwardMaxUsageString(award.award.maxUsages)}</CustomText>
 
       <SetupButtons
         isSelected={isSelected}

@@ -25,12 +25,13 @@ export const UserCard = ({
     <div style={{ ...getCardStyles(false), minWidth: 260 }}>
       {user.user.role === UsersRolesType.Student ? (
         <div style={cardStyles.avatarContainer}>
-          <Avatar id={user.user.imageFile?.fileId} size={"xs"} />
+          <Avatar id={user.user.imageFile?.fileId} size={"s"} />
           <div style={cardStyles.textContainer}>
             <CustomText style={cardStyles.title}>
               {user.user.firstName} {user.user.secondName}
             </CustomText>
             <CustomText>{user.user.nick}</CustomText>
+            <CustomText>{user.user.indexNumber}</CustomText>
           </div>
         </div>
       ) : (
@@ -38,7 +39,12 @@ export const UserCard = ({
           <CustomText style={cardStyles.title}>
             {user.user.firstName} {user.user.secondName}
           </CustomText>
+          <CustomText>{user.user.email}</CustomText>
         </div>
+      )}
+
+      {user.user.role === UsersRolesType.Student && (
+        <CustomText>{user.user.email}</CustomText>
       )}
 
       {handleStudentActiveness ? (

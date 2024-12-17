@@ -103,6 +103,7 @@ export const cardStyles: Styles = {
   avatarContainer: {
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   title: {
@@ -120,7 +121,7 @@ export const getGroupTimeString = (group: Group) => {
 export const ERROR_MESSAGE = "Wystąpił błąd...";
 
 export const getAwardMaxUsageString = (maxUsage: number): string => {
-  return `Ograniczenie posiadanych sztuk: ${maxUsage === -1 ? "brak" : maxUsage}`;
+  return `ograniczenie posiadanych sztuk: ${maxUsage === -1 ? "brak" : maxUsage}`;
 };
 
 export const getAwardValueString = (
@@ -128,6 +129,6 @@ export const getAwardValueString = (
   typeValue: number,
 ): string => {
   return type === AwardTypeType.Multiplicative
-    ? `Mnożnik: ${typeValue * 100}%`
-    : `Wartość: ${typeValue.toFixed(2)}pkt`;
+    ? `mnożnik: ${typeValue * 100}%`
+    : `wartość: ${typeValue.toFixed(2)}pkt`;
 };

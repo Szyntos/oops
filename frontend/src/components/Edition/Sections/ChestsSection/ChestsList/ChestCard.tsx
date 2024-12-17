@@ -55,18 +55,20 @@ export const ChestCard = ({
   return (
     <div style={getCardStyles(isSelected)}>
       <div style={coordinatorStyles.avatarContainer}>
-        <Avatar id={chest.chest.imageFile?.fileId} size="s" />
-        <div style={coordinatorStyles.textContainer}>
-          <CustomText style={coordinatorStyles.title}>
-            {chest.chest.chestType}
-          </CustomText>
-          <CustomText>
-            łupy do zgarnięcia: {chest.chest.awardBundleCount}
-          </CustomText>
+        <Avatar id={chest.chest.imageFile?.fileId} size="l" />
+        <div style={{ ...coordinatorStyles.textContainer, gap: 12 }}>
+          <div style={coordinatorStyles.textContainer}>
+            <CustomText style={coordinatorStyles.title}>
+              {chest.chest.chestType}
+            </CustomText>
+            <CustomText>
+              łupy do zebrania: {chest.chest.awardBundleCount}
+            </CustomText>
+          </div>
+
+          <CustomImageList items={awardItems} type="bonus" />
         </div>
       </div>
-
-      <CustomImageList items={awardItems} type="bonus" />
 
       <SetupButtons
         isSelected={isSelected}

@@ -1,5 +1,4 @@
 import { Dialog } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
 import { AwardsList } from "./AwardsList/AwardsList";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useAwardsSection } from "../../../../hooks/Edition/useAwardsSection";
@@ -9,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
 
 export const AwardsSection = () => {
   const params = useParams();
@@ -45,7 +45,7 @@ export const AwardsSection = () => {
   if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
+    <div style={coordinatorStyles.container}>
       <CustomButton onClick={openAddAward}>Dodaj nagrodę</CustomButton>
 
       <AwardsList
@@ -101,12 +101,4 @@ export const AwardsSection = () => {
       </Dialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 20,
-  },
 };

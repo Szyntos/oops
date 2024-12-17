@@ -1,5 +1,4 @@
 import { Dialog } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 
 import { useParams } from "react-router-dom";
@@ -11,6 +10,7 @@ import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
 import { CardsSection } from "../../CardsSection";
+import { coordinatorStyles } from "../../../../utils/utils";
 
 export const LevelSetsSection = () => {
   const params = useParams();
@@ -47,7 +47,7 @@ export const LevelSetsSection = () => {
   if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
+    <div style={coordinatorStyles.container}>
       <CustomButton onClick={openAddSet}>Dodaj zbiór poziomów</CustomButton>
 
       <CardsSection
@@ -109,12 +109,4 @@ export const LevelSetsSection = () => {
       </Dialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 20,
-  },
 };

@@ -1,6 +1,7 @@
 import { Category } from "../../../hooks/Edition/categories/useCategoriesSection";
 import { tokens } from "../../../tokens";
 import { Styles } from "../../../utils/Styles";
+import { CustomButton } from "../../CustomButton";
 import { HooverWrapper } from "../../HooverWrapper";
 
 import { TooltipWrapper } from "../../TooltipWrapper";
@@ -20,6 +21,7 @@ type SetupButtonsProps = {
   isSelected?: boolean;
   isStudentActive?: boolean;
   isChestActive?: boolean;
+  isBigVariant?: boolean;
 };
 
 export const SetupButtons = ({
@@ -35,6 +37,7 @@ export const SetupButtons = ({
   isSelected,
   isStudentActive,
   isChestActive,
+  isBigVariant,
 }: SetupButtonsProps) => {
   const copy: SetupButtonProps | undefined = handleCopy
     ? {
@@ -127,24 +130,33 @@ export const SetupButtons = ({
     : undefined;
 
   return (
-    <div style={styles.buttonsContainer}>
-      {add && <SetupButton {...add} />}
-      {select && <SetupButton {...select} />}
-      {copy && <SetupButton {...copy} />}
-      {edit && <SetupButton {...edit} />}
-      {remove && <SetupButton {...remove} />}
-      {studentActiveness && <SetupButton {...studentActiveness} />}
-      {chestActiveness && <SetupButton {...chestActiveness} />}
-      {show && <SetupButton {...show} />}
+    <div
+      style={
+        isBigVariant ? styles.bigButtonsContainer : styles.buttonsContainer
+      }
+    >
+      {add && <SetupButton {...add} isBigVariant={isBigVariant} />}
+      {select && <SetupButton {...select} isBigVariant={isBigVariant} />}
+      {copy && <SetupButton {...copy} isBigVariant={isBigVariant} />}
+      {edit && <SetupButton {...edit} isBigVariant={isBigVariant} />}
+      {remove && <SetupButton {...remove} isBigVariant={isBigVariant} />}
+      {studentActiveness && (
+        <SetupButton {...studentActiveness} isBigVariant={isBigVariant} />
+      )}
+      {chestActiveness && (
+        <SetupButton {...chestActiveness} isBigVariant={isBigVariant} />
+      )}
+      {show && <SetupButton {...show} isBigVariant={isBigVariant} />}
     </div>
   );
 };
 
 type SetupButtonProps = {
-  handleClick: <T>(item: T) => void;
+  handleClick: () => void;
   isClickable: boolean;
   reason: string | null | undefined;
   title: string;
+  isBigVariant?: boolean;
 };
 
 const emptyReason = "Brak powodu";
@@ -154,8 +166,23 @@ const SetupButton = ({
   isClickable,
   reason,
   title,
+  isBigVariant,
 }: SetupButtonProps) => {
   {
+    if (isBigVariant) {
+      return isClickable ? (
+        <CustomButton onClick={handleClick} disabled={!isClickable}>
+          {title}
+        </CustomButton>
+      ) : (
+        <TooltipWrapper tooltipContent={<div>{reason ?? emptyReason}</div>}>
+          <CustomButton onClick={handleClick} disabled={!isClickable}>
+            {title}
+          </CustomButton>
+        </TooltipWrapper>
+      );
+    }
+
     return isClickable ? (
       <HooverWrapper>
         <button
@@ -168,15 +195,13 @@ const SetupButton = ({
       </HooverWrapper>
     ) : (
       <TooltipWrapper tooltipContent={<div>{reason ?? emptyReason}</div>}>
-        <HooverWrapper>
-          <button
-            disabled={!isClickable}
-            onClick={handleClick}
-            style={{ ...styles.button, ...styles.disabled }}
-          >
-            {title}
-          </button>
-        </HooverWrapper>
+        <button
+          disabled={!isClickable}
+          onClick={handleClick}
+          style={{ ...styles.button, ...styles.disabled }}
+        >
+          {title}
+        </button>
       </TooltipWrapper>
     );
   }
@@ -202,5 +227,10 @@ const styles: Styles = {
   disabled: {
     cursor: "auto",
     backgroundColor: tokens.color.state.disabled,
+  },
+  bigButtonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 12,
   },
 };

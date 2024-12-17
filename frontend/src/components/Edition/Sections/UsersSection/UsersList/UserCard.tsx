@@ -1,7 +1,7 @@
 import { UsersRolesType } from "../../../../../__generated__/schema.graphql.types";
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { User } from "../../../../../hooks/Edition/users/useUsersSection";
-import { cardStyles, getCardStyles } from "../../../../../utils/utils";
+import { coordinatorStyles, getCardStyles } from "../../../../../utils/utils";
 import { Avatar } from "../../../../avatars/Avatar";
 import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
@@ -24,10 +24,10 @@ export const UserCard = ({
   return (
     <div style={{ ...getCardStyles(false), minWidth: 260 }}>
       {user.user.role === UsersRolesType.Student ? (
-        <div style={cardStyles.avatarContainer}>
+        <div style={coordinatorStyles.avatarContainer}>
           <Avatar id={user.user.imageFile?.fileId} size={"s"} />
-          <div style={cardStyles.textContainer}>
-            <CustomText style={cardStyles.title}>
+          <div style={coordinatorStyles.textContainer}>
+            <CustomText style={coordinatorStyles.title}>
               {user.user.firstName} {user.user.secondName}
             </CustomText>
             <CustomText>{user.user.nick}</CustomText>
@@ -35,8 +35,8 @@ export const UserCard = ({
           </div>
         </div>
       ) : (
-        <div style={cardStyles.textContainer}>
-          <CustomText style={cardStyles.title}>
+        <div style={coordinatorStyles.textContainer}>
+          <CustomText style={coordinatorStyles.title}>
             {user.user.firstName} {user.user.secondName}
           </CustomText>
           <CustomText>{user.user.email}</CustomText>

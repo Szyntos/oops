@@ -1,7 +1,7 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { LevelSet } from "../../../../../hooks/Edition/useLevelSetsSection";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
-import { cardStyles, getCardStyles } from "../../../../../utils/utils";
+import { coordinatorStyles, getCardStyles } from "../../../../../utils/utils";
 import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
@@ -28,7 +28,7 @@ export const LevelSetCard = ({
 
   return (
     <div style={getCardStyles(isSelected)}>
-      <div style={cardStyles.textContainer}>
+      <div style={coordinatorStyles.textContainer}>
         {levelSet.levelSet.levels.length > 0
           ? levelSet.levelSet.levels.map((l) => (
               <CustomText>

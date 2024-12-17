@@ -93,7 +93,17 @@ export const getCardStyles = (isSelected: boolean): CSSProperties => ({
     : tokens.color.card.light,
 });
 
-export const cardStyles: Styles = {
+export const coordinatorStyles: Styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+  },
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 12,
+  },
   textContainer: {
     display: "flex",
     flexDirection: "column",

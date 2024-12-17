@@ -1,7 +1,7 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Group } from "../../../../../hooks/Edition/useGroupsSection";
 import {
-  cardStyles,
+  coordinatorStyles,
   getCardStyles,
   getGroupTimeString,
 } from "../../../../../utils/utils";
@@ -23,12 +23,12 @@ export const GroupCard = ({
 
   return (
     <div style={getCardStyles(false)}>
-      <div style={{ ...cardStyles.textContainer, minWidth: 220 }}>
-        <CustomText style={cardStyles.title}>
+      <div style={{ ...coordinatorStyles.textContainer, minWidth: 220 }}>
+        <CustomText style={coordinatorStyles.title}>
           {group.group.generatedName}
         </CustomText>
 
-        <div style={cardStyles.CustomText}>
+        <div style={coordinatorStyles.CustomText}>
           <CustomText>
             {getGroupTimeString(
               group.group.weekday.weekdayName,
@@ -42,7 +42,7 @@ export const GroupCard = ({
         </div>
       </div>
 
-      <div style={{ ...cardStyles.textContainer, flex: 1 }}>
+      <div style={{ ...coordinatorStyles.textContainer, flex: 1 }}>
         {group.group.userGroups.map((student, index) => (
           <CustomText>
             {index + 1}. {student.user.firstName} {student.user.secondName}

@@ -1,6 +1,5 @@
 import { Dialog } from "@mui/material";
 import { useGradingChecksSection } from "../../../../hooks/Edition/useGradingChecksSection";
-import { Styles } from "../../../../utils/Styles";
 
 import { useParams } from "react-router-dom";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
@@ -10,6 +9,11 @@ import { Category } from "../../../../hooks/Edition/categories/useCategoriesSect
 import { SetupButtons } from "../SetupButtons";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomText } from "../../../CustomText";
+import { coordinatorStyles, getCardStyles } from "../../../../utils/utils";
+import { CardsSection } from "../../CardsSection";
+import { Styles } from "../../../../utils/Styles";
+import { tokens } from "../../../../tokens";
 
 export const GradingChecksSection = () => {
   const params = useParams();
@@ -51,37 +55,82 @@ export const GradingChecksSection = () => {
       c.category.categoryId === gradingChecks.gradingCheck?.project.categoryId,
   );
 
-  return (
-    <div style={styles.container}>
-      <div>Warunki zaliczenia: {editionId}</div>
+  const displayDate =
+    gradingChecks.gradingCheck?.endOfLabsDate ?? EMPTY_FIELD_STRING;
+  const displayCategory = category?.category.categoryName ?? EMPTY_FIELD_STRING;
+  const displayPoints =
+    gradingChecks.gradingCheck?.projectPointsThreshold.toFixed(2) ??
+    EMPTY_FIELD_STRING;
+  const displayLevel = level?.levelName ?? EMPTY_FIELD_STRING;
 
+  return (
+    <div style={coordinatorStyles.container}>
       <SetupButtons
         permissions={gradingChecks.permissions}
         isSelected={false}
         handleDelete={handleDelete}
         handleEdit={openEdit}
         handleAdd={openAdd}
+        isBigVariant={true}
       />
 
-      <div>
-        <div>
-          Data końca laboratorium:{" "}
-          {gradingChecks.gradingCheck?.endOfLabsDate ?? EMPTY_FIELD_STRING}
-        </div>
-        <div>
-          Poziom do zdobycia przed końcem laboratorium:{" "}
-          {level?.levelName ?? EMPTY_FIELD_STRING}
-        </div>
-        <div>
-          Wybrana kategoria:{" "}
-          {category?.category.categoryName ?? EMPTY_FIELD_STRING}
-        </div>
-        <div>
-          Liczba punktów do zdobycia za daną kategorię:{" "}
-          {gradingChecks.gradingCheck?.projectPointsThreshold ??
-            EMPTY_FIELD_STRING}
-        </div>
-      </div>
+      <CardsSection
+        title={"Warunki zaliczenia"}
+        cards={[
+          <div style={{ ...getCardStyles(true), minWidth: 400 }}>
+            <div style={coordinatorStyles.textContainer}>
+              <div style={styles.row}>
+                <CustomText>Data końca laboratorium: </CustomText>
+                <CustomText color={tokens.color.text.tertiary}>
+                  {displayDate}
+                </CustomText>
+              </div>
+
+              <div style={styles.row}>
+                <CustomText>
+                  Poziom do zdobycia przed końcem laboratorium:
+                </CustomText>
+                <CustomText color={tokens.color.text.tertiary}>
+                  {displayLevel}
+                </CustomText>
+              </div>
+              <div style={styles.row}>
+                <CustomText>Wybrana kategoria: </CustomText>
+                <CustomText color={tokens.color.text.tertiary}>
+                  {displayCategory}
+                </CustomText>
+              </div>
+              <div style={styles.row}>
+                <CustomText>
+                  Liczba punktów do zdobycia za daną kategorię:
+                </CustomText>
+                <CustomText color={tokens.color.text.tertiary}>
+                  {displayPoints}pkt
+                </CustomText>
+              </div>
+            </div>
+          </div>,
+        ]}
+      />
+
+      <CardsSection
+        title={"Podgląd"}
+        cards={[
+          <div style={{ ...getCardStyles(true), maxWidth: 420 }}>
+            <CustomText>
+              "Aby zaliczyć przedmiot Twój zwierzak musi być na koniec co
+              najmniej {displayLevel} oraz powinien zdobyć co najmniej{" "}
+              {displayPoints}
+              pkt w trakcie {displayCategory}. Ponadto musi on wykluć się z{" "}
+              {displayLevel} przed końcem laboratoriów {displayDate}
+              ."
+            </CustomText>
+            <CustomText color={tokens.color.text.tertiary}>
+              ~ koordynator
+            </CustomText>
+          </div>,
+        ]}
+      />
 
       <Dialog open={isAddOpened}>
         <CloseHeader onCloseClick={closeAdd} />
@@ -121,9 +170,9 @@ export const GradingChecksSection = () => {
 };
 
 const styles: Styles = {
-  container: {
+  row: {
     display: "flex",
-    flexDirection: "column",
-    gap: 12,
+    flexDirection: "row",
+    gap: 8,
   },
 };

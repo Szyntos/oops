@@ -16,6 +16,7 @@ import { isPartOfAString } from "../../../../utils/strings";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
 
 const activeRadioOptions = [
   { id: "active", name: "Aktywny" },
@@ -85,9 +86,9 @@ export const UsersSection = () => {
   );
 
   return (
-    <div style={styles.container}>
+    <div style={coordinatorStyles.container}>
       <div style={styles.topBar}>
-        <div style={styles.buttonsContainer}>
+        <div style={coordinatorStyles.buttonsContainer}>
           <CustomButton onClick={openAddStudent}>Dodaj studenta</CustomButton>
           <CustomButton onClick={openAddTeacher}>
             Dodaj nauczyciela
@@ -161,16 +162,6 @@ export const UsersSection = () => {
 };
 
 const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 20,
-  },
-  buttonsContainer: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 12,
-  },
   topBar: {
     display: "flex",
     flexDirection: "row",

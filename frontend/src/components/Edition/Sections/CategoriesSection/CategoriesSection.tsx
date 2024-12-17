@@ -1,5 +1,4 @@
 import { Dialog } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
 import { AddCategoryForm } from "./AddCategoryForm/AddCategoryForm";
 import { CategoriesList } from "./CategoriesList/CategoriesList";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
@@ -8,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
 
 export const CategoriesSection = () => {
   const params = useParams();
@@ -37,7 +37,7 @@ export const CategoriesSection = () => {
   if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
+    <div style={coordinatorStyles.container}>
       <CustomButton onClick={openAddCategory}>Dodaj kategorię</CustomButton>
 
       <CategoriesList
@@ -85,12 +85,4 @@ export const CategoriesSection = () => {
       </Dialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 20,
-  },
 };

@@ -1,7 +1,7 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
 import { SetupButtons } from "../../SetupButtons";
-import { cardStyles, getCardStyles } from "../../../../../utils/utils";
+import { coordinatorStyles, getCardStyles } from "../../../../../utils/utils";
 import { CustomText } from "../../../../CustomText";
 import { Styles } from "../../../../../utils/Styles";
 import { tokens } from "../../../../../tokens";
@@ -29,8 +29,8 @@ export const CategoryCard = ({
     <div
       style={{ ...getCardStyles(isSelected), justifyContent: "space-between" }}
     >
-      <div style={cardStyles.textContainer}>
-        <CustomText style={cardStyles.title}>
+      <div style={coordinatorStyles.textContainer}>
+        <CustomText style={coordinatorStyles.title}>
           {category.category.categoryName}
         </CustomText>
         {category.category.subcategories.map((s, index) => {

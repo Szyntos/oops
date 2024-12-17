@@ -2,7 +2,7 @@ import { SetupChestsQuery } from "../../../../../graphql/setupChests.graphql.typ
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
 import {
-  cardStyles,
+  coordinatorStyles,
   getCardStyles,
   isChestActive,
 } from "../../../../../utils/utils";
@@ -54,10 +54,10 @@ export const ChestCard = ({
 
   return (
     <div style={getCardStyles(isSelected)}>
-      <div style={cardStyles.avatarContainer}>
+      <div style={coordinatorStyles.avatarContainer}>
         <Avatar id={chest.chest.imageFile?.fileId} size="s" />
-        <div style={cardStyles.textContainer}>
-          <CustomText style={cardStyles.title}>
+        <div style={coordinatorStyles.textContainer}>
+          <CustomText style={coordinatorStyles.title}>
             {chest.chest.chestType}
           </CustomText>
           <CustomText>

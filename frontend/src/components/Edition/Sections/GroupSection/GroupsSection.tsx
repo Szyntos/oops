@@ -8,7 +8,7 @@ import { UsersRolesType } from "../../../../__generated__/schema.graphql.types";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
-import { Styles } from "../../../../utils/Styles";
+import { coordinatorStyles } from "../../../../utils/utils";
 
 export const GroupsSection = () => {
   const params = useParams();
@@ -41,8 +41,8 @@ export const GroupsSection = () => {
   if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
-      <div style={styles.buttonsContainer}>
+    <div style={coordinatorStyles.container}>
+      <div style={coordinatorStyles.buttonsContainer}>
         <CustomButton onClick={() => openAddGroup("select")}>
           Dodaj grupę
         </CustomButton>
@@ -108,16 +108,4 @@ export const GroupsSection = () => {
       </Dialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 20,
-  },
-  buttonsContainer: {
-    display: "flex",
-    gap: 12,
-  },
 };

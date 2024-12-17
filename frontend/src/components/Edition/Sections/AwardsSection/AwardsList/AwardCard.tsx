@@ -1,7 +1,7 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
 import {
-  cardStyles,
+  coordinatorStyles,
   getAwardMaxUsageString,
   getAwardValueString,
   getCardStyles,
@@ -31,10 +31,10 @@ export const AwardCard = ({
 
   return (
     <div style={getCardStyles(isSelected)}>
-      <div style={cardStyles.avatarContainer}>
+      <div style={coordinatorStyles.avatarContainer}>
         <Avatar id={award.award.imageFile?.fileId} size="s" />
-        <div style={cardStyles.textContainer}>
-          <CustomText style={cardStyles.title}>
+        <div style={coordinatorStyles.textContainer}>
+          <CustomText style={coordinatorStyles.title}>
             {award.award.awardName}
           </CustomText>
           <CustomText>{award.award.awardType}</CustomText>

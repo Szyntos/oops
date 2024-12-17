@@ -1,9 +1,16 @@
-import { Styles } from "../../utils/Styles";
 import { pathsGenerator } from "../../router/paths";
 import { useLocation, useNavigate } from "react-router-dom";
 import { tokens } from "../../tokens";
+import { NavbarItem } from "../layout/Navbar/NavarItem";
+import {
+  NAV_BAR_HEIGHT_WITH_BORDER,
+  navbarStyles,
+} from "../layout/Navbar/Navbar";
 
-export const EDITION_NAVBAR_HEIGHT = 24;
+const EDITION_NAVBAR_HEIGHT = 40;
+const NAVBAR_BORDER = 1;
+export const EDITION_NAVBAR_HEIGHT_WITH_BORDER =
+  EDITION_NAVBAR_HEIGHT + NAVBAR_BORDER;
 
 type EditionScreenNavbarProps = {
   editionId: number;
@@ -79,30 +86,26 @@ export const EditionScreenNavbar = ({
   };
 
   return (
-    <div style={styles.container}>
-      {sections.map((section) => (
-        <div
-          onClick={() => handleSectionChange(section)}
-          style={{
-            ...styles.section,
-            color: isSectionActive(section)
-              ? tokens.color.accent.dark
-              : tokens.color.state.disabled,
-          }}
-        >
-          {section.title}
+    <div
+      style={{
+        ...navbarStyles.navbar,
+        height: EDITION_NAVBAR_HEIGHT,
+        borderBottom: `${NAVBAR_BORDER}px solid ${tokens.color.text.secondary}`,
+        top: NAV_BAR_HEIGHT_WITH_BORDER,
+      }}
+    >
+      <div style={navbarStyles.itemsContainer}>
+        <div style={navbarStyles.leftItemsContainer}>
+          {sections.map((section) => (
+            <NavbarItem
+              onClick={() => handleSectionChange(section)}
+              title={section.title}
+              isActive={isSectionActive(section)}
+              bold={false}
+            />
+          ))}
         </div>
-      ))}
+      </div>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 12,
-    borderBottom: "1px solid black",
-    height: EDITION_NAVBAR_HEIGHT,
-  },
 };

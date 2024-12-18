@@ -167,10 +167,6 @@ type Mutation {
     maxPoints: Float!
   ): [SubcategoryType]
 
-  getQuoteVariables(
-    editionId: Int!
-  ): QuoteVariablesType!
-
   removeAwardFromEdition(
     awardId: Int!,
     editionId: Int!
@@ -454,6 +450,9 @@ type Query {
 
   listSetupEditions: [EditionWithPermissionsType!]!
 
+  getQuoteVariables(
+    editionId: Int!
+  ): QuoteVariablesType!
 
 }
 

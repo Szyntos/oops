@@ -10,9 +10,12 @@ import backend.graphql.permissions.GradingChecksPermissions
 import backend.graphql.utils.PermissionDeniedException
 import backend.graphql.utils.PermissionInput
 import backend.graphql.utils.PermissionService
+import backend.levels.Levels
 import backend.levels.LevelsRepository
 import backend.points.PointsRepository
+import backend.users.Users
 import backend.users.UsersRepository
+import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
@@ -21,6 +24,7 @@ import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.jvm.optionals.getOrNull
 
@@ -107,6 +111,40 @@ class GradingChecksDataFetcher {
         )
 
         return gradingCheckPermissions
+    }
+
+    @DgsMutation
+    @Transactional
+    fun getQuoteVariables(@InputArgument editionId: Long): QuoteVariables {
+        val action = "getQuoteVariables"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+        }
+
+        val edition = editionRepository.findById(editionId)
+            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+
+        val coordinator = usersRepository.findByRole(UsersRoles.COORDINATOR)
+            .firstOrNull()
+            ?: throw IllegalArgumentException("Coordinator not found")
+
+        val firstPassingLevel = edition.levelSet?.let {
+            levelsRepository.findFirstByGradeAndLevelSetOrderByOrdinalNumber(3.0.toBigDecimal(), it)
+        }
+        return QuoteVariables(
+            firstPassingLevel = firstPassingLevel,
+            gradingCheck = gradingChecksRepository.findByEdition(edition).getOrNull(),
+            coordinator = coordinator
+        )
     }
 
     @DgsMutation
@@ -244,4 +282,10 @@ class GradingChecksDataFetcher {
 data class GradingCheckWithPermissions(
     val gradingCheck: GradingChecks?,
     val permissions: ListPermissionsOutput
+)
+
+data class QuoteVariables(
+    val firstPassingLevel: Levels?,
+    val gradingCheck: GradingChecks?,
+    val coordinator: Users
 )

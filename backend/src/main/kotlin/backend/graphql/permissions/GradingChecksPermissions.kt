@@ -96,6 +96,33 @@ class GradingChecksPermissions {
         )
     }
 
+    fun checkGetQuoteVariablesPermission(arguments: JsonNode): Permission {
+        val action = "getQuoteVariables"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "User is not a coordinator"
+            )
+        }
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'editionId'"
+        )
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
     fun checkAddGradingCheckPermission(arguments: JsonNode): Permission {
         val action = "addGradingCheck"
         val currentUser = userMapper.getCurrentUser()

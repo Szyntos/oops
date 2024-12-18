@@ -4,10 +4,22 @@ import { CustomText } from "../CustomText";
 
 type FormErrorProps = {
   error: string | undefined | null;
+  isFormError?: boolean;
 };
 
-export const FormError = ({ error }: FormErrorProps) => {
-  return error ? <CustomText style={styles.error}>{error}</CustomText> : <></>;
+export const FormError = ({ error, isFormError }: FormErrorProps) => {
+  return error ? (
+    <CustomText
+      style={{
+        ...styles.error,
+        ...(isFormError ? styles.formError : undefined),
+      }}
+    >
+      {error}
+    </CustomText>
+  ) : (
+    <></>
+  );
 };
 
 const styles: Styles = {
@@ -17,5 +29,13 @@ const styles: Styles = {
     paddingLeft: 12,
     paddingTop: 4,
     paddingBottom: 6,
+  },
+  formError: {
+    color: tokens.color.state.error,
+    fontSize: tokens.font.text,
+    paddingLeft: 4,
+    padding: 0,
+    paddingTop: 12,
+    fontWeight: "bold",
   },
 };

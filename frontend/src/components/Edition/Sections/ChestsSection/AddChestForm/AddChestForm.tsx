@@ -155,10 +155,11 @@ export const AddChestForm = ({
             title={"Wybrane nagrody z innych edycji:"}
           />
 
+          <FormError error={formError} />
+
           <FormButton />
         </div>
       </form>
-      <FormError error={formError} />
     </div>
   );
 };

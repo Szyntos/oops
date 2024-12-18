@@ -68,10 +68,11 @@ export const OverrideGradeForm = ({
             )}
           </FormControl>
 
+          <FormError error={formError} isFormError={true} />
+
           <FormButton />
         </div>
       </form>
-      <FormError error={formError} />
     </div>
   );
 };

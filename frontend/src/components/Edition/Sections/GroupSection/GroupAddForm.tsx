@@ -294,11 +294,11 @@ export const AddGroupForm = ({
             </div>
           )}
 
+          <FormError error={createError} isFormError={true} />
+
           <FormButton />
         </div>
       </form>
-
-      <FormError error={createError} />
     </div>
   );
 };

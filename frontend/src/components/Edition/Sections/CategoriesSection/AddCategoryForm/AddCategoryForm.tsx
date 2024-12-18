@@ -142,11 +142,11 @@ export const AddCategoryForm = ({
             handleDown={handleDown}
           />
 
+          <FormError error={formError} />
+
           <FormButton />
         </div>
       </form>
-
-      <FormError error={formError} />
     </div>
   );
 };

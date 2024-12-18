@@ -169,11 +169,11 @@ export const ChecksForm = ({
             }
           />
 
+          <FormError error={formError} isFormError={true} />
+
           <FormButton />
         </div>
       </form>
-
-      <FormError error={formError} />
     </div>
   );
 };

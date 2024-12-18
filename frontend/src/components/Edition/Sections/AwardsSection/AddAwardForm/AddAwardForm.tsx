@@ -210,11 +210,12 @@ export const AddAwardForm = ({
             selectVariant={"single"}
             title="Wybierz grafikę:"
           />
+
+          <FormError error={formError} isFormError={true} />
+
           <FormButton />
         </div>
       </form>
-
-      <FormError error={formError} />
     </div>
   );
 };

@@ -104,7 +104,7 @@ export const SelectImage = ({
           <CustomText>{EMPTY_FIELD_STRING}</CustomText>
         )}
       </div>
-      {error && touched && <FormError error={error} />}
+      {error && touched && <FormError error={error} isFormError={true} />}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Styles } from "../utils/Styles";
 import { Chest } from "../hooks/chest/useChests";
 import { Avatar } from "./avatars/Avatar";
-import { ERROR_MESSAGE, formStyles } from "../utils/utils";
+import { formStyles } from "../utils/utils";
 import { CustomText } from "./CustomText";
 import { FormError } from "./form/FormError";
 import { FormButton } from "./form/FormButton";
@@ -23,7 +23,7 @@ export const OpenChest = ({
   const [selectedAwards, setSelectedAwards] = useState<string[]>([]);
 
   if (!chest) {
-    return <CustomText>{ERROR_MESSAGE}</CustomText>;
+    return <CustomText>Przyznawanie nagród...</CustomText>;
   }
 
   const handleAwardClick = (award: Award) => {

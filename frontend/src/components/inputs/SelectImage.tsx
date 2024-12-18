@@ -121,7 +121,9 @@ export const SelectImage = ({
         {getOptionsImagesBasedOnType().length > 0 ? (
           getOptionsImagesBasedOnType()
         ) : (
-          <CustomText>{EMPTY_FIELD_STRING}</CustomText>
+          <CustomText style={{ paddingLeft: 12 }}>
+            {EMPTY_FIELD_STRING}
+          </CustomText>
         )}
       </div>
       {error && touched && <FormError error={error} isFormError={false} />}

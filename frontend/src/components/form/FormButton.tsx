@@ -30,7 +30,6 @@ const styles: Styles = {
     display: "inline-block",
     userSelect: "none",
     border: "none",
-    marginRight: 10,
-    marginBottom: 10,
+    margin: 12,
   },
 };

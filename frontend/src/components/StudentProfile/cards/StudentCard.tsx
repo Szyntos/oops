@@ -26,7 +26,7 @@ export function StudentCard({
 
   const performanceItems: ItemWithIconProps[] = [
     { icon: "grade", title: `${grade}${override ? "*" : ""}` },
-    { title: "∑ " + totalPoints },
+    { title: "∑ " + totalPoints + "pkt" },
   ];
 
   const centerItems: ItemWithIconProps[] = [

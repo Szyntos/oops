@@ -1,7 +1,7 @@
 import { FilterItem } from "../../../components/Groups/FilterBar/FilterOptionsSection";
 import { FilterMenuItemType } from "../../../components/StudentProfile/table/FilterMenu/FilterMenu";
 import { useCategoriesQuery } from "../../../graphql/categories.graphql.types";
-import { useStudentPointsQuery } from "../../../graphql/studentPoints.graphql.types";
+import { useStudentPointsTeacherQuery } from "../../../graphql/studentPointsTeacher.graphql.types";
 import { Timestamp, Weekday } from "../../common/useGroupsData";
 import { Points } from "../types";
 
@@ -31,7 +31,7 @@ export const useStudentDataTeacher = (props: {
   studentId: string | undefined;
 }) => {
   const { editionId, studentId } = props;
-  const { data, loading, error, refetch } = useStudentPointsQuery({
+  const { data, loading, error, refetch } = useStudentPointsTeacherQuery({
     variables: {
       editionId: parseInt(editionId as string),
       studentId: parseInt(studentId as string),

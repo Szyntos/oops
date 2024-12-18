@@ -240,7 +240,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Student cannot change groups"
+                reason = "Only teachers and coordinators can change students' groups"
             )
         }
 

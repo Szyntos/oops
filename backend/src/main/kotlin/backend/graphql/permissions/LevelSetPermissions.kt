@@ -225,6 +225,15 @@ class LevelSetPermissions {
             )
         }
 
+        if (levelSet.levels.any { it.gradingChecks.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Level set has grading checks using it"
+            )
+        }
+
         // not validating further, as the levels are validated in checkEditLevelHelperPermission and checkAddLevelHelperPermission
 
         return Permission(
@@ -289,6 +298,15 @@ class LevelSetPermissions {
                     reason = "There are groups using the level set"
                 )
             }
+        }
+
+        if (levelSet.levels.any { it.gradingChecks.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Level set has grading checks using it"
+            )
         }
         return Permission(
             action = action,

@@ -5,6 +5,7 @@ import backend.chestEdition.ChestEditionRepository
 import backend.chestHistory.ChestHistoryRepository
 import backend.chests.ChestsRepository
 import backend.edition.EditionRepository
+import backend.gradingChecks.GradingChecksRepository
 import backend.graphql.utils.PhotoAssigner
 import backend.groups.GroupsRepository
 import backend.levelSet.LevelSet
@@ -23,6 +24,9 @@ import java.math.RoundingMode
 
 @Service
 class LevelSetPartialPermissions {
+
+    @Autowired
+    private lateinit var gradingChecksRepository: GradingChecksRepository
 
     @Autowired
     private lateinit var groupsRepository: GroupsRepository
@@ -146,6 +150,15 @@ class LevelSetPartialPermissions {
             )
         }
 
+        if (levelSet.levels.any { it.gradingChecks.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Level set has grading checks using it"
+            )
+        }
+
         // not validating further, as the levels are validated in checkEditLevelHelperPermission and checkAddLevelHelperPermission
 
         return Permission(
@@ -211,6 +224,16 @@ class LevelSetPartialPermissions {
                 )
             }
         }
+
+        if (levelSet.levels.any { it.gradingChecks.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Level set has grading checks using it"
+            )
+        }
+
         return Permission(
             action = action,
             arguments = arguments,

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { Styles } from "../../utils/Styles";
 import { EditionScreenNavbar } from "../../components/Edition/EditionScreenNavbar";
 import { ShowEntryContent } from "../../components/Edition/ShowEntryContent/ShowEntryContent";
@@ -18,6 +18,8 @@ export const EditionScreen = () => {
     <div>
       <EditionScreenNavbar editionId={editionId} />
       <div style={styles.screenContainer}>
+        <Outlet />
+
         <CustomDialog
           isOpen={isShowDialogOpen}
           title="JSON"

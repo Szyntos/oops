@@ -26,7 +26,7 @@ export type StudentCardData = {
   override?: boolean;
 };
 
-export const useStudentData = (props: {
+export const useStudentDataTeacher = (props: {
   editionId: string | undefined;
   studentId: string | undefined;
 }) => {
@@ -54,6 +54,10 @@ export const useStudentData = (props: {
             .find((l) => l?.edition.editionId)
             ?.computedGrade.toFixed(1)
             .toString() ?? "",
+        override: Boolean(
+          user.userLevels.find((l) => l?.edition.editionId)
+            ?.coordinatorOverride,
+        ),
         group: user.userGroups[0]
           ? {
               name: user.userGroups[0].group.generatedName,

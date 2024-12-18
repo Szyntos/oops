@@ -16,6 +16,7 @@ export function StudentCard({
   avatarId,
   grade,
   totalPoints,
+  override,
 }: StudentCardData) {
   const profileItems: ItemWithIconProps[] = [
     { icon: "name", title: displayName },
@@ -24,7 +25,7 @@ export function StudentCard({
   ];
 
   const performanceItems: ItemWithIconProps[] = [
-    { icon: "grade", title: grade },
+    { icon: "grade", title: `${grade}${override ? "*" : ""}` },
     { title: "∑ " + totalPoints },
   ];
 

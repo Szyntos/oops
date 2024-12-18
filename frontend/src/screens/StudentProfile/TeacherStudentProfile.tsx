@@ -5,7 +5,6 @@ import {
   PointsFormValues,
 } from "../../components/StudentProfile/PointsForm/PointsForm";
 import { useUser } from "../../hooks/common/useUser";
-import { useStudentProfileData } from "../../hooks/StudentProfile";
 import { SideBar } from "../../components/StudentProfile/SideBar";
 import { useFormCategories } from "../../hooks/common/useFormCategories";
 import { StudentTableWithFilters } from "../../components/StudentProfile/table/StudentTableWithFilters";
@@ -23,6 +22,7 @@ import { CustomButton } from "../../components/CustomButton";
 import { LoadingScreen } from "../Loading/LoadingScreen";
 import { ErrorScreen } from "../Error/ErrorScreen";
 import { CustomDialog } from "../../components/dialogs/CustomDialog";
+import { useStudentProfileDataTeacher } from "../../hooks/StudentProfile/useStudentProfileData/useStudentProfileDataTeacher";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -45,7 +45,7 @@ export function TeacherStudentProfile() {
     loading,
     error,
     refetch,
-  } = useStudentProfileData(studentId);
+  } = useStudentProfileDataTeacher(studentId);
 
   const {
     addPointsCategories,

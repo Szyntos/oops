@@ -91,7 +91,7 @@ export const UsersSection = () => {
         <div style={coordinatorStyles.buttonsContainer}>
           <CustomButton onClick={openAddStudent}>Dodaj studenta</CustomButton>
           <CustomButton onClick={openAddTeacher}>
-            Dodaj nauczyciela
+            Dodaj prowadzącego
           </CustomButton>
         </div>
         <StudentsListSearcher
@@ -145,7 +145,7 @@ export const UsersSection = () => {
           formError={formError}
           handleConfirm={handleEditTeacherConfirm}
           initialValues={selectedUser?.user}
-          title={"Dodaj nauczyciela"}
+          title={"Dodaj prowadzącego"}
         />
       </Dialog>
 
@@ -154,7 +154,7 @@ export const UsersSection = () => {
         <AddTeacherForm
           formError={formError}
           handleConfirm={handleAddTeacherConfirm}
-          title={"Edytuj nauczyciela"}
+          title={"Edytuj prowadzącego"}
         />
       </Dialog>
     </div>

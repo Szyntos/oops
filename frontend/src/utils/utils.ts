@@ -7,7 +7,8 @@ import { Permissions } from "../components/Edition/Sections/SetupButtons";
 import { Edition } from "../contexts/userContext";
 import { tokens } from "../tokens";
 import { Styles } from "./Styles";
-import { EDITION_MARGIN_VERTICAL } from "../screens/Edition/EditionScreen";
+
+export const EDITION_MARGIN_VERTICAL = 20;
 
 type User = {
   role: string;
@@ -36,8 +37,6 @@ export const isEditionActive = (edition: Edition) => {
   const now = new Date();
   return new Date(edition.startDate) < now && now < new Date(edition.endDate);
 };
-
-const EDITION_MARGIN_VERTICAL = 20;
 
 export const mockPermissions = {
   __typename: "ListPermissionsOutputType",

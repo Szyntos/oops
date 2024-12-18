@@ -1,12 +1,9 @@
 import { Outlet, useParams } from "react-router-dom";
-import { Styles } from "../../utils/Styles";
 import { EditionScreenNavbar } from "../../components/Edition/EditionScreenNavbar";
 import { Dialog } from "@mui/material";
 import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { ShowEntryContent } from "../../components/Edition/ShowEntryContent/ShowEntryContent";
 import { useEditionSections } from "../../hooks/common/useEditionSection";
-
-export const EDITION_MARGIN_VERTICAL = 20;
 
 export const EditionScreen = () => {
   const params = useParams();
@@ -18,24 +15,14 @@ export const EditionScreen = () => {
   return (
     <div>
       <EditionScreenNavbar editionId={editionId} />
-      <div style={styles.screenContainer}>
+      <div>
         <Dialog open={isShowDialogOpen}>
           <CloseHeader onCloseClick={closeShowDialog} />
           <ShowEntryContent selectedEntry={selectedEntry} />
         </Dialog>
+
         <Outlet />
       </div>
     </div>
   );
-};
-
-const styles: Styles = {
-  screenContainer: {
-    margin: 12,
-    marginTop: EDITION_MARGIN_VERTICAL,
-    marginBottom: EDITION_MARGIN_VERTICAL,
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

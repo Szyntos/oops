@@ -81,16 +81,6 @@ export type SetupChestsQuery = {
         allow: boolean;
         reason?: string | null;
       } | null;
-      canOverride?: {
-        __typename?: "PermissionType";
-        allow: boolean;
-        reason?: string | null;
-      } | null;
-      canTurnOffOverride?: {
-        __typename?: "PermissionType";
-        allow: boolean;
-        reason?: string | null;
-      } | null;
       canActivate?: {
         __typename?: "PermissionType";
         allow: boolean;
@@ -170,14 +160,6 @@ export const SetupChestsDocument = gql`
           reason
         }
         canMarkAsInactive {
-          allow
-          reason
-        }
-        canOverride {
-          allow
-          reason
-        }
-        canTurnOffOverride {
           allow
           reason
         }

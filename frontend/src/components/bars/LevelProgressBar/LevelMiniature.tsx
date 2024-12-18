@@ -18,6 +18,7 @@ export const LevelMiniature = ({ level }: LevelMiniatureProps) => {
           imageId: level.imageFile?.fileId,
           minimumPoints: parseFloat(level.minimumPoints),
           maximumPoints: parseFloat(level.maximumPoints),
+          grade: parseFloat(level.grade),
         }}
       />
     </div>

@@ -7,7 +7,7 @@ export const ShowGroupContent = ({ entry }: ShowGroupContentProps) => {
   return (
     <div>
       {entry.group.generatedName}
-      <pre>{JSON.stringify(entry)}</pre>
+      <pre>{JSON.stringify(entry, null, 2)}</pre>
     </div>
   );
 };

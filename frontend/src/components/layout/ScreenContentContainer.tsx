@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import { Styles } from "../../utils/Styles";
 import { NAV_BAR_HEIGHT_WITH_BORDER } from "./Navbar/Navbar";
-import { EDITION_NAVBAR_HEIGHT } from "../Edition/EditionScreenNavbar";
+import { EDITION_NAVBAR_HEIGHT_WITH_BORDER } from "../Edition/EditionScreenNavbar";
+import { EDITION_MARGIN_VERTICAL } from "../../screens/Edition/EditionScreen";
 
 type ScreenContentContainerProps = {
   sidebar: ReactNode;
@@ -9,7 +10,7 @@ type ScreenContentContainerProps = {
 };
 
 export const CONTENT_CONTAINER_HEIGHT_CALC = `calc(100vh - ${NAV_BAR_HEIGHT_WITH_BORDER}px)`;
-export const EDITION_CONTENT_CONTAINER_HEIGHT_CALC = `calc(100vh - ${NAV_BAR_HEIGHT_WITH_BORDER + EDITION_NAVBAR_HEIGHT + 24}px)`;
+export const EDITION_CONTENT_CONTAINER_HEIGHT_CALC = `calc(100vh - ${NAV_BAR_HEIGHT_WITH_BORDER + EDITION_NAVBAR_HEIGHT_WITH_BORDER + 2 * EDITION_MARGIN_VERTICAL + 1}px)`;
 
 export const ScreenContentContainer = ({
   sidebar,

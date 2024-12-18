@@ -33,7 +33,11 @@ export const GroupCard = ({
 
         <div style={styles.detailsContainer}>
           <CustomText color={tokens.color.text.secondary}>
-            {getGroupTimeString(group)}
+            {getGroupTimeString(
+              group.weekday.name,
+              group.time.start,
+              group.time.end,
+            )}
           </CustomText>
           <CustomText color={tokens.color.text.secondary}>
             {group.teacher.fullName}

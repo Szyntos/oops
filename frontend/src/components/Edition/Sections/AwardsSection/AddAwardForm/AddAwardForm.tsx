@@ -162,7 +162,7 @@ export const AddAwardForm = ({
           />
           <TextField
             fullWidth
-            name="Maksymalna liczba użyć"
+            name="maxUsages"
             label="Maksymalna liczba użyć"
             type="number"
             variant="outlined"

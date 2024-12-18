@@ -1,15 +1,16 @@
 import { Dialog } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
 import { CloseHeader } from "../../../dialogs/CloseHeader";
 
 import { useParams } from "react-router-dom";
 import { useLevelSetsSection } from "../../../../hooks/Edition/useLevelSetsSection";
 import { LevelSetsList } from "./LevelSetsList/LevelSetsList";
 import { AddSetForm } from "./AddSetForm/AddSetForm";
-import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { SelectedSetCard } from "./LevelSetsList/SelectedSetCard";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
+import { CardsSection } from "../../CardsSection";
+import { coordinatorStyles } from "../../../../utils/utils";
 
 export const LevelSetsSection = () => {
   const params = useParams();
@@ -46,25 +47,27 @@ export const LevelSetsSection = () => {
   if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
-      <button onClick={openAddSet}>Dodaj zbiór poziomów</button>
+    <div style={coordinatorStyles.container}>
+      <CustomButton onClick={openAddSet}>Dodaj zbiór poziomów</CustomButton>
 
-      <div>
-        <div>Wybrany zbiór poziomów:</div>
-        {activeSet ? (
-          <SelectedSetCard
-            levelSet={activeSet}
-            onSelectClick={() => handleSelectSet(activeSet)}
-            onEditClick={() => openEditSet(activeSet)}
-            onDeleteClick={() => {
-              handleDeleteSet(activeSet);
-            }}
-            onCopyClick={() => handleCopySet(activeSet)}
-          />
-        ) : (
-          EMPTY_FIELD_STRING
-        )}
-      </div>
+      <CardsSection
+        title={"Wybrany zbiór poziomów"}
+        cards={
+          activeSet
+            ? [
+                <SelectedSetCard
+                  levelSet={activeSet}
+                  onSelectClick={() => handleSelectSet(activeSet)}
+                  onEditClick={() => openEditSet(activeSet)}
+                  onDeleteClick={() => {
+                    handleDeleteSet(activeSet);
+                  }}
+                  onCopyClick={() => handleCopySet(activeSet)}
+                />,
+              ]
+            : []
+        }
+      />
 
       <LevelSetsList
         levelSets={levelSets}
@@ -106,12 +109,4 @@ export const LevelSetsSection = () => {
       </Dialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

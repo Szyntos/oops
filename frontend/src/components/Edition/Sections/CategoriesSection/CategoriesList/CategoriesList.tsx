@@ -1,6 +1,5 @@
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
-import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
-import { Styles } from "../../../../../utils/Styles";
+import { CardsSection } from "../../../CardsSection";
 import { CategoryCard } from "./CategoryCard";
 
 type CategoriesListProps = {
@@ -23,39 +22,22 @@ export const CategoriesList = ({
   title,
 }: CategoriesListProps) => {
   return (
-    <div>
-      <div style={styles.title}>{title}</div>
-      <div style={styles.container}>
-        {categories.length !== 0
-          ? categories.map((category) => (
-              <CategoryCard
-                category={category}
-                isSelected={
-                  !!selectedCategories.find(
-                    (c) =>
-                      c.category.categoryId === category.category.categoryId,
-                  )
-                }
-                handleSelectClick={() => handleSelectClick(category)}
-                handleEditClick={() => handleEditClick(category)}
-                handleDeleteClick={() => handleDeleteClick(category)}
-                handleCopyClick={() => handleCopyClick(category)}
-              />
-            ))
-          : EMPTY_FIELD_STRING}
-      </div>
-    </div>
+    <CardsSection
+      title={title}
+      cards={categories.map((category) => (
+        <CategoryCard
+          category={category}
+          isSelected={
+            !!selectedCategories.find(
+              (c) => c.category.categoryId === category.category.categoryId,
+            )
+          }
+          handleSelectClick={() => handleSelectClick(category)}
+          handleEditClick={() => handleEditClick(category)}
+          handleDeleteClick={() => handleDeleteClick(category)}
+          handleCopyClick={() => handleCopyClick(category)}
+        />
+      ))}
+    />
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  title: {
-    color: "blue",
-  },
 };

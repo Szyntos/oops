@@ -10,10 +10,12 @@ import {
 import { AwardTypeType } from "../../../../../__generated__/schema.graphql.types";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
 import { SelectImage } from "../../../../inputs/SelectImage";
-import { formStyles } from "../../../../dialogs/CustomDialog";
 import { FormButton } from "../../../../form/FormButton";
 import { FormError } from "../../../../form/FormError";
-import { MULTIPLICATIVE_TYPE_STRING } from "../../../../../utils/utils";
+import {
+  formStyles,
+  MULTIPLICATIVE_TYPE_STRING,
+} from "../../../../../utils/utils";
 
 const ValidationSchema = z.object({
   awardName: z.string().min(1),

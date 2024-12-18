@@ -147,3 +147,32 @@ export const getAwardValueString = (
 };
 
 export const MULTIPLICATIVE_TYPE_STRING = "MULTIPLICATIVE";
+const DIALOG_CONTENT_WIDTH = 500;
+
+export const formStyles: Styles = {
+  headerContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 12,
+    paddingBottom: 6,
+  },
+  title: {
+    fontWeight: "bold",
+    color: tokens.color.text.primary,
+    fontSize: tokens.font.title,
+  },
+  formContainer: {
+    width: DIALOG_CONTENT_WIDTH,
+    padding: 12,
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  },
+  fieldsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  },
+};

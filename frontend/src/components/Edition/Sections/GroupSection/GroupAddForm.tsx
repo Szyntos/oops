@@ -14,6 +14,8 @@ import { useRef, useState } from "react";
 import { formStyles, TIME_HH_MM_REGEXP } from "../../../../utils/utils";
 import { FormError } from "../../../form/FormError";
 import { FormButton } from "../../../form/FormButton";
+import { CustomButton } from "../../../CustomButton";
+import { CustomText } from "../../../CustomText";
 
 export type GroupFormValues = z.infer<typeof ValidationSchema>;
 
@@ -265,38 +267,49 @@ export const AddGroupForm = ({
             helperText={formik.touched.usosId && formik.errors.usosId}
           />
 
-          {variant === "select" ? (
+          {variant === "select" && (
             <StudentSelection
               students={studentsToSelect}
               selectedStudents={selectedStudents}
               handleAdd={handleAdd}
               handleDelete={handleDelete}
             />
-          ) : (
-            // TODO
-            <div>
-              <button type="button" onClick={handleUploadClick}>
-                Importuj studentów
-              </button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept=".csv"
-                onChange={handleFileChange}
-                style={{ display: "none" }}
-              />
-              {importedFile && <div>Zaimportowany plik: {importedFile}</div>}
-              {selectedStudents.map((s, index) => (
-                <div>
-                  {index + 1}. {s.firstName} {s.secondName}
-                </div>
-              ))}
-            </div>
           )}
 
           <FormError error={createError} isFormError={true} />
 
-          <FormButton />
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept=".csv"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
+          {importedFile && (
+            <CustomText>Zaimportowany plik: {importedFile}</CustomText>
+          )}
+          {selectedStudents.map((s, index) => (
+            <CustomText>
+              {index + 1}. {s.firstName} {s.secondName}
+            </CustomText>
+          ))}
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: 12,
+            }}
+          >
+            <div>
+              <CustomButton onClick={handleUploadClick}>
+                Importuj studentów
+              </CustomButton>
+            </div>
+
+            <FormButton />
+          </div>
         </div>
       </form>
     </div>

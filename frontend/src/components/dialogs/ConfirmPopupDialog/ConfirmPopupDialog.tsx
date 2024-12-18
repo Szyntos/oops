@@ -1,16 +1,37 @@
-import { Dialog } from "@mui/material";
 import { useConfirmPopup } from "../../../hooks/common/useConfirmPopup";
+import { CustomDialog } from "../CustomDialog";
+import { Styles } from "../../../utils/Styles";
+import { CustomButton } from "../../CustomButton";
+import { tokens } from "../../../tokens";
 
 export const ConfirmPopupDialog = () => {
   const { isConfirmOpen, handleConfirm, closeConfirmPopup } = useConfirmPopup();
 
   return (
-    <Dialog open={isConfirmOpen}>
-      <div>
-        <div>Czy na pewno chcesz usunąć ten element?</div>
-        <button onClick={handleConfirm}>yes</button>
-        <button onClick={closeConfirmPopup}>no</button>
+    <CustomDialog
+      isOpen={isConfirmOpen}
+      title={"Jesteś pewien?"}
+      onCloseClick={closeConfirmPopup}
+    >
+      <div style={styles.buttonsContainer}>
+        <CustomButton onClick={handleConfirm}>Potwierdź</CustomButton>
+        <CustomButton
+          onClick={closeConfirmPopup}
+          color={tokens.color.state.error}
+        >
+          Anuluj
+        </CustomButton>
       </div>
-    </Dialog>
+    </CustomDialog>
   );
+};
+
+const styles: Styles = {
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 12,
+    justifyContent: "right",
+    margin: 12,
+  },
 };

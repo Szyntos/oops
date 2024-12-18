@@ -1,11 +1,12 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
-import { Styles } from "../../../../../utils/Styles";
 import { FormControlLabel, Switch, TextField } from "@mui/material";
 import { FormSubcategory, SubcategoryRows } from "./SubcategoryRows";
 import { useState } from "react";
 import { SubcategoriesFormValues } from "./SubcategoryRow";
-import { tokens } from "../../../../../tokens";
+import { FormError } from "../../../../form/FormError";
+import { FormButton } from "../../../../form/FormButton";
+import { formStyles } from "../../../../../utils/utils";
 
 export type CategoriesFormValues = z.infer<typeof ValidationSchema>;
 
@@ -20,7 +21,6 @@ type AddCategoryFormProps = {
     subcategories: FormSubcategory[],
   ) => void;
   formError?: string;
-  title: string;
   initialValues?: CategoriesFormValues;
   initialSelectedSubcategories?: FormSubcategory[];
 };
@@ -28,7 +28,6 @@ type AddCategoryFormProps = {
 export const AddCategoryForm = ({
   handleConfirm,
   formError,
-  title,
   initialValues = {
     categoryName: "",
     canAddPoints: false,
@@ -102,10 +101,9 @@ export const AddCategoryForm = ({
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div>
+        <div style={formStyles.fieldsContainer}>
           <TextField
             fullWidth
             name="categoryName"
@@ -143,28 +141,12 @@ export const AddCategoryForm = ({
             handleUp={handleUp}
             handleDown={handleDown}
           />
-        </div>
 
-        <button type="submit">Potwierdź</button>
+          <FormButton />
+        </div>
       </form>
 
-      {formError && <p style={styles.error}>Error: {formError}</p>}
+      <FormError error={formError} />
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    border: "1px solid black",
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
 };

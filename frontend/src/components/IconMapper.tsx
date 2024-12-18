@@ -18,12 +18,14 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import FunctionsIcon from "@mui/icons-material/Functions";
 import CloseIcon from "@mui/icons-material/Close";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
+import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import { MdAutoGraph } from "react-icons/md";
 import { PiTreasureChestLight } from "react-icons/pi";
 import { GiBackForth } from "react-icons/gi";
+import { BiSolidMedal } from "react-icons/bi";
 import { Styles } from "../utils/Styles";
 import { tokens } from "../tokens";
-import { BiSolidMedal } from "react-icons/bi";
 
 type IconMapperProps = {
   icon: Icon;
@@ -56,7 +58,9 @@ type MUIIcons =
   | "yes"
   | "no"
   | "sum"
-  | "close";
+  | "close"
+  | "up"
+  | "down";
 
 type ReactIcons = "grade" | "level2" | "chest2" | "startEnd";
 
@@ -89,6 +93,8 @@ const iconMap = {
   chest2: PiTreasureChestLight,
   startEnd: GiBackForth,
   close: CloseIcon,
+  up: ArrowUpwardRoundedIcon,
+  down: ArrowDownwardRoundedIcon,
 };
 
 export const IconMapper = ({

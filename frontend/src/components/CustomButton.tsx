@@ -1,3 +1,4 @@
+import { CSSProperties } from "react";
 import { tokens } from "../tokens";
 import { Styles } from "../utils/Styles";
 import { CustomText } from "./CustomText";
@@ -7,19 +8,27 @@ type CustomButtonProps = {
   onClick: () => void;
   children: string;
   disabled?: boolean;
+  color?: string;
 };
 
 export const CustomButton = ({
   onClick,
   children,
   disabled,
+  color,
 }: CustomButtonProps) => {
+  const getButtonStyles = (): CSSProperties => {
+    return {
+      ...styles.button,
+      ...(disabled ? styles.disabled : undefined),
+      backgroundColor: color ?? tokens.color.accent.dark,
+    };
+  };
+  const buttonStyles = getButtonStyles();
+
   return disabled ? (
     <CustomText
-      style={{
-        ...styles.button,
-        ...(disabled ? styles.disabled : undefined),
-      }}
+      style={buttonStyles}
       size={tokens.font.text}
       onClick={() => {
         if (!disabled) {
@@ -32,10 +41,7 @@ export const CustomButton = ({
   ) : (
     <HooverWrapper>
       <CustomText
-        style={{
-          ...styles.button,
-          ...(disabled ? styles.disabled : undefined),
-        }}
+        style={buttonStyles}
         size={tokens.font.text}
         onClick={() => {
           if (!disabled) {
@@ -51,7 +57,6 @@ export const CustomButton = ({
 
 const styles: Styles = {
   button: {
-    backgroundColor: tokens.color.accent.dark,
     padding: 12,
     paddingTop: 12,
     paddingBottom: 12,

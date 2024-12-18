@@ -11,7 +11,11 @@ type CustomDialogProps = {
   subtitle?: string;
   children: ReactNode;
   onCloseClick: () => void;
+  size?: "md" | "lg";
 };
+
+const MD_DIALOG_WIDTH = 500;
+const LG_DIALOG_WIDTH = 800;
 
 export const CustomDialog = ({
   isOpen,
@@ -19,10 +23,16 @@ export const CustomDialog = ({
   subtitle,
   children,
   onCloseClick,
+  size = "md",
 }: CustomDialogProps) => {
   return (
     <Dialog open={isOpen} maxWidth="lg">
-      <div style={formStyles.headerContainer}>
+      <div
+        style={{
+          ...formStyles.headerContainer,
+          width: size === "md" ? MD_DIALOG_WIDTH : LG_DIALOG_WIDTH,
+        }}
+      >
         <div>
           <CustomText style={formStyles.title}>{title}</CustomText>
           <CustomText>{subtitle}</CustomText>

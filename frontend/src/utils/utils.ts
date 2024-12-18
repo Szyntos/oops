@@ -147,7 +147,6 @@ export const getAwardValueString = (
 };
 
 export const MULTIPLICATIVE_TYPE_STRING = "MULTIPLICATIVE";
-const DIALOG_CONTENT_WIDTH = 500;
 
 export const formStyles: Styles = {
   headerContainer: {
@@ -164,7 +163,6 @@ export const formStyles: Styles = {
     fontSize: tokens.font.title,
   },
   formContainer: {
-    width: DIALOG_CONTENT_WIDTH,
     padding: 12,
     display: "flex",
     flexDirection: "column",

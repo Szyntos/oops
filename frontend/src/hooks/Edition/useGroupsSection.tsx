@@ -44,7 +44,6 @@ export const useGroupsSection = (editionId: number) => {
 
   const { data, loading, error, refetch } = useSetupGroupsQuery({
     variables: { editionId },
-    fetchPolicy: "no-cache",
   });
 
   const groups: Group[] = data?.listSetupGroups ?? [];

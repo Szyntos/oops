@@ -22,7 +22,6 @@ export const useUsersSection = (editionId: number) => {
 
   const { data, loading, error, refetch } = useSetupUsersQuery({
     variables: { editionId },
-    fetchPolicy: "no-cache",
   });
   const [formError, setFormError] = useState<undefined | string>(undefined);
 

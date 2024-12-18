@@ -250,6 +250,7 @@ class UserGroupsPermissions {
             allow = false,
             reason = "Invalid or missing 'groupId'"
         )
+
         val group = groupsRepository.findById(groupId).orElse(null)
             ?: return Permission(
                 action = action,
@@ -258,8 +259,15 @@ class UserGroupsPermissions {
                 reason = "Group not found"
             )
 
+        val userId = arguments.getLongField("userId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Invalid or missing 'userId'"
+        )
+
         if (currentUser.role == UsersRoles.TEACHER){
-            if (group.teacher.userId != currentUser.userId){
+            if (!currentUser.groups.flatMap{ it.userGroups }.map{ it.user.userId }.contains(userId)){
                 return Permission(
                     action = action,
                     arguments = arguments,
@@ -268,13 +276,6 @@ class UserGroupsPermissions {
             }
         }
 
-        val userId = arguments.getLongField("userId") ?: return Permission(
-            action = action,
-            arguments = arguments,
-            allow = false,
-            reason = "Invalid or missing 'userId'"
-        )
-
         val user = usersRepository.findById(userId).orElse(null)
             ?: return Permission(
                 action = action,
@@ -282,6 +283,16 @@ class UserGroupsPermissions {
                 allow = false,
                 reason = "User not found"
             )
+
+        if (user.userGroups.none{ it.group.edition == group.edition }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "This group is not in the same edition as the user"
+            )
+        }
+
         if (user.role != UsersRoles.STUDENT){
             return Permission(
                 action = action,

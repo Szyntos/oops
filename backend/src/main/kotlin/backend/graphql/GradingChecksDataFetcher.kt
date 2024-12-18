@@ -113,7 +113,7 @@ class GradingChecksDataFetcher {
         return gradingCheckPermissions
     }
 
-    @DgsMutation
+    @DgsQuery
     @Transactional
     fun getQuoteVariables(@InputArgument editionId: Long): QuoteVariables {
         val action = "getQuoteVariables"

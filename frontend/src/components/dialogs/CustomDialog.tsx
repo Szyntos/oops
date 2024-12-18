@@ -68,9 +68,8 @@ const styles: Styles = {
   textContainer: {
     display: "flex",
     flexDirection: "column",
-    gap: 8,
+    gap: 2,
     justifyContent: "center",
-    alignItems: "center",
   },
   title: {
     fontWeight: "bold",

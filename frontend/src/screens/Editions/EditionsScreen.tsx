@@ -1,11 +1,11 @@
 import { Styles } from "../../utils/Styles";
-import { Dialog } from "@mui/material";
-import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { AddEditionForm } from "../../components/Editions/AddEditionForm";
 import { EditionsList } from "../../components/Editions/EditionsList/EditionsList";
 import { useEditionsScreen } from "../../hooks/Editions/useEditionsScreen";
 import { LoadingScreen } from "../Loading/LoadingScreen";
 import { ErrorScreen } from "../Error/ErrorScreen";
+import { CustomDialog } from "../../components/dialogs/CustomDialog";
+import { CustomButton } from "../../components/CustomButton";
 
 export const EditionsScreen = () => {
   const {
@@ -38,38 +38,25 @@ export const EditionsScreen = () => {
 
   return (
     <div style={styles.container}>
-      <Dialog open={isAddOpen}>
-        <CloseHeader onCloseClick={closeAddDialog} />
+      <CustomDialog
+        isOpen={isAddOpen}
+        onCloseClick={closeAddDialog}
+        title="Dodaj edycję"
+      >
         <AddEditionForm
           createError={formError}
           handleAddEdition={handleCreateClick}
-          title={"Dodaj edycję"}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isCopyOpen}>
-        <CloseHeader onCloseClick={closeCopyDialog} />
-        <AddEditionForm
-          createError={formError}
-          handleAddEdition={handleCopyClick}
-          title={"Kopiuj edycję"}
-          initialValues={
-            selectedEdition
-              ? {
-                  name: selectedEdition.edition.editionName,
-                  year: selectedEdition.edition.editionYear,
-                }
-              : undefined
-          }
-        />
-      </Dialog>
-
-      <Dialog open={isEditOpen}>
-        <CloseHeader onCloseClick={closeEditDialog} />
+      <CustomDialog
+        isOpen={isEditOpen}
+        onCloseClick={closeEditDialog}
+        title="Edytuj edycję"
+      >
         <AddEditionForm
           createError={formError}
           handleAddEdition={handleEditClick}
-          title={"Edytuj edycję"}
           initialValues={
             selectedEdition
               ? {
@@ -79,9 +66,28 @@ export const EditionsScreen = () => {
               : undefined
           }
         />
-      </Dialog>
+      </CustomDialog>
 
-      <button onClick={openAddDialog}>utwórz edycję</button>
+      <CustomDialog
+        isOpen={isCopyOpen}
+        onCloseClick={closeCopyDialog}
+        title="Kopiuj edycję"
+      >
+        <AddEditionForm
+          createError={formError}
+          handleAddEdition={handleCopyClick}
+          initialValues={
+            selectedEdition
+              ? {
+                  name: selectedEdition.edition.editionName,
+                  year: selectedEdition.edition.editionYear,
+                }
+              : undefined
+          }
+        />
+      </CustomDialog>
+
+      <CustomButton onClick={openAddDialog}>Utwórz edycję</CustomButton>
 
       <EditionsList
         editions={editions}

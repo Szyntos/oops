@@ -8,13 +8,11 @@ import { useUser } from "../../hooks/common/useUser";
 import { useStudentProfileData } from "../../hooks/StudentProfile";
 import { SideBar } from "../../components/StudentProfile/SideBar";
 import { useFormCategories } from "../../hooks/common/useFormCategories";
-import { Dialog } from "@mui/material";
 import { StudentTableWithFilters } from "../../components/StudentProfile/table/StudentTableWithFilters";
 import { useTeacherActions } from "../../hooks/StudentProfile";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
 import { NotEditableInfo } from "../../components/StudentProfile/NotEditableInfo";
-import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useCoordinatorActions } from "../../hooks/StudentProfile/useCoordinatorActions";
 import { AddChestToUserForm } from "./AddChestToUserForm";
@@ -24,6 +22,7 @@ import { ScreenContentContainer } from "../../components/layout/ScreenContentCon
 import { CustomButton } from "../../components/CustomButton";
 import { LoadingScreen } from "../Loading/LoadingScreen";
 import { ErrorScreen } from "../Error/ErrorScreen";
+import { CustomDialog } from "../../components/dialogs/CustomDialog";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -202,30 +201,39 @@ export function TeacherStudentProfile() {
         blockActionButtons={disableEditMode}
       />
 
-      <Dialog open={isAddDialogOpen}>
-        <CloseHeader onCloseClick={closeAddDialog} />
+      <CustomDialog
+        isOpen={isAddDialogOpen}
+        onCloseClick={closeAddDialog}
+        title="Dodaj punkty"
+      >
         <PointsForm
           categories={addPointsCategories}
           handleConfirmClick={handleAddPointsConfirmation}
           mutationError={formError}
-          variant="add"
           initialValues={initialValues}
           disableCategoryAndSubcategory={!!selectedPoints}
         />
-      </Dialog>
-      <Dialog open={isEditDialogOpen}>
-        <CloseHeader onCloseClick={closeEditDialog} />
+      </CustomDialog>
+
+      <CustomDialog
+        isOpen={isEditDialogOpen}
+        onCloseClick={closeEditDialog}
+        title="Edytuj punkty"
+      >
         <PointsForm
           categories={addPointsCategories}
           handleConfirmClick={handleEditPointsConfirmation}
           mutationError={formError}
           initialValues={initialValues}
-          variant="edit"
           disableCategoryAndSubcategory={true}
         />
-      </Dialog>
-      <Dialog open={isChestDialogOpen}>
-        <CloseHeader onCloseClick={closeChestDialog} />
+      </CustomDialog>
+
+      <CustomDialog
+        isOpen={isChestDialogOpen}
+        onCloseClick={closeChestDialog}
+        title="Przydziel skrzynkę"
+      >
         <AddChestToUserForm
           handleConfirmClick={handleAddChestConfirmation}
           categories={addChestCategories}
@@ -237,7 +245,7 @@ export function TeacherStudentProfile() {
           }}
           formError={chestError}
         />
-      </Dialog>
+      </CustomDialog>
     </ScreenContentContainer>
   );
 }

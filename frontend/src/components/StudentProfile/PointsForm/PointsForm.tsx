@@ -2,11 +2,17 @@ import { useFormik } from "formik";
 import { ZodError, z } from "zod";
 import { useState } from "react";
 import { FormPoints } from "./types";
-import { Styles } from "../../../utils/Styles";
-import { NumberInput } from "../../inputs/NumberInput";
-import { SelectInput } from "../../inputs/SelectInput";
-import { Category } from "../../../utils/utils";
-import { tokens } from "../../../tokens";
+import { Category, formStyles } from "../../../utils/utils";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
+import { FormError } from "../../form/FormError";
+import { SelectChangeEvent } from "@mui/material";
+import { FormButton } from "../../form/FormButton";
 
 export type PointsFormValues = z.infer<typeof ValidationSchema>;
 
@@ -21,7 +27,6 @@ type PointFormProps = {
   handleConfirmClick: (formPoints: FormPoints) => void;
   mutationError?: string;
   initialValues: PointsFormValues;
-  variant: "add" | "edit";
   disableCategoryAndSubcategory?: boolean;
 };
 
@@ -30,7 +35,6 @@ export const PointsForm = ({
   handleConfirmClick,
   mutationError,
   initialValues,
-  variant,
   disableCategoryAndSubcategory,
 }: PointFormProps) => {
   const formik = useFormik({
@@ -78,81 +82,93 @@ export const PointsForm = ({
     categories.find((c) => c.id === initialValues.categoryId)?.subcategories,
   );
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleCategoryChange = (e: SelectChangeEvent<string>) => {
     const categoryId = e.target.value;
-    // TODO probably it should be handled somehow in the future
     const updatedSubcategories =
       categories.find((category) => category.id === categoryId)
         ?.subcategories ?? [];
     setSubcategories(updatedSubcategories);
 
-    formik.setFieldValue("Id kategorii", categoryId);
-    formik.setFieldValue("id subkategorii", updatedSubcategories[0]?.id ?? "");
+    formik.setFieldValue("categoryId", categoryId);
+    formik.setFieldValue("subcategoryId", updatedSubcategories[0]?.id ?? "");
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>
-        {variant === "edit" ? "Edytuj punkty" : "Dodaj punkty"}
-      </div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <SelectInput
-          handleChange={handleCategoryChange}
-          handleBlur={formik.handleBlur}
-          value={formik.values.categoryId}
-          error={formik.errors.categoryId}
-          touched={formik.touched.categoryId}
-          name="categoryId"
-          optionItems={categories?.map((category) => ({
-            value: category.id,
-            title: category.name,
-          }))}
-          label="Kategoria"
-          disabled={disableCategoryAndSubcategory}
-        />
-        <SelectInput
-          handleChange={formik.handleChange}
-          handleBlur={formik.handleBlur}
-          value={formik.values.subcategoryId}
-          error={formik.errors.subcategoryId}
-          touched={formik.touched.subcategoryId}
-          name="subcategoryId"
-          optionItems={subcategories?.map((subcategory) => ({
-            value: subcategory.id,
-            title: subcategory.name,
-          }))}
-          label="Subkategoria"
-          disabled={disableCategoryAndSubcategory}
-        />
-        <NumberInput
-          handleChange={formik.handleChange}
-          handleBlur={formik.handleBlur}
-          value={formik.values.points}
-          error={formik.errors.points}
-          touched={formik.touched.points}
-          name="points"
-          label="Punkty"
-        />
-        <button type="submit">Potwierdź</button>
+        <div style={formStyles.fieldsContainer}>
+          <FormControl fullWidth>
+            <InputLabel
+              error={Boolean(
+                formik.touched.categoryId && formik.errors.categoryId,
+              )}
+            >
+              Kategoria
+            </InputLabel>
+            <Select
+              name="categoryId"
+              value={formik.values.categoryId}
+              onChange={handleCategoryChange}
+              onBlur={formik.handleBlur}
+              disabled={disableCategoryAndSubcategory}
+              error={Boolean(
+                formik.touched.categoryId && formik.errors.categoryId,
+              )}
+            >
+              {categories.map((cat) => (
+                <MenuItem key={cat.id} value={cat.id}>
+                  {cat.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {formik.touched.categoryId && formik.errors.categoryId && (
+              <FormError error={formik.errors.categoryId} />
+            )}
+          </FormControl>
+          <FormControl fullWidth>
+            <InputLabel
+              error={Boolean(
+                formik.touched.subcategoryId && formik.errors.subcategoryId,
+              )}
+            >
+              Subkategoria
+            </InputLabel>
+            <Select
+              name="subcategoryId"
+              value={formik.values.subcategoryId}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              disabled={disableCategoryAndSubcategory}
+              error={Boolean(
+                formik.touched.subcategoryId && formik.errors.subcategoryId,
+              )}
+            >
+              {subcategories?.map((sub) => (
+                <MenuItem key={sub.id} value={sub.id}>
+                  {sub.name}
+                </MenuItem>
+              )) ?? []}
+            </Select>
+            {formik.touched.subcategoryId && formik.errors.subcategoryId && (
+              <FormError error={formik.errors.subcategoryId} />
+            )}
+          </FormControl>
+          <TextField
+            fullWidth
+            name="points"
+            label="Punkty"
+            type="number"
+            variant="outlined"
+            value={formik.values.points}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={Boolean(formik.touched.points && formik.errors.points)}
+            helperText={formik.touched.points && formik.errors.points}
+          />
+          <FormError error={mutationError} />
+          <FormButton />
+        </div>
       </form>
-      {mutationError && <p style={styles.error}>Error: {mutationError}</p>}
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    border: "1px solid black",
-    width: 500,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
 };

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Styles } from "../../utils/Styles";
 import { PointsRow, PointsRowData } from "./PointsRow";
-import { Subcategory } from "../../utils/utils";
-import { tokens } from "../../tokens";
+import { formStyles, Subcategory } from "../../utils/utils";
+import { FormError } from "../form/FormError";
+import { FormButton } from "../form/FormButton";
 
 type GroupPointsForm = {
   initialRows: PointsRowData[];
@@ -29,13 +29,8 @@ export const GroupPointsForm = ({
   };
 
   return (
-    <div style={styles.container}>
-      <div>
-        <div style={styles.title}>Dodaj punkty do {subcategory.name}</div>
-        <div>Max punkty: {subcategory.maxPoints}</div>
-      </div>
-
-      <div style={styles.fieldsContainer}>
+    <div style={formStyles.formContainer}>
+      <div style={formStyles.fieldsContainer}>
         {rows.map((row, index) => (
           <PointsRow
             key={row.student.id}
@@ -45,36 +40,9 @@ export const GroupPointsForm = ({
             ordinal={index + 1}
           />
         ))}
+        <FormError error={formError} />
+        <FormButton onClick={() => handleAdd(rows)} />
       </div>
-
-      {formError && <div style={styles.error}>Error: {formError}</div>}
-      <button
-        onClick={() => {
-          handleAdd(rows);
-        }}
-      >
-        Add
-      </button>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 24,
-    padding: 20,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  pointsRowContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 4,
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
 };

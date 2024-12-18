@@ -149,21 +149,7 @@ export const getAwardValueString = (
 export const MULTIPLICATIVE_TYPE_STRING = "MULTIPLICATIVE";
 
 export const formStyles: Styles = {
-  headerContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 12,
-    paddingBottom: 6,
-  },
-  title: {
-    fontWeight: "bold",
-    color: tokens.color.text.primary,
-    fontSize: tokens.font.title,
-  },
   formContainer: {
-    padding: 12,
     display: "flex",
     flexDirection: "column",
     gap: 12,
@@ -173,4 +159,13 @@ export const formStyles: Styles = {
     flexDirection: "column",
     gap: 12,
   },
+  label: {
+    color: tokens.color.text.tertiary,
+    paddingLeft: 12,
+    fontSize: 13,
+    paddingBottom: 12,
+  },
 };
+
+export const DATE_YYYY_MM_DD_REGEXP = /^\d{4}-\d{2}-\d{2}$/;
+export const TIME_HH_MM_REGEXP = /^([0-1]\d|2[0-3]):([0-5]\d)$/;

@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { CustomText } from "../CustomText";
 import { IconMapper } from "../IconMapper";
 import { tokens } from "../../tokens";
-import { formStyles } from "../../utils/utils";
+import { Styles } from "../../utils/Styles";
 
 type CustomDialogProps = {
   isOpen: boolean;
@@ -29,13 +29,13 @@ export const CustomDialog = ({
     <Dialog open={isOpen} maxWidth="lg">
       <div
         style={{
-          ...formStyles.headerContainer,
+          ...styles.headerContainer,
           width: size === "md" ? MD_DIALOG_WIDTH : LG_DIALOG_WIDTH,
         }}
       >
-        <div>
-          <CustomText style={formStyles.title}>{title}</CustomText>
-          <CustomText>{subtitle}</CustomText>
+        <div style={styles.textContainer}>
+          <CustomText style={styles.title}>{title}</CustomText>
+          {subtitle && <CustomText>{subtitle}</CustomText>}
         </div>
         <IconMapper
           icon="close"
@@ -45,7 +45,36 @@ export const CustomDialog = ({
         />
       </div>
 
-      {children}
+      <div
+        style={{
+          width: size === "md" ? MD_DIALOG_WIDTH : LG_DIALOG_WIDTH,
+          padding: 12,
+        }}
+      >
+        {children}
+      </div>
     </Dialog>
   );
+};
+
+const styles: Styles = {
+  headerContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 12,
+  },
+  textContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    fontWeight: "bold",
+    color: tokens.color.text.primary,
+    fontSize: tokens.font.title,
+  },
 };

@@ -1,10 +1,11 @@
 import { z, ZodError } from "zod";
 import { FormikErrors, useFormik } from "formik";
-import { Styles } from "../../../../../utils/Styles";
 import { TextField } from "@mui/material";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
 import { SelectImage } from "../../../../inputs/SelectImage";
-import { tokens } from "../../../../../tokens";
+import { formStyles } from "../../../../../utils/utils";
+import { FormButton } from "../../../../form/FormButton";
+import { FormError } from "../../../../form/FormError";
 
 const ValidationSchema = z.object({
   awardBundleCount: z.number().min(0),
@@ -22,7 +23,6 @@ type AddChestFormProps = {
   initialValues?: ChestFormValues;
   awardsThisEdition: Award[];
   awardsNotThisEdition: Award[];
-  title: string;
   imageIds: string[];
 };
 
@@ -41,7 +41,6 @@ export const AddChestForm = ({
   awardsThisEdition = [],
   awardsNotThisEdition = [],
   initialValues = defaultInitialValues,
-  title,
 }: AddChestFormProps) => {
   const formik = useFormik({
     initialValues,
@@ -76,10 +75,9 @@ export const AddChestForm = ({
   });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div style={styles.fieldsContainer}>
+        <div style={formStyles.fieldsContainer}>
           <TextField
             fullWidth
             name="maxUsages"
@@ -96,6 +94,7 @@ export const AddChestForm = ({
               formik.touched.awardBundleCount && formik.errors.awardBundleCount
             }
           />
+
           <TextField
             fullWidth
             name="name"
@@ -121,7 +120,7 @@ export const AddChestForm = ({
             error={formik.errors.fileId as string}
             touched={formik.touched.fileId}
             selectVariant={"single"}
-            title="Wybierz ikonę:"
+            title="Wybierz grafikę:"
           />
 
           <SelectImage
@@ -155,31 +154,11 @@ export const AddChestForm = ({
             selectVariant={"multiple"}
             title={"Wybrane nagrody z innych edycji:"}
           />
+
+          <FormButton />
         </div>
-        <button type="submit">Potwierdź</button>
       </form>
-      {formError && <p style={styles.error}>Error: {formError}</p>}
+      <FormError error={formError} />
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    width: 500,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
-  fieldsContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

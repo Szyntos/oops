@@ -1,10 +1,11 @@
 import { Styles } from "../../utils/Styles";
-import { Avatar } from "../avatars/Avatar";
+import { Avatar, AvatarSize } from "../avatars/Avatar";
 import { Award } from "../../hooks/Edition/useAwardsSection";
 import { TooltipWrapper } from "../TooltipWrapper";
 import { CustomText } from "../CustomText";
-import { tokens } from "../../tokens";
 import { FormError } from "../form/FormError";
+import { EMPTY_FIELD_STRING } from "../../utils/constants";
+import { formStyles } from "../../utils/utils";
 
 type SelectImageProps = {
   selectedIds: string[];
@@ -18,12 +19,14 @@ type SelectImageProps = {
 type AwardProps = {
   type: "award";
   options: Award[];
+  imageSize?: AvatarSize;
 };
 
 type WithoutTooltip = {
   type: "withoutTooltip";
   // ids of images
   options: string[];
+  imageSize?: AvatarSize;
 };
 
 export const SelectImage = ({
@@ -35,6 +38,7 @@ export const SelectImage = ({
   touched,
   selectVariant,
   title,
+  imageSize = "s",
 }: SelectImageProps) => {
   const handleSelect = (selectedId: string) => {
     if (selectVariant === "single") {
@@ -68,7 +72,7 @@ export const SelectImage = ({
             >
               <Avatar
                 id={award.award.imageFile?.fileId}
-                size={"l"}
+                size={imageSize}
                 disabled={!selectedIds.some((id) => id === award.award.awardId)}
               />
             </TooltipWrapper>
@@ -82,7 +86,7 @@ export const SelectImage = ({
           >
             <Avatar
               id={imageId}
-              size="s"
+              size={imageSize}
               disabled={!selectedIds.some((id) => id === imageId)}
             />
           </div>
@@ -91,26 +95,22 @@ export const SelectImage = ({
   };
 
   return (
-    <div style={styles.container}>
-      <CustomText color={tokens.color.text.tertiary} style={styles.label}>
-        {title}
-      </CustomText>
-      <div style={styles.listContainer}>{getOptionsImagesBasedOnType()}</div>
+    <div style={formStyles.container}>
+      <CustomText style={formStyles.label}>{title}</CustomText>
+      <div style={styles.listContainer}>
+        {getOptionsImagesBasedOnType().length > 0 ? (
+          getOptionsImagesBasedOnType()
+        ) : (
+          <CustomText>{EMPTY_FIELD_STRING}</CustomText>
+        )}
+      </div>
       {error && touched && <FormError error={error} />}
     </div>
   );
 };
 
 const styles: Styles = {
-  label: {
-    color: tokens.color.text.tertiary,
-    paddingLeft: 12,
-    fontSize: 13,
-  },
   container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
     paddingTop: 4,
   },
   listContainer: {

@@ -91,7 +91,13 @@ export const AddAwardForm = ({
           />
 
           <FormControl fullWidth>
-            <InputLabel>Kategoria</InputLabel>
+            <InputLabel
+              error={Boolean(
+                formik.touched.categoryId && formik.errors.categoryId,
+              )}
+            >
+              Kategoria
+            </InputLabel>
             <Select
               name="categoryId"
               value={formik.values.categoryId}
@@ -116,7 +122,13 @@ export const AddAwardForm = ({
           </FormControl>
 
           <FormControl fullWidth>
-            <InputLabel>Typ nagrody</InputLabel>
+            <InputLabel
+              error={Boolean(
+                formik.touched.awardType && formik.errors.awardType,
+              )}
+            >
+              Typ nagrody
+            </InputLabel>
             <Select
               name="awardType"
               value={formik.values.awardType}

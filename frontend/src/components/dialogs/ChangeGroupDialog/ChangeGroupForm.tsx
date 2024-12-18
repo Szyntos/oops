@@ -48,7 +48,11 @@ export const ChangeGroupForm = ({
       <form onSubmit={formik.handleSubmit}>
         <div style={formStyles.fieldsContainer}>
           <FormControl fullWidth>
-            <InputLabel>Grupa</InputLabel>
+            <InputLabel
+              error={Boolean(formik.touched.groupId && formik.errors.groupId)}
+            >
+              Grupa
+            </InputLabel>
             <Select
               name="groupId"
               value={formik.values.groupId}

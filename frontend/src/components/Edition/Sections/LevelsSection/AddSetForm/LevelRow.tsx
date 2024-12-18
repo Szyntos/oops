@@ -79,7 +79,8 @@ export const LevelRow = ({
       />
 
       <FormControl fullWidth style={styles.number} disabled>
-        <InputLabel>Ocena</InputLabel>
+        {/* TODO */}
+        <InputLabel error={undefined}>Ocena</InputLabel>
         <Select value={level.grade} label="Ocena">
           {GRADE_STRINGS.map((gradeOption) => (
             <MenuItem key={gradeOption} value={gradeOption}>

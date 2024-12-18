@@ -16,6 +16,6 @@ const styles: Styles = {
     fontSize: 13,
     paddingLeft: 12,
     paddingTop: 4,
-    paddingBottom: 12,
+    paddingBottom: 6,
   },
 };

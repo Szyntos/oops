@@ -45,7 +45,11 @@ export const OverrideGradeForm = ({
       <form onSubmit={formik.handleSubmit}>
         <div style={formStyles.fieldsContainer}>
           <FormControl>
-            <InputLabel>Nowa ocena</InputLabel>
+            <InputLabel
+              error={Boolean(formik.touched.grade && formik.errors.grade)}
+            >
+              Nowa ocena
+            </InputLabel>
             <Select
               name="grade"
               value={formik.values.grade}

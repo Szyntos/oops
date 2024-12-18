@@ -47,7 +47,11 @@ export const ChangeEditionForm = ({
     <form onSubmit={formik.handleSubmit}>
       <div style={styles.container}>
         <FormControl fullWidth>
-          <InputLabel>Edition</InputLabel>
+          <InputLabel
+            error={Boolean(formik.touched.editionId && formik.errors.editionId)}
+          >
+            Edycja
+          </InputLabel>
           <Select
             name="editionId"
             value={formik.values.editionId}

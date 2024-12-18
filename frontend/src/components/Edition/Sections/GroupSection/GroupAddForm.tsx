@@ -7,24 +7,29 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
 import { Weekday } from "../../../../hooks/common/useGroupsData";
 import { Student, Teacher } from "../../../../hooks/Edition/useGroupsSection";
 import { StudentSelection } from "./StudentSelection/StudentSelection";
 import { useRef, useState } from "react";
-import { tokens } from "../../../../tokens";
+import { formStyles, TIME_HH_MM_REGEXP } from "../../../../utils/utils";
+import { FormError } from "../../../form/FormError";
+import { FormButton } from "../../../form/FormButton";
 
 export type GroupFormValues = z.infer<typeof ValidationSchema>;
 
-const timeRegex = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
-
 const ValidationSchema = z.object({
-  startTime: z.string().min(1, { message: "wymagane " }).regex(timeRegex, {
-    message: "Godzina rozpoczęcia musi być w formacie hh:mm",
-  }),
-  endTime: z.string().min(1, { message: "wymagane " }).regex(timeRegex, {
-    message: "Godzina zakończenia musi być w formacie hh:mm",
-  }),
+  startTime: z
+    .string()
+    .min(1, { message: "wymagane " })
+    .regex(TIME_HH_MM_REGEXP, {
+      message: "Godzina rozpoczęcia musi być w formacie hh:mm",
+    }),
+  endTime: z
+    .string()
+    .min(1, { message: "wymagane " })
+    .regex(TIME_HH_MM_REGEXP, {
+      message: "Godzina zakończenia musi być w formacie hh:mm",
+    }),
   weekdayId: z.string().min(1, { message: "wymagane" }),
   teacherId: z.string().min(1, { message: "wymagane" }),
   usosId: z.number().min(1, { message: "USOS ID nie może być liczbą ujemną." }),
@@ -44,7 +49,6 @@ type AddGroupFormProps = {
   editionId: number;
   initSelected?: Student[];
   initValues?: GroupFormValues;
-  title: string;
 };
 
 export type AddGroupVariant = "select" | "import";
@@ -66,7 +70,6 @@ export const AddGroupForm = ({
     teacherId: "",
     usosId: 1,
   },
-  title,
 }: AddGroupFormProps) => {
   const formik = useFormik({
     initialValues: {
@@ -164,10 +167,9 @@ export const AddGroupForm = ({
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div>
+        <div style={formStyles.fieldsContainer}>
           <TextField
             fullWidth
             name="startTime"
@@ -195,7 +197,13 @@ export const AddGroupForm = ({
           />
 
           <FormControl fullWidth>
-            <InputLabel>Dzień Tygodnia</InputLabel>
+            <InputLabel
+              error={Boolean(
+                formik.touched.weekdayId && formik.errors.weekdayId,
+              )}
+            >
+              Dzień Tygodnia
+            </InputLabel>
             <Select
               name="weekdayId"
               value={formik.values.weekdayId}
@@ -212,12 +220,18 @@ export const AddGroupForm = ({
               ))}
             </Select>
             {formik.touched.weekdayId && formik.errors.weekdayId && (
-              <div style={styles.error}>{formik.errors.weekdayId}</div>
+              <FormError error={formik.errors.weekdayId} />
             )}
           </FormControl>
 
           <FormControl fullWidth>
-            <InputLabel>Prowadzący</InputLabel>
+            <InputLabel
+              error={Boolean(
+                formik.touched.teacherId && formik.errors.teacherId,
+              )}
+            >
+              Prowadzący
+            </InputLabel>
             <Select
               name="teacherId"
               value={formik.values.teacherId}
@@ -234,7 +248,7 @@ export const AddGroupForm = ({
               ))}
             </Select>
             {formik.touched.teacherId && formik.errors.teacherId && (
-              <div style={styles.error}>{formik.errors.teacherId}</div>
+              <FormError error={formik.errors.teacherId} />
             )}
           </FormControl>
 
@@ -259,6 +273,7 @@ export const AddGroupForm = ({
               handleDelete={handleDelete}
             />
           ) : (
+            // TODO
             <div>
               <button type="button" onClick={handleUploadClick}>
                 Importuj studentów
@@ -278,28 +293,12 @@ export const AddGroupForm = ({
               ))}
             </div>
           )}
-        </div>
 
-        <button type="submit">Potwierdź</button>
+          <FormButton />
+        </div>
       </form>
 
-      {createError && <p style={styles.error}>Error: {createError}</p>}
+      <FormError error={createError} />
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    border: "1px solid black",
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
 };

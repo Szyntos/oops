@@ -1,6 +1,4 @@
-import { Dialog } from "@mui/material";
 import { GroupsList } from "./GroupsList/GroupsList";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddGroupForm } from "./GroupAddForm";
 import { useGroupsSection } from "../../../../hooks/Edition/useGroupsSection";
 import { useParams } from "react-router-dom";
@@ -9,6 +7,7 @@ import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
 import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const GroupsSection = () => {
   const params = useParams();
@@ -60,8 +59,11 @@ export const GroupsSection = () => {
         deleteClick={handleDeleteGroup}
       />
 
-      <Dialog open={isAddGroupOpen}>
-        <CloseHeader onCloseClick={closeAddGroup} />
+      <CustomDialog
+        isOpen={isAddGroupOpen}
+        onCloseClick={closeAddGroup}
+        title="Dodaj grupę"
+      >
         <AddGroupForm
           createError={formError}
           handleAddGroup={handleAddGroup}
@@ -71,12 +73,14 @@ export const GroupsSection = () => {
           handleUploadStudents={handleUploadStudents}
           editionId={editionId}
           variant={variant}
-          title={"Dodaj grupę"}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditGroupOpen}>
-        <CloseHeader onCloseClick={closeEditDialog} />
+      <CustomDialog
+        isOpen={isEditGroupOpen}
+        onCloseClick={closeEditDialog}
+        title="Edytuj grupę"
+      >
         <AddGroupForm
           createError={formError}
           handleAddGroup={handleEditGroupConfirm}
@@ -103,9 +107,8 @@ export const GroupsSection = () => {
                 }
               : undefined
           }
-          title="Edytuj grupę"
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
 };

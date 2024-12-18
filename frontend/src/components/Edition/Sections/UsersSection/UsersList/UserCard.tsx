@@ -54,6 +54,7 @@ export const UserCard = ({
           handleEdit={handleEditClick}
           isStudentActive={user.user.active}
           handleMarkChestActiveness={() => handleStudentActiveness(user)}
+          handleShow={() => openShowDialog(user)}
         />
       ) : (
         <SetupButtons

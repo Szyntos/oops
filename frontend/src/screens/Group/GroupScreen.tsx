@@ -6,10 +6,12 @@ import { useUser } from "../../hooks/common/useUser";
 import { GroupPointsForm } from "../../components/Group/GroupPointsForm";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
-import { coordinatorStyles, isEditionActive } from "../../utils/utils";
+import { isEditionActive } from "../../utils/utils";
 import { LoadingScreen } from "../Loading/LoadingScreen";
 import { ErrorScreen } from "../Error/ErrorScreen";
 import { CustomDialog } from "../../components/dialogs/CustomDialog";
+import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenContentContainer";
+import { Styles } from "../../utils/Styles";
 
 export const GroupScreen = () => {
   const params = useParams();
@@ -51,7 +53,7 @@ export const GroupScreen = () => {
   const disableEditMode = !(isSelectedEditionActive && hasEditableRights);
 
   return (
-    <div style={coordinatorStyles.screenContainer}>
+    <div style={styles.screenContainer}>
       <GroupTableWithFilters
         rows={rows}
         categories={categories}
@@ -101,4 +103,14 @@ export const GroupScreen = () => {
       </CustomDialog>
     </div>
   );
+};
+
+// do not delete
+const styles: Styles = {
+  screenContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+    height: CONTENT_CONTAINER_HEIGHT_CALC,
+  },
 };

@@ -9,6 +9,7 @@ type RowButtonProps = {
   isDisabled: boolean;
   color?: string;
   icon: Icon;
+  type?: "button" | "submit" | "reset";
 };
 
 export const RowButton = ({
@@ -16,6 +17,7 @@ export const RowButton = ({
   isDisabled,
   color,
   icon,
+  type = "button",
 }: RowButtonProps) => {
   const getButtonStyle = (): CSSProperties => {
     if (isDisabled) {
@@ -28,12 +30,12 @@ export const RowButton = ({
   };
 
   return isDisabled ? (
-    <button style={getButtonStyle()} type="button" onClick={onClick}>
+    <button type={type} style={getButtonStyle()} onClick={onClick}>
       <IconMapper icon={icon} />
     </button>
   ) : (
     <HooverWrapper>
-      <button style={getButtonStyle()} type="button" onClick={onClick}>
+      <button type={type} style={getButtonStyle()} onClick={onClick}>
         <IconMapper icon={icon} />
       </button>
     </HooverWrapper>

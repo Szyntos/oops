@@ -9,6 +9,7 @@ import {
 import { Avatar } from "../../../../avatars/Avatar";
 import { GRADE_STRINGS } from "../../../../../utils/utils";
 import { tokens } from "../../../../../tokens";
+import { RowButton } from "../../CategoriesSection/AddCategoryForm/RowButton";
 
 export type AddedLevel = {
   name: string;
@@ -38,35 +39,38 @@ export const LevelRow = ({
 }: LevelRowProps) => {
   return (
     <div style={styles.innerContainer}>
-      <Avatar size="m" id={level.imageId} />
+      <Avatar size="xs" id={level.imageId} />
 
       <TextField
         name="ordinal"
-        label="Liczba porządkowa"
+        label="Lp."
         variant="outlined"
         type="number"
         value={level.ordinal}
-        style={styles.points}
+        style={styles.ordinal}
         disabled={true}
+        size="small"
       />
 
       <TextField
         name="min"
-        label="Minimalna liczba punktów"
+        label="Min. punktów"
         variant="outlined"
         value={level.minPoints}
         style={styles.points}
         disabled={true}
+        size="small"
       />
 
       <TextField
         name="maxPoints"
-        label="Maksymalna liczba punktów"
+        label="Max. punktów"
         variant="outlined"
         value={level.maxPoints}
         style={styles.points}
         type="number"
         disabled
+        size="small"
       />
 
       <TextField
@@ -76,9 +80,10 @@ export const LevelRow = ({
         value={level.name}
         style={styles.number}
         disabled
+        size="small"
       />
 
-      <FormControl fullWidth style={styles.number} disabled>
+      <FormControl fullWidth style={styles.grade} disabled size="small">
         {/* TODO */}
         <InputLabel error={undefined}>Ocena</InputLabel>
         <Select value={level.grade} label="Ocena">
@@ -90,17 +95,16 @@ export const LevelRow = ({
         </Select>
       </FormControl>
 
-      <div>
-        <button type="button" onClick={handleUp} disabled={blockUp}>
-          Góra
-        </button>
-        <button type="button" onClick={handleDown} disabled={blockDown}>
-          Dół
-        </button>
-        <button type="button" onClick={handleDelete}>
-          -
-        </button>
-      </div>
+      <>
+        <RowButton onClick={handleUp} isDisabled={blockUp} icon="up" />
+        <RowButton
+          color={tokens.color.state.error}
+          onClick={handleDelete}
+          isDisabled={false}
+          icon="delete"
+        />
+        <RowButton onClick={handleDown} isDisabled={blockDown} icon="down" />
+      </>
     </div>
   );
 };
@@ -109,18 +113,18 @@ const styles: Styles = {
   innerContainer: {
     display: "flex",
     flexDirection: "row",
-    gap: 12,
+    gap: 8,
+    alignItems: "center",
   },
   points: {
-    width: 240,
+    width: 110,
   },
-  title: {
-    fontWeight: "bold",
+  grade: {
+    width: 110,
   },
-  error: {
-    color: tokens.color.state.error,
-  },
-  number: {
-    width: 120,
+  ordinal: {
+    maxWidth: 52,
+    minWidth: 52,
+    width: 52,
   },
 };

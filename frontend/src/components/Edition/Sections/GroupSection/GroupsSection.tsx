@@ -62,7 +62,7 @@ export const GroupsSection = () => {
       <CustomDialog
         isOpen={isAddGroupOpen}
         onCloseClick={closeAddGroup}
-        title="Dodaj grupę"
+        title={`${variant === "select" ? "Dodaj" : "Importuj"} grupę`}
       >
         <AddGroupForm
           createError={formError}

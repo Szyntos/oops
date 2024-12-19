@@ -21,6 +21,7 @@ import { GradingChecksSection } from "../components/Edition/Sections/GradingChec
 import { ChestsSection } from "../components/Edition/Sections/ChestsSection/ChestsSection";
 import { AvatarAndNickScreen } from "../screens/SetupUserProfile/AvatarAndNickScreen";
 import { HallOfFameTeacher } from "../screens/HallOfFame/HallOfFameTeacher";
+import { ResetPasswordScreen } from "../components/resetPassword/ResetPasswordScreen";
 
 const commonPaths = pathsWithParameters.common;
 const studentPaths = pathsWithParameters.student;
@@ -35,6 +36,11 @@ export const routes = createBrowserRouter([
       {
         path: commonPaths.Default.path,
         element: <LoginScreen />,
+        index: true,
+      },
+      {
+        path: commonPaths.ResetPassword.path,
+        element: <ResetPasswordScreen />,
         index: true,
       },
       {

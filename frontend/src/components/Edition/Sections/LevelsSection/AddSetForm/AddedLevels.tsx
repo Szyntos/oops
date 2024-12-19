@@ -1,5 +1,7 @@
 import { AddedLevel, LevelRow } from "./LevelRow";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
+import { CustomText } from "../../../../CustomText";
+import { formStyles } from "../../../../../utils/utils";
 
 type AddedLevelsProps = {
   levels: AddedLevel[];
@@ -16,9 +18,10 @@ export const AddedLevels = ({
 }: AddedLevelsProps) => {
   return (
     <div>
-      <div>Added levels: </div>
-      {levels.length > 0
-        ? levels.map((level, index) => (
+      <CustomText style={formStyles.label}>Dodane poziomy</CustomText>
+      <div style={formStyles.fieldsContainer}>
+        {levels.length > 0 ? (
+          levels.map((level, index) => (
             <LevelRow
               key={level.ordinal + level.name}
               level={level}
@@ -29,7 +32,10 @@ export const AddedLevels = ({
               blockUp={index === 0}
             />
           ))
-        : EMPTY_FIELD_STRING}
+        ) : (
+          <CustomText>{EMPTY_FIELD_STRING}</CustomText>
+        )}
+      </div>
     </div>
   );
 };

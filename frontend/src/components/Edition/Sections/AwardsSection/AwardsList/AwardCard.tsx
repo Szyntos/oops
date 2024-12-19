@@ -1,8 +1,14 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
-import { tokens } from "../../../../../tokens";
-import { Styles } from "../../../../../utils/Styles";
+import {
+  coordinatorStyles,
+  getAwardMaxUsageString,
+  getAwardValueString,
+  getCardStyles,
+  mapAwardTypeToPolish,
+} from "../../../../../utils/utils";
 import { Avatar } from "../../../../avatars/Avatar";
+import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
 type AwardCardProps = {
@@ -25,15 +31,24 @@ export const AwardCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div
-      style={{
-        ...styles.card,
-        backgroundColor: isSelected ? "pink" : undefined,
-      }}
-    >
-      <Avatar id={award.award.imageFile?.fileId} size="l" />
-      <div>{award.award.awardName}</div>
-      <div style={styles.subtitle}>{award.award.awardType}</div>
+    <div style={getCardStyles(isSelected)}>
+      <div style={coordinatorStyles.avatarContainer}>
+        <Avatar id={award.award.imageFile?.fileId} size="s" />
+        <div style={coordinatorStyles.textContainer}>
+          <CustomText style={coordinatorStyles.title}>
+            {award.award.awardName}
+          </CustomText>
+          <CustomText>{mapAwardTypeToPolish(award.award.awardType)}</CustomText>
+          <CustomText>
+            {getAwardValueString(
+              award.award.awardType,
+              parseFloat(award.award.awardValue),
+            )}
+          </CustomText>
+        </div>
+      </div>
+
+      <CustomText>{getAwardMaxUsageString(award.award.maxUsages)}</CustomText>
 
       <SetupButtons
         isSelected={isSelected}
@@ -46,14 +61,4 @@ export const AwardCard = ({
       />
     </div>
   );
-};
-
-const styles: Styles = {
-  card: {
-    border: "1px solid black",
-    padding: 12,
-  },
-  subtitle: {
-    color: tokens.color.state.disabled,
-  },
 };

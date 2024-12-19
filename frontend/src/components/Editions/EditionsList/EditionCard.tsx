@@ -26,18 +26,13 @@ export const EditionCard = ({
         {edition.editionName},{" "}
         {`${edition.startDate.slice(0, 4)}/${edition.endDate.slice(0, 4)}`}
       </div>
-      <button
-        style={styles.showButton}
-        onClick={() =>
-          navigate(pathsGenerator.coordinator.Edition(edition.editionId))
-        }
-      >
-        show
-      </button>
       <SetupButtons
         handleDelete={handleDeleteClick}
         handleCopy={handleCopyClick}
         handleEdit={handleEditClick}
+        handleShow={() =>
+          navigate(pathsGenerator.coordinator.Edition(edition.editionId))
+        }
         permissions={permissions}
       />
     </div>

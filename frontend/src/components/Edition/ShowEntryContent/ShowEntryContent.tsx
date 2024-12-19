@@ -7,6 +7,7 @@ import { ShowGroupContent } from "./specificContent/ShowGroupContent";
 import { ShowLevelSetContent } from "./specificContent/ShowLevelSetContent";
 import { ShowUserContent } from "./specificContent/ShowUserContent";
 import { ShowCategoryContent } from "./specificContent/ShowCategoryContent";
+import { CustomText } from "../../CustomText";
 
 export type ShowEntryContentProps = {
   selectedEntry?: Entry;
@@ -32,7 +33,11 @@ const getSpecificContent = (entry: Entry) => {
 export const ShowEntryContent = ({ selectedEntry }: ShowEntryContentProps) => {
   return (
     <div style={styles.container}>
-      {selectedEntry ? getSpecificContent(selectedEntry) : EMPTY_FIELD_STRING}
+      {selectedEntry ? (
+        getSpecificContent(selectedEntry)
+      ) : (
+        <CustomText>{EMPTY_FIELD_STRING}</CustomText>
+      )}
     </div>
   );
 };

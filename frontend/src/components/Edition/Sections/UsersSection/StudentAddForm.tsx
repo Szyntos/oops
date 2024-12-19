@@ -1,8 +1,9 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { TextField } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
-import { tokens } from "../../../../tokens";
+import { formStyles } from "../../../../utils/utils";
+import { FormError } from "../../../form/FormError";
+import { FormButton } from "../../../form/FormButton";
 
 export type StudentFormValues = z.infer<typeof ValidationSchema>;
 
@@ -17,7 +18,6 @@ type AddStudentFormProps = {
   handleConfirm: (values: StudentFormValues) => void;
   formError?: string;
   initialValues?: StudentFormValues;
-  title: string;
 };
 
 export const AddStudentForm = ({
@@ -29,7 +29,6 @@ export const AddStudentForm = ({
     indexNumber: 100000,
     nick: "",
   },
-  title,
 }: AddStudentFormProps) => {
   const formik = useFormik({
     initialValues,
@@ -50,14 +49,13 @@ export const AddStudentForm = ({
   });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div>
+        <div style={formStyles.fieldsContainer}>
           <TextField
             fullWidth
             name="firstName"
-            label="firstName"
+            label="Imię"
             variant="outlined"
             value={formik.values.firstName}
             onChange={formik.handleChange}
@@ -69,7 +67,7 @@ export const AddStudentForm = ({
           <TextField
             fullWidth
             name="secondName"
-            label="secondName"
+            label="Nazwisko"
             variant="outlined"
             value={formik.values.secondName}
             onChange={formik.handleChange}
@@ -83,7 +81,7 @@ export const AddStudentForm = ({
           <TextField
             fullWidth
             name="nick"
-            label="nick"
+            label="Nick"
             variant="outlined"
             value={formik.values.nick}
             onChange={formik.handleChange}
@@ -95,7 +93,7 @@ export const AddStudentForm = ({
           <TextField
             fullWidth
             name="indexNumber"
-            label="indexNumber"
+            label="Numer indeksu"
             variant="outlined"
             type="number"
             value={formik.values.indexNumber}
@@ -111,32 +109,16 @@ export const AddStudentForm = ({
             disabled={true}
             fullWidth
             name="email"
-            label="email"
+            label="Email"
             variant="outlined"
             value={`${formik.values.indexNumber}@student.agh.edu.pl`}
           />
+
+          <FormError error={formError} isFormError={true} />
+
+          <FormButton />
         </div>
-
-        <button type="submit">confirm</button>
       </form>
-
-      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    border: "1px solid black",
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
 };

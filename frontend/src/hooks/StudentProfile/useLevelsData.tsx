@@ -20,6 +20,7 @@ export const useLevelsData = () => {
         imageId: level.imageFileId ?? undefined,
         minimumPoints: parseFloat(level.minimumPoints),
         maximumPoints: parseFloat(level.maximumPoints),
+        grade: parseFloat(level.grade),
       };
     }) ?? [];
 

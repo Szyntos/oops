@@ -24,9 +24,9 @@ export const WEB_SOCKET_GRAPHQL_URL =
 
 // TODO try to reuse it in hall of fame
 export const groupsRadioButtonOptions: GroupRadioFilterItem[] = [
-  { id: "all", name: "wszystkie" },
-  { id: "yours", name: "twoje" },
-  { id: "foreign", name: "obce" },
+  { id: "all", name: "Wszystkie" },
+  { id: "yours", name: "Twoje" },
+  { id: "foreign", name: "Obce" },
 ];
 
 export const dateOptions: Intl.DateTimeFormatOptions = {

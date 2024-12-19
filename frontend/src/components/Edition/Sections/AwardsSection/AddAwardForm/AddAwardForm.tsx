@@ -1,6 +1,5 @@
 import { z, ZodError } from "zod";
 import { FormikErrors, useFormik } from "formik";
-import { Styles } from "../../../../../utils/Styles";
 import {
   TextField,
   MenuItem,
@@ -11,7 +10,13 @@ import {
 import { AwardTypeType } from "../../../../../__generated__/schema.graphql.types";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
 import { SelectImage } from "../../../../inputs/SelectImage";
-import { tokens } from "../../../../../tokens";
+import { FormButton } from "../../../../form/FormButton";
+import { FormError } from "../../../../form/FormError";
+import {
+  formStyles,
+  mapAwardTypeToPolish,
+  MULTIPLICATIVE_TYPE_STRING,
+} from "../../../../../utils/utils";
 
 const ValidationSchema = z.object({
   awardName: z.string().min(1),
@@ -30,17 +35,16 @@ type AddAwardFormProps = {
   formError?: string;
   categories: Category[];
   initialValues?: AwardFormValues;
-  title: string;
   imageIds: string[];
 };
 
 const defaultInitialValues: AwardFormValues = {
   awardName: "",
-  awardType: "",
-  awardValue: 0,
+  awardType: MULTIPLICATIVE_TYPE_STRING,
+  awardValue: 1,
   categoryId: "",
   description: "",
-  maxUsages: 0,
+  maxUsages: 1,
   imageId: "",
 };
 
@@ -52,7 +56,6 @@ export const AddAwardForm = ({
   imageIds,
   formError,
   initialValues = defaultInitialValues,
-  title,
 }: AddAwardFormProps) => {
   const formik = useFormik({
     initialValues,
@@ -73,14 +76,13 @@ export const AddAwardForm = ({
   });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div style={styles.fieldsContainer}>
+        <div style={formStyles.fieldsContainer}>
           <TextField
             fullWidth
             name="awardName"
-            label="Award Name"
+            label="Nazwa nagrody"
             variant="outlined"
             value={formik.values.awardName}
             onChange={formik.handleChange}
@@ -88,8 +90,15 @@ export const AddAwardForm = ({
             error={Boolean(formik.touched.awardName && formik.errors.awardName)}
             helperText={formik.touched.awardName && formik.errors.awardName}
           />
+
           <FormControl fullWidth>
-            <InputLabel>Category</InputLabel>
+            <InputLabel
+              error={Boolean(
+                formik.touched.categoryId && formik.errors.categoryId,
+              )}
+            >
+              Kategoria
+            </InputLabel>
             <Select
               name="categoryId"
               value={formik.values.categoryId}
@@ -109,11 +118,18 @@ export const AddAwardForm = ({
               ))}
             </Select>
             {formik.touched.categoryId && formik.errors.categoryId && (
-              <div style={styles.error}>{formik.errors.categoryId}</div>
+              <FormError error={formik.errors.categoryId} />
             )}
           </FormControl>
+
           <FormControl fullWidth>
-            <InputLabel>Award Type</InputLabel>
+            <InputLabel
+              error={Boolean(
+                formik.touched.awardType && formik.errors.awardType,
+              )}
+            >
+              Typ nagrody
+            </InputLabel>
             <Select
               name="awardType"
               value={formik.values.awardType}
@@ -125,18 +141,23 @@ export const AddAwardForm = ({
             >
               {awardTypes.map((type) => (
                 <MenuItem key={type} value={type}>
-                  {type}
+                  {mapAwardTypeToPolish(type)}
                 </MenuItem>
               ))}
             </Select>
             {formik.touched.awardType && formik.errors.awardType && (
-              <div style={styles.error}>{formik.errors.awardType}</div>
+              <FormError error={formik.errors.awardType} />
             )}
           </FormControl>
+
           <TextField
             fullWidth
             name="awardValue"
-            label="Award Value"
+            label={
+              formik.values.awardType === MULTIPLICATIVE_TYPE_STRING
+                ? "Mnożnik"
+                : "Wartość"
+            }
             type="number"
             variant="outlined"
             value={formik.values.awardValue}
@@ -147,10 +168,11 @@ export const AddAwardForm = ({
             )}
             helperText={formik.touched.awardValue && formik.errors.awardValue}
           />
+
           <TextField
             fullWidth
             name="description"
-            label="Description"
+            label="Opis"
             variant="outlined"
             value={formik.values.description}
             onChange={formik.handleChange}
@@ -160,10 +182,11 @@ export const AddAwardForm = ({
             )}
             helperText={formik.touched.description && formik.errors.description}
           />
+
           <TextField
             fullWidth
             name="maxUsages"
-            label="Max Usages"
+            label="Maksymalna liczba użyć"
             type="number"
             variant="outlined"
             value={formik.values.maxUsages}
@@ -186,33 +209,14 @@ export const AddAwardForm = ({
             error={formik.errors.imageId}
             touched={formik.touched.imageId}
             selectVariant={"single"}
-            title="select image:"
+            title="Wybierz grafikę:"
           />
+
+          <FormError error={formError} isFormError={true} />
+
+          <FormButton />
         </div>
-        <button type="submit">confirm</button>
       </form>
-      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    width: 500,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
-  fieldsContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

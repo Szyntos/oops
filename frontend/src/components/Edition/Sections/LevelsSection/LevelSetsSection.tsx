@@ -1,13 +1,14 @@
-import { Dialog } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
-
 import { useParams } from "react-router-dom";
 import { useLevelSetsSection } from "../../../../hooks/Edition/useLevelSetsSection";
 import { LevelSetsList } from "./LevelSetsList/LevelSetsList";
 import { AddSetForm } from "./AddSetForm/AddSetForm";
-import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { SelectedSetCard } from "./LevelSetsList/SelectedSetCard";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
+import { CardsSection } from "../../CardsSection";
+import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const LevelSetsSection = () => {
   const params = useParams();
@@ -40,29 +41,31 @@ export const LevelSetsSection = () => {
     handleCopySet,
   } = useLevelSetsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (loading) return <LoadingScreen type="edition" />;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
-      <button onClick={openAddSet}>add level set</button>
+    <div style={coordinatorStyles.container}>
+      <CustomButton onClick={openAddSet}>Dodaj zbiór poziomów</CustomButton>
 
-      <div>
-        <div>Selected Set:</div>
-        {activeSet ? (
-          <SelectedSetCard
-            levelSet={activeSet}
-            onSelectClick={() => handleSelectSet(activeSet)}
-            onEditClick={() => openEditSet(activeSet)}
-            onDeleteClick={() => {
-              handleDeleteSet(activeSet);
-            }}
-            onCopyClick={() => handleCopySet(activeSet)}
-          />
-        ) : (
-          EMPTY_FIELD_STRING
-        )}
-      </div>
+      <CardsSection
+        title={"Wybrany zbiór poziomów"}
+        cards={
+          activeSet
+            ? [
+                <SelectedSetCard
+                  levelSet={activeSet}
+                  onSelectClick={() => handleSelectSet(activeSet)}
+                  onEditClick={() => openEditSet(activeSet)}
+                  onDeleteClick={() => {
+                    handleDeleteSet(activeSet);
+                  }}
+                  onCopyClick={() => handleCopySet(activeSet)}
+                />,
+              ]
+            : []
+        }
+      />
 
       <LevelSetsList
         levelSets={levelSets}
@@ -71,21 +74,29 @@ export const LevelSetsSection = () => {
         handleEdit={openEditSet}
         handleDelete={handleDeleteSet}
         handleCopy={handleCopySet}
-        title={"All level sets"}
+        title={"Wszystkie zbiory poziomów"}
       />
 
-      <Dialog open={isAddSetOpen} maxWidth={"lg"}>
-        <CloseHeader onCloseClick={closeAddSet} />
+      <CustomDialog
+        isOpen={isAddSetOpen}
+        title="Dodaj zbiór poziomów"
+        onCloseClick={closeAddSet}
+        size="lg"
+      >
         <AddSetForm
           formError={formError}
           initLevels={[]}
           handleConfirm={handleAddSet}
           imageIds={imageIds}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditSetOpen} maxWidth={"lg"}>
-        <CloseHeader onCloseClick={closeEditSet} />
+      <CustomDialog
+        isOpen={isEditSetOpen}
+        title="Edytuj zbiór poziomów"
+        onCloseClick={closeEditSet}
+        size="lg"
+      >
         <AddSetForm
           initLevels={
             selectedToEditSet?.levelSet.levels?.map((l, index) => ({
@@ -101,15 +112,7 @@ export const LevelSetsSection = () => {
           handleConfirm={handleEditSet}
           imageIds={imageIds}
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

@@ -14,6 +14,8 @@ import {
 import { useStudentsScreenData } from "../../hooks/Students/useStudentsScreenData";
 import { groupsRadioButtonOptions } from "../../utils/constants";
 import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
+import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
 
 export const StudentsScreen = () => {
   const { teacherId, groups, students, loading, error } =
@@ -48,7 +50,11 @@ export const StudentsScreen = () => {
       const doesInputMatch =
         input === "undefined" ||
         input === "" ||
-        isPartOfAString(input, [`${student.firstName} ${student.secondName}`]);
+        isPartOfAString(input, [
+          `${student.firstName} ${student.secondName}`,
+          student.index.toString(),
+          student.group.name,
+        ]);
 
       return doesGroupMatch && doesInputMatch;
     },
@@ -68,8 +74,8 @@ export const StudentsScreen = () => {
 
   // TODO is it possible to reduce number of rerenders?
 
-  if (loading) return <div>loading...</div>;
-  if (error) return <div>ERROR: {error?.message}</div>;
+  if (loading) return <LoadingScreen />;
+  if (error) return <ErrorScreen />;
 
   return (
     <ScreenContentContainer

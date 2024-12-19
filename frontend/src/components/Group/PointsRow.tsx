@@ -3,6 +3,7 @@ import { FormikErrors, useFormik } from "formik";
 import { TextField } from "@mui/material";
 import { Styles } from "../../utils/Styles";
 import { Student } from "../../hooks/Group/useGroupTableData";
+import { CustomText } from "../CustomText";
 
 const ValidationSchema = z.object({
   points: z.number().min(0, "<0").nullable(),
@@ -55,10 +56,10 @@ export const PointsRow = ({
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div style={styles.container}>
-        <div style={styles.text}>
+      <div style={styles.row}>
+        <CustomText>
           {ordinal}. {data.student.fullName}
-        </div>
+        </CustomText>
         <TextField
           style={styles.points}
           name="points"
@@ -69,6 +70,7 @@ export const PointsRow = ({
           onBlur={formik.handleBlur}
           error={Boolean(formik.touched.points && formik.errors.points)}
           helperText={formik.touched.points && formik.errors.points}
+          size="small"
         />
       </div>
     </form>
@@ -76,16 +78,12 @@ export const PointsRow = ({
 };
 
 const styles: Styles = {
-  container: {
+  row: {
     display: "flex",
     flexDirection: "row",
     gap: 12,
-    alignContent: "center",
-    justifyContent: "space-between",
-  },
-  text: {
-    display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   points: {
     width: 80,

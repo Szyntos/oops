@@ -5,9 +5,11 @@ import { useCallback, useEffect, useState } from "react";
 import { StudentCardsList } from "../../components/hallOfFame/StudentCardsList";
 import { isPartOfAString } from "../../utils/strings";
 import { HALL_OF_FAME_STUDENT_CARD_ID_PREFIX } from "../../components/hallOfFame/HallOfFameStudentCard";
-import { CONTENT_CONTAINER_HEIGHT } from "../../components/layout/ScreenContentContainer";
+import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenContentContainer";
 import { tokens } from "../../tokens";
 import { useHallOfFameDataTeacher } from "../../hooks/HallOfFame/useHallOfFameDataTeacher";
+import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
 
 export const HallOfFameTeacher = () => {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
@@ -31,8 +33,8 @@ export const HallOfFameTeacher = () => {
     }
   }, [scrollToStudent, highlightedStudent?.id, showStudentsFromAllGroups]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (loading) return <LoadingScreen />;
+  if (error) return <ErrorScreen />;
 
   const displayStudents = showStudentsFromAllGroups
     ? students
@@ -42,7 +44,6 @@ export const HallOfFameTeacher = () => {
           return { ...student, position: index + 1 };
         }) ?? [];
 
-  console.log(students);
   return (
     <div style={styles.container}>
       <div style={styles.leftSide}>
@@ -83,7 +84,7 @@ const styles: Styles = {
   container: {
     position: "relative",
     display: "flex",
-    height: CONTENT_CONTAINER_HEIGHT,
+    height: CONTENT_CONTAINER_HEIGHT_CALC,
   },
   leftSide: {
     flex: 1,

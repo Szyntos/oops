@@ -6,6 +6,7 @@ import { CustomText } from "../../CustomText";
 import { EditableIndicator } from "../../EditableIndicator";
 import { CARD_BORDER, CARD_PADDING } from "../../Students/StudentsListCard";
 import { HooverWrapper } from "../../HooverWrapper";
+import { getGroupTimeString } from "../../../utils/utils";
 
 type GroupCardProps = {
   group: Group;
@@ -32,7 +33,11 @@ export const GroupCard = ({
 
         <div style={styles.detailsContainer}>
           <CustomText color={tokens.color.text.secondary}>
-            {group.weekday.name} {group.time.start}-{group.time.end}
+            {getGroupTimeString(
+              group.weekday.name,
+              group.time.start,
+              group.time.end,
+            )}
           </CustomText>
           <CustomText color={tokens.color.text.secondary}>
             {group.teacher.fullName}

@@ -111,7 +111,7 @@ export const AvatarAndNickScreen = () => {
       </form>
 
       <SelectImage
-        type="avatar"
+        type="withoutTooltip"
         options={
           imageData?.getFilesGroupedByTypeBySelectedTypes.flatMap((e) =>
             e.files.map((e2) => e2.file.fileId),
@@ -121,6 +121,7 @@ export const AvatarAndNickScreen = () => {
         onSelectClick={(updatedIds: string[]) =>
           setSelectedAvatar(updatedIds[0] ?? null)
         }
+        // TODO why empty
         error={undefined}
         touched={undefined}
         selectVariant={"single"}

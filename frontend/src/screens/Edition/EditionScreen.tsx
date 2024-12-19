@@ -1,14 +1,13 @@
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { Styles } from "../../utils/Styles";
-import { pathsGenerator } from "../../router/paths";
-import { SectionsBar } from "../../components/Edition/SectionsBar";
-import { Dialog } from "@mui/material";
-import { CloseHeader } from "../../components/dialogs/CloseHeader";
+import { EditionScreenNavbar } from "../../components/Edition/EditionScreenNavbar";
 import { ShowEntryContent } from "../../components/Edition/ShowEntryContent/ShowEntryContent";
 import { useEditionSections } from "../../hooks/common/useEditionSection";
+import { CustomDialog } from "../../components/dialogs/CustomDialog";
+
+export const EDITION_MARGIN_VERTICAL = 20;
 
 export const EditionScreen = () => {
-  const navigate = useNavigate();
   const params = useParams();
   const editionId = params.id ? parseInt(params.id) : -1;
 
@@ -16,19 +15,19 @@ export const EditionScreen = () => {
     useEditionSections();
 
   return (
-    <div style={styles.screenContainer}>
-      <div style={styles.header}>
-        <button onClick={() => navigate(pathsGenerator.coordinator.Editions)}>
-          go back to editions list
-        </button>
-        <div>params - edition id: {editionId}</div>
+    <div>
+      <EditionScreenNavbar editionId={editionId} />
+      <div style={styles.screenContainer}>
+        <Outlet />
+
+        <CustomDialog
+          isOpen={isShowDialogOpen}
+          title="JSON"
+          onCloseClick={closeShowDialog}
+        >
+          <ShowEntryContent selectedEntry={selectedEntry} />
+        </CustomDialog>
       </div>
-      <SectionsBar editionId={editionId} />
-      <Dialog open={isShowDialogOpen}>
-        <CloseHeader onCloseClick={closeShowDialog} />
-        <ShowEntryContent selectedEntry={selectedEntry} />
-      </Dialog>
-      <Outlet />
     </div>
   );
 };
@@ -36,13 +35,10 @@ export const EditionScreen = () => {
 const styles: Styles = {
   screenContainer: {
     margin: 12,
+    marginTop: EDITION_MARGIN_VERTICAL,
+    marginBottom: EDITION_MARGIN_VERTICAL,
     display: "flex",
     flexDirection: "column",
-    gap: 12,
-  },
-  header: {
-    display: "flex",
-    flexDirection: "row",
     gap: 12,
   },
 };

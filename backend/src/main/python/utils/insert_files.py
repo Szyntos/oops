@@ -27,7 +27,7 @@ def insert_files(base_url):
         url = base_url  # Make sure `base_url` is defined in your script
         try:
             with open(file_path, 'rb') as f:
-                files = {'file': (file_path, f)}
+                files = {'file': (os.path.basename(file_path), f)}
                 data = {'fileType': file_type}
                 response = requests.post(url, files=files, data=data)
 

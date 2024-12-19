@@ -53,14 +53,6 @@ query SetupLevelSets($editionId: Int!) {
         allow
         reason
       }
-      canOverride {
-        allow
-        reason
-      }
-      canTurnOffOverride {
-        allow
-        reason
-      }
       canActivate {
         allow
         reason

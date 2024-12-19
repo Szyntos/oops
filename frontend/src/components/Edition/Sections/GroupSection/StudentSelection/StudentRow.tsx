@@ -1,20 +1,29 @@
 import { Student } from "../../../../../hooks/Edition/useGroupsSection";
 import { Styles } from "../../../../../utils/Styles";
+import { CustomText } from "../../../../CustomText";
+import { RowButton } from "../../CategoriesSection/AddCategoryForm/RowButton";
 
 type StudentRowProps = {
   student: Student;
   handleDelete: (student: Student) => void;
+  ordinal: number;
 };
 
-export const StudentRow = ({ student, handleDelete }: StudentRowProps) => {
+export const StudentRow = ({
+  student,
+  handleDelete,
+  ordinal,
+}: StudentRowProps) => {
   return (
     <div style={styles.container}>
-      <button type="button" onClick={() => handleDelete(student)}>
-        -
-      </button>
-      <div>
-        {student.firstName} {student.secondName}
-      </div>
+      <RowButton
+        onClick={() => handleDelete(student)}
+        isDisabled={false}
+        icon={"delete"}
+      />
+      <CustomText>
+        {ordinal + 1}. {student.firstName} {student.secondName}
+      </CustomText>
     </div>
   );
 };
@@ -23,6 +32,7 @@ const styles: Styles = {
   container: {
     display: "flex",
     flexDirection: "row",
-    gap: 12,
+    gap: 8,
+    alignItems: "center",
   },
 };

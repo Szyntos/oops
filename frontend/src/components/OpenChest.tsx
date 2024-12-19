@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Styles } from "../utils/Styles";
 import { Chest } from "../hooks/chest/useChests";
-import { tokens } from "../tokens";
 import { Avatar } from "./avatars/Avatar";
+import { formStyles } from "../utils/utils";
+import { CustomText } from "./CustomText";
+import { FormError } from "./form/FormError";
+import { FormButton } from "./form/FormButton";
 
 type OpenChestProps = {
-  chest: Chest;
+  chest?: Chest;
   handleOpenChestClick: (awardIds: string[], chestId: string) => void;
   chestError: string | undefined;
 };
@@ -18,6 +21,10 @@ export const OpenChest = ({
   chestError,
 }: OpenChestProps) => {
   const [selectedAwards, setSelectedAwards] = useState<string[]>([]);
+
+  if (!chest) {
+    return <CustomText>Przyznawanie nagród...</CustomText>;
+  }
 
   const handleAwardClick = (award: Award) => {
     const isSelected = selectedAwards.some((id) => id === award.awardId);
@@ -34,9 +41,10 @@ export const OpenChest = ({
     );
   };
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{chest.chest.type}</div>
-      <div>select {chest.chest.awardBundleCount} awards :)</div>
+    <div style={formStyles.formContainer}>
+      <CustomText style={formStyles.label}>
+        Maksymalna liczba nagród do wybrania: {chest.chest.awardBundleCount}
+      </CustomText>
 
       <div style={styles.awardsContainer}>
         {chest.chest.chestAwards.map((a) => (
@@ -50,36 +58,22 @@ export const OpenChest = ({
         ))}
       </div>
 
-      {chestError && <div style={styles.error}>{chestError}</div>}
+      <FormError error={chestError} isFormError={true} />
 
-      <button
+      <FormButton
         onClick={() =>
           handleOpenChestClick(selectedAwards, chest.chestHistoryId)
         }
-      >
-        confirm
-      </button>
+      />
     </div>
   );
 };
 
 const styles: Styles = {
-  title: {
-    fontWeight: "bold",
-  },
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    width: 300,
-    padding: 12,
-    gap: 20,
-  },
   awardsContainer: {
     display: "flex",
     flexWrap: "wrap",
-    gap: 12,
-  },
-  error: {
-    color: tokens.color.state.error,
+    gap: 8,
+    justifyContent: "center",
   },
 };

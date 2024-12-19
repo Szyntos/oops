@@ -1,16 +1,17 @@
 import { useParams } from "react-router-dom";
-import { Styles } from "../../utils/Styles";
 import { useGroupScreenData } from "../../hooks/Group/useGroupScreenData";
 import { GroupTableWithFilters } from "../../components/Group/table/GroupTableWithFilters";
-import { Dialog } from "@mui/material";
-import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { PointsForm } from "../../components/StudentProfile/PointsForm/PointsForm";
 import { useUser } from "../../hooks/common/useUser";
 import { GroupPointsForm } from "../../components/Group/GroupPointsForm";
-import { NotEditableInfo } from "../../components/StudentProfile/NotEditableInfo";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
+import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
+import { CustomDialog } from "../../components/dialogs/CustomDialog";
+import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenContentContainer";
+import { Styles } from "../../utils/Styles";
 
 export const GroupScreen = () => {
   const params = useParams();
@@ -39,9 +40,8 @@ export const GroupScreen = () => {
     selectedSubcategory,
   } = useGroupScreenData(groupId, userId);
 
-  if (loading) return <div>loading...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
-  if (!teacherId) return <div>ERROR: something went worng</div>;
+  if (loading) return <LoadingScreen />;
+  if (error || !teacherId) return <ErrorScreen />;
 
   const hasEditableRights =
     teacherId === userId || user.role === UsersRolesType.Coordinator;
@@ -54,35 +54,37 @@ export const GroupScreen = () => {
 
   return (
     <div style={styles.screenContainer}>
-      {disableEditMode && (
-        <NotEditableInfo
-          hasEditableRights={hasEditableRights}
-          isSelectedEditionActive={isSelectedEditionActive}
-        />
-      )}
-
       <GroupTableWithFilters
         rows={rows}
         categories={categories}
         handleStudentClick={hasEditableRights ? openStudent : () => {}}
         handleSubcategoryClick={hasEditableRights ? openSubcategory : () => {}}
         editable={!disableEditMode}
+        disableEditMode={disableEditMode}
+        hasEditableRights={hasEditableRights}
+        isSelectedEditionActive={isSelectedEditionActive}
       />
 
-      <Dialog open={isStudentOpen}>
-        <CloseHeader onCloseClick={closeStudent} />
+      <CustomDialog
+        isOpen={isStudentOpen}
+        onCloseClick={closeStudent}
+        title="Dodaj punkty"
+      >
         <PointsForm
           categories={addPointsCategories}
           handleConfirmClick={handleAddPointsConfirmation}
           mutationError={formError}
           initialValues={{ categoryId: "", subcategoryId: "", points: 0 }}
-          variant="add"
           disableCategoryAndSubcategory={false}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isSubcategoryOpen}>
-        <CloseHeader onCloseClick={closeSubcategory} />
+      <CustomDialog
+        isOpen={isSubcategoryOpen}
+        onCloseClick={closeSubcategory}
+        title={`Dodaj punkty do ${selectedSubcategory?.subcategory.name}`}
+        subtitle={`Max pkt: ${selectedSubcategory?.subcategory.maxPoints.toFixed(2)}`}
+      >
         <GroupPointsForm
           initialRows={selectedSubcategory?.rows ?? []}
           handleAdd={handleAddPointsToGroup}
@@ -98,16 +100,17 @@ export const GroupScreen = () => {
             }
           }
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
 };
 
+// do not delete
 const styles: Styles = {
   screenContainer: {
-    margin: 12,
     display: "flex",
     flexDirection: "column",
     gap: 12,
+    height: CONTENT_CONTAINER_HEIGHT_CALC,
   },
 };

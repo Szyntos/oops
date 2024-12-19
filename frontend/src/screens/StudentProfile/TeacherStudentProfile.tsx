@@ -5,16 +5,13 @@ import {
   PointsFormValues,
 } from "../../components/StudentProfile/PointsForm/PointsForm";
 import { useUser } from "../../hooks/common/useUser";
-import { useStudentProfileData } from "../../hooks/StudentProfile";
 import { SideBar } from "../../components/StudentProfile/SideBar";
 import { useFormCategories } from "../../hooks/common/useFormCategories";
-import { Dialog } from "@mui/material";
 import { StudentTableWithFilters } from "../../components/StudentProfile/table/StudentTableWithFilters";
 import { useTeacherActions } from "../../hooks/StudentProfile";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
 import { isEditionActive } from "../../utils/utils";
 import { NotEditableInfo } from "../../components/StudentProfile/NotEditableInfo";
-import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useCoordinatorActions } from "../../hooks/StudentProfile/useCoordinatorActions";
 import { AddChestToUserForm } from "./AddChestToUserForm";
@@ -22,6 +19,10 @@ import { useChangeGroup } from "../../hooks/common/useChangeGroup";
 import { useOverrideGrade } from "../../hooks/common/useOverrideGrade";
 import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
 import { CustomButton } from "../../components/CustomButton";
+import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
+import { CustomDialog } from "../../components/dialogs/CustomDialog";
+import { useStudentProfileDataTeacher } from "../../hooks/StudentProfile/useStudentProfileData/useStudentProfileDataTeacher";
 
 export function TeacherStudentProfile() {
   const params = useParams();
@@ -44,7 +45,7 @@ export function TeacherStudentProfile() {
     loading,
     error,
     refetch,
-  } = useStudentProfileData(studentId);
+  } = useStudentProfileDataTeacher(studentId);
 
   const {
     addPointsCategories,
@@ -83,16 +84,17 @@ export function TeacherStudentProfile() {
   const { openChangeGroup } = useChangeGroup();
   const { openOverrideGrade } = useOverrideGrade();
 
-  if (!studentId) return <p>StudentId is undefined</p>;
-  if (!userId) return <p>TeacherId is undefined</p>;
-
-  if (loading || formDataLoading || chestsLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-  if (formDataError) return <p>Error: {formDataError.message}</p>;
-  if (chestsError) return <p>Error: {chestsError.message}</p>;
-
-  if (!studentData) return <p>Student is undefined</p>;
-  if (!currLevel) return <p>Curr level is undefined</p>;
+  if (loading || formDataLoading || chestsLoading) return <LoadingScreen />;
+  if (
+    error ||
+    formDataError ||
+    chestsError ||
+    !studentData ||
+    !currLevel ||
+    !studentId ||
+    !userId
+  )
+    return <ErrorScreen />;
 
   const hasEditableRights =
     studentData.group?.teacherId === userId ||
@@ -116,49 +118,46 @@ export function TeacherStudentProfile() {
     return (
       <div style={styles.buttonsContainer}>
         <CustomButton onClick={openAddDialog} disabled={disableEditMode}>
-          dodaj punkty
+          Dodaj punkty
         </CustomButton>
-        {user.role === UsersRolesType.Coordinator && (
-          <>
-            <CustomButton onClick={openChestDialog} disabled={disableEditMode}>
-              dodaj skrzynkę
-            </CustomButton>
-            <CustomButton
-              onClick={() =>
-                openOverrideGrade({
-                  studentId,
-                  editionId: selectedEdition?.editionId as string,
-                  grade: studentData.grade,
-                })
-              }
-              disabled={disableEditMode || !selectedEdition?.editionId}
-            >
-              nadpisz ocenę
-            </CustomButton>
-            <CustomButton
-              onClick={() => handleRegenerateGrade(studentId)}
-              disabled={disableEditMode || !selectedEdition?.editionId}
-            >
-              wygeneruj ocenę
-            </CustomButton>
-            <CustomButton
-              onClick={() =>
-                openChangeGroup({
-                  studentId,
-                  groupId: studentData.group?.id as string,
-                  editionId: selectedEdition?.editionId as string,
-                })
-              }
-              disabled={
-                disableEditMode ||
-                !studentData.group?.id ||
-                !selectedEdition?.editionId
-              }
-            >
-              zmień grupę
-            </CustomButton>
-          </>
-        )}
+
+        <CustomButton onClick={openChestDialog} disabled={disableEditMode}>
+          Dodaj skrzynkę
+        </CustomButton>
+        <CustomButton
+          onClick={() =>
+            openOverrideGrade({
+              studentId,
+              editionId: selectedEdition?.editionId as string,
+              grade: studentData.grade,
+            })
+          }
+          disabled={disableEditMode || !selectedEdition?.editionId}
+        >
+          Nadpisz ocenę
+        </CustomButton>
+        <CustomButton
+          onClick={() => handleRegenerateGrade(studentId)}
+          disabled={disableEditMode || !selectedEdition?.editionId}
+        >
+          Wygeneruj ocenę
+        </CustomButton>
+        <CustomButton
+          onClick={() =>
+            openChangeGroup({
+              studentId,
+              groupId: studentData.group?.id as string,
+              editionId: selectedEdition?.editionId as string,
+            })
+          }
+          disabled={
+            disableEditMode ||
+            !studentData.group?.id ||
+            !selectedEdition?.editionId
+          }
+        >
+          Zmień grupę
+        </CustomButton>
       </div>
     );
   };
@@ -178,15 +177,16 @@ export function TeacherStudentProfile() {
       }
     >
       {/* no rights info */}
-      {disableEditMode && (
+      {disableEditMode ? (
         <NotEditableInfo
           hasEditableRights={hasEditableRights}
           isSelectedEditionActive={isSelectedEditionActive}
+          type={"student"}
         />
+      ) : (
+        // teacher action buttons
+        getTeacherActionButtons()
       )}
-
-      {/* teacher action buttons */}
-      {getTeacherActionButtons()}
 
       {/* table */}
       <StudentTableWithFilters
@@ -201,30 +201,39 @@ export function TeacherStudentProfile() {
         blockActionButtons={disableEditMode}
       />
 
-      <Dialog open={isAddDialogOpen}>
-        <CloseHeader onCloseClick={closeAddDialog} />
+      <CustomDialog
+        isOpen={isAddDialogOpen}
+        onCloseClick={closeAddDialog}
+        title="Dodaj punkty"
+      >
         <PointsForm
           categories={addPointsCategories}
           handleConfirmClick={handleAddPointsConfirmation}
           mutationError={formError}
-          variant="add"
           initialValues={initialValues}
           disableCategoryAndSubcategory={!!selectedPoints}
         />
-      </Dialog>
-      <Dialog open={isEditDialogOpen}>
-        <CloseHeader onCloseClick={closeEditDialog} />
+      </CustomDialog>
+
+      <CustomDialog
+        isOpen={isEditDialogOpen}
+        onCloseClick={closeEditDialog}
+        title="Edytuj punkty"
+      >
         <PointsForm
           categories={addPointsCategories}
           handleConfirmClick={handleEditPointsConfirmation}
           mutationError={formError}
           initialValues={initialValues}
-          variant="edit"
           disableCategoryAndSubcategory={true}
         />
-      </Dialog>
-      <Dialog open={isChestDialogOpen}>
-        <CloseHeader onCloseClick={closeChestDialog} />
+      </CustomDialog>
+
+      <CustomDialog
+        isOpen={isChestDialogOpen}
+        onCloseClick={closeChestDialog}
+        title="Przydziel skrzynkę"
+      >
         <AddChestToUserForm
           handleConfirmClick={handleAddChestConfirmation}
           categories={addChestCategories}
@@ -236,7 +245,7 @@ export function TeacherStudentProfile() {
           }}
           formError={chestError}
         />
-      </Dialog>
+      </CustomDialog>
     </ScreenContentContainer>
   );
 }

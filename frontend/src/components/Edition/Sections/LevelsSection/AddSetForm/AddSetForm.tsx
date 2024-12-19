@@ -3,7 +3,9 @@ import { Styles } from "../../../../../utils/Styles";
 import { AddedLevel } from "./LevelRow";
 import { AddedLevels } from "./AddedLevels";
 import { AddLevelForm, LevelFormValues } from "./AddLevelForm";
-import { tokens } from "../../../../../tokens";
+import { formStyles } from "../../../../../utils/utils";
+import { CustomButton } from "../../../../CustomButton";
+import { FormError } from "../../../../form/FormError";
 
 export type AddSetFormProps = {
   initLevels: AddedLevel[];
@@ -105,12 +107,12 @@ export const AddSetForm = ({
   ): WithAddedLevelsValidateErrors => {
     // check if name not duplicated
     const nameError = levels.find((l) => l.name === values.name)
-      ? "duplicated name"
+      ? "Zduplikowana nazwa"
       : undefined;
 
     // check if max points not duplicated
     const maxPointsError = levels.find((l) => l.maxPoints === values.maxPoints)
-      ? "duplicated maxPoints"
+      ? "Zduplikowane maksymalne punkty"
       : undefined;
 
     const newLevel: AddedLevel = {
@@ -129,10 +131,10 @@ export const AddSetForm = ({
       return parseFloat(array[index - 1].grade) <= parseFloat(l1.grade);
     })
       ? undefined
-      : "grade inconsistency";
+      : "Niekonsekwentność w ocenach";
 
     const imageError = levels.find((l) => l.imageId === values.imageId)
-      ? "duplicated image"
+      ? "Zduplikowana ikona"
       : undefined;
 
     return {
@@ -143,39 +145,43 @@ export const AddSetForm = ({
     };
   };
 
+  console.log(formError);
+
   return (
-    <div style={styles.container}>
-      <AddedLevels
-        levels={levels}
-        handleUp={handleUp}
-        handleDown={handleDown}
-        handleDelete={handleDelete}
-      />
-      <AddLevelForm
-        handleAdd={handleAdd}
-        title={"Add level form"}
-        imageIds={imageIds}
-        validateWithAddedLevels={validateWithAddedLevels}
-      />
-      <button
-        onClick={() => handleConfirm(levels)}
-        disabled={levels.length === 0}
-      >
-        confirm
-      </button>
-      <div style={styles.error}>{formError}</div>
+    <div style={formStyles.formContainer}>
+      <div style={formStyles.fieldsContainer}>
+        <AddedLevels
+          levels={levels}
+          handleUp={handleUp}
+          handleDown={handleDown}
+          handleDelete={handleDelete}
+        />
+
+        <AddLevelForm
+          handleAdd={handleAdd}
+          imageIds={imageIds}
+          validateWithAddedLevels={validateWithAddedLevels}
+        />
+
+        <FormError error={formError} isFormError={true} />
+      </div>
+
+      <div style={styles.buttonWrapper}>
+        <CustomButton
+          onClick={() => handleConfirm(levels)}
+          disabled={levels.length === 0}
+        >
+          Potwierdź
+        </CustomButton>
+      </div>
     </div>
   );
 };
 
 const styles: Styles = {
-  container: {
-    padding: 40,
+  buttonWrapper: {
     display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
-  error: {
-    color: tokens.color.state.error,
+    justifyContent: "right",
+    margin: 12,
   },
 };

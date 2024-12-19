@@ -72,9 +72,6 @@ export const useGroupsSection = (editionId: number) => {
       (u) => u.role.toLocaleUpperCase() === UsersRolesType.Student && u.active,
     ) ?? [];
 
-  console.log("TEACHERS: ", teachers);
-  console.log("STUDENTS: ", students);
-
   // ADD
   const [createGroup] = useSetupGroupCreateMutation();
   const handleAddGroup = async (
@@ -198,9 +195,9 @@ export const useGroupsSection = (editionId: number) => {
 
       return uploadedStudents;
     } catch (error) {
-      console.error("Failed to upload file", error);
+      console.error("Błąd ładowania pliku", error);
       setFormError(
-        error instanceof Error ? error.message : "Failed to upload file.",
+        error instanceof Error ? error.message : "Błąd załadowania pliku.",
       );
       return [];
     }

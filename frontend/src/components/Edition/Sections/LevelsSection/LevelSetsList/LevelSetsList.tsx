@@ -1,6 +1,5 @@
 import { LevelSet } from "../../../../../hooks/Edition/useLevelSetsSection";
-import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
-import { Styles } from "../../../../../utils/Styles";
+import { CardsSection } from "../../../CardsSection";
 import { LevelSetCard } from "./LevelSetCard";
 
 type LevelSetsListProps = {
@@ -23,40 +22,24 @@ export const LevelSetsList = ({
   title,
 }: LevelSetsListProps) => {
   return (
-    <div>
-      <div style={styles.title}>{title}</div>
-      <div style={styles.container}>
-        {levelSets.length !== 0
-          ? levelSets.map((levelSet) => (
-              <LevelSetCard
-                key={levelSet.levelSet.levelSetId}
-                levelSet={levelSet}
-                isSelected={
-                  selectedLevelSet?.levelSet.levelSetId ===
-                  levelSet.levelSet.levelSetId
-                }
-                onSelectClick={() => handleSelect(levelSet)}
-                onEditClick={() => handleEdit(levelSet)}
-                onDeleteClick={() => {
-                  handleDelete(levelSet);
-                }}
-                onCopyClick={() => handleCopy(levelSet)}
-              />
-            ))
-          : EMPTY_FIELD_STRING}
-      </div>
-    </div>
+    <CardsSection
+      title={title}
+      cards={levelSets.map((levelSet) => (
+        <LevelSetCard
+          key={levelSet.levelSet.levelSetId}
+          levelSet={levelSet}
+          isSelected={
+            selectedLevelSet?.levelSet.levelSetId ===
+            levelSet.levelSet.levelSetId
+          }
+          onSelectClick={() => handleSelect(levelSet)}
+          onEditClick={() => handleEdit(levelSet)}
+          onDeleteClick={() => {
+            handleDelete(levelSet);
+          }}
+          onCopyClick={() => handleCopy(levelSet)}
+        />
+      ))}
+    />
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  title: {
-    color: "blue",
-  },
 };

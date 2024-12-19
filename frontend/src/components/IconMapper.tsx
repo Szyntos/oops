@@ -14,8 +14,16 @@ import GroupIcon from "@mui/icons-material/Group";
 import SchoolIcon from "@mui/icons-material/School";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import MailIcon from "@mui/icons-material/Mail";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Yes icon
-import CancelIcon from "@mui/icons-material/Cancel"; // No icon
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import FunctionsIcon from "@mui/icons-material/Functions";
+import CloseIcon from "@mui/icons-material/Close";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
+import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
+import { MdAutoGraph } from "react-icons/md";
+import { PiTreasureChestLight } from "react-icons/pi";
+import { GiBackForth } from "react-icons/gi";
+import { BiSolidMedal } from "react-icons/bi";
 import { Styles } from "../utils/Styles";
 import { tokens } from "../tokens";
 
@@ -25,14 +33,20 @@ type IconMapperProps = {
   style?: React.CSSProperties;
   isDisabled?: boolean;
   size?: number;
+  color?: string;
 };
 
-type ActionIcons = "settings" | "logout" | "edit" | "delete" | "add" | "chest";
-type DisplayIcons =
+type MUIIcons =
+  | "settings"
+  | "logout"
+  | "edit"
+  | "delete"
+  | "add"
+  | "chest"
   | "id"
   | "name"
   | "index"
-  | "grade"
+  | "star"
   | "group"
   | "instructor"
   | "progress"
@@ -41,10 +55,16 @@ type DisplayIcons =
   | "monster"
   | "level"
   | "points"
-  | "yes" // Added "yes"
-  | "no"; // Added "no"
+  | "yes"
+  | "no"
+  | "sum"
+  | "close"
+  | "up"
+  | "down";
 
-export type Icon = ActionIcons | DisplayIcons;
+type ReactIcons = "grade" | "level2" | "chest2" | "startEnd";
+
+export type Icon = MUIIcons | ReactIcons;
 
 const iconMap = {
   settings: SettingsIconRounded,
@@ -56,7 +76,7 @@ const iconMap = {
   id: AccountCircleIcon,
   name: PersonIcon,
   index: FingerprintIcon,
-  grade: StarIcon,
+  star: StarIcon,
   group: GroupIcon,
   instructor: SchoolIcon,
   progress: BarChartIcon,
@@ -67,6 +87,14 @@ const iconMap = {
   points: SportsScoreIcon,
   yes: CheckCircleIcon,
   no: CancelIcon,
+  sum: FunctionsIcon,
+  grade: BiSolidMedal,
+  level2: MdAutoGraph,
+  chest2: PiTreasureChestLight,
+  startEnd: GiBackForth,
+  close: CloseIcon,
+  up: ArrowUpwardRoundedIcon,
+  down: ArrowDownwardRoundedIcon,
 };
 
 export const IconMapper = ({
@@ -75,8 +103,14 @@ export const IconMapper = ({
   isDisabled,
   style,
   size = 22,
+  color,
 }: IconMapperProps) => {
   const IconComponent = iconMap[icon];
+
+  if (!IconComponent) {
+    console.error(`Icon "${icon}" not found in iconMap`);
+    return null;
+  }
 
   return (
     <IconComponent
@@ -88,6 +122,7 @@ export const IconMapper = ({
         ...(isDisabled && styles.disabled),
         width: size,
         height: size,
+        color: color ?? tokens.color.text.secondary,
       }}
     />
   );
@@ -97,7 +132,6 @@ const styles: Styles = {
   icon: {
     width: tokens.padding.m,
     height: tokens.padding.m,
-    color: tokens.color.text.secondary,
   },
   clickable: {
     cursor: "pointer",

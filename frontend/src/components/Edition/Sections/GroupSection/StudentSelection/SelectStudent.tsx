@@ -2,7 +2,7 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { Styles } from "../../../../../utils/Styles";
 import { Student } from "../../../../../hooks/Edition/useGroupsSection";
-import { tokens } from "../../../../../tokens";
+import { RowButton } from "../../CategoriesSection/AddCategoryForm/RowButton";
 
 type SelectStudentProps = {
   students: Student[];
@@ -16,13 +16,14 @@ export const SelectStudent = ({
   const [student, setStudent] = useState<undefined | Student>(undefined);
 
   return (
-    <div style={styles.innerContainer}>
+    <div style={styles.row}>
       <FormControl fullWidth>
         <InputLabel>Student</InputLabel>
         <Select
+          size="small"
           name="studentId"
           value={student?.userId}
-          placeholder="choose student"
+          placeholder="Wybierz studenta"
           onChange={(e) =>
             setStudent(students.find((s) => s.userId === e.target.value))
           }
@@ -34,36 +35,26 @@ export const SelectStudent = ({
           ))}
         </Select>
       </FormControl>
-      <button
-        disabled={!student}
+
+      <RowButton
+        isDisabled={!student}
         onClick={() => {
           if (student) {
             handleAddStudent(student);
           }
         }}
-        type="button"
-      >
-        add student
-      </button>
+        icon="add"
+      />
     </div>
   );
 };
 
 const styles: Styles = {
-  innerContainer: {
+  row: {
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
     gap: 12,
-    padding: 12,
-    width: 500,
-  },
-  points: {
-    width: 80,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
+    paddingTop: 8,
   },
 };

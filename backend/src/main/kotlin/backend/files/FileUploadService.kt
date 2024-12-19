@@ -15,14 +15,16 @@ class FileUploadService(private val fileEntityRepository: FileEntityRepository) 
     private lateinit var uploadDir: String
 
     fun saveFile(file: MultipartFile, fileType: String): FileEntity {
-        val originalFilename = file.originalFilename ?: throw IllegalArgumentException("File name is invalid")
+        val originalFilename = Paths.get(file.originalFilename ?: "").fileName.toString()
         val fileExtension = getFileExtension(originalFilename)
         val filenameWithoutExtension = getFilenameWithoutExtension(originalFilename)
         validateFileType(fileType)
 
         // Resolve the relative path to an absolute path
         val directoryPath = Paths.get(uploadDir).toAbsolutePath().resolve(fileType)
-        Files.createDirectories(directoryPath) // Ensure the directory exists
+        if (Files.notExists(directoryPath)) {
+            Files.createDirectories(directoryPath)
+        }
 
         var targetPath = directoryPath.resolve(originalFilename)
         var counter = 1

@@ -450,6 +450,9 @@ type Query {
 
   listSetupEditions: [EditionWithPermissionsType!]!
 
+  getQuoteVariables(
+    editionId: Int!
+  ): QuoteVariablesType!
 
 }
 
@@ -911,8 +914,6 @@ type ListPermissionsOutputType{
   canSelect: PermissionType!
   canUnselect: PermissionType!
   additional: [PermissionType!]!
-  canOverride: PermissionType
-  canTurnOffOverride: PermissionType
   canMarkAsActive: PermissionType
   canMarkAsInactive: PermissionType
   canActivate: PermissionType
@@ -922,6 +923,12 @@ type ListPermissionsOutputType{
 type UserWithEditionsType{
   user: UserType!,
   editions: [EditionType!]!
+}
+
+type QuoteVariablesType{
+    firstPassingLevel: LevelType
+    gradingCheck: GradingChecksType
+    coordinator: UserType!
 }
 
 input SubcategoryInputType {

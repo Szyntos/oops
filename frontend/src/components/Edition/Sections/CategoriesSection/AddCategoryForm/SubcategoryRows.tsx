@@ -1,3 +1,4 @@
+import { formStyles } from "../../../../../utils/utils";
 import { SubcategoriesFormValues, SubcategoryRow } from "./SubcategoryRow";
 
 type SubcategoryRowsProps = {
@@ -21,9 +22,10 @@ export const SubcategoryRows = ({
   handleDown,
 }: SubcategoryRowsProps) => {
   return (
-    <div>
+    <div style={formStyles.fieldsContainer}>
       {subcategories.map((row, index) => (
         <SubcategoryRow
+          variant="edit"
           key={index + row.name}
           initialValues={{
             name: row.name,
@@ -38,17 +40,20 @@ export const SubcategoryRows = ({
           handleDown={handleDown}
         />
       ))}
-      <SubcategoryRow
-        initialValues={{
-          name: "",
-          maxPoints: 0,
-          ordinal: subcategories.length + 1,
-        }}
-        handleAdd={handleAdd}
-        handleDelete={handleDelete}
-        handleUp={() => {}}
-        handleDown={() => {}}
-      />
+      <div style={{ paddingTop: 6 }}>
+        <SubcategoryRow
+          variant="add"
+          initialValues={{
+            name: "",
+            maxPoints: 0,
+            ordinal: subcategories.length + 1,
+          }}
+          handleAdd={handleAdd}
+          handleDelete={handleDelete}
+          handleUp={() => {}}
+          handleDown={() => {}}
+        />
+      </div>
     </div>
   );
 };

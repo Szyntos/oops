@@ -10,6 +10,7 @@ import { useUser } from "../common/useUser";
 import { useApolloClient } from "@apollo/client";
 import { UserFromList } from "../../components/Welcome/UsersListWithFilter/UsersListWithFilter";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { useResetPasswordByEmailMutation } from "../../graphql/resetPasswordByEmail.graphql.types";
 import { isEditionActive } from "../../utils/utils";
 import { getEnvVariable } from "../../utils/constants";
 
@@ -27,6 +28,19 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const { setUser } = useUser();
   const apolloClient = useApolloClient();
+  const [resetPasswordByEmail] = useResetPasswordByEmailMutation();
+  const resetPassword = async (userEmail: string) => {
+    const { errors } = await resetPasswordByEmail({
+      variables: {
+        email: userEmail,
+      },
+    });
+
+    if (errors) {
+      await logout();
+      throw new Error(errors[0]?.message ?? "Error reseting password.");
+    }
+  };
 
   const [fetchCurrentUser] = useCurrentUserLazyQuery();
 
@@ -53,6 +67,8 @@ export const useLogin = () => {
           nick: data?.getCurrentUser.user.nick,
           role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
           userId: data?.getCurrentUser.user.userId,
+          avatarSetByUser: data?.getCurrentUser.user.avatarSetByUser,
+          nickSetByUser: data?.getCurrentUser.user.nickSetByUser,
           selectedEdition: getInitSelectedEdition(editions),
           editions,
         }
@@ -105,6 +121,8 @@ export const useLogin = () => {
           nick: data?.getCurrentUser.user.nick,
           role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
           userId: data?.getCurrentUser.user.userId,
+          avatarSetByUser: data?.getCurrentUser.user.avatarSetByUser,
+          nickSetByUser: data?.getCurrentUser.user.nickSetByUser,
           selectedEdition: getInitSelectedEdition(editions),
           editions,
         }
@@ -119,7 +137,11 @@ export const useLogin = () => {
     // set cookie user
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
     setUser(user);
-    navigateToStartScreen(user);
+    if (user.avatarSetByUser && user.nickSetByUser) {
+      navigateToStartScreen(user);
+    } else {
+      navigateToChoosingAvatarAndNickScreen(user);
+    }
   };
 
   const getFirebaseToken = async (credentials: LoginCredentials) => {
@@ -150,6 +172,20 @@ export const useLogin = () => {
     }
   };
 
+  const navigateToChoosingAvatarAndNickScreen = (user: User) => {
+    switch (user.role) {
+      case UsersRolesType.Coordinator:
+      case UsersRolesType.Teacher:
+        navigate(pathsGenerator.teacher.Groups);
+        break;
+      case UsersRolesType.Student:
+        navigate(pathsGenerator.student.ChoosingAvatarAndNick);
+        break;
+      default:
+        throw new Error("should never happen.");
+    }
+  };
+
   const logout = async () => {
     Cookies.remove(cookiesStrings.token);
     Cookies.remove(cookiesStrings.user);
@@ -164,6 +200,7 @@ export const useLogin = () => {
     loginWithUserSelect,
     loginWithCredentials,
     logout,
+    resetPassword,
   };
 };
 

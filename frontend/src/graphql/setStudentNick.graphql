@@ -1,0 +1,7 @@
+mutation SetStudentNick($nick: String!, $userId: Int!) {
+  setStudentNick(nick: $nick, userId: $userId) {
+    nickSetByUser
+    nick
+    indexNumber
+  }
+}

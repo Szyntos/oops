@@ -58,6 +58,7 @@ export const LoginScreen = () => {
   const { loginWithCredentials, resetPassword } = useLogin();
   const { localErrorWrapper } = useError();
   const [formError, setFormError] = useState<string | undefined>(undefined);
+  const [resetCodeSent, setResetCodeSent] = useState(false);
 
   const handleLoginClick = (values: LoginFormValues) => {
     localErrorWrapper(setFormError, async () => {
@@ -71,6 +72,7 @@ export const LoginScreen = () => {
   const handleResetPassword = (values: LoginFormValues) => {
     localErrorWrapper(setFormError, async () => {
       await resetPassword({ variables: { email: values.email } });
+      setResetCodeSent(true);
     });
   };
 
@@ -106,6 +108,12 @@ export const LoginScreen = () => {
           handleResetPasswordClick={handleResetPassword}
           formError={formError}
         />
+
+        {resetCodeSent && (
+          <CustomText color={tokens.color.text.tertiary}>
+            Sprawdź swoją skrzynkę, wysłaliśmy do ciebie linka!
+          </CustomText>
+        )}
       </div>
     </div>
   );

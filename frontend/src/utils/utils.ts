@@ -8,6 +8,8 @@ import { Edition } from "../contexts/userContext";
 import { tokens } from "../tokens";
 import { Styles } from "./Styles";
 
+export const EDITION_MARGIN_VERTICAL = 20;
+
 type User = {
   role: string;
 };
@@ -98,6 +100,9 @@ export const coordinatorStyles: Styles = {
     display: "flex",
     flexDirection: "column",
     gap: 20,
+    margin: EDITION_MARGIN_VERTICAL,
+    marginLeft: 12,
+    marginRight: 12,
   },
   buttonsContainer: {
     display: "flex",

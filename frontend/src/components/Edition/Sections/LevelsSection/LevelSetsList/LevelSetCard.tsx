@@ -1,7 +1,9 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { LevelSet } from "../../../../../hooks/Edition/useLevelSetsSection";
+import { tokens } from "../../../../../tokens";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
 import { coordinatorStyles, getCardStyles } from "../../../../../utils/utils";
+import { Avatar } from "../../../../avatars/Avatar";
 import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
@@ -28,13 +30,18 @@ export const LevelSetCard = ({
 
   return (
     <div style={getCardStyles(isSelected)}>
-      <div style={coordinatorStyles.textContainer}>
+      <div style={{ ...coordinatorStyles.textContainer, gap: 8, flex: 1 }}>
         {levelSet.levelSet.levels.length > 0 ? (
           levelSet.levelSet.levels.map((l) => (
-            <CustomText>
-              {l.ordinalNumber + 1}. {l.levelName}, {l.minimumPoints}-
-              {l.maximumPoints}
-            </CustomText>
+            <div style={coordinatorStyles.avatarContainer}>
+              <Avatar id={l.imageFile?.fileId} size={"xs"} />
+              <div style={coordinatorStyles.textContainer}>
+                <CustomText>{l.levelName}</CustomText>
+                <CustomText color={tokens.color.text.tertiary}>
+                  {l.minimumPoints}pkt - {l.maximumPoints}pkt
+                </CustomText>
+              </div>
+            </div>
           ))
         ) : (
           <CustomText>{EMPTY_FIELD_STRING}</CustomText>

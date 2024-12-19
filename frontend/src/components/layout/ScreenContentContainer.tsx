@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Styles } from "../../utils/Styles";
 import { NAV_BAR_HEIGHT_WITH_BORDER } from "./Navbar/Navbar";
 import { EDITION_NAVBAR_HEIGHT_WITH_BORDER } from "../Edition/EditionScreenNavbar";
-import { EDITION_MARGIN_VERTICAL } from "../../screens/Edition/EditionScreen";
+import { EDITION_MARGIN_VERTICAL } from "../../utils/utils";
 
 type ScreenContentContainerProps = {
   sidebar: ReactNode;

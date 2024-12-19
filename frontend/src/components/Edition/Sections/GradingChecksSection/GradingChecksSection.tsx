@@ -25,6 +25,8 @@ export const GradingChecksSection = () => {
     loading,
     error,
 
+    quotes,
+
     formError,
 
     isAddOpened,
@@ -123,14 +125,15 @@ export const GradingChecksSection = () => {
 
             <CustomText>
               "Aby zaliczyć przedmiot Twój zwierzak musi być na koniec co
-              najmniej {displayLevel} oraz powinien zdobyć co najmniej{" "}
-              {displayPoints}
+              najmniej {quotes?.getQuoteVariables.firstPassingLevel?.levelName}{" "}
+              oraz powinien zdobyć co najmniej {displayPoints}
               pkt w trakcie {displayCategory}. Ponadto musi on wykluć się z{" "}
               {displayLevel} przed końcem laboratoriów {displayDate}
               ."
             </CustomText>
             <CustomText color={tokens.color.text.tertiary}>
-              ~ koordynator
+              ~ {quotes?.getQuoteVariables.coordinator.firstName}{" "}
+              {quotes?.getQuoteVariables.coordinator.secondName}
             </CustomText>
           </div>,
         ]}

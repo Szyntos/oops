@@ -1,6 +1,4 @@
-import { Dialog } from "@mui/material";
 import { AwardsList } from "./AwardsList/AwardsList";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useAwardsSection } from "../../../../hooks/Edition/useAwardsSection";
 import { AddAwardForm } from "./AddAwardForm/AddAwardForm";
 
@@ -9,6 +7,7 @@ import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
 import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const AwardsSection = () => {
   const params = useParams();
@@ -67,19 +66,24 @@ export const AwardsSection = () => {
         handleCopyAward={handleCopyAward}
       />
 
-      <Dialog open={isAddAward}>
-        <CloseHeader onCloseClick={closeAddAward} />
+      <CustomDialog
+        isOpen={isAddAward}
+        title={"Dodaj nagrodę"}
+        onCloseClick={closeAddAward}
+      >
         <AddAwardForm
           formError={formError}
           handleConfirm={handleAddAward}
           categories={formCategories}
-          title="Dodaj nagrodę"
           imageIds={imageIds}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditAward}>
-        <CloseHeader onCloseClick={closeEditAward} />
+      <CustomDialog
+        isOpen={isEditAward}
+        title={"Edytuj nagrodę"}
+        onCloseClick={closeEditAward}
+      >
         <AddAwardForm
           formError={formError}
           handleConfirm={handleEditAward}
@@ -96,9 +100,8 @@ export const AwardsSection = () => {
                 }
               : undefined
           }
-          title="Edytuj nagrodę"
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
 };

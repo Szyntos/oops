@@ -11,6 +11,7 @@ import { useSetupGradingChecksEditMutation } from "../../graphql/setupGradingChe
 import { GradingChecksFormValues } from "../../components/Edition/Sections/GradingChecksSection/ChecksForm";
 import { useConfirmPopup } from "../common/useConfirmPopup";
 import { useSetupGradingChecksDeleteMutation } from "../../graphql/setupGradingChecksDelete.graphql.types";
+import { useQuoteVariablesQuery } from "../../graphql/quoteValues.graphql.types";
 
 export type GradingChecks = SetupGradingChecksQuery["listSetupGradingChecks"];
 
@@ -20,6 +21,15 @@ export const useGradingChecksSection = (editionId: number) => {
   const { data, loading, error, refetch } = useSetupGradingChecksQuery({
     variables: { editionId },
     fetchPolicy: "no-cache",
+  });
+
+  const {
+    data: qData,
+    loading: qLoading,
+    error: qError,
+    refetch: qRefetch,
+  } = useQuoteVariablesQuery({
+    variables: { editionId: editionId },
   });
 
   const gradingChecks: GradingChecks | undefined = data?.listSetupGradingChecks;
@@ -60,6 +70,7 @@ export const useGradingChecksSection = (editionId: number) => {
         },
       });
       refetch();
+      qRefetch();
       closeAdd();
     });
   };
@@ -89,6 +100,7 @@ export const useGradingChecksSection = (editionId: number) => {
         },
       });
       refetch();
+      qRefetch();
       closeEdit();
     });
   };
@@ -107,6 +119,7 @@ export const useGradingChecksSection = (editionId: number) => {
           },
         });
         refetch();
+        qRefetch();
       });
     });
   };
@@ -115,8 +128,9 @@ export const useGradingChecksSection = (editionId: number) => {
     gradingChecks,
     formCategories: selectedCategories,
     formLevels: selectedLevelSet ? selectedLevelSet.levelSet.levels : [],
-    loading: loading || categoriesLoading || levelsLoading,
-    error: error || categoriesError || levelsError,
+    loading: loading || categoriesLoading || levelsLoading || qLoading,
+    error: error || categoriesError || levelsError || qError,
+    quotes: qData,
 
     formError,
 

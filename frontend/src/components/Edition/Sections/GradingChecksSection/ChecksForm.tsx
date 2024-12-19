@@ -7,18 +7,20 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
 import { Category } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { Level } from "../../../../hooks/Edition/useLevelSetsSection";
-import { tokens } from "../../../../tokens";
-
-const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // 'YYYY-MM-DD'
+import { DATE_YYYY_MM_DD_REGEXP, formStyles } from "../../../../utils/utils";
+import { FormError } from "../../../form/FormError";
+import { FormButton } from "../../../form/FormButton";
 
 const ValidationSchema = z.object({
   endOfLabsDate: z
     .string()
     .min(1, "Data jest wymagana")
-    .regex(dateRegex, "Zły format daty, wymagany format: YYYY-MM-DD"),
+    .regex(
+      DATE_YYYY_MM_DD_REGEXP,
+      "Zły format daty, wymagany format: YYYY-MM-DD",
+    ),
   endOfLabsLevelsThreshold: z.string().min(1, "Próg jest wymagany"),
   projectPointsThreshold: z.number().min(1, "Próg punktowy jest wymagany"),
   projectId: z.string().min(1, "Project ID jest wymagane"),
@@ -31,7 +33,6 @@ type GradingChecksFormProps = {
   formError?: string;
   levels: Level[];
   initialValues?: GradingChecksFormValues;
-  title: string;
   categories: Category[];
 };
 
@@ -47,7 +48,6 @@ export const ChecksForm = ({
   levels,
   formError,
   initialValues = defaultInitialValues,
-  title,
   categories,
 }: GradingChecksFormProps) => {
   const formik = useFormik({
@@ -69,10 +69,9 @@ export const ChecksForm = ({
   });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div style={styles.fieldsContainer}>
+        <div style={formStyles.fieldsContainer}>
           <TextField
             fullWidth
             name="endOfLabsDate"
@@ -89,8 +88,14 @@ export const ChecksForm = ({
               formik.touched.endOfLabsDate && formik.errors.endOfLabsDate
             }
           />
+
           <FormControl fullWidth>
-            <InputLabel>
+            <InputLabel
+              error={Boolean(
+                formik.touched.endOfLabsLevelsThreshold &&
+                  formik.errors.endOfLabsLevelsThreshold,
+              )}
+            >
               Poziom do zdobycia przed końcem laboratorium
             </InputLabel>
             <Select
@@ -110,11 +115,18 @@ export const ChecksForm = ({
               ))}
             </Select>
             {formik.touched.projectId && formik.errors.projectId && (
-              <div style={styles.error}>{formik.errors.projectId}</div>
+              <FormError error={formik.errors.projectId} />
             )}
           </FormControl>
+
           <FormControl fullWidth>
-            <InputLabel>Kategoria</InputLabel>
+            <InputLabel
+              error={Boolean(
+                formik.touched.projectId && formik.errors.projectId,
+              )}
+            >
+              Kategoria
+            </InputLabel>
             <Select
               name="projectId"
               value={formik.values.projectId}
@@ -134,9 +146,10 @@ export const ChecksForm = ({
               ))}
             </Select>
             {formik.touched.projectId && formik.errors.projectId && (
-              <div style={styles.error}>{formik.errors.projectId}</div>
+              <FormError error={formik.errors.projectId} />
             )}
           </FormControl>
+
           <TextField
             fullWidth
             name="projectPointsThreshold"
@@ -155,31 +168,12 @@ export const ChecksForm = ({
               formik.errors.projectPointsThreshold
             }
           />
+
+          <FormError error={formError} isFormError={true} />
+
+          <FormButton />
         </div>
-        <button type="submit">Potwierdź</button>
       </form>
-      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    width: 500,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
-  fieldsContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

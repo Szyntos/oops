@@ -1,8 +1,9 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { TextField } from "@mui/material";
-import { Styles } from "../../utils/Styles";
-import { tokens } from "../../tokens";
+import { formStyles } from "../../utils/utils";
+import { FormError } from "../form/FormError";
+import { FormButton } from "../form/FormButton";
 
 export type EditionFormValues = z.infer<typeof ValidationSchema>;
 
@@ -20,7 +21,6 @@ const defaultValues = {
 type AddCategoryFormProps = {
   handleAddEdition: (values: EditionFormValues) => void;
   createError?: string;
-  title: string;
   initialValues?: EditionFormValues;
 };
 
@@ -28,7 +28,6 @@ export const AddEditionForm = ({
   handleAddEdition,
   createError,
   initialValues = defaultValues,
-  title,
 }: AddCategoryFormProps) => {
   const formik = useFormik({
     initialValues,
@@ -47,10 +46,9 @@ export const AddEditionForm = ({
   });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div>
+        <div style={formStyles.fieldsContainer}>
           <TextField
             fullWidth
             name="name"
@@ -75,29 +73,12 @@ export const AddEditionForm = ({
             error={Boolean(formik.touched.year && formik.errors.year)}
             helperText={formik.touched.year && formik.errors.year}
           />
+
+          <FormError error={createError} isFormError={true} />
+
+          <FormButton />
         </div>
-
-        <button type="submit">Potwierdź</button>
       </form>
-
-      {createError && <p style={styles.error}>Error: {createError}</p>}
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    border: "1px solid black",
-    width: 500,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
 };

@@ -1,10 +1,9 @@
 import { Outlet, useParams } from "react-router-dom";
 import { Styles } from "../../utils/Styles";
 import { EditionScreenNavbar } from "../../components/Edition/EditionScreenNavbar";
-import { Dialog } from "@mui/material";
-import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { ShowEntryContent } from "../../components/Edition/ShowEntryContent/ShowEntryContent";
 import { useEditionSections } from "../../hooks/common/useEditionSection";
+import { CustomDialog } from "../../components/dialogs/CustomDialog";
 
 export const EDITION_MARGIN_VERTICAL = 20;
 
@@ -19,11 +18,15 @@ export const EditionScreen = () => {
     <div>
       <EditionScreenNavbar editionId={editionId} />
       <div style={styles.screenContainer}>
-        <Dialog open={isShowDialogOpen}>
-          <CloseHeader onCloseClick={closeShowDialog} />
-          <ShowEntryContent selectedEntry={selectedEntry} />
-        </Dialog>
         <Outlet />
+
+        <CustomDialog
+          isOpen={isShowDialogOpen}
+          title="JSON"
+          onCloseClick={closeShowDialog}
+        >
+          <ShowEntryContent selectedEntry={selectedEntry} />
+        </CustomDialog>
       </div>
     </div>
   );

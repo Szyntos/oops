@@ -25,7 +25,7 @@ export const AnimalCard = ({
     { icon: "grade", title: currLevel.grade },
     {
       icon: "score",
-      title: `${parseFloat(currLevel.minimumPoints).toFixed(2)} pkt - ${parseFloat(currLevel.maximumPoints).toFixed(2)} pkt`,
+      title: `${parseFloat(currLevel.minimumPoints).toFixed(2)}pkt - ${parseFloat(currLevel.maximumPoints).toFixed(2)}pkt`,
     },
   ];
 

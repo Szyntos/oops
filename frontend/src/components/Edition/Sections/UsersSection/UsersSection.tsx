@@ -1,10 +1,8 @@
-import { Dialog } from "@mui/material";
 import {
   User,
   useUsersSection,
 } from "../../../../hooks/Edition/users/useUsersSection";
 import { Styles } from "../../../../utils/Styles";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddStudentForm } from "./StudentAddForm";
 import { UsersList } from "./UsersList/UsersList";
 import { AddTeacherForm } from "./TeacherAddForm";
@@ -17,6 +15,7 @@ import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
 import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 const activeRadioOptions = [
   { id: "active", name: "Aktywny" },
@@ -120,43 +119,51 @@ export const UsersSection = () => {
         handleStudentActiveness={handleStudentActiveness}
       />
 
-      <Dialog open={isAddStudentOpen}>
-        <CloseHeader onCloseClick={closeAddStudent} />
+      <CustomDialog
+        isOpen={isAddStudentOpen}
+        onCloseClick={closeAddStudent}
+        title="Dodaj studenta"
+      >
         <AddStudentForm
           formError={formError}
           handleConfirm={handleAddStudentConfirm}
-          title={"Dodaj studenta"}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditStudentOpen}>
-        <CloseHeader onCloseClick={closeEditStudent} />
+      <CustomDialog
+        isOpen={isEditStudentOpen}
+        onCloseClick={closeEditStudent}
+        title="Edytuj studenta"
+      >
         <AddStudentForm
           formError={formError}
           handleConfirm={handleEditStudentConfirm}
           initialValues={selectedUser?.user}
-          title={"Edytuj studenta"}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditTeacherOpen}>
-        <CloseHeader onCloseClick={closeEditTeacher} />
+      <CustomDialog
+        isOpen={isAddTeacherOpen}
+        onCloseClick={closeAddTeacher}
+        title="Dodaj prowadzącego"
+      >
         <AddTeacherForm
           formError={formError}
           handleConfirm={handleEditTeacherConfirm}
           initialValues={selectedUser?.user}
-          title={"Dodaj nauczyciela"}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isAddTeacherOpen}>
-        <CloseHeader onCloseClick={closeAddTeacher} />
+      <CustomDialog
+        isOpen={isEditTeacherOpen}
+        onCloseClick={closeEditTeacher}
+        title="Edytuj prowadzącego"
+      >
         <AddTeacherForm
           formError={formError}
           handleConfirm={handleAddTeacherConfirm}
-          title={"Edytuj nauczyciela"}
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
 };

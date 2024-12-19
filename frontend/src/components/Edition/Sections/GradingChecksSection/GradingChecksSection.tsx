@@ -1,8 +1,6 @@
-import { Dialog } from "@mui/material";
 import { useGradingChecksSection } from "../../../../hooks/Edition/useGradingChecksSection";
 
 import { useParams } from "react-router-dom";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { ChecksForm } from "./ChecksForm";
 import { EMPTY_FIELD_STRING } from "../../../../utils/constants";
 import { Category } from "../../../../hooks/Edition/categories/useCategoriesSection";
@@ -14,6 +12,7 @@ import { coordinatorStyles, getCardStyles } from "../../../../utils/utils";
 import { CardsSection } from "../../CardsSection";
 import { Styles } from "../../../../utils/Styles";
 import { tokens } from "../../../../tokens";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const GradingChecksSection = () => {
   const params = useParams();
@@ -25,6 +24,8 @@ export const GradingChecksSection = () => {
     formLevels,
     loading,
     error,
+
+    quotes,
 
     formError,
 
@@ -124,32 +125,38 @@ export const GradingChecksSection = () => {
 
             <CustomText>
               "Aby zaliczyć przedmiot Twój zwierzak musi być na koniec co
-              najmniej {displayLevel} oraz powinien zdobyć co najmniej{" "}
-              {displayPoints}
+              najmniej {quotes?.getQuoteVariables.firstPassingLevel?.levelName}{" "}
+              oraz powinien zdobyć co najmniej {displayPoints}
               pkt w trakcie {displayCategory}. Ponadto musi on wykluć się z{" "}
               {displayLevel} przed końcem laboratoriów {displayDate}
               ."
             </CustomText>
             <CustomText color={tokens.color.text.tertiary}>
-              ~ koordynator
+              ~ {quotes?.getQuoteVariables.coordinator.firstName}{" "}
+              {quotes?.getQuoteVariables.coordinator.secondName}
             </CustomText>
           </div>,
         ]}
       />
 
-      <Dialog open={isAddOpened}>
-        <CloseHeader onCloseClick={closeAdd} />
+      <CustomDialog
+        isOpen={isAddOpened}
+        onCloseClick={closeAdd}
+        title="Dodaj warunki"
+      >
         <ChecksForm
           formError={formError}
           handleConfirm={handleAdd}
           categories={formCategories}
-          title="Dodaj"
           levels={formLevels}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditOpened}>
-        <CloseHeader onCloseClick={closeEdit} />
+      <CustomDialog
+        isOpen={isEditOpened}
+        onCloseClick={closeEdit}
+        title="Edytuj warunki"
+      >
         <ChecksForm
           formError={formError}
           handleConfirm={handleEdit}
@@ -167,9 +174,8 @@ export const GradingChecksSection = () => {
                 }
               : undefined
           }
-          title="Edytuj"
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
 };

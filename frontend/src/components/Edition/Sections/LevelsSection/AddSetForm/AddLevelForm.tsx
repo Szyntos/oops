@@ -10,8 +10,9 @@ import {
 } from "@mui/material";
 import { WithAddedLevelsValidateErrors } from "./AddSetForm";
 import { SelectImage } from "../../../../inputs/SelectImage";
-import { GRADE_STRINGS } from "../../../../../utils/utils";
-import { tokens } from "../../../../../tokens";
+import { formStyles, GRADE_STRINGS } from "../../../../../utils/utils";
+import { RowButton } from "../../CategoriesSection/AddCategoryForm/RowButton";
+import { FormError } from "../../../../form/FormError";
 
 const ValidationSchema = z.object({
   name: z.string().min(1),
@@ -24,9 +25,7 @@ export type LevelFormValues = z.infer<typeof ValidationSchema>;
 
 type LevelFormProps = {
   handleAdd: (values: LevelFormValues) => void;
-  formError?: string;
   initialValues?: LevelFormValues;
-  title: string;
   imageIds: string[];
   validateWithAddedLevels: (
     values: LevelFormValues,
@@ -43,9 +42,7 @@ const defaultInitialValues: LevelFormValues = {
 export const AddLevelForm = ({
   handleAdd,
   imageIds,
-  formError,
   initialValues = defaultInitialValues,
-  title,
   validateWithAddedLevels,
 }: LevelFormProps) => {
   const formik = useFormik({
@@ -79,32 +76,37 @@ export const AddLevelForm = ({
   });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div style={styles.formContent}>
-          <div style={styles.fieldsContainer}>
+        <div style={formStyles.fieldsContainer}>
+          <div style={styles.row}>
             <TextField
-              style={styles.blockedField}
+              size="small"
+              fullWidth
+              style={styles.ordinal}
               name="ordinal"
-              label="Liczba porządkowa"
+              label="Lp."
               variant="outlined"
               value="?"
               disabled={true}
             />
 
             <TextField
-              style={styles.blockedField}
+              fullWidth
+              style={styles.maxPoints}
               name="min"
-              label="Minimalna liczba punktów"
+              label="Min. punktów"
               variant="outlined"
               value="?"
               disabled={true}
+              size="small"
             />
 
             <TextField
+              size="small"
+              fullWidth
               name="maxPoints"
-              label="Maksymalna liczba punktów"
+              label="Max. punktów"
               variant="outlined"
               type="number"
               value={formik.values.maxPoints}
@@ -114,9 +116,13 @@ export const AddLevelForm = ({
                 formik.touched.maxPoints && formik.errors.maxPoints,
               )}
               helperText={formik.touched.maxPoints && formik.errors.maxPoints}
+              style={styles.maxPoints}
             />
 
             <TextField
+              size="small"
+              fullWidth
+              style={styles.text}
               name="name"
               label="Nazwa poziomu"
               variant="outlined"
@@ -126,9 +132,15 @@ export const AddLevelForm = ({
               error={Boolean(formik.touched.name && formik.errors.name)}
               helperText={formik.touched.name && formik.errors.name}
             />
+
             <FormControl>
-              <InputLabel>Ocena</InputLabel>
+              <InputLabel
+                error={Boolean(formik.touched.grade && formik.errors.grade)}
+              >
+                Ocena
+              </InputLabel>
               <Select
+                size="small"
                 name="grade"
                 value={formik.values.grade}
                 onChange={formik.handleChange}
@@ -142,9 +154,18 @@ export const AddLevelForm = ({
                 ))}
               </Select>
               {formik.touched.grade && formik.errors.grade && (
-                <div style={styles.error}>{formik.errors.grade}</div>
+                <FormError error={formik.errors.grade} />
               )}
             </FormControl>
+
+            <div style={styles.buttonWrapper}>
+              <RowButton
+                onClick={() => {}}
+                isDisabled={false}
+                icon="add"
+                type="submit"
+              />
+            </div>
           </div>
 
           <SelectImage
@@ -164,36 +185,33 @@ export const AddLevelForm = ({
             title={"Wybierz ikonę:"}
           />
         </div>
-        <button type="submit">Dodaj poziom</button>
       </form>
-      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
 };
-
 const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
-  formContent: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
-  fieldsContainer: {
+  row: {
     display: "flex",
     flexDirection: "row",
     gap: 4,
+    marginTop: 12,
   },
-  blockedField: {
-    width: 60,
+  ordinal: {
+    maxWidth: 52,
+    minWidth: 52,
+    width: 52,
+  },
+  maxPoints: {
+    maxWidth: 110,
+    minWidth: 110,
+  },
+  text: {
+    flex: 1,
+  },
+  buttonWrapper: {
+    paddingTop: 4,
+  },
+  errorWrapper: {
+    paddingTop: 12,
   },
 };

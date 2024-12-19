@@ -9,15 +9,19 @@ import { tokens } from "../../tokens";
 import { useError } from "../../hooks/common/useGlobalError";
 import { MD_DIALOG_WIDTH } from "../dialogs/CustomDialog";
 import { ResetFormValues, ResetPasswordForm } from "./ResetPasswordForm";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { confirmPasswordReset } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
+import { pathsGenerator } from "../../router/paths";
 
 export const ResetPasswordScreen = () => {
   const { localErrorWrapper } = useError();
   const [formError, setFormError] = useState<string | undefined>(undefined);
   const [searchParams] = useSearchParams();
   const oobCode = searchParams.get("oobCode");
+  const navigate = useNavigate();
+
+  console.log("oobCode:", oobCode);
 
   const handleResetPassword = (values: ResetFormValues) => {
     localErrorWrapper(setFormError, async () => {
@@ -25,7 +29,8 @@ export const ResetPasswordScreen = () => {
         throw new Error("Invalid or missing reset code.");
       }
       await confirmPasswordReset(auth, oobCode, values.password);
-      alert("Password has been successfully reset!");
+      alert("Hasło zostało zmienione");
+      navigate(pathsGenerator.common.Login);
     });
   };
 

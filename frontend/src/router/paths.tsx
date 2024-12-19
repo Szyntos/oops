@@ -24,12 +24,7 @@ const commonPaths = {
   },
   ResetPassword: {
     path: "/reset-password",
-    allowedRoles: [
-      UsersRolesType.UnauthenticatedUser,
-      UsersRolesType.Student,
-      UsersRolesType.Teacher,
-      UsersRolesType.Coordinator,
-    ],
+    allowedRoles: [UsersRolesType.UnauthenticatedUser],
   },
 };
 

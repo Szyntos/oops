@@ -32,7 +32,6 @@ export const useChestsSection = (editionId: number) => {
     refetch,
   } = useSetupChestsQuery({
     variables: { editionId },
-    fetchPolicy: "no-cache",
   });
 
   const {
@@ -41,7 +40,6 @@ export const useChestsSection = (editionId: number) => {
     error: imageError,
   } = useFilesQuery({
     variables: { paths: ["image/chest"] },
-    fetchPolicy: "no-cache",
   });
 
   const imageIds: string[] =

@@ -8,9 +8,7 @@ import { useLogin } from "../../hooks/auth/useLogin";
 
 export const Welcome = () => {
   const { user: selectedUser } = useUser();
-  const { loading, error, data } = useAllUsersQuery({
-    fetchPolicy: "no-cache",
-  });
+  const { loading, error, data } = useAllUsersQuery();
 
   const { loginWithUserSelect } = useLogin();
 

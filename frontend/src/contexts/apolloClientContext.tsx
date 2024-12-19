@@ -77,7 +77,22 @@ const initializeApolloClient = () => {
 
   return new ApolloClient({
     link: splitLink,
-    cache: new InMemoryCache(),
+
+    cache: new InMemoryCache({
+      addTypename: false,
+      typePolicies: {},
+    }),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: "no-cache",
+      },
+      query: {
+        fetchPolicy: "no-cache",
+      },
+      mutate: {
+        fetchPolicy: "no-cache",
+      },
+    },
   });
 };
 

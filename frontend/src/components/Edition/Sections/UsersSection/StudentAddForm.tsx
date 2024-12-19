@@ -4,6 +4,7 @@ import { TextField } from "@mui/material";
 import { formStyles } from "../../../../utils/utils";
 import { FormError } from "../../../form/FormError";
 import { FormButton } from "../../../form/FormButton";
+import { getEnvVariable } from "../../../../utils/constants";
 
 export type StudentFormValues = z.infer<typeof ValidationSchema>;
 
@@ -111,7 +112,7 @@ export const AddStudentForm = ({
             name="email"
             label="Email"
             variant="outlined"
-            value={`${formik.values.indexNumber}@student.agh.edu.pl`}
+            value={`${formik.values.indexNumber}@${getEnvVariable("VITE_EMAIL_DOMAIN")}`}
           />
 
           <FormError error={formError} isFormError={true} />

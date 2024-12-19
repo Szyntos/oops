@@ -1,8 +1,8 @@
 import { ReactElement } from "react";
 import { hasRole } from "../utils/utils";
-import { Forbidden } from "../screens/Forbidden/Forbidden";
 import { useUser } from "../hooks/common/useUser";
 import { UsersRolesType } from "../__generated__/schema.graphql.types";
+import { ErrorScreen } from "../screens/Error/ErrorScreen";
 
 type ProtectedRouteProps = {
   element: ReactElement;
@@ -14,5 +14,5 @@ export const ProtectedRoute = ({
   allowedRoles,
 }: ProtectedRouteProps) => {
   const { user } = useUser();
-  return hasRole(user, allowedRoles) ? element : <Forbidden />;
+  return hasRole(user, allowedRoles) ? element : <ErrorScreen />;
 };

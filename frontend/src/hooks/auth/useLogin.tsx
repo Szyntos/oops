@@ -10,6 +10,7 @@ import { useUser } from "../common/useUser";
 import { useApolloClient } from "@apollo/client";
 import { UserFromList } from "../../components/Welcome/UsersListWithFilter/UsersListWithFilter";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { useResetPasswordByEmailMutation } from "../../graphql/resetPasswordByEmail.graphql.types";
 import { isEditionActive } from "../../utils/utils";
 import { getEnvVariable } from "../../utils/constants";
 
@@ -27,6 +28,7 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const { setUser } = useUser();
   const apolloClient = useApolloClient();
+  const [resetPassword] = useResetPasswordByEmailMutation();
 
   const [fetchCurrentUser] = useCurrentUserLazyQuery();
 
@@ -53,6 +55,8 @@ export const useLogin = () => {
           nick: data?.getCurrentUser.user.nick,
           role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
           userId: data?.getCurrentUser.user.userId,
+          avatarSetByUser: data?.getCurrentUser.user.avatarSetByUser,
+          nickSetByUser: data?.getCurrentUser.user.nickSetByUser,
           selectedEdition: getInitSelectedEdition(editions),
           editions,
         }
@@ -68,7 +72,7 @@ export const useLogin = () => {
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
 
     setUser(user);
-    navigateToStartScreen(user);
+    navigateToAfterLoginScreen(user);
   };
 
   const getBypassToken = (userId: string) => {
@@ -105,6 +109,8 @@ export const useLogin = () => {
           nick: data?.getCurrentUser.user.nick,
           role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
           userId: data?.getCurrentUser.user.userId,
+          avatarSetByUser: data?.getCurrentUser.user.avatarSetByUser,
+          nickSetByUser: data?.getCurrentUser.user.nickSetByUser,
           selectedEdition: getInitSelectedEdition(editions),
           editions,
         }
@@ -119,7 +125,7 @@ export const useLogin = () => {
     // set cookie user
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
     setUser(user);
-    navigateToStartScreen(user);
+    navigateToAfterLoginScreen(user);
   };
 
   const getFirebaseToken = async (credentials: LoginCredentials) => {
@@ -135,7 +141,7 @@ export const useLogin = () => {
     return token;
   };
 
-  const navigateToStartScreen = (user: User) => {
+  const navigateToAfterLoginScreen = (user: User) => {
     // TODO frontend and backend enums do not match
     switch (user.role) {
       case UsersRolesType.Coordinator:
@@ -143,7 +149,11 @@ export const useLogin = () => {
         navigate(pathsGenerator.teacher.Groups);
         break;
       case UsersRolesType.Student:
-        navigate(pathsGenerator.student.StudentProfile);
+        if (user.avatarSetByUser && user.nickSetByUser) {
+          navigate(pathsGenerator.student.StudentProfile);
+        } else {
+          navigate(pathsGenerator.student.ChoosingAvatarAndNick);
+        }
         break;
       default:
         throw new Error("To się nigdy nie powinno wydarzyć ;_;.");
@@ -164,6 +174,7 @@ export const useLogin = () => {
     loginWithUserSelect,
     loginWithCredentials,
     logout,
+    resetPassword,
   };
 };
 

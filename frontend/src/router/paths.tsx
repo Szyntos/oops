@@ -10,20 +10,31 @@ const commonPaths = {
       UsersRolesType.Coordinator,
     ],
   },
-  Welcome: {
-    path: "/welcome",
+  HallOfFame: {
+    path: "/hall-of-fame",
     allowedRoles: [
-      UsersRolesType.UnauthenticatedUser,
       UsersRolesType.Student,
       UsersRolesType.Teacher,
       UsersRolesType.Coordinator,
     ],
+  },
+  Login: {
+    path: "/login",
+    allowedRoles: [UsersRolesType.UnauthenticatedUser],
+  },
+  ResetPassword: {
+    path: "/reset-password",
+    allowedRoles: [UsersRolesType.UnauthenticatedUser],
   },
 };
 
 const studentPaths = {
   StudentProfile: {
     path: "/student-profile",
+    allowedRoles: [UsersRolesType.Student],
+  },
+  ChoosingAvatarAndNick: {
+    path: "/avatar-and-nick",
     allowedRoles: [UsersRolesType.Student],
   },
   HallOfFame: {

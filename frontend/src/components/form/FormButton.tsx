@@ -5,14 +5,18 @@ import { HooverWrapper } from "../HooverWrapper";
 
 type FormButtonProps = {
   onClick?: () => void;
+  title?: string;
 };
 
-export const FormButton = ({ onClick }: FormButtonProps) => {
+export const FormButton = ({
+  onClick,
+  title = "Potwierdź",
+}: FormButtonProps) => {
   return (
     <div style={styles.wrapper}>
       <HooverWrapper>
         <button type="submit" style={styles.button} onClick={() => onClick?.()}>
-          <CustomText>Potwierdź</CustomText>
+          <CustomText>{title}</CustomText>
         </button>
       </HooverWrapper>
     </div>

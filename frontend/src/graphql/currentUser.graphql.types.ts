@@ -23,6 +23,8 @@ export type CurrentUserQuery = {
       nick: string;
       role: Types.UsersRolesType;
       userId: string;
+      avatarSetByUser: boolean;
+      nickSetByUser: boolean;
     };
   };
 };
@@ -42,6 +44,8 @@ export const CurrentUserDocument = gql`
         nick
         role
         userId
+        avatarSetByUser
+        nickSetByUser
       }
     }
   }

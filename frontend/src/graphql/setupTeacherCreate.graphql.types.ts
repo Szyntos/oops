@@ -29,7 +29,7 @@ export const SetupTeacherCreateDocument = gql`
       secondName: $secondName
       email: $email
       label: ""
-      createFirebaseUser: false
+      createFirebaseUser: true
       sendEmail: false
     ) {
       email

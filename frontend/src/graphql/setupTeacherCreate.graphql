@@ -8,7 +8,7 @@ mutation SetupTeacherCreate(
     secondName: $secondName
     email: $email
     label: ""
-    createFirebaseUser: false
+    createFirebaseUser: true
     sendEmail: false
   ) {
     email

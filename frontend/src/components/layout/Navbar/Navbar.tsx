@@ -56,15 +56,17 @@ export const Navbar = () => {
     <div style={navbarStyles.navbar}>
       <div style={navbarStyles.itemsContainer}>
         <div style={navbarStyles.leftItemsContainer}>
-          {navigationItems
-            .filter((item) => hasRole(user, item.allowedRoles))
-            .map((item) => (
-              <NavbarItem
-                onClick={() => navigate(item.path)}
-                title={item.title}
-                isActive={item.path === location.pathname}
-              />
-            ))}
+          {user.avatarSetByUser &&
+            user.avatarSetByUser &&
+            navigationItems
+              .filter((item) => hasRole(user, item.allowedRoles))
+              .map((item) => (
+                <NavbarItem
+                  onClick={() => navigate(item.path)}
+                  title={item.title}
+                  isActive={item.path === location.pathname}
+                />
+              ))}
         </div>
       </div>
 
@@ -75,28 +77,34 @@ export const Navbar = () => {
       <div style={navbarStyles.itemsContainer}>
         <div style={navbarStyles.rightItemsContainer}>
           {/* logged in user items */}
-          {user.role !== UsersRolesType.UnauthenticatedUser && (
-            <>
-              <NavbarItem
-                title={
-                  selectedEdition
-                    ? `${selectedEdition.name}${isEditionActive(selectedEdition) ? "" : " [not active]"}`
-                    : "no edition selected"
-                }
-              />
-              {/* student items */}
-              {user.role === UsersRolesType.Student && (
-                <ChestsNavbarItem
-                  quantity={chestsToOpen.length}
-                  onClick={openChestDialog}
+          {user.role !== UsersRolesType.UnauthenticatedUser &&
+            (user.avatarSetByUser ? (
+              <>
+                <NavbarItem
+                  title={
+                    selectedEdition
+                      ? `${selectedEdition.name}${isEditionActive(selectedEdition) ? "" : " [not active]"}`
+                      : "no edition selected"
+                  }
                 />
-              )}
+                {/* student items */}
+                {user.role === UsersRolesType.Student && (
+                  <ChestsNavbarItem
+                    quantity={chestsToOpen.length}
+                    onClick={openChestDialog}
+                  />
+                )}
+                {editions.length > 1 && (
+                  <IconMapper onClick={openSettings} icon="settings" />
+                )}
+                <IconMapper
+                  onClick={async () => await logout()}
+                  icon="logout"
+                />
+              </>
+            ) : (
               <IconMapper onClick={async () => await logout()} icon="logout" />
-              {editions.length > 1 && (
-                <IconMapper onClick={openSettings} icon="settings" />
-              )}
-            </>
-          )}
+            ))}
         </div>
       </div>
 

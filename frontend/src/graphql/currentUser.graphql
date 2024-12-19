@@ -12,6 +12,8 @@ query CurrentUser {
       nick
       role
       userId
+      avatarSetByUser
+      nickSetByUser
     }
   }
 }

@@ -145,8 +145,6 @@ export const AddSetForm = ({
     };
   };
 
-  console.log(formError);
-
   return (
     <div style={formStyles.formContainer}>
       <div style={formStyles.fieldsContainer}>

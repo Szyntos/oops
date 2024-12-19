@@ -4,6 +4,7 @@ import { TextField } from "@mui/material";
 import { FormError } from "../form/FormError";
 import { CustomButton } from "../CustomButton";
 import { formStyles } from "../../utils/utils";
+import { Styles } from "../../utils/Styles";
 
 const ValidationSchema = z.object({
   email: z.string().email("Nieprawidłowy adres email"),
@@ -53,7 +54,7 @@ export const LoginForm = ({
           value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={formik.touched.email && Boolean(formik.errors.email)}
+          error={Boolean(formik.touched.email && formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
         />
 
@@ -65,20 +66,13 @@ export const LoginForm = ({
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
+          error={Boolean(formik.touched.password && formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
 
         <FormError error={formError} isFormError={true} />
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "right",
-            margin: 10,
-            gap: 12,
-          }}
-        >
+        <div style={styles.buttonsContainer}>
           <CustomButton onClick={() => handleResetPasswordClick(formik.values)}>
             Resetuj hasło
           </CustomButton>
@@ -89,4 +83,13 @@ export const LoginForm = ({
       </div>
     </form>
   );
+};
+
+const styles: Styles = {
+  buttonsContainer: {
+    display: "flex",
+    justifyContent: "right",
+    margin: 10,
+    gap: 12,
+  },
 };

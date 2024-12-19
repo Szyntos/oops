@@ -28,19 +28,7 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const { setUser } = useUser();
   const apolloClient = useApolloClient();
-  const [resetPasswordByEmail] = useResetPasswordByEmailMutation();
-  const resetPassword = async (userEmail: string) => {
-    const { errors } = await resetPasswordByEmail({
-      variables: {
-        email: userEmail,
-      },
-    });
-
-    if (errors) {
-      await logout();
-      throw new Error(errors[0]?.message ?? "Error reseting password.");
-    }
-  };
+  const [resetPassword] = useResetPasswordByEmailMutation();
 
   const [fetchCurrentUser] = useCurrentUserLazyQuery();
 
@@ -84,7 +72,7 @@ export const useLogin = () => {
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
 
     setUser(user);
-    navigateToStartScreen(user);
+    navigateToAfterLoginScreen(user);
   };
 
   const getBypassToken = (userId: string) => {
@@ -137,11 +125,7 @@ export const useLogin = () => {
     // set cookie user
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
     setUser(user);
-    if (user.avatarSetByUser && user.nickSetByUser) {
-      navigateToStartScreen(user);
-    } else {
-      navigateToChoosingAvatarAndNickScreen(user);
-    }
+    navigateToAfterLoginScreen(user);
   };
 
   const getFirebaseToken = async (credentials: LoginCredentials) => {
@@ -157,7 +141,7 @@ export const useLogin = () => {
     return token;
   };
 
-  const navigateToStartScreen = (user: User) => {
+  const navigateToAfterLoginScreen = (user: User) => {
     // TODO frontend and backend enums do not match
     switch (user.role) {
       case UsersRolesType.Coordinator:
@@ -165,24 +149,14 @@ export const useLogin = () => {
         navigate(pathsGenerator.teacher.Groups);
         break;
       case UsersRolesType.Student:
-        navigate(pathsGenerator.student.StudentProfile);
+        if (user.avatarSetByUser && user.nickSetByUser) {
+          navigate(pathsGenerator.student.StudentProfile);
+        } else {
+          navigate(pathsGenerator.student.ChoosingAvatarAndNick);
+        }
         break;
       default:
         throw new Error("To się nigdy nie powinno wydarzyć ;_;.");
-    }
-  };
-
-  const navigateToChoosingAvatarAndNickScreen = (user: User) => {
-    switch (user.role) {
-      case UsersRolesType.Coordinator:
-      case UsersRolesType.Teacher:
-        navigate(pathsGenerator.teacher.Groups);
-        break;
-      case UsersRolesType.Student:
-        navigate(pathsGenerator.student.ChoosingAvatarAndNick);
-        break;
-      default:
-        throw new Error("should never happen.");
     }
   };
 

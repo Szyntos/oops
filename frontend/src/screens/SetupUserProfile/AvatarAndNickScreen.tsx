@@ -1,4 +1,3 @@
-import { useStudentsScreenData } from "../../hooks/Students/useStudentsScreenData.tsx";
 import { useSetStudentNickMutation } from "../../graphql/setStudentNick.graphql.types.ts";
 import { useUser } from "../../hooks/common/useUser.ts";
 import { useSetStudentAvatarMutation } from "../../graphql/setStudentAvatar.graphql.types.ts";
@@ -49,10 +48,6 @@ export const AvatarAndNickScreen = () => {
       (f) => f.file.fileId,
     ) ?? [];
 
-  const { loading, error } = useStudentsScreenData();
-
-  console.log("USER: ", user);
-
   const handleConfirmClick = (values: SetupUserFormValues) => {
     openConfirmPopup(() => {
       localErrorWrapper(setFormError, async () => {
@@ -65,14 +60,13 @@ export const AvatarAndNickScreen = () => {
             userId: parseInt(user.userId),
           },
         });
-        console.log("USER: ", user);
         navigate(pathsGenerator.student.StudentProfile);
       });
     });
   };
 
-  if (loading || imageLoading) return <LoadingScreen />;
-  if (error || imageError) return <ErrorScreen />;
+  if (imageLoading) return <LoadingScreen />;
+  if (imageError) return <ErrorScreen />;
 
   return (
     <div

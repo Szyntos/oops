@@ -10,15 +10,6 @@ const commonPaths = {
       UsersRolesType.Coordinator,
     ],
   },
-  Welcome: {
-    path: "/welcome",
-    allowedRoles: [
-      UsersRolesType.UnauthenticatedUser,
-      UsersRolesType.Student,
-      UsersRolesType.Teacher,
-      UsersRolesType.Coordinator,
-    ],
-  },
   HallOfFame: {
     path: "/hall-of-fame",
     allowedRoles: [

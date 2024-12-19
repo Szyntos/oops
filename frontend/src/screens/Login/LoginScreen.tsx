@@ -70,7 +70,7 @@ export const LoginScreen = () => {
 
   const handleResetPassword = (values: LoginFormValues) => {
     localErrorWrapper(setFormError, async () => {
-      await resetPassword(values.email);
+      await resetPassword({ variables: { email: values.email } });
     });
   };
 

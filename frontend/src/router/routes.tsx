@@ -33,19 +33,9 @@ export const routes = createBrowserRouter([
     element: <Root />,
     children: [
       {
-        //TODO: in the future this should lead to LoginScreen
         path: commonPaths.Default.path,
         element: <LoginScreen />,
         index: true,
-      },
-      {
-        path: commonPaths.Welcome.path,
-        element: (
-          <ProtectedRoute
-            element={<LoginScreen />}
-            allowedRoles={commonPaths.Welcome.allowedRoles}
-          />
-        ),
       },
       {
         path: studentPaths.StudentProfile.path,

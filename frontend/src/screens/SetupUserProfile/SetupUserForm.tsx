@@ -53,7 +53,7 @@ export const SetupUserForm = ({
             value={formik.values.nick}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={!!formik.errors.nick && formik.touched.nick}
+            error={Boolean(formik.errors.nick && formik.touched.nick)}
             helperText={formik.touched.nick && formik.errors.nick}
             fullWidth
           />

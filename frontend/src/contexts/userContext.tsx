@@ -70,6 +70,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     Cookies.set(cookiesStrings.user, JSON.stringify(updatedUser));
   };
 
+  console.log("USER: ", user);
   return (
     <UserContext.Provider
       value={{

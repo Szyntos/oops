@@ -19,7 +19,7 @@ import { GroupsSection } from "../components/Edition/Sections/GroupSection/Group
 import { UsersSection } from "../components/Edition/Sections/UsersSection/UsersSection";
 import { GradingChecksSection } from "../components/Edition/Sections/GradingChecksSection/GradingChecksSection";
 import { ChestsSection } from "../components/Edition/Sections/ChestsSection/ChestsSection";
-import { AvatarAndNickScreen } from "../screens/AvatarAndNick/AvatarAndNickScreen";
+import { AvatarAndNickScreen } from "../screens/SetupUserProfile/AvatarAndNickScreen";
 import { HallOfFameTeacher } from "../screens/HallOfFame/HallOfFameTeacher";
 
 const commonPaths = pathsWithParameters.common;

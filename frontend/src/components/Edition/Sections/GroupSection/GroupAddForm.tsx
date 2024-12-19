@@ -267,32 +267,34 @@ export const AddGroupForm = ({
             helperText={formik.touched.usosId && formik.errors.usosId}
           />
 
-          {variant === "select" && (
+          {variant === "select" ? (
             <StudentSelection
               students={studentsToSelect}
               selectedStudents={selectedStudents}
               handleAdd={handleAdd}
               handleDelete={handleDelete}
             />
+          ) : (
+            <>
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept=".csv"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+              {importedFile && (
+                <CustomText>Zaimportowany plik: {importedFile}</CustomText>
+              )}
+              {selectedStudents.map((s, index) => (
+                <CustomText>
+                  {index + 1}. {s.firstName} {s.secondName}
+                </CustomText>
+              ))}
+            </>
           )}
 
           <FormError error={createError} isFormError={true} />
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept=".csv"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
-          {importedFile && (
-            <CustomText>Zaimportowany plik: {importedFile}</CustomText>
-          )}
-          {selectedStudents.map((s, index) => (
-            <CustomText>
-              {index + 1}. {s.firstName} {s.secondName}
-            </CustomText>
-          ))}
 
           <div
             style={{
@@ -302,11 +304,13 @@ export const AddGroupForm = ({
               paddingLeft: 12,
             }}
           >
-            <div>
-              <CustomButton onClick={handleUploadClick}>
-                Importuj studentów
-              </CustomButton>
-            </div>
+            {variant === "import" && (
+              <div>
+                <CustomButton onClick={handleUploadClick}>
+                  Importuj studentów
+                </CustomButton>
+              </div>
+            )}
 
             <FormButton />
           </div>

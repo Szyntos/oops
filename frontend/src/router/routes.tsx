@@ -6,7 +6,7 @@ import { StudentProfile } from "../screens/StudentProfile/StudentProfile";
 import { TeacherStudentProfile } from "../screens/StudentProfile/TeacherStudentProfile";
 import { GroupsScreen } from "../screens/Groups/GroupsScreen";
 import { GroupScreen } from "../screens/Group/GroupScreen";
-import { Welcome } from "../screens/Welcome/Welcome";
+import { LoginScreen } from "../screens/Login/LoginScreen";
 import { ProtectedRoute } from "./protectedRoute";
 import { StudentsScreen } from "../screens/Students/StudentsScreen";
 import { EditionsScreen } from "../screens/Editions/EditionsScreen";
@@ -35,14 +35,14 @@ export const routes = createBrowserRouter([
       {
         //TODO: in the future this should lead to LoginScreen
         path: commonPaths.Default.path,
-        element: <Welcome />,
+        element: <LoginScreen />,
         index: true,
       },
       {
         path: commonPaths.Welcome.path,
         element: (
           <ProtectedRoute
-            element={<Welcome />}
+            element={<LoginScreen />}
             allowedRoles={commonPaths.Welcome.allowedRoles}
           />
         ),

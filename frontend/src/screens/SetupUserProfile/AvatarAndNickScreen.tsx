@@ -6,7 +6,11 @@ import { useFilesQuery } from "../../graphql/files.graphql.types.ts";
 import { useConfirmPopup } from "../../hooks/common/useConfirmPopup.ts";
 import { useNavigate } from "react-router-dom";
 import { pathsGenerator } from "../../router/paths.tsx";
-import { getCardStyles } from "../../utils/utils.ts";
+import {
+  coordinatorStyles,
+  formStyles,
+  getCardStyles,
+} from "../../utils/utils.ts";
 import { LoadingScreen } from "../Loading/LoadingScreen.tsx";
 import { ErrorScreen } from "../Error/ErrorScreen.tsx";
 import { MD_DIALOG_WIDTH } from "../../components/dialogs/CustomDialog.tsx";
@@ -14,6 +18,8 @@ import { z } from "zod";
 import { SetupUserForm, SetupUserFormValues } from "./SetupUserForm.tsx";
 import { useError } from "../../hooks/common/useGlobalError.tsx";
 import { useState } from "react";
+import { CustomText } from "../../components/CustomText.tsx";
+import { tokens } from "../../tokens.tsx";
 
 export type AvatarAndNickValues = z.infer<typeof ValidationSchema>;
 
@@ -80,8 +86,21 @@ export const AvatarAndNickScreen = () => {
         style={{
           width: MD_DIALOG_WIDTH,
           ...getCardStyles(false),
+          padding: 20,
         }}
       >
+        <div
+          style={{
+            ...coordinatorStyles.textContainer,
+            gap: 8,
+            paddingBottom: 12,
+          }}
+        >
+          <CustomText style={formStyles.title} size={tokens.font.header}>
+            Utwórz profil{" "}
+          </CustomText>
+        </div>
+
         <SetupUserForm
           handleSubmit={handleConfirmClick}
           imageIds={imageIds}

@@ -3,7 +3,11 @@ import { dateOptions } from "../../utils/constants";
 import { Styles } from "../../utils/Styles";
 import { Avatar, AvatarSize } from "./Avatar";
 import { AwardTypeType } from "../../__generated__/schema.graphql.types";
-import { getAwardMaxUsageString, getAwardValueString } from "../../utils/utils";
+import {
+  getAwardMaxUsageString,
+  getAwardValueString,
+  mapAwardTypeToPolish,
+} from "../../utils/utils";
 
 type AwardWithTooltipProps = {
   props: AwardTooltipProps;
@@ -46,7 +50,7 @@ export const AwardWithTooltip = ({ props, size }: AwardWithTooltipProps) => {
       tooltipContent={
         <div style={styles.container}>
           <div style={styles.title}>{name}</div>
-          {type && <div>{type}</div>}
+          {type && <div>{mapAwardTypeToPolish(type)}</div>}
           {maxUsage && <div>{getAwardMaxUsageString(maxUsage)}</div>}
           {typeValue && type && (
             <div>{getAwardValueString(type, typeValue)}</div>

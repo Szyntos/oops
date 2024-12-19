@@ -1,8 +1,9 @@
-import { Dialog } from "@mui/material";
 import { useOverrideGrade } from "../../../hooks/common/useOverrideGrade";
-import { CloseHeader } from "../CloseHeader";
 import { GroupsQuery } from "../../../graphql/groups.graphql.types";
 import { OverrideGradeForm } from "./OverrideGradeForm";
+import { CustomDialog } from "../CustomDialog";
+import { CustomText } from "../../CustomText";
+import { ERROR_MESSAGE } from "../../../utils/utils";
 
 export type Group = NonNullable<GroupsQuery["editionByPk"]>["groups"][number];
 
@@ -16,18 +17,20 @@ export const OverrideGradeDialog = () => {
   } = useOverrideGrade();
 
   return (
-    <Dialog open={isOverrideGradeOpen}>
-      <CloseHeader onCloseClick={closeOverrideGrade} />
+    <CustomDialog
+      isOpen={isOverrideGradeOpen}
+      onCloseClick={closeOverrideGrade}
+      title={"Nadpisz ocenę studenta"}
+    >
       {data ? (
         <OverrideGradeForm
           handleConfirm={handleOverrideGradeConfirm}
-          title={"Nadpisz ocenę studenta"}
           initGrade={data.grade}
           formError={formError}
         />
       ) : (
-        <div>Coś poszło nie tak... :c</div>
+        <CustomText>{ERROR_MESSAGE}</CustomText>
       )}
-    </Dialog>
+    </CustomDialog>
   );
 };

@@ -1,5 +1,3 @@
-import { Dialog } from "@mui/material";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useChestsSection } from "../../../../hooks/Edition/useChestsSection";
 
 import { useParams } from "react-router-dom";
@@ -9,6 +7,7 @@ import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
 import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const ChestsSection = () => {
   const params = useParams();
@@ -75,12 +74,14 @@ export const ChestsSection = () => {
         editionId={editionId}
       />
 
-      <Dialog open={isAddChest}>
-        <CloseHeader onCloseClick={closeAddChest} />
+      <CustomDialog
+        isOpen={isAddChest}
+        title="Dodaj skrzynkę"
+        onCloseClick={closeAddChest}
+      >
         <AddChestForm
           formError={formError}
           handleConfirm={handleAddChest}
-          title="Dodaj skrzynkę"
           imageIds={imageIds}
           awardsThisEdition={selectedAwards}
           awardsNotThisEdition={awards.filter(
@@ -90,10 +91,13 @@ export const ChestsSection = () => {
               ),
           )}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditChest}>
-        <CloseHeader onCloseClick={closeEditChest} />
+      <CustomDialog
+        isOpen={isEditChest}
+        title="Edytuj skrzynkę"
+        onCloseClick={closeEditChest}
+      >
         <AddChestForm
           formError={formError}
           handleConfirm={handleEditChest}
@@ -129,9 +133,8 @@ export const ChestsSection = () => {
                 }
               : undefined
           }
-          title="Edytuj skrzynkę"
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
 };

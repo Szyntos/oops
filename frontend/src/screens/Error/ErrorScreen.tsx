@@ -30,7 +30,7 @@ export const ErrorScreen = ({
         bold={true}
         color={tokens.color.text.primary}
       >
-        Oops :(
+        oops :(
       </CustomText>
       <CustomText>
         {message ? message : "Coś poszło nie tak, spróbuj ponownie później..."}

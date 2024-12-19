@@ -7466,10 +7466,8 @@ export type ListPermissionsOutputType = {
   canEdit: PermissionType;
   canMarkAsActive?: Maybe<PermissionType>;
   canMarkAsInactive?: Maybe<PermissionType>;
-  canOverride?: Maybe<PermissionType>;
   canRemove: PermissionType;
   canSelect: PermissionType;
-  canTurnOffOverride?: Maybe<PermissionType>;
   canUnselect: PermissionType;
 };
 
@@ -8612,6 +8610,13 @@ export type PurePointsType = {
   __typename?: "PurePointsType";
   partialBonusType: Array<Maybe<PartialBonusType>>;
   purePoints?: Maybe<PointType>;
+};
+
+export type QuoteVariablesType = {
+  __typename?: "QuoteVariablesType";
+  coordinator: UserType;
+  firstPassingLevel?: Maybe<LevelType>;
+  gradingCheck?: Maybe<GradingChecksType>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -13371,6 +13376,7 @@ export type Query_Root = {
   getPossibleGroupDates: Array<GroupDateType>;
   getPossibleGroupsTimeSpans: Array<TimeSpansType>;
   getPossibleGroupsWeekdays: Array<WeekdayType>;
+  getQuoteVariables: QuoteVariablesType;
   getStudentPoints: StudentPointsType;
   getSumOfPointsForStudentByCategory: Array<CategoryPointsSumType>;
   getUsersInGroupWithPoints: Array<Maybe<UserPointsType>>;
@@ -13729,6 +13735,10 @@ export type Query_RootGetPossibleGroupsTimeSpansArgs = {
 };
 
 export type Query_RootGetPossibleGroupsWeekdaysArgs = {
+  editionId: Scalars["Int"]["input"];
+};
+
+export type Query_RootGetQuoteVariablesArgs = {
   editionId: Scalars["Int"]["input"];
 };
 

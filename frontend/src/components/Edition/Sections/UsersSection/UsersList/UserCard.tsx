@@ -53,7 +53,8 @@ export const UserCard = ({
           handleDelete={handleDeleteClick}
           handleEdit={handleEditClick}
           isStudentActive={user.user.active}
-          handleMarkChestActiveness={() => handleStudentActiveness(user)}
+          handleMarkStudentActiveness={() => handleStudentActiveness(user)}
+          handleShow={() => openShowDialog(user)}
         />
       ) : (
         <SetupButtons

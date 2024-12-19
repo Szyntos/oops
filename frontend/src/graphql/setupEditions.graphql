@@ -40,14 +40,6 @@ query SetupEditions {
         allow
         reason
       }
-      canOverride {
-        allow
-        reason
-      }
-      canTurnOffOverride {
-        allow
-        reason
-      }
       canActivate {
         allow
         reason

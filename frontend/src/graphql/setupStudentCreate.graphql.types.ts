@@ -33,7 +33,7 @@ export const SetupStudentCreateDocument = gql`
       role: "student"
       secondName: $secondName
       createFirebaseUser: true
-      sendEmail: true
+      sendEmail: false
     ) {
       userId
       role

@@ -1,11 +1,12 @@
-import { Styles } from "../../utils/Styles";
 import { AddEditionForm } from "../../components/Editions/AddEditionForm";
-import { EditionsList } from "../../components/Editions/EditionsList/EditionsList";
 import { useEditionsScreen } from "../../hooks/Editions/useEditionsScreen";
 import { LoadingScreen } from "../Loading/LoadingScreen";
 import { ErrorScreen } from "../Error/ErrorScreen";
-import { CustomDialog } from "../../components/dialogs/CustomDialog";
+import { coordinatorStyles } from "../../utils/utils";
 import { CustomButton } from "../../components/CustomButton";
+import { CardsSection } from "../../components/Edition/CardsSection";
+import { EditionCard } from "../../components/Editions/EditionsList/EditionCard";
+import { CustomDialog } from "../../components/dialogs/CustomDialog";
 
 export const EditionsScreen = () => {
   const {
@@ -37,7 +38,25 @@ export const EditionsScreen = () => {
   if (error) return <ErrorScreen />;
 
   return (
-    <div style={styles.container}>
+    <div style={{ ...coordinatorStyles.container, margin: 20 }}>
+      <div style={coordinatorStyles.buttonsContainer}>
+        <CustomButton onClick={openAddDialog}>Utwórz edycję</CustomButton>
+      </div>
+
+      <CardsSection
+        title={"Edycje"}
+        cards={
+          editions.map((edition) => (
+            <EditionCard
+              data={edition}
+              handleDeleteClick={() => handleDeleteClick(edition)}
+              handleCopyClick={() => openCopyDialog(edition)}
+              handleEditClick={() => openEditDialog(edition)}
+            />
+          )) ?? []
+        }
+      ></CardsSection>
+
       <CustomDialog
         isOpen={isAddOpen}
         onCloseClick={closeAddDialog}
@@ -86,24 +105,6 @@ export const EditionsScreen = () => {
           }
         />
       </CustomDialog>
-
-      <CustomButton onClick={openAddDialog}>Utwórz edycję</CustomButton>
-
-      <EditionsList
-        editions={editions}
-        handleDeleteClick={handleDeleteClick}
-        handleCopyClick={openCopyDialog}
-        handleEditClick={openEditDialog}
-      />
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    gap: 12,
-    flexDirection: "column",
-    margin: 12,
-  },
 };

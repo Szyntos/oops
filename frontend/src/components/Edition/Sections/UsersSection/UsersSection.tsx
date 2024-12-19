@@ -90,7 +90,7 @@ export const UsersSection = () => {
         <div style={coordinatorStyles.buttonsContainer}>
           <CustomButton onClick={openAddStudent}>Dodaj studenta</CustomButton>
           <CustomButton onClick={openAddTeacher}>
-            Dodaj nauczyciela
+            Dodaj prowadzącego
           </CustomButton>
         </div>
         <StudentsListSearcher

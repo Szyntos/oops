@@ -14,6 +14,7 @@ import { FormButton } from "../../../../form/FormButton";
 import { FormError } from "../../../../form/FormError";
 import {
   formStyles,
+  mapAwardTypeToPolish,
   MULTIPLICATIVE_TYPE_STRING,
 } from "../../../../../utils/utils";
 
@@ -140,7 +141,7 @@ export const AddAwardForm = ({
             >
               {awardTypes.map((type) => (
                 <MenuItem key={type} value={type}>
-                  {type}
+                  {mapAwardTypeToPolish(type)}
                 </MenuItem>
               ))}
             </Select>

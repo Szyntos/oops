@@ -1,11 +1,13 @@
 import { useFormik } from "formik";
 import { ZodError, z } from "zod";
 import { useState } from "react";
-import { SelectInput } from "../../components/inputs/SelectInput";
-import { Category } from "../../utils/utils";
-import { Styles } from "../../utils/Styles";
+import { Category, formStyles } from "../../utils/utils";
 import { Chest } from "../../hooks/StudentProfile/useCoordinatorActions";
-import { tokens } from "../../tokens";
+import { FormButton } from "../../components/form/FormButton";
+import { FormError } from "../../components/form/FormError";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { SelectImage } from "../../components/inputs/SelectImage";
+import { SelectChangeEvent } from "@mui/material";
 
 export type ChestFormValues = z.infer<typeof ValidationSchema>;
 
@@ -62,7 +64,7 @@ export const AddChestToUserForm = ({
       [],
   );
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleCategoryChange = (e: SelectChangeEvent<string>) => {
     const categoryId = e.target.value;
     const updatedSubcategories =
       categories.find((category) => category.id === categoryId)
@@ -74,68 +76,85 @@ export const AddChestToUserForm = ({
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>Przyznaj skrzynkę studentowi</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <SelectInput
-          handleChange={handleCategoryChange}
-          handleBlur={formik.handleBlur}
-          value={formik.values.categoryId}
-          error={formik.errors.categoryId}
-          touched={formik.touched.categoryId}
-          name="categoryId"
-          optionItems={categories?.map((category) => ({
-            value: category.id,
-            title: category.name,
-          }))}
-          label="Kategoria"
-        />
-        <SelectInput
-          handleChange={formik.handleChange}
-          handleBlur={formik.handleBlur}
-          value={formik.values.subcategoryId}
-          error={formik.errors.subcategoryId}
-          touched={formik.touched.subcategoryId}
-          name="subcategoryId"
-          optionItems={subcategories?.map((subcategory) => ({
-            value: subcategory.id,
-            title: subcategory.name,
-          }))}
-          label="Subkategoria"
-        />
-        <SelectInput
-          handleChange={formik.handleChange}
-          handleBlur={formik.handleBlur}
-          value={formik.values.chestId}
-          error={formik.errors.chestId}
-          touched={formik.touched.chestId}
-          name="chestId"
-          optionItems={chests?.map((chest) => ({
-            value: chest.chestId,
-            title: chest.chestId,
-          }))}
-          label="Id skrzynki"
-        />
-        <button type="submit">Powierdź</button>
+        <div style={formStyles.fieldsContainer}>
+          <FormControl fullWidth>
+            <InputLabel
+              error={Boolean(
+                formik.touched.categoryId && formik.errors.categoryId,
+              )}
+            >
+              Kategoria
+            </InputLabel>
+            <Select
+              name="categoryId"
+              value={formik.values.categoryId}
+              onChange={handleCategoryChange}
+              onBlur={formik.handleBlur}
+              error={Boolean(
+                formik.touched.categoryId && formik.errors.categoryId,
+              )}
+            >
+              {categories.map((cat) => (
+                <MenuItem key={cat.id} value={cat.id}>
+                  {cat.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {formik.touched.categoryId && formik.errors.categoryId && (
+              <FormError error={formik.errors.categoryId} />
+            )}
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel
+              error={Boolean(
+                formik.touched.subcategoryId && formik.errors.subcategoryId,
+              )}
+            >
+              Subkategoria
+            </InputLabel>
+            <Select
+              name="subcategoryId"
+              value={formik.values.subcategoryId}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={Boolean(
+                formik.touched.subcategoryId && formik.errors.subcategoryId,
+              )}
+            >
+              {subcategories?.map((sub) => (
+                <MenuItem key={sub.id} value={sub.id}>
+                  {sub.name}
+                </MenuItem>
+              )) ?? []}
+            </Select>
+            {formik.touched.subcategoryId && formik.errors.subcategoryId && (
+              <FormError error={formik.errors.subcategoryId} />
+            )}
+          </FormControl>
+
+          <SelectImage
+            type="chest"
+            options={chests.map((c) => c.imageFileId as string)}
+            selectedIds={[formik.values.chestId]}
+            onSelectClick={(updatedIds: string[]) =>
+              formik.setValues({
+                ...formik.values,
+                chestId: updatedIds.length > 0 ? updatedIds[0] : "",
+              })
+            }
+            error={formik.errors.chestId}
+            touched={formik.touched.chestId}
+            selectVariant={"single"}
+            title={"Skrzynka:"}
+          />
+
+          <FormError error={formError} />
+          <FormButton />
+        </div>
       </form>
-      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    border: "1px solid black",
-    width: 500,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
 };

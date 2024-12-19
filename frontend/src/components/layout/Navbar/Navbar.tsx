@@ -7,8 +7,6 @@ import { hasRole, isEditionActive } from "../../../utils/utils";
 import { useLogin } from "../../../hooks/auth/useLogin";
 import { UsersRolesType } from "../../../__generated__/schema.graphql.types";
 import { useChests } from "../../../hooks/chest/useChests";
-import { Dialog } from "@mui/material";
-import { CloseHeader } from "../../dialogs/CloseHeader";
 import { OpenChest } from "../../OpenChest";
 import { Settings } from "../../Settings/Settings";
 import { useSettings } from "../../../hooks/useSettings";
@@ -20,6 +18,7 @@ import { NavbarItem } from "./NavarItem";
 import { IconMapper } from "../../IconMapper";
 import { ChestsNavbarItem } from "./ChestsNavbarItem";
 import { CustomText } from "../../CustomText";
+import { CustomDialog } from "../../dialogs/CustomDialog";
 
 const NAV_BAR_HEIGHT = 64;
 const BORDER_HEIGHT = 2;
@@ -101,22 +100,29 @@ export const Navbar = () => {
         </div>
       </div>
 
-      <Dialog open={isChestDialogOpen}>
-        <CloseHeader onCloseClick={closeChestDialog} />
+      <CustomDialog
+        isOpen={isChestDialogOpen}
+        title="Otwórz skrzynkę"
+        subtitle={chestsToOpen[0]?.chest.type}
+        onCloseClick={closeChestDialog}
+      >
         <OpenChest
-          chest={chestsToOpen[0]}
+          chest={chestsToOpen.length > 0 ? chestsToOpen[0] : undefined}
           handleOpenChestClick={handleOpenChestConfirm}
           chestError={chestError}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={AreSettingsOpen}>
-        <CloseHeader onCloseClick={closeSettings} />
+      <CustomDialog
+        isOpen={AreSettingsOpen}
+        onCloseClick={closeSettings}
+        title="Ustawienia"
+      >
         <Settings
           editions={editions}
           handleChangeEditionConfirm={handleChangeEditionConfirm}
         />
-      </Dialog>
+      </CustomDialog>
 
       <ConfirmPopupDialog />
       <ChangeGroupDialog />

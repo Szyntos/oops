@@ -7,6 +7,7 @@ import { CustomText } from "../../CustomText";
 import { tokens } from "../../../tokens";
 import { Avatar } from "../../avatars/Avatar";
 import { getTimeWithoutSeconds } from "../../../utils/utils";
+import { getEnvVariable } from "../../../utils/constants";
 
 export function StudentCard({
   nick,
@@ -16,16 +17,17 @@ export function StudentCard({
   avatarId,
   grade,
   totalPoints,
+  override,
 }: StudentCardData) {
   const profileItems: ItemWithIconProps[] = [
     { icon: "name", title: displayName },
-    { icon: "email", title: `${index}@student.agh.edu.pl` },
+    { icon: "email", title: `${index}@${getEnvVariable("VITE_EMAIL_DOMAIN")}` },
     { icon: "index", title: index },
   ];
 
   const performanceItems: ItemWithIconProps[] = [
-    { icon: "grade", title: grade },
-    { title: "∑ " + totalPoints },
+    { icon: "grade", title: `${grade}${override ? "*" : ""}` },
+    { title: "∑ " + totalPoints + "pkt" },
   ];
 
   const centerItems: ItemWithIconProps[] = [

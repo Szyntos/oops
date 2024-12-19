@@ -1,0 +1,17 @@
+query QuoteVariables($editionId: Int!) {
+  getQuoteVariables(editionId: $editionId) {
+    coordinator {
+      firstName
+      secondName
+    }
+    firstPassingLevel {
+      levelName
+      grade
+    }
+    gradingCheck {
+      endOfLabsDate
+      gradingCheckId
+      projectPointsThreshold
+    }
+  }
+}

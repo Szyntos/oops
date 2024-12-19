@@ -23,6 +23,7 @@ export type StudentCardData = {
   grade: string;
   projectCheck: boolean;
   levelCheck: boolean;
+  override?: boolean;
 };
 
 export const useStudentData = (props: {

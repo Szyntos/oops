@@ -10504,10 +10504,8 @@ type ListPermissionsOutputType {
   canEdit: PermissionType!
   canMarkAsActive: PermissionType
   canMarkAsInactive: PermissionType
-  canOverride: PermissionType
   canRemove: PermissionType!
   canSelect: PermissionType!
-  canTurnOffOverride: PermissionType
   canUnselect: PermissionType!
 }
 
@@ -12006,6 +12004,12 @@ input PointsVarianceOrderBy {
 type PurePointsType {
   partialBonusType: [PartialBonusType]!
   purePoints: PointType
+}
+
+type QuoteVariablesType {
+  coordinator: UserType!
+  firstPassingLevel: LevelType
+  gradingCheck: GradingChecksType
 }
 
 """
@@ -19219,6 +19223,7 @@ type query_root {
   getPossibleGroupDates(editionId: Int!): [GroupDateType!]!
   getPossibleGroupsTimeSpans(editionId: Int!): [TimeSpansType!]!
   getPossibleGroupsWeekdays(editionId: Int!): [WeekdayType!]!
+  getQuoteVariables(editionId: Int!): QuoteVariablesType!
   getStudentPoints(editionId: Int!, studentId: Int!): StudentPointsType!
   getSumOfPointsForStudentByCategory(
     editionId: Int!

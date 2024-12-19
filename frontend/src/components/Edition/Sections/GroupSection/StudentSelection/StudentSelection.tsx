@@ -1,4 +1,5 @@
 import { Student } from "../../../../../hooks/Edition/useGroupsSection";
+import { formStyles } from "../../../../../utils/utils";
 import { SelectedStudentsList } from "./SelectedStudentsList";
 import { SelectStudent } from "./SelectStudent";
 
@@ -16,7 +17,7 @@ export const StudentSelection = ({
   handleDelete,
 }: StudentSelectionProps) => {
   return (
-    <div>
+    <div style={formStyles.fieldsContainer}>
       <SelectedStudentsList
         students={selectedStudents}
         handleDelete={handleDelete}

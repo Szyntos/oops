@@ -892,12 +892,12 @@ class UsersPermissions {
     fun checkOverrideComputedGradeForUserPermission(arguments: JsonNode): Permission {
         val action = "overrideComputedGradeForUser"
         val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
+        if (currentUser.role != UsersRoles.COORDINATOR && currentUser.role != UsersRoles.TEACHER){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can override computed grade for a user"
+                reason = "Only a coordinator or teacher can override computed grade for a user"
             )
         }
 
@@ -964,12 +964,12 @@ class UsersPermissions {
     fun checkTurnOffOverrideComputedGradeForUserPermission(arguments: JsonNode): Permission {
         val action = "turnOffOverrideComputedGradeForUser"
         val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
+        if (currentUser.role != UsersRoles.COORDINATOR && currentUser.role != UsersRoles.TEACHER){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can turn off override for computed grade for a user"
+                reason = "Only a coordinator or teacher can turn off override for computed grade for a user"
             )
         }
 

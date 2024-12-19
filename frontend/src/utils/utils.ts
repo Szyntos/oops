@@ -8,6 +8,8 @@ import { Edition } from "../contexts/userContext";
 import { tokens } from "../tokens";
 import { Styles } from "./Styles";
 
+export const EDITION_MARGIN_VERTICAL = 20;
+
 type User = {
   role: string;
 };
@@ -98,6 +100,9 @@ export const coordinatorStyles: Styles = {
     display: "flex",
     flexDirection: "column",
     gap: 20,
+    margin: EDITION_MARGIN_VERTICAL,
+    marginLeft: 12,
+    marginRight: 12,
   },
   buttonsContainer: {
     display: "flex",
@@ -144,4 +149,47 @@ export const getAwardValueString = (
   return type === AwardTypeType.Multiplicative
     ? `mnożnik: ${typeValue * 100}%`
     : `wartość: ${typeValue.toFixed(2)}pkt`;
+};
+
+export const MULTIPLICATIVE_TYPE_STRING = "MULTIPLICATIVE";
+
+export const formStyles: Styles = {
+  formContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  },
+  fieldsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+  },
+  label: {
+    color: tokens.color.text.tertiary,
+    paddingLeft: 12,
+    fontSize: 13,
+    paddingBottom: 12,
+  },
+};
+
+export const DATE_YYYY_MM_DD_REGEXP = /^\d{4}-\d{2}-\d{2}$/;
+export const TIME_HH_MM_REGEXP = /^([0-1]\d|2[0-3]):([0-5]\d)$/;
+
+export const mapAwardTypeToPolish = (type: AwardTypeType) => {
+  let text = "";
+  switch (type) {
+    case AwardTypeType.Additive:
+      text = "Addytywna".toLocaleUpperCase();
+      break;
+    case AwardTypeType.AdditiveNext:
+      text = "Przyszła addytywna";
+      break;
+    case AwardTypeType.AdditivePrev:
+      text = "Przeszła addytywna";
+      break;
+    case AwardTypeType.Multiplicative:
+      text = "Multiplikatywna";
+      break;
+  }
+  return text.toUpperCase();
 };

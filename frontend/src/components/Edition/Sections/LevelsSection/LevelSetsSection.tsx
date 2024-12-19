@@ -1,6 +1,3 @@
-import { Dialog } from "@mui/material";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
-
 import { useParams } from "react-router-dom";
 import { useLevelSetsSection } from "../../../../hooks/Edition/useLevelSetsSection";
 import { LevelSetsList } from "./LevelSetsList/LevelSetsList";
@@ -11,6 +8,7 @@ import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
 import { CardsSection } from "../../CardsSection";
 import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const LevelSetsSection = () => {
   const params = useParams();
@@ -79,18 +77,26 @@ export const LevelSetsSection = () => {
         title={"Wszystkie zbiory poziomów"}
       />
 
-      <Dialog open={isAddSetOpen} maxWidth={"lg"}>
-        <CloseHeader onCloseClick={closeAddSet} />
+      <CustomDialog
+        isOpen={isAddSetOpen}
+        title="Dodaj zbiór poziomów"
+        onCloseClick={closeAddSet}
+        size="lg"
+      >
         <AddSetForm
           formError={formError}
           initLevels={[]}
           handleConfirm={handleAddSet}
           imageIds={imageIds}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditSetOpen} maxWidth={"lg"}>
-        <CloseHeader onCloseClick={closeEditSet} />
+      <CustomDialog
+        isOpen={isEditSetOpen}
+        title="Edytuj zbiór poziomów"
+        onCloseClick={closeEditSet}
+        size="lg"
+      >
         <AddSetForm
           initLevels={
             selectedToEditSet?.levelSet.levels?.map((l, index) => ({
@@ -106,7 +112,7 @@ export const LevelSetsSection = () => {
           handleConfirm={handleEditSet}
           imageIds={imageIds}
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
 };

@@ -1,8 +1,9 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { TextField } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
-import { tokens } from "../../../../tokens";
+import { formStyles } from "../../../../utils/utils";
+import { FormButton } from "../../../form/FormButton";
+import { FormError } from "../../../form/FormError";
 
 export type TeacherFormValues = z.infer<typeof ValidationSchema>;
 
@@ -16,7 +17,6 @@ type AddTeacherFormProps = {
   handleConfirm: (values: TeacherFormValues) => void;
   formError?: string;
   initialValues?: TeacherFormValues;
-  title: string;
 };
 
 export const AddTeacherForm = ({
@@ -27,7 +27,6 @@ export const AddTeacherForm = ({
     secondName: "",
     email: "",
   },
-  title,
 }: AddTeacherFormProps) => {
   const formik = useFormik({
     initialValues,
@@ -48,10 +47,9 @@ export const AddTeacherForm = ({
   });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div>
+        <div style={formStyles.fieldsContainer}>
           <TextField
             fullWidth
             name="firstName"
@@ -89,28 +87,12 @@ export const AddTeacherForm = ({
             error={Boolean(formik.touched.email && formik.errors.email)}
             helperText={formik.touched.email && formik.errors.email}
           />
+
+          <FormError error={formError} isFormError={true} />
+
+          <FormButton />
         </div>
-
-        <button type="submit">Potwierdź</button>
       </form>
-
-      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    border: "1px solid black",
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
 };

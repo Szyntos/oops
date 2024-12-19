@@ -1,0 +1,87 @@
+query StudentPointsTeacher($editionId: Int!, $studentId: Int!) {
+  getStudentPoints(editionId: $editionId, studentId: $studentId) {
+    user {
+      userLevels {
+        computedGrade
+        edition {
+          editionId
+        }
+        endOfLabsLevelsReached
+        projectPointsThresholdReached
+        coordinatorOverride
+      }
+      firstName
+      indexNumber
+      nick
+      secondName
+      imageFile {
+        fileId
+      }
+      userId
+      userGroups {
+        group {
+          groupsId
+          endTime
+          groupName
+          generatedName
+          startTime
+          weekday {
+            weekdayId
+            weekdayName
+          }
+          teacher {
+            userId
+            firstName
+            secondName
+          }
+        }
+      }
+    }
+    sumOfAll
+    sumOfBonuses
+    sumOfPurePoints
+    subcategoryPoints {
+      points {
+        purePoints {
+          pointsId
+          value
+        }
+        partialBonusType {
+          partialValue
+          bonuses {
+            bonusId
+            award {
+              awardName
+              imageFile {
+                fileId
+              }
+              awardId
+              awardType
+              awardValue
+              description
+            }
+            createdAt
+            updatedAt
+          }
+        }
+      }
+      subcategory {
+        subcategoryId
+        subcategoryName
+        category {
+          categoryId
+          categoryName
+          darkColor
+          lightColor
+        }
+        maxPoints
+      }
+      teacher {
+        firstName
+        secondName
+      }
+      updatedAt
+      createdAt
+    }
+  }
+}

@@ -5,6 +5,7 @@ import {
   getAwardMaxUsageString,
   getAwardValueString,
   getCardStyles,
+  mapAwardTypeToPolish,
 } from "../../../../../utils/utils";
 import { Avatar } from "../../../../avatars/Avatar";
 import { CustomText } from "../../../../CustomText";
@@ -37,7 +38,7 @@ export const AwardCard = ({
           <CustomText style={coordinatorStyles.title}>
             {award.award.awardName}
           </CustomText>
-          <CustomText>{award.award.awardType}</CustomText>
+          <CustomText>{mapAwardTypeToPolish(award.award.awardType)}</CustomText>
           <CustomText>
             {getAwardValueString(
               award.award.awardType,

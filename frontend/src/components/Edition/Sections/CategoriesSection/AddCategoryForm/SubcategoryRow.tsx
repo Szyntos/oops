@@ -3,6 +3,7 @@ import { Styles } from "../../../../../utils/Styles";
 import { TextField } from "@mui/material";
 import { useState } from "react";
 import { tokens } from "../../../../../tokens";
+import { RowButton } from "./RowButton";
 
 export type SubcategoriesFormValues = z.infer<typeof ValidationSchema>;
 
@@ -42,25 +43,27 @@ export const SubcategoryRow = ({
     <div style={styles.innerContainer}>
       <TextField
         name="ordinal"
-        label="Liczba porządkowa"
         variant="outlined"
-        value={initialValues.ordinal}
-        style={styles.points}
+        label="Lp."
+        value={`${initialValues.ordinal}.`}
+        style={styles.ordinal}
         disabled={true}
+        size="small"
       />
 
       <TextField
         name="maxPoints"
-        label="Maksymalna liczba punktów"
+        label="Max. punktów"
         variant="outlined"
         value={maxPoints}
         onChange={(e) => setMaxPoints(parseInt(e.target.value))}
         onBlur={() => {}}
         error={undefined}
         helperText={undefined}
-        style={styles.points}
+        style={styles.maxPoints}
         type="number"
         disabled={variant === "edit"}
+        size="small"
       />
 
       <TextField
@@ -73,37 +76,31 @@ export const SubcategoryRow = ({
         onBlur={() => {}}
         error={undefined}
         helperText={undefined}
-        style={styles.number}
         disabled={variant === "edit"}
+        size="small"
       />
 
       {variant === "edit" ? (
-        <div>
-          <button
-            type="button"
-            disabled={blockUp}
+        <>
+          <RowButton
             onClick={() => handleUp(initialValues.ordinal)}
-          >
-            up
-          </button>
-          <button
-            type="button"
-            onClick={() => handleDown(initialValues.ordinal)}
-            disabled={blockDown}
-          >
-            do
-          </button>
-
-          <button
-            type="button"
+            isDisabled={blockUp}
+            icon="up"
+          />
+          <RowButton
+            color={tokens.color.state.error}
             onClick={() => handleDelete(initialValues.ordinal)}
-          >
-            -
-          </button>
-        </div>
+            isDisabled={false}
+            icon="delete"
+          />
+          <RowButton
+            onClick={() => handleDown(initialValues.ordinal)}
+            isDisabled={blockDown}
+            icon="down"
+          />
+        </>
       ) : (
-        <button
-          type="button"
+        <RowButton
           onClick={() => {
             handleAdd({
               ordinal: initialValues.ordinal,
@@ -111,9 +108,9 @@ export const SubcategoryRow = ({
               name,
             });
           }}
-        >
-          +
-        </button>
+          isDisabled={false}
+          icon="add"
+        />
       )}
     </div>
   );
@@ -123,17 +120,13 @@ const styles: Styles = {
   innerContainer: {
     display: "flex",
     flexDirection: "row",
-    gap: 12,
-    padding: 12,
-    width: 500,
+    gap: 8,
+    alignItems: "center",
   },
-  points: {
-    width: 80,
+  ordinal: {
+    maxWidth: 52,
   },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
+  maxPoints: {
+    maxWidth: 110,
   },
 };

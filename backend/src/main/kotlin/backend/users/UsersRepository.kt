@@ -19,4 +19,5 @@ interface UsersRepository : JpaRepository<Users, Long> {
     fun existsByRole(role: UsersRoles) : Boolean
     fun findAllByNick(nick: String) : List<Users>
     fun findByUserGroups_Group_GroupsIdAndRole(groupId: Long, role: UsersRoles) : List<Users>
+    fun findByRole(role: UsersRoles) : List<Users>
 }

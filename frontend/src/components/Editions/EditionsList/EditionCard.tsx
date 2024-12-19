@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { Styles } from "../../../utils/Styles";
 import { pathsGenerator } from "../../../router/paths";
 import { SetupButtons } from "../../Edition/Sections/SetupButtons";
 import { Edition } from "../../../hooks/Editions/useEditionsScreen";
+import { coordinatorStyles, getCardStyles } from "../../../utils/utils";
+import { CustomText } from "../../CustomText";
 
 type EditionCardProps = {
   data: Edition;
@@ -21,11 +22,16 @@ export const EditionCard = ({
   const { edition, permissions } = data;
 
   return (
-    <div style={styles.card} key={edition.editionId}>
-      <div>
-        {edition.editionName},{" "}
-        {`${edition.startDate.slice(0, 4)}/${edition.endDate.slice(0, 4)}`}
+    <div style={getCardStyles(true)} key={edition.editionId}>
+      <div style={coordinatorStyles.textContainer}>
+        <CustomText style={coordinatorStyles.title}>
+          {edition.editionName}
+        </CustomText>
+        <CustomText>
+          {`${edition.startDate.slice(0, 4)}/${edition.endDate.slice(0, 4)}`}
+        </CustomText>
       </div>
+
       <SetupButtons
         handleDelete={handleDeleteClick}
         handleCopy={handleCopyClick}
@@ -37,16 +43,4 @@ export const EditionCard = ({
       />
     </div>
   );
-};
-
-const styles: Styles = {
-  card: {
-    border: "1px solid black",
-    padding: 12,
-  },
-  showButton: {
-    backgroundColor: "green",
-    padding: 4,
-    cursor: "pointer",
-  },
 };

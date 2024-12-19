@@ -1,6 +1,4 @@
-import { Dialog } from "@mui/material";
 import { useChangeGroup } from "../../../hooks/common/useChangeGroup";
-import { CloseHeader } from "../CloseHeader";
 import {
   GroupsQuery,
   useGroupsQuery,
@@ -8,6 +6,7 @@ import {
 import { ChangeGroupForm } from "./ChangeGroupForm";
 import { ERROR_MESSAGE } from "../../../utils/utils";
 import { CustomText } from "../../CustomText";
+import { CustomDialog } from "../CustomDialog";
 
 export type Group = NonNullable<GroupsQuery["editionByPk"]>["groups"][number];
 
@@ -35,7 +34,6 @@ export const ChangeGroupDialog = () => {
     return (
       <ChangeGroupForm
         handleConfirm={handleChangeGroupConfirm}
-        title={"Zmiana grupy studenta"}
         groups={groups}
         initGroupId={initData.groupId}
         formError={formError}
@@ -44,9 +42,12 @@ export const ChangeGroupDialog = () => {
   };
 
   return (
-    <Dialog open={isChangeGroupOpen}>
-      <CloseHeader onCloseClick={closeChangeGroup} />
+    <CustomDialog
+      isOpen={isChangeGroupOpen}
+      onCloseClick={closeChangeGroup}
+      title="Zmień grupę studenta"
+    >
       {getDialogContent()}
-    </Dialog>
+    </CustomDialog>
   );
 };

@@ -1,13 +1,12 @@
-import { Dialog } from "@mui/material";
 import { AddCategoryForm } from "./AddCategoryForm/AddCategoryForm";
 import { CategoriesList } from "./CategoriesList/CategoriesList";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useCategoriesSection } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { useParams } from "react-router-dom";
 import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
 import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
 import { CustomButton } from "../../../CustomButton";
 import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const CategoriesSection = () => {
   const params = useParams();
@@ -59,21 +58,27 @@ export const CategoriesSection = () => {
         title="Wszystkie kategorie"
       />
 
-      <Dialog open={isAddCategory}>
-        <CloseHeader onCloseClick={closeAddCategory} />
+      <CustomDialog
+        isOpen={isAddCategory}
+        title="Dodaj kategorię"
+        onCloseClick={closeAddCategory}
+        size="lg"
+      >
         <AddCategoryForm
           formError={formError}
           handleConfirm={handleAddCategory}
-          title={"Dodaj kategorię"}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={iseEditCategory}>
-        <CloseHeader onCloseClick={closeEditCategory} />
+      <CustomDialog
+        isOpen={iseEditCategory}
+        title="Edytuj kategorię"
+        onCloseClick={closeEditCategory}
+        size="lg"
+      >
         <AddCategoryForm
           formError={formError}
           handleConfirm={handleEditCategory}
-          title={"Edytuj kategorię"}
           initialValues={selectedCategory?.category}
           initialSelectedSubcategories={
             selectedCategory?.category.subcategories.map((s) => ({
@@ -82,7 +87,7 @@ export const CategoriesSection = () => {
             })) ?? []
           }
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
 };

@@ -100,6 +100,7 @@ services:
         VITE_FIREBASE_MEASUREMENT_ID: ${VITE_FIREBASE_MEASUREMENT_ID}
         VITE_PUBLIC_IP: ${VITE_PUBLIC_IP}
         VITE_BYPASS_TOKEN: ${VITE_BYPASS_TOKEN}
+        VITE_EMAIL_DOMAIN: ${VITE_EMAIL_DOMAIN}
 
     ports:
       - "80:80" # Map frontend port (nginx serves it)

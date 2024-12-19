@@ -21,12 +21,10 @@ export const ResetPasswordScreen = () => {
   const oobCode = searchParams.get("oobCode");
   const navigate = useNavigate();
 
-  console.log("oobCode:", oobCode);
-
   const handleResetPassword = (values: ResetFormValues) => {
     localErrorWrapper(setFormError, async () => {
       if (!oobCode) {
-        throw new Error("Invalid or missing reset code.");
+        throw new Error("Niepoprawny kod oobe");
       }
       await confirmPasswordReset(auth, oobCode, values.password);
       alert("Hasło zostało zmienione");
@@ -55,12 +53,12 @@ export const ResetPasswordScreen = () => {
           <CustomText style={formStyles.title} size={tokens.font.header}>
             Zmień hasło
           </CustomText>
-
-          <ResetPasswordForm
-            handleConfirmClick={handleResetPassword}
-            formError={formError}
-          />
         </div>
+
+        <ResetPasswordForm
+          handleConfirmClick={handleResetPassword}
+          formError={formError}
+        />
       </div>
     </div>
   );

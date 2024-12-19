@@ -40,7 +40,12 @@ export const routes = createBrowserRouter([
       },
       {
         path: commonPaths.ResetPassword.path,
-        element: <ResetPasswordScreen />,
+        element: (
+          <ProtectedRoute
+            element={<ResetPasswordScreen />}
+            allowedRoles={commonPaths.ResetPassword.allowedRoles}
+          />
+        ),
         index: true,
       },
       {

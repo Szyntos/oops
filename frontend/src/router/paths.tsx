@@ -20,12 +20,7 @@ const commonPaths = {
   },
   Login: {
     path: "/login",
-    allowedRoles: [
-      UsersRolesType.UnauthenticatedUser,
-      UsersRolesType.Student,
-      UsersRolesType.Teacher,
-      UsersRolesType.Coordinator,
-    ],
+    allowedRoles: [UsersRolesType.UnauthenticatedUser],
   },
   ResetPassword: {
     path: "/reset-password",

@@ -95,6 +95,7 @@ export const StudentsScreen = () => {
       <div style={styles.topBar}>
         <StudentsListSearcher
           onInputChange={(input: string) => setInput(input)}
+          placeholder="Wyszukaj studenta"
         />
         <RadioFilterGroups
           options={groupsRadioButtonOptions}

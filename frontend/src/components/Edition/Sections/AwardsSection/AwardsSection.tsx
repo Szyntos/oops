@@ -95,8 +95,13 @@ export const AwardsSection = () => {
                   ...selectedAward.award,
                   awardType: selectedAward.award.awardType.toUpperCase(),
                   awardValue: parseFloat(selectedAward.award.awardValue),
-                  imageId: selectedAward.award.imageFile?.fileId ?? "-1",
+                  imageId: selectedAward.award.imageFile?.fileId ?? "",
                   categoryId: selectedAward.award.category.categoryId,
+                  hasAwardsBundleCount: selectedAward.award.maxUsages > 0,
+                  maxUsages:
+                    selectedAward.award.maxUsages === -1
+                      ? ""
+                      : selectedAward.award.maxUsages,
                 }
               : undefined
           }

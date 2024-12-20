@@ -6,6 +6,8 @@ import {
   FormControl,
   InputLabel,
   Select,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import { AwardTypeType } from "../../../../../__generated__/schema.graphql.types";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
@@ -24,8 +26,9 @@ const ValidationSchema = z.object({
   awardValue: z.number().min(0),
   categoryId: z.string().min(1),
   description: z.string().min(1),
-  maxUsages: z.number(),
+  maxUsages: z.union([z.number().min(0), z.literal("")]),
   imageId: z.string().min(1),
+  hasAwardsBundleCount: z.boolean(),
 });
 
 export type AwardFormValues = z.infer<typeof ValidationSchema>;
@@ -44,8 +47,9 @@ const defaultInitialValues: AwardFormValues = {
   awardValue: 1,
   categoryId: "",
   description: "",
-  maxUsages: 1,
+  maxUsages: "",
   imageId: "",
+  hasAwardsBundleCount: false,
 };
 
 const awardTypes = Object.values(AwardTypeType);
@@ -68,12 +72,26 @@ export const AddAwardForm = ({
           Object.assign(errors, error.formErrors.fieldErrors);
         }
       }
+      if (values.hasAwardsBundleCount && values.maxUsages === "") {
+        errors.maxUsages = "wymagane";
+      }
       return errors;
     },
     onSubmit: (values: AwardFormValues) => {
       handleConfirm({ ...values });
     },
   });
+
+  const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = event.target.checked;
+    formik.setValues({
+      ...formik.values,
+      hasAwardsBundleCount: isChecked,
+      maxUsages: isChecked ? formik.values.maxUsages : "",
+    });
+
+    formik.validateForm();
+  };
 
   return (
     <div style={formStyles.formContainer}>
@@ -185,19 +203,6 @@ export const AddAwardForm = ({
             helperText={formik.touched.description && formik.errors.description}
           />
 
-          <TextField
-            fullWidth
-            name="maxUsages"
-            label="Maksymalna liczba użyć"
-            type="number"
-            variant="outlined"
-            value={formik.values.maxUsages}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={Boolean(formik.touched.maxUsages && formik.errors.maxUsages)}
-            helperText={formik.touched.maxUsages && formik.errors.maxUsages}
-          />
-
           <SelectImage
             type="withoutTooltip"
             options={imageIds}
@@ -213,6 +218,33 @@ export const AddAwardForm = ({
             selectVariant={"single"}
             title="Wybierz grafikę:"
           />
+
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formik.values.hasAwardsBundleCount}
+                onChange={handleSwitchChange}
+              />
+            }
+            label="Posiada ograniczenie liczby sztuk przydzielonych nagród"
+          />
+
+          {formik.values.hasAwardsBundleCount && (
+            <TextField
+              fullWidth
+              name="maxUsages"
+              label="Maksymalna liczba użyć"
+              type="number"
+              variant="outlined"
+              value={formik.values.maxUsages}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={Boolean(
+                formik.touched.maxUsages && formik.errors.maxUsages,
+              )}
+              helperText={formik.touched.maxUsages && formik.errors.maxUsages}
+            />
+          )}
 
           <FormError error={formError} isFormError={true} />
 

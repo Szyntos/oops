@@ -14,7 +14,6 @@ import { PointsCellContent } from "./cellContent/PointsCellContent";
 import { AwardsCellContent } from "./cellContent/AwardsCellContent";
 import { DateCellContent } from "./cellContent/DateCellContent";
 import { CustomIconButton } from "../../CustomIconButton";
-import { tokens } from "../../../tokens";
 
 type StudentTableProps = {
   points: Points[];
@@ -61,7 +60,8 @@ export const StudentTable = ({
       <Table>
         <TableHead>
           <TableRow>
-            {showActionButtons && <TableCell />}
+            {showActionButtons && <TableCell width={18} align="center" />}
+
             {headerTitles.map((header) => (
               <TableCell style={styles.header} align={header.align}>
                 {header.name}
@@ -99,7 +99,6 @@ export const StudentTable = ({
                       disabled={
                         blockActionButtons || !p.points.purePoints?.pointsId
                       }
-                      color={tokens.color.state.error}
                     />
                   </div>
                 </TableCell>
@@ -143,6 +142,6 @@ const styles: Styles = {
   buttonsContainer: {
     display: "flex",
     flexDirection: "row",
-    gap: 8,
+    gap: 6,
   },
 };

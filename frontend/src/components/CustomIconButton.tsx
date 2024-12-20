@@ -11,7 +11,7 @@ type CustomIconButtonProps = {
 
 export const CustomIconButton = ({
   icon,
-  color = tokens.color.accent.dark,
+  color = tokens.color.accent.light,
   disabled,
   onClick,
 }: CustomIconButtonProps) => {
@@ -28,15 +28,15 @@ export const CustomIconButton = ({
         }
       }}
     >
-      <IconMapper icon={icon} />
+      <IconMapper icon={icon} size={18} />
     </div>
   );
 };
 
 const styles: Styles = {
   wrapper: {
-    width: 30,
-    height: 30,
+    width: 24,
+    height: 24,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

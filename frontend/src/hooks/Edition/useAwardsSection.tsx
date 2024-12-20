@@ -38,7 +38,6 @@ export const useAwardsSection = (editionId: number) => {
     refetch,
   } = useSetupAwardsQuery({
     variables: { editionId },
-    fetchPolicy: "no-cache",
   });
 
   const {
@@ -47,7 +46,6 @@ export const useAwardsSection = (editionId: number) => {
     error: imageError,
   } = useFilesQuery({
     variables: { paths: ["image/award"] },
-    fetchPolicy: "no-cache",
   });
 
   const imageIds: string[] =

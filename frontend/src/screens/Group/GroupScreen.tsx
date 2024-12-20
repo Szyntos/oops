@@ -47,7 +47,8 @@ export const GroupScreen = () => {
     teacherId === userId || user.role === UsersRolesType.Coordinator;
 
   const isSelectedEditionActive = Boolean(
-    selectedEdition && isEditionActive(selectedEdition),
+    selectedEdition &&
+      isEditionActive(selectedEdition.startDate, selectedEdition.endDate),
   );
 
   const disableEditMode = !(isSelectedEditionActive && hasEditableRights);

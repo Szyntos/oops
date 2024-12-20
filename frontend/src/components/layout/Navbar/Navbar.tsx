@@ -80,7 +80,7 @@ export const Navbar = () => {
               <NavbarItem
                 title={
                   selectedEdition
-                    ? `${selectedEdition.name}${isEditionActive(selectedEdition) ? "" : " [not active]"}`
+                    ? `${selectedEdition.name}${isEditionActive(selectedEdition.startDate, selectedEdition.endDate) ? "" : " [not active]"}`
                     : "no edition selected"
                 }
               />

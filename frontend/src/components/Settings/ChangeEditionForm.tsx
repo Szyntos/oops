@@ -69,8 +69,7 @@ export const ChangeEditionForm = ({
             >
               {editions.map((e) => (
                 <MenuItem key={e.editionId} value={e.editionId}>
-                  {/* TODO change to name  */}
-                  {e.editionId}
+                  {e.name}
                 </MenuItem>
               ))}
             </Select>

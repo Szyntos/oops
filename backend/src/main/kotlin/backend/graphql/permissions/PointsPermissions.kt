@@ -477,7 +477,7 @@ class PointsPermissions {
             )
         }
         val teacherEditions = teacher.userGroups.map { it.group.edition }.distinct()
-        if (!teacherEditions.contains(subcategory.edition)) {
+        if (currentUser.role != UsersRoles.COORDINATOR && !teacherEditions.contains(subcategory.edition)) {
             return Permission(
                 action = action,
                 arguments = arguments,

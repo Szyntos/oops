@@ -134,10 +134,8 @@ class UserGroupsDataFetcher {
 
         val user = usersRepository.findById(userId).orElseThrow { throw IllegalArgumentException("User not found") }
 
-        val userGroups = userGroupsRepository.findByUserAndGroup_Edition(user, group.edition)
-        userGroups.forEach {
-            userGroupsRepository.delete(it)
-        }
+        userGroupsRepository.deleteByUserAndEdition(user.userId, group.edition.editionId)
+
         val newUserGroup = UserGroups(
             user = user,
             group = group

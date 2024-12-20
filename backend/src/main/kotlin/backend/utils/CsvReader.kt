@@ -23,7 +23,7 @@ class CsvReader(
         val users = mutableListOf<Users>()
         val csvFile = File(file.pathToFile)
         if (!csvFile.exists() || !csvFile.isFile) {
-            throw IllegalArgumentException("CSV file '${file.pathToFile}' not found")
+            throw IllegalArgumentException("Plik CSV nie istnieje: '${file.fileName}'")
         }
 
         val reader = BufferedReader(InputStreamReader(FileInputStream(file.pathToFile), StandardCharsets.UTF_8))
@@ -39,7 +39,7 @@ class CsvReader(
                         headerFound = true
                         continue
                     } else {
-                        throw IllegalArgumentException("CSV header not found in '${file.fileName}'")
+                        throw IllegalArgumentException("Nie znaleziono nagłówka w pliku CSV: '${file.fileName}'")
                     }
                 }
 

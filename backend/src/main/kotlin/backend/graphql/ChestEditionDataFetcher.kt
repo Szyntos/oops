@@ -78,7 +78,7 @@ class ChestEditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return addChestToEditionHelper(chestId, editionId)
     }
@@ -87,11 +87,11 @@ class ChestEditionDataFetcher {
     fun addChestToEditionHelper(chestId: Long, editionId: Long): ChestEdition {
         val permission = chestEditionPermissions.checkAddChestToEditionHelperPermission(chestId, editionId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
-        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
+        val chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Nie znaleziono skrzynki o id $chestId") }
+        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Edycji o id $editionId") }
 
         val chestEdition = ChestEdition(
             chest = chest,
@@ -119,7 +119,7 @@ class ChestEditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return removeChestFromEditionHelper(chestId, editionId)
     }
@@ -128,11 +128,11 @@ class ChestEditionDataFetcher {
     fun removeChestFromEditionHelper(chestId: Long, editionId: Long): Boolean {
         val permission = chestEditionPermissions.checkRemoveChestFromEditionHelperPermission(chestId, editionId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Chest not found") }
-        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
+        val chest = chestsRepository.findById(chestId).orElseThrow { throw IllegalArgumentException("Nie znaleziono skrzynki o id $chestId") }
+        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Edycji o id $editionId") }
 
         chestEditionRepository.deleteByChestAndEdition(chest, edition)
         return true
@@ -152,9 +152,9 @@ class ChestEditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
-        val chestEdition = chestEditionRepository.findByChest_ChestIdAndEdition_EditionId(chestId, editionId) ?: throw IllegalArgumentException("ChestEdition not found")
+        val chestEdition = chestEditionRepository.findByChest_ChestIdAndEdition_EditionId(chestId, editionId) ?: throw IllegalArgumentException("Nie znaleziono edycji skrzynki dla edycji $editionId oraz skrzynki $chestId")
 
         chestEdition.active = true
         chestEditionRepository.save(chestEdition)
@@ -175,9 +175,9 @@ class ChestEditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
-        val chestEdition = chestEditionRepository.findByChest_ChestIdAndEdition_EditionId(chestId, editionId) ?: throw IllegalArgumentException("ChestEdition not found")
+        val chestEdition = chestEditionRepository.findByChest_ChestIdAndEdition_EditionId(chestId, editionId) ?: throw IllegalArgumentException("Nie znaleziono edycji skrzynki dla edycji $editionId oraz skrzynki $chestId")
 
         chestEdition.active = false
         chestEditionRepository.save(chestEdition)

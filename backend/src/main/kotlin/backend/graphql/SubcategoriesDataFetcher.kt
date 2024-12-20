@@ -68,12 +68,12 @@ class SubcategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val edition = editionRepository.findById(editionId).orElseThrow { throw Exception("Edition not found") }
+        val edition = editionRepository.findById(editionId).orElseThrow { throw Exception("Nie znaleziono Edycji o id $editionId") }
 
-        val category = categoriesRepository.findById(categoryId).orElseThrow { throw Exception("Category not found") }
+        val category = categoriesRepository.findById(categoryId).orElseThrow { throw Exception("Nie znaleziono Kategorii o id $categoryId") }
 
         val subcategories = mutableListOf<Subcategories>()
 
@@ -113,7 +113,7 @@ class SubcategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         return addSubcategoryHelper(subcategory)
@@ -142,12 +142,12 @@ class SubcategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
         val subcategory = subcategoriesRepository.findById(subcategoryId)
-            .orElseThrow { IllegalArgumentException("Subcategory not found") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono podkategorii o id $subcategoryId") }
 
 
 
@@ -187,11 +187,11 @@ class SubcategoriesDataFetcher {
         val permission = permissionService.checkFullPermission(permissionInput)
 
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val subcategory = subcategoriesRepository.findById(subcategoryId)
-            .orElseThrow { IllegalArgumentException("Subcategory not found") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono podkategorii o id $subcategoryId") }
 
         subcategoriesRepository.delete(subcategory)
         return true
@@ -201,12 +201,12 @@ class SubcategoriesDataFetcher {
     fun addSubcategoryHelper(subcategory: SubcategoryInput): Subcategories {
         val permission = subcategoriesPermissions.checkAddSubcategoryHelperPermission(subcategory)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val category = categoriesRepository.findById(subcategory.categoryId!!).orElseThrow { throw Exception("Category not found") }
+        val category = categoriesRepository.findById(subcategory.categoryId!!).orElseThrow { throw Exception("Nie znaleziono Kategorii o id ${subcategory.categoryId}") }
         val edition = if (!(subcategory.editionId == -1L || subcategory.editionId == null)) {
-            editionRepository.findById(subcategory.editionId).orElseThrow { throw Exception("Edition not found") }
+            editionRepository.findById(subcategory.editionId).orElseThrow { throw Exception("Nie znaleziono Edycji o id ${subcategory.editionId}") }
         } else {
             null
         }

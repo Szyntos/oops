@@ -67,7 +67,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add categories to editions"
+                reason = "Tylko koordynatorzy mogą dodawać kategorie do edycji"
             )
         }
 
@@ -76,7 +76,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'categoryId'"
+                reason = "Nieprawidłowe lub brakujące 'categoryId'"
             )
 
         val editionId = arguments.getLongField("editionId")
@@ -84,21 +84,21 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'editionId'"
+                reason = "Nieprawidłowe lub brakujące 'editionId'"
             )
 
         val category = categoriesRepository.findById(categoryId).getOrNull() ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Category not found"
+            reason = "Nie znaleziono Kategorii o id $categoryId"
         )
 
         val edition = editionRepository.findById(editionId).getOrNull() ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Edition not found"
+            reason = "Nie znaleziono Edycji o id $editionId"
         )
 
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
@@ -106,7 +106,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         // TODO: Delete userId check
@@ -115,7 +115,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already started"
+                reason = "Edycja już wystartowała"
             )
         }
 
@@ -124,7 +124,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category with this name already exists in this edition"
+                reason = "Kategoria z tą nazwą już istnieje w tej edycji"
             )
         }
 
@@ -144,7 +144,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove categories from editions"
+                reason = "Tylko koordynatorzy mogą usuwać kategorie z edycji"
             )
         }
 
@@ -153,7 +153,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'categoryId'"
+                reason = "Nieprawidłowe lub brakujące 'categoryId'"
             )
 
         val editionId = arguments.getLongField("editionId")
@@ -161,21 +161,21 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'editionId'"
+                reason = "Nieprawidłowe lub brakujące 'editionId'"
             )
 
         val category = categoriesRepository.findById(categoryId).getOrNull() ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Category not found"
+            reason = "Nie znaleziono Kategorii o id $categoryId"
         )
 
         val edition = editionRepository.findById(editionId).getOrNull() ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Edition not found"
+            reason = "Nie znaleziono Edycji o id $editionId"
         )
 
         if (!categoryEditionRepository.existsByCategoryAndEdition(category, edition)){
@@ -183,7 +183,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This category does not exist in this edition"
+                reason = "Kategoria nie istnieje w tej edycji"
             )
         }
 
@@ -192,7 +192,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -201,7 +201,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already started"
+                reason = "Edycja już wystartowała"
             )
         }
         if (gradingChecksRepository.existsByProjectAndEdition(category, edition)){
@@ -209,7 +209,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category has grading checks assigned in this edition"
+                reason = "Kategoria jest już wykorzystywana w zasadach oceniania"
             )
         }
 
@@ -218,7 +218,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category has subcategories connected to points"
+                reason = "Kategoria posiada podkategorie, do których już przyznano punkty"
             )
         }
 
@@ -244,7 +244,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add categories to editions"
+                reason = "Tylko koordynatorzy mogą dodawać kategorie do edycji"
             )
         }
 
@@ -253,14 +253,14 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category not found"
+                reason = "Nie znaleziono Kategorii o id $categoryId"
             )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition not found"
+                reason = "Nie znaleziono Edycji o id $editionId"
             )
 
 
@@ -286,7 +286,7 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove categories from editions"
+                reason = "Tylko koordynatorzy mogą usuwać kategorie z edycji"
             )
         }
 
@@ -295,14 +295,14 @@ class CategoryEditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category not found"
+                reason = "Nie znaleziono Kategorii o id $categoryId"
             )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition not found"
+                reason = "Nie znaleziono Edycji o id $editionId"
             )
 
         return Permission(

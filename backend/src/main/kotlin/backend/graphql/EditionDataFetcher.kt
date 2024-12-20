@@ -101,7 +101,7 @@ class EditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val editions = editionRepository.findAll()
@@ -113,7 +113,7 @@ class EditionDataFetcher {
                         "addEdition",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canEdit = permissionService.checkPartialPermission(PermissionInput("editEdition", objectMapper.writeValueAsString(mapOf("editionId" to it.editionId)))),
                     canCopy = permissionService.checkPartialPermission(PermissionInput("copyEdition", objectMapper.writeValueAsString(mapOf("editionId" to it.editionId)))),
                     canRemove = permissionService.checkPartialPermission(PermissionInput("removeEdition", objectMapper.writeValueAsString(mapOf("editionId" to it.editionId)))),
@@ -122,13 +122,13 @@ class EditionDataFetcher {
                         "selectEdition",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canUnselect =
                     Permission(
                         "unselectEdition",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     additional = emptyList()
                 )
             )
@@ -150,7 +150,7 @@ class EditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val startDate = LocalDate.of(editionYear, 10, 1)
@@ -186,11 +186,11 @@ class EditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
 
 
         editionName?.let {
@@ -223,11 +223,11 @@ class EditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
 
 
         val categories = categoriesRepository.findByCategoryEdition_Edition(edition)
@@ -277,11 +277,11 @@ class EditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
 
         val startDate = LocalDate.of(editionYear, 10, 1)
         val endDate = LocalDate.of(editionYear + 1, 9, 30)

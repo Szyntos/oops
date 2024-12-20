@@ -49,7 +49,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can list setup chests"
+                reason = "Tylko koordynatorzy mogą wylistować skrzynki do setupu"
             )
         }
 
@@ -57,7 +57,7 @@ class ChestsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -65,7 +65,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         return Permission(
@@ -84,7 +84,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can assign photos to chests"
+                reason = "Tylko koordynatorzy mogą przypisywać zdjęcia do skrzynek"
             )
         }
 
@@ -92,7 +92,7 @@ class ChestsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val chest = chestsRepository.findById(chestId).orElse(null)
@@ -100,7 +100,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
 
         val chestEditions = chest.chestEdition.map { it.edition }
@@ -109,7 +109,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -141,7 +141,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add chests"
+                reason = "Tylko koordynatorzy mogą dodawać skrzynki"
             )
         }
 
@@ -149,7 +149,7 @@ class ChestsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestType'"
+            reason = "Nieprawidłowe lub brakujące 'chestType'"
         )
 
         val fileId = arguments.getLongField("fileId")
@@ -168,14 +168,14 @@ class ChestsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardBundleCount'"
+            reason = "Nieprawidłowe lub brakujące 'awardBundleCount'"
         )
 
         val awardIds = arguments.getLongList("awardIds") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardIds'"
+            reason = "Nieprawidłowe lub brakujące 'awardIds'"
         )
 
         if (awardBundleCount < 1) {
@@ -183,7 +183,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid 'awardBundleCount'"
+                reason = "Nieprawidłowe 'awardBundleCount'"
             )
         }
         if (awardBundleCount > awardIds.size) {
@@ -191,7 +191,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "awardBundleCount cannot be greater than the number of awards"
+                reason = "awardBundleCount nie może być większe niż liczba nagród"
             )
         }
 
@@ -201,7 +201,7 @@ class ChestsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid award ID"
+                    reason = "Nie znaleziono Łupu o id $awardId"
                 )
         }
 
@@ -221,7 +221,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit chests"
+                reason = "Tylko koordynatorzy mogą edytować skrzynki"
             )
         }
 
@@ -229,7 +229,7 @@ class ChestsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val chest = chestsRepository.findById(chestId).orElse(null)
@@ -237,7 +237,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
 
         val chestEditions = chest.chestEdition.map { it.edition }
@@ -247,7 +247,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -267,7 +267,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'awardIds'"
+                reason = "Nieprawidłowe lub brakujące 'awardIds'"
             )
 
         awardIds.forEach { awardId ->
@@ -276,7 +276,7 @@ class ChestsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid award ID"
+                    reason = "Nie znaleziono Łupu o id $awardId"
                 )
         }
 
@@ -288,7 +288,7 @@ class ChestsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid 'awardBundleCount'"
+                    reason = "Nieprawidłowe 'awardBundleCount'"
                 )
             }
             if (awardBundleCount > awardIds.size) {
@@ -296,7 +296,7 @@ class ChestsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "awardBundleCount cannot be greater than the number of awards"
+                    reason = "awardBundleCount nie może być większe niż liczba nagród"
                 )
             }
         }
@@ -306,7 +306,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Users have already opened this chest"
+                reason = "Skrzynka już została otwarta przez użytkowników"
             )
 
         }
@@ -327,7 +327,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove chests"
+                reason = "Tylko koordynatorzy mogą usuwać skrzynki"
             )
         }
 
@@ -335,7 +335,7 @@ class ChestsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
 
@@ -344,7 +344,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
 
         val chestEditions = chest.chestEdition.map { it.edition }
@@ -353,7 +353,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         if (chestHistoryRepository.existsByChest(chest)) {
@@ -361,7 +361,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Users have already been given this chest"
+                reason = "Skrzynka już została przyznana użytkownikom"
             )
         }
 
@@ -381,7 +381,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can copy chests"
+                reason = "Tylko koordynatorzy mogą kopiować skrzynki"
             )
         }
 
@@ -389,7 +389,7 @@ class ChestsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val chest = chestsRepository.findById(chestId).orElse(null)
@@ -397,7 +397,7 @@ class ChestsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
 
         return Permission(

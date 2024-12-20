@@ -69,7 +69,7 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         val levelSets = levelSetRepository.findAll().map { levelSet ->
             LevelSetWithPermissions(
@@ -84,7 +84,7 @@ class LevelSetDataFetcher {
                         "addLevelSet",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canEdit = permissionService.checkPartialPermission(PermissionInput("editLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to levelSet.levelSetId)))),
                     canCopy = permissionService.checkPartialPermission(PermissionInput("copyLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to levelSet.levelSetId)))),
                     canRemove = permissionService.checkPartialPermission(PermissionInput("removeLevelSet", objectMapper.writeValueAsString(mapOf("levelSetId" to levelSet.levelSetId)))),
@@ -121,7 +121,7 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val levelSet = levelSetRepository.save(LevelSet(levelSetName = ""))
@@ -155,12 +155,12 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
         val levelSet = levelSetRepository.findById(levelSetId)
-            .orElseThrow { IllegalArgumentException("Invalid level set ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono zbioru poziomów o id $levelSetId") }
 
         val levelsInSet = levelSet.levels.sortedBy { it.ordinalNumber }
 
@@ -204,12 +204,12 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
         val levelSet = levelSetRepository.findById(levelSetId)
-            .orElseThrow { IllegalArgumentException("Invalid level set ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono zbioru poziomów o id $levelSetId") }
 
         val levelsInSet = levelSet.levels.sortedBy { it.ordinalNumber }
         val inputLevelIds = levels.mapNotNull { it.levelId }.toSet()
@@ -218,7 +218,7 @@ class LevelSetDataFetcher {
         levelsInSet.filter { it.levelId !in inputLevelIds }
             .forEach { levelNotInSet ->
                 val level = levelsRepository.findById(levelNotInSet.levelId)
-                    .orElseThrow { IllegalArgumentException("Invalid level ID") }
+                    .orElseThrow { IllegalArgumentException("Nie znaleziono poziomu o id ${levelNotInSet.levelId}") }
 
                 if (level.highest) {
                     val prevLevel = levelsRepository.findByLevelSet(levelSet)
@@ -229,7 +229,7 @@ class LevelSetDataFetcher {
                     }
                 }
                 if (level.userLevels.isNotEmpty()) {
-                    throw IllegalArgumentException("Cannot remove level with users assigned")
+                    throw IllegalArgumentException("Nie można usunąć poziomu z przypisanymi studentami")
                 }
                 levelsRepository.delete(level)
                 levelSet.levels = levelSet.levels.filter { it.levelId != level.levelId }.toSet()
@@ -274,11 +274,11 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val levelSet = levelSetRepository.findById(levelSetId)
-            .orElseThrow { IllegalArgumentException("Invalid level set ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono zbioru poziomów o id $levelSetId") }
 
         val levelsInSet = levelSet.levels.sortedBy { it.ordinalNumber }
 
@@ -305,15 +305,15 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
         val levelSet = levelSetRepository.findById(levelSetId)
-            .orElseThrow { IllegalArgumentException("Invalid level set ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono zbioru poziomów o id $levelSetId") }
 
         val edition = editionRepository.findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
 
         levelSet.levelSetName = edition.editionName
         levelSetRepository.save(levelSet)
@@ -338,14 +338,14 @@ class LevelSetDataFetcher {
         )
         val permission = permissionService.checkFullPermission(input)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val levelSet = levelSetRepository.findById(levelSetId)
-            .orElseThrow { IllegalArgumentException("Invalid level set ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono zbioru poziomów o id $levelSetId") }
 
         val edition = editionRepository.findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
 
         levelSet.levelSetName = ""
         levelSetRepository.save(levelSet)
@@ -366,7 +366,7 @@ class LevelSetDataFetcher {
         val permission = levelSetPermissions.checkAddLevelHelperPermission(levelSet, name, maximumPoints, grade, imageFileId, ordinalNumber)
 
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val levelsInSet = levelSet.levels
@@ -391,13 +391,13 @@ class LevelSetDataFetcher {
         }
 
         if (highestLevel.maximumPoints >= maximumPoints.toBigDecimal()){
-            throw IllegalArgumentException("Maximum points must be higher than the highest level in the edition")
+            throw IllegalArgumentException("Maksymalna liczba punktów musi być większa od maksymalnej liczby punktów najwyższego poziomu w edycji")
         }
         if (highestLevel.grade > grade.toBigDecimal()){
-            throw IllegalArgumentException("Grade must be higher or equal to the highest level in the edition")
+            throw IllegalArgumentException("Ocena musi być większa lub równa ocenie najwyższego poziomu w edycji")
         }
         if (levelsInSet.any { it.levelName == name }){
-            throw IllegalArgumentException("Level with the same name already exists in the edition")
+            throw IllegalArgumentException("Nazwa poziomu musi być unikalna w ramach zbioru poziomów")
         }
 
         val level = Levels(
@@ -429,12 +429,12 @@ class LevelSetDataFetcher {
     ): Levels {
         val permission = levelSetPermissions.checkEditLevelHelperPermission(levelId, name, maximumPoints, grade, imageFileId, ordinalNumber, label)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
         val level = levelsRepository.findById(levelId)
-            .orElseThrow { IllegalArgumentException("Invalid level ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono poziomu o id $levelId") }
 
 
         name?.let { newName ->
@@ -472,11 +472,11 @@ class LevelSetDataFetcher {
 
         ordinalNumber?.let {
             if (ordinalNumber < 0){
-                throw IllegalArgumentException("Ordinal number must be a non-negative value")
+                throw IllegalArgumentException("Liczba porządkowa nie może być ujemna")
             }
             val levelsInSet = levelsRepository.findByLevelSet(level.levelSet)
             if (ordinalNumber >= levelsInSet.size){
-                throw IllegalArgumentException("Ordinal number must be lower than the number of levels in the set")
+                throw IllegalArgumentException("Liczba porządkowa nie może być większa niż liczba poziomów w zbiorze")
             }
             val newOrdinalNumber = ordinalNumber.coerceAtMost(levelsInSet.size - 1)
             val levelsToShift = levelsInSet.filter { it.ordinalNumber in newOrdinalNumber..level.ordinalNumber }

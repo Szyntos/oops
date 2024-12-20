@@ -76,7 +76,7 @@ class GroupsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can edit groups"
+                reason = "Tylko nauczyciele i koordynatorzy mogą edytować grupy"
             )
         }
 
@@ -84,7 +84,7 @@ class GroupsPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupId'"
+            reason = "Nieprawidłowe lub brakujące 'groupId'"
         )
 
         val group = groupsRepository.findById(groupId).orElse(null)
@@ -92,7 +92,7 @@ class GroupsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid group ID"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
 
         if (currentUser.role == UsersRoles.TEACHER){
@@ -101,7 +101,7 @@ class GroupsPartialPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit their groups"
+                    reason = "Prowadzący może edytować tylko swoje grupy"
                 )
             }
         }
@@ -111,7 +111,7 @@ class GroupsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -130,7 +130,7 @@ class GroupsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove groups"
+                reason = "Tylko koordynatorzy mogą usuwać grupy"
             )
         }
 
@@ -138,7 +138,7 @@ class GroupsPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupId'"
+            reason = "Nieprawidłowe lub brakujące 'groupId'"
         )
 
         val group = groupsRepository.findById(groupId).orElse(null)
@@ -146,7 +146,7 @@ class GroupsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid group ID"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
 
         if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
@@ -154,7 +154,7 @@ class GroupsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -163,7 +163,7 @@ class GroupsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove group with users that have points"
+                reason = "Nie można usunąć grupy z użytkownikami, którzy mają przyznane punkty"
             )
         }
 

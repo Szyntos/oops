@@ -52,7 +52,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can add chests to users"
+                reason = "Tylko prowadzący i koordynatorzy mogą przyznawać skrzynki studentom"
             )
         }
 
@@ -63,28 +63,28 @@ class ChestHistoryPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val chestId = arguments.getLongField("chestId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val teacherId = arguments.getLongField("teacherId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'teacherId'"
+            reason = "Nieprawidłowe lub brakujące 'teacherId'"
         )
 
         val subcategoryId = arguments.getLongField("subcategoryId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'subcategoryId'"
+            reason = "Nieprawidłowe lub brakujące 'subcategoryId'"
         )
 
         val user = usersRepository.findById(userId).getOrNull()
@@ -92,14 +92,14 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
         if (user.userGroups.isEmpty()) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User has no groups"
+                reason = "Użytkownik nie istnieje w żadnej grupie"
             )
         }
         if (user.role != UsersRoles.STUDENT) {
@@ -107,7 +107,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User must be a student"
+                reason = "Użytkownik musi być studentem"
             )
         }
 
@@ -117,7 +117,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher must be the current user"
+                    reason = "Prowadzący musi być użytkownikiem wykonującym mutacje"
                 )
             }
             val studentGroups = user.userGroups.map { it.group }.filter { it.teacher == currentUser }
@@ -126,7 +126,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Student is not in a group of the current user"
+                    reason = "Student nie jest w grupie prowadzącego"
                 )
             }
         }
@@ -138,7 +138,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User has no editions"
+                reason = "Użytkownik nie istnieje w żadnej edycji"
             )
         }
         val chest = chestsRepository.findById(chestId).getOrNull()
@@ -146,7 +146,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
 
         val chestEditions = chest.chestEdition.map { it.edition }
@@ -156,7 +156,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Chest and user must have the same edition"
+                reason = "Skrzynka i użytkownik muszą być w tej samej edycji"
             )
         }
         val teacher = usersRepository.findById(teacherId).getOrNull()
@@ -164,14 +164,14 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid teacher ID"
+                reason = "Nie znaleziono nauczyciela o id $teacherId"
             )
         if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Teacher must be a teacher or coordinator"
+                reason = "teacherId musi być prowadzącym albo koordynatorem"
             )
         }
         if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.isEmpty()) {
@@ -179,7 +179,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Teacher has no groups"
+                reason = "Prowadzący nie ma grup"
             )
         }
         if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.map { it.group.edition }.none { it in chestEditions }) {
@@ -187,7 +187,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Teacher and chest must have the same edition"
+                reason = "Prowadzący i skrzynka muszą być w tej samej edycji"
             )
         }
         if (teacherId == userId) {
@@ -195,7 +195,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Teacher and user cannot be the same"
+                reason = "Prowadzący i użytkownik nie mogą być tą samą osobą"
             )
         }
         if (teacher.role == UsersRoles.TEACHER && user.userGroups.none { it.group.teacher == teacher }) {
@@ -203,7 +203,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Teacher is not a teacher of user's group"
+                reason = "Prowadzący nie jest prowadzącym grupy studenta"
             )
         }
         val subcategory = subcategoriesRepository.findById(subcategoryId).getOrNull()
@@ -211,14 +211,14 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid subcategory ID"
+                reason = "Nie znaleziono podkategorii o id $subcategoryId"
             )
         if (subcategory.edition == null) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory must have an edition"
+                reason = "Podkategoria musi mieć edycję"
             )
         }
         if (chestEditions.none { it == subcategory.edition }) {
@@ -226,7 +226,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory and chest must have the same edition"
+                reason = "Podkategoria i skrzynka muszą być w tej samej edycji"
             )
         }
 
@@ -236,7 +236,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Chest must be active in this edition"
+                reason = "Skrzynka musi być aktywna w tej edycji"
             )
         }
 
@@ -245,7 +245,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with this subcategory has already ended"
+                reason = "Edycja z tą podkategorią już się zakończyła"
             )
         }
 
@@ -254,7 +254,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with this subcategory has not started yet"
+                reason = "Edycja z tą podkategorią jeszcze się nie zaczęła"
             )
         }
 
@@ -274,7 +274,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can edit chest history"
+                reason = "Tylko prowadzący i koordynatorzy mogą edytować historię skrzynek"
             )
         }
 
@@ -289,7 +289,7 @@ class ChestHistoryPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestHistoryId'"
+            reason = "Nieprawidłowe lub brakujące 'chestHistoryId'"
         )
 
         val userId = arguments.getLongField("userId")
@@ -305,7 +305,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest history ID"
+                reason = "Nie znaleziono chestHistory o id $chestHistoryId"
             )
 
         val chestEditions = chestHistory.chest.chestEdition.map { it.edition }
@@ -316,7 +316,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition with this subcategory has already ended"
+                    reason = "Edycja z tą podkategorią już się zakończyła"
                 )
             }
         }
@@ -327,7 +327,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Chest has already been opened"
+                reason = "Skrzynka została już otwarta"
             )
         }
 
@@ -337,7 +337,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher is not a teacher of student's group"
+                    reason = "Prowadzący nie jest prowadzącym grupy studenta"
                 )
             }
         }
@@ -348,7 +348,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid user ID"
+                    reason = "Nie znaleziono użytkownika o id $userId"
                 )
 
             if (user.userGroups.isEmpty()) {
@@ -356,7 +356,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "User has no groups"
+                    reason = "Użytkownik nie istnieje w żadnej grupie"
                 )
             }
             if (user.role != UsersRoles.STUDENT) {
@@ -364,7 +364,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "User must be a student"
+                    reason = "Użytkownik musi być studentem"
                 )
             }
 
@@ -375,7 +375,7 @@ class ChestHistoryPermissions {
                         action = action,
                         arguments = arguments,
                         allow = false,
-                        reason = "Student is not in a group of the current user"
+                        reason = "Student nie jest w grupie prowadzącego"
                     )
                 }
             }
@@ -386,7 +386,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "User has no editions"
+                    reason = "Użytkownik nie istnieje w żadnej edycji"
                 )
             }
             if (userEditions.none { it in chestEditions }) {
@@ -394,7 +394,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Chest and user must have the same edition"
+                    reason = "Skrzynka i użytkownik muszą być w tej samej edycji"
                 )
             }
             chestHistory.user = user
@@ -406,7 +406,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid chest ID"
+                    reason = "Nie znaleziono skrzynki o id $chestId"
                 )
 
             if (chestHistory.user.userGroups.map { group -> group.group.edition }.none { edition -> edition in chestEditions }) {
@@ -414,7 +414,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Chest and user must have the same edition"
+                    reason = "Skrzynka i użytkownik muszą być w tej samej edycji"
                 )
             }
             // check if chest is active in this edition
@@ -423,7 +423,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Chest must be active in this edition"
+                    reason = "Skrzynka musi być aktywna w tej edycji"
                 )
             }
             chestHistory.chest = chest
@@ -436,7 +436,7 @@ class ChestHistoryPermissions {
                         action = action,
                         arguments = arguments,
                         allow = false,
-                        reason = "Teacher must be the current user"
+                        reason = "Prowadzący musi być użytkownikiem wykonującym mutacje"
                     )
                 }
             }
@@ -446,7 +446,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid teacher ID"
+                    reason = "Nie znaleziono nauczyciela o id $teacherId"
                 )
 
             if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
@@ -454,7 +454,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher must be a teacher or coordinator"
+                    reason = "teacherId musi być prowadzącym albo koordynatorem"
                 )
             }
             if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.isEmpty()) {
@@ -462,7 +462,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher has no groups"
+                    reason = "Prowadzący nie ma grup"
                 )
             }
             if (teacher.role == UsersRoles.TEACHER && teacher.userGroups.map { group -> group.group.edition }.none { edition -> edition in chestEditions }) {
@@ -470,7 +470,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher and chest must have the same edition"
+                    reason = "Prowadzący i skrzynka muszą być w tej samej edycji"
                 )
             }
             if (it == chestHistory.user.userId) {
@@ -478,7 +478,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher and user cannot be the same"
+                    reason = "Prowadzący i użytkownik nie mogą być tą samą osobą"
                 )
             }
             if (teacher.role == UsersRoles.TEACHER && chestHistory.user.userGroups.none { group -> group.group.teacher == teacher }) {
@@ -486,7 +486,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher is not a teacher of user's group"
+                    reason = "Prowadzący nie jest prowadzącym grupy studenta"
                 )
             }
             chestHistory.teacher = teacher
@@ -498,14 +498,14 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid subcategory ID"
+                    reason = "Nie znaleziono podkategorii o id $subcategoryId"
                 )
             if (subcategory.edition == null) {
                 return Permission(
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory must have an edition"
+                    reason = "Podkategoria musi mieć edycję"
                 )
             }
             if (chestEditions.none { it == subcategory.edition }) {
@@ -513,7 +513,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory and chest must have the same edition"
+                    reason = "Podkategoria i skrzynka muszą być w tej samej edycji"
                 )
             }
             if (subcategory.edition!!.endDate.isBefore(LocalDate.now())) {
@@ -521,7 +521,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition with this subcategory has already ended"
+                    reason = "Edycja z tą podkategorią już się zakończyła"
                 )
             }
             if (subcategory.edition!!.startDate.isAfter(LocalDate.now())) {
@@ -529,7 +529,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition with this subcategory has not started yet"
+                    reason = "Edycja z tą podkategorią jeszcze się nie zaczęła"
                 )
             }
             if (chestHistory.chest.chestEdition.none { it.edition == subcategory.edition }) {
@@ -537,7 +537,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Chest and subcategory must have the same edition"
+                    reason = "Skrzynka i podkategoria muszą być w tej samej edycji"
                 )
             }
             chestHistory.subcategory = subcategory
@@ -559,7 +559,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can remove chests from users"
+                reason = "Tylko prowadzący i koordynatorzy mogą usuwać skrzynki studentom"
             )
         }
 
@@ -567,7 +567,7 @@ class ChestHistoryPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestHistoryId'"
+            reason = "Nieprawidłowe lub brakujące 'chestHistoryId'"
         )
 
         val chestHistory = chestHistoryRepository.findById(chestHistoryId).orElse(null)
@@ -575,7 +575,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest history ID"
+                reason = "Nie znaleziono chestHistory o id $chestHistoryId"
             )
 
 
@@ -585,7 +585,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition with this subcategory has already ended"
+                    reason = "Edycja z tą podkategorią już się zakończyła"
                 )
             }
         }
@@ -595,7 +595,7 @@ class ChestHistoryPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Chest has already been opened"
+                reason = "Skrzynka została już otwarta"
             )
         }
 
@@ -605,7 +605,7 @@ class ChestHistoryPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher is not a teacher of student's group"
+                    reason = "Prowadzący nie jest prowadzącym grupy studenta"
                 )
             }
         }

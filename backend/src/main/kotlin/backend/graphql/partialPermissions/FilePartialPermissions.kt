@@ -50,7 +50,7 @@ class FilePartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove files"
+                reason = "Tylko koordynatorzy mogą usuwać pliki"
             )
         }
 
@@ -58,7 +58,7 @@ class FilePartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'fileId'"
+            reason = "Nieprawidłowe lub brakujące 'fileId'"
         )
 
         val file = fileEntityRepository.findById(fileId).orElse(null)
@@ -66,7 +66,7 @@ class FilePartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid file ID"
+                reason = "Nie znaleziono pliku o id $fileId"
             )
 
         if (file.chests.isNotEmpty()) {
@@ -74,7 +74,7 @@ class FilePartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "File is used in chests"
+                reason = "Plik jest już wykorzystywany w skrzynkach"
             )
         }
 
@@ -83,7 +83,7 @@ class FilePartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "File is used in awards"
+                reason = "Plik jest już wykorzystywany w łupach"
             )
         }
 
@@ -92,7 +92,7 @@ class FilePartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "File is used in levels"
+                reason = "Plik jest już wykorzystywany w poziomach"
             )
         }
 
@@ -101,7 +101,7 @@ class FilePartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "File is used in users"
+                reason = "Plik jest już wykorzystywany w użytkownikach"
             )
         }
 
@@ -110,7 +110,7 @@ class FilePartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "File is used in groups"
+                reason = "Plik jest już wykorzystywany w grupach"
             )
         }
 

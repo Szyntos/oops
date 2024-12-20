@@ -81,7 +81,7 @@ class EditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit editions"
+                reason = "Tylko koordynatorzy mogą edytować edycje"
             )
         }
 
@@ -89,7 +89,7 @@ class EditionPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId)
@@ -98,7 +98,7 @@ class EditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
 
@@ -107,7 +107,7 @@ class EditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         if (edition.startDate.isBefore(LocalDate.now())) {
@@ -115,7 +115,7 @@ class EditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already started"
+                reason = "Edycja już wystartowała"
             )
         }
 
@@ -135,7 +135,7 @@ class EditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove editions"
+                reason = "Tylko koordynatorzy mogą usuwać edycje"
             )
         }
 
@@ -143,7 +143,7 @@ class EditionPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId)
@@ -152,7 +152,7 @@ class EditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
 
@@ -161,7 +161,7 @@ class EditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         if (edition.startDate.isBefore(LocalDate.now())) {
@@ -169,7 +169,7 @@ class EditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already started"
+                reason = "Edycja już wystartowała"
             )
         }
 
@@ -257,7 +257,7 @@ class EditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can copy editions"
+                reason = "Tylko koordynatorzy mogą kopiować edycje"
             )
         }
 
@@ -265,7 +265,7 @@ class EditionPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -273,7 +273,7 @@ class EditionPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         return Permission(

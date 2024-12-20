@@ -26,7 +26,7 @@ class CustomDataFetchingExceptionHandler : DataFetcherExceptionHandler {
 
             // Build the GraphQLError without debugInfo
             val graphqlError: GraphQLError = TypedGraphQLError.newPermissionDeniedBuilder()
-                .message(exception.message ?: "Permission denied.")
+                .message(exception.message ?: "Brak dostępu")
                 .path(handlerParameters.path)
                 .build()
 

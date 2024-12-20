@@ -26,7 +26,7 @@ class FirebaseConfig {
         val base64ServiceAccount = dotenv?.get("FIREBASE_SECRET_JSON_BASE64")
             ?: System.getProperty("FIREBASE_SECRET_JSON_BASE64")
             ?: System.getenv("FIREBASE_SECRET_JSON_BASE64")
-            ?: throw IllegalStateException("Environment variable 'FIREBASE_SECRET_JSON_BASE64' is not defined in .env or system environment variables.")
+            ?: throw IllegalStateException("Zmienna środowiskowa 'FIREBASE_SECRET_JSON_BASE64' nie jest zdefiniowana ani w.env ani w zmiennych środowiskowych systemu.")
         val decodedServiceAccount = Base64.getDecoder().decode(base64ServiceAccount)
 
         // Set the Firebase options with credentials

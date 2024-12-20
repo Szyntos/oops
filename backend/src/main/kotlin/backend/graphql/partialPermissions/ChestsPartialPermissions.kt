@@ -49,7 +49,7 @@ class ChestsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit chests"
+                reason = "Tylko koordynatorzy mogą edytować skrzynki"
             )
         }
 
@@ -57,7 +57,7 @@ class ChestsPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val chest = chestsRepository.findById(chestId).orElse(null)
@@ -65,7 +65,7 @@ class ChestsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
 
         val chestEditions = chest.chestEdition.map { it.edition }
@@ -75,7 +75,7 @@ class ChestsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -84,7 +84,7 @@ class ChestsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Users have already opened this chest"
+                reason = "Skrzynka już została otwarta przez użytkowników"
             )
 
         }
@@ -105,7 +105,7 @@ class ChestsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove chests"
+                reason = "Tylko koordynatorzy mogą usuwać skrzynki"
             )
         }
 
@@ -113,7 +113,7 @@ class ChestsPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
 
@@ -122,7 +122,7 @@ class ChestsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
 
         val chestEditions = chest.chestEdition.map { it.edition }
@@ -131,7 +131,7 @@ class ChestsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         if (chestHistoryRepository.existsByChest(chest)) {
@@ -139,7 +139,7 @@ class ChestsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Users have already been given this chest"
+                reason = "Skrzynka już została przyznana użytkownikom"
             )
         }
 
@@ -159,7 +159,7 @@ class ChestsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can copy chests"
+                reason = "Tylko koordynatorzy mogą kopiować skrzynki"
             )
         }
 
@@ -167,7 +167,7 @@ class ChestsPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val chest = chestsRepository.findById(chestId).orElse(null)
@@ -175,7 +175,7 @@ class ChestsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
 
         return Permission(

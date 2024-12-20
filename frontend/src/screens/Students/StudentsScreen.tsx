@@ -54,6 +54,7 @@ export const StudentsScreen = () => {
           `${student.firstName} ${student.secondName}`,
           student.index.toString(),
           student.group.name,
+          student.nick,
         ]);
 
       return doesGroupMatch && doesInputMatch;

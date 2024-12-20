@@ -18,9 +18,9 @@ export const tokens = {
       dark: "#0fb042",
     },
     unique: {
-      gold: "#FFD700",
-      silver: "#C0C0C0",
-      brown: "#b66f28",
+      gold: "#AF9500",
+      silver: "#B4B4B4",
+      brown: "#AD8A56",
     },
     state: {
       disabled: "grey",

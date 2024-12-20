@@ -91,10 +91,10 @@ export const Navbar = () => {
                   onClick={openChestDialog}
                 />
               )}
-              <IconMapper onClick={async () => await logout()} icon="logout" />
               {editions.length > 1 && (
                 <IconMapper onClick={openSettings} icon="settings" />
               )}
+              <IconMapper onClick={async () => await logout()} icon="logout" />
             </>
           )}
         </div>

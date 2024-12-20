@@ -66,15 +66,14 @@ export const GradingChecksSection = () => {
 
   return (
     <div style={coordinatorStyles.container}>
-      <SetupButtons
-        permissions={gradingChecks.permissions}
-        isSelected={false}
-        handleDelete={handleDelete}
-        handleEdit={openEdit}
-        handleAdd={openAdd}
-        isBigVariant={true}
-      />
-
+      <div style={coordinatorStyles.buttonsContainer}>
+        <SetupButtons
+          permissions={gradingChecks.permissions}
+          isSelected={false}
+          handleAdd={openAdd}
+          isBigVariant={true}
+        />
+      </div>
       <CardsSection
         title={"Warunki zaliczenia"}
         cards={[
@@ -85,6 +84,7 @@ export const GradingChecksSection = () => {
             <div style={coordinatorStyles.textContainer}>
               <div style={styles.row}>
                 <CustomText>Data końca laboratorium: </CustomText>
+
                 <CustomText color={tokens.color.text.tertiary}>
                   {displayDate}
                 </CustomText>
@@ -98,12 +98,14 @@ export const GradingChecksSection = () => {
                   {displayLevel}
                 </CustomText>
               </div>
+
               <div style={styles.row}>
                 <CustomText>Wybrana kategoria: </CustomText>
                 <CustomText color={tokens.color.text.tertiary}>
                   {displayCategory}
                 </CustomText>
               </div>
+
               <div style={styles.row}>
                 <CustomText>
                   Liczba punktów do zdobycia za daną kategorię:
@@ -113,6 +115,12 @@ export const GradingChecksSection = () => {
                 </CustomText>
               </div>
             </div>
+            <SetupButtons
+              permissions={gradingChecks.permissions}
+              isSelected={false}
+              handleDelete={handleDelete}
+              handleEdit={openEdit}
+            />
           </div>,
         ]}
       />

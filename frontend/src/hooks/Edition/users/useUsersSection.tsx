@@ -55,7 +55,11 @@ export const useUsersSection = (editionId: number) => {
           firstName: values.firstName,
           secondName: values.secondName,
           indexNumber: values.indexNumber,
-          nick: values.nick,
+          nick:
+            values.firstName +
+            values.secondName +
+            values.indexNumber +
+            new Date().toDateString(),
         },
       });
       refetch();
@@ -144,7 +148,6 @@ export const useUsersSection = (editionId: number) => {
             ? variables
             : {
                 ...variables,
-                nick: props.formValues.nick,
                 indexNumber: props.formValues.indexNumber,
               },
       });

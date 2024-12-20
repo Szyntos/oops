@@ -100,6 +100,7 @@ export const AddAwardForm = ({
               Kategoria
             </InputLabel>
             <Select
+              label="Kategoria"
               name="categoryId"
               value={formik.values.categoryId}
               onChange={formik.handleChange}
@@ -131,6 +132,7 @@ export const AddAwardForm = ({
               Typ nagrody
             </InputLabel>
             <Select
+              label="Typ nagrody"
               name="awardType"
               value={formik.values.awardType}
               onChange={formik.handleChange}

@@ -106,6 +106,7 @@ export const PointsForm = ({
               Kategoria
             </InputLabel>
             <Select
+              label="Kategoria"
               name="categoryId"
               value={formik.values.categoryId}
               onChange={handleCategoryChange}
@@ -134,6 +135,7 @@ export const PointsForm = ({
               Subkategoria
             </InputLabel>
             <Select
+              label="Subkategoria"
               name="subcategoryId"
               value={formik.values.subcategoryId}
               onChange={formik.handleChange}

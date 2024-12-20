@@ -18,8 +18,9 @@ export const SelectStudent = ({
   return (
     <div style={styles.row}>
       <FormControl fullWidth>
-        <InputLabel>Student</InputLabel>
+        <InputLabel size="small">Student</InputLabel>
         <Select
+          label="Student"
           size="small"
           name="studentId"
           value={student?.userId}

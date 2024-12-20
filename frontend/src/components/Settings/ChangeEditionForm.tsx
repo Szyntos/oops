@@ -58,6 +58,7 @@ export const ChangeEditionForm = ({
               Edycja
             </InputLabel>
             <Select
+              label="Edycja"
               name="editionId"
               value={formik.values.editionId}
               onChange={formik.handleChange}

@@ -54,6 +54,7 @@ export const ChangeGroupForm = ({
               Grupa
             </InputLabel>
             <Select
+              label="Grupa"
               name="groupId"
               value={formik.values.groupId}
               onChange={formik.handleChange}

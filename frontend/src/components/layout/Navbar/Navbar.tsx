@@ -80,7 +80,7 @@ export const Navbar = () => {
               <NavbarItem
                 title={
                   selectedEdition
-                    ? `${selectedEdition.name}${isEditionActive(selectedEdition) ? "" : " [not active]"}`
+                    ? `${selectedEdition.name}${isEditionActive(selectedEdition.startDate, selectedEdition.endDate) ? "" : " [not active]"}`
                     : "no edition selected"
                 }
               />
@@ -91,10 +91,10 @@ export const Navbar = () => {
                   onClick={openChestDialog}
                 />
               )}
-              <IconMapper onClick={async () => await logout()} icon="logout" />
               {editions.length > 1 && (
                 <IconMapper onClick={openSettings} icon="settings" />
               )}
+              <IconMapper onClick={async () => await logout()} icon="logout" />
             </>
           )}
         </div>

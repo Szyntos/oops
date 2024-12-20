@@ -169,7 +169,9 @@ export const useLogin = () => {
 
 const getInitSelectedEdition = (editions: Edition[]) => {
   if (editions.length > 0) {
-    const active = editions.filter((e) => isEditionActive(e))[0];
+    const active = editions.filter((e) =>
+      isEditionActive(e.startDate, e.endDate),
+    )[0];
     return active ?? editions[0];
   }
   return undefined;

@@ -232,7 +232,7 @@ class PermissionService {
                 action = input.action,
                 arguments = jsonArguments,
                 allow = false,
-                reason = "Unknown action '${input.action}'"
+                reason = "Nieznana akcja '${input.action}'"
             )
         }
     }
@@ -293,7 +293,7 @@ class PermissionService {
                 action = input.action,
                 arguments = jsonArguments,
                 allow = false,
-                reason = "Unknown action '${input.action}'"
+                reason = "Nieznana akcja '${input.action}'"
             )
         }
     }

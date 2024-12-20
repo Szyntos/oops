@@ -110,10 +110,10 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
 
         val groups = groupsRepository.findByEdition(edition).map { group ->
             GroupWithPermissions(
@@ -136,27 +136,27 @@ class GroupsDataFetcher {
                         "addGroup",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canEdit = permissionService.checkPartialPermission(PermissionInput("editGroupWithUsers", objectMapper.writeValueAsString(mapOf("groupId" to group.groupsId)))),
                     canCopy =
                     Permission(
                         "copyGroup",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canRemove = permissionService.checkPartialPermission(PermissionInput("removeGroup", objectMapper.writeValueAsString(mapOf("groupId" to group.groupsId)))),
                     canSelect =
                     Permission(
                         "selectGroup",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canUnselect =
                     Permission(
                         "unselectGroup",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     additional = emptyList()
                 )
             )
@@ -175,11 +175,11 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
 
         val groups = groupsRepository.findByEdition(edition)
 
@@ -218,17 +218,17 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
         val startTimeWithSeconds = Time.valueOf("$startTime:00")
         val endTimeWithSeconds = Time.valueOf("$endTime:00")
 
-        val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Invalid edition ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
 
-        val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Invalid weekday ID") }
-        val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+        val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Nie znaleziono dnia tygodnia o id $weekdayId") }
+        val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Nie znaleziono nauczyciela o id $teacherId") }
         val generatedName = generateGroupName(usosId, weekday, startTimeWithSeconds, teacher)
         val group = Groups(
             generatedName = generatedName,
@@ -292,7 +292,7 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
@@ -303,9 +303,9 @@ class GroupsDataFetcher {
         val startTimeWithSeconds = Time.valueOf("$startTime:00")
         val endTimeWithSeconds = Time.valueOf("$endTime:00")
 
-        val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Invalid edition ID") }
-        val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Invalid weekday ID") }
-        val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow() { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
+        val weekday = weekdaysRepository.findById(weekdayId).orElseThrow { IllegalArgumentException("Nie znaleziono dnia tygodnia o id $weekdayId") }
+        val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Nie znaleziono nauczyciela o id $teacherId") }
         val generatedName = generateGroupName(usosId, weekday, startTimeWithSeconds, teacher)
         val group = Groups(
             generatedName = generatedName,
@@ -347,7 +347,7 @@ class GroupsDataFetcher {
                 )
             } else {
                 usersRepository.findByIndexNumber(it.indexNumber)
-                    ?: throw IllegalArgumentException("User with index number ${it.indexNumber} not found")
+                    ?: throw IllegalArgumentException("Nie znaleziono użytkownika o numerze indeksu ${it.indexNumber}")
             }
             val userGroup = UserGroups(
                 user = user,
@@ -388,11 +388,11 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val group = groupsRepository.findById(groupId)
-            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono grupy o id $groupId") }
 
 
         groupName?.let {
@@ -405,7 +405,7 @@ class GroupsDataFetcher {
 
         weekdayId?.let {
             val weekday = weekdaysRepository.findById(it)
-                .orElseThrow { IllegalArgumentException("Invalid weekday ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono dnia tygodnia o id $weekdayId") }
             group.weekday = weekday
         }
 
@@ -419,7 +419,7 @@ class GroupsDataFetcher {
 
         teacherId?.let {
             val teacher = usersRepository.findById(it)
-                .orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono nauczyciela o id $teacherId") }
             group.teacher = teacher
         }
 
@@ -465,11 +465,11 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val group = groupsRepository.findById(groupId)
-            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono grupy o id $groupId") }
 
         groupName?.let {
             group.groupName = it
@@ -481,7 +481,7 @@ class GroupsDataFetcher {
 
         weekdayId?.let {
             val weekday = weekdaysRepository.findById(it)
-                .orElseThrow { IllegalArgumentException("Invalid weekday ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono dnia tygodnia o id $weekdayId") }
             group.weekday = weekday
         }
 
@@ -495,7 +495,7 @@ class GroupsDataFetcher {
 
         teacherId?.let {
             val teacher = usersRepository.findById(it)
-                .orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono nauczyciela o id $teacherId") }
             group.teacher = teacher
         }
 
@@ -516,7 +516,7 @@ class GroupsDataFetcher {
         users.userIds.filter { userId -> userId !in existingUsers.map { it.userId } }
             .forEach { userId ->
                 val user = usersRepository.findById(userId)
-                    .orElseThrow { IllegalArgumentException("Invalid User ID: $userId") }
+                    .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
 
                 val userGroup = UserGroups(
                     user = user,
@@ -541,12 +541,12 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
         val group = groupsRepository.findById(groupId)
-            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono grupy o id $groupId") }
 
         userGroupsRepository.findByGroup_GroupsId(groupId).forEach(userGroupsRepository::delete)
 
@@ -571,7 +571,7 @@ class GroupsDataFetcher {
 
         val edition = editionRepository
             .findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
         val groups = groupsRepository.findByEdition(edition)
         val weekdays = groups.map { it.weekday }.distinct().sortedBy { it.ordinalNumber }
         return weekdays
@@ -590,12 +590,12 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val edition = editionRepository
             .findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
         val groups = groupsRepository.findByEdition(edition)
         return groups.map { TimeSpansType(it.startTime, it.endTime) }
             .distinct()
@@ -615,12 +615,12 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val edition = editionRepository
             .findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
         val groups = groupsRepository.findByEdition(edition)
         return groups.map { GroupDateType(it.weekday, it.startTime, it.endTime) }.distinct()
     }
@@ -638,11 +638,11 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val group = groupsRepository.findById(groupId)
-            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono grupy o id $groupId") }
 
         val users = usersRepository.findByUserGroups_Group_GroupsIdAndRole(groupId, UsersRoles.STUDENT)
         val userIds = users.map { it.userId }
@@ -720,11 +720,11 @@ class GroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
-        val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
+        val teacher = usersRepository.findById(teacherId).orElseThrow { IllegalArgumentException("Nie znaleziono nauczyciela o id $teacherId") }
         val groups = groupsRepository.findByEdition(edition)
         return groups.map { group ->
             GroupTeacherType(
@@ -739,11 +739,11 @@ class GroupsDataFetcher {
     fun removeGroupHelper(groupId: Long): Boolean {
         val permission = groupsPermissions.checkRemoveGroupHelperPermission(groupId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val group = groupsRepository.findById(groupId)
-            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono grupy o id $groupId") }
 
         userGroupsRepository.findByGroup_GroupsId(groupId).forEach(userGroupsRepository::delete)
 
@@ -751,68 +751,6 @@ class GroupsDataFetcher {
         return true
     }
 
-//    private fun getUserCategoriesWithDefaults(categories: List<Categories>, userPoints: List<CategoryPointsType>, subcategories: List<Subcategories>): List<CategoryPointsType> {
-//        return categories.filter{it.canAddPoints}.map { category ->
-//            userPoints.find { it.category == category } ?: CategoryPointsType(
-//                category = category,
-//                subcategoryPoints = subcategories.filter { it.category == category }.map { subcat ->
-//                    SubcategoryPointsType(
-//                        subcategory = subcat,
-//                        points = PurePointsType(
-//                            purePoints = null,
-//                            partialBonusType = emptyList()
-//                        ),
-//                        teacher = Users(),
-//                        createdAt = LocalDateTime.now(),
-//                        updatedAt = LocalDateTime.now()
-//                    )
-//                },
-//                categoryAggregate = CategoryAggregate(
-//                    category = category,
-//                    sumOfPurePoints = 0f,
-//                    sumOfBonuses = 0f,
-//                    sumOfAll = 0f
-//                )
-//            )
-//        }
-//    }
-//
-//    private fun getSubcategoryPointsWithDefaults(subcategoryPoints: List<SubcategoryPointsType>, subcategories: List<Subcategories>, category: Categories): List<SubcategoryPointsType> {
-//        val allSubcategoriesForCategory = subcategories.filter { it.category == category }
-//        return allSubcategoriesForCategory.map { subcat ->
-//            subcategoryPoints.find { it.subcategory == subcat } ?: SubcategoryPointsType(
-//                subcategory = subcat,
-//                points = PurePointsType(
-//                    purePoints = null,
-//                    partialBonusType = emptyList()
-//                ),
-//                teacher = Users(),
-//                createdAt = LocalDateTime.now(),
-//                updatedAt = LocalDateTime.now()
-//            )
-//        }
-//    }
-//
-//    private fun createCategoryPointsType(category: Categories, subcategoryPoints: List<SubcategoryPointsType>, subcategories: List<Subcategories>): CategoryPointsType{
-//        val subcategoryPointsWithDefaults = getSubcategoryPointsWithDefaults(subcategoryPoints, subcategories, category)
-//
-//        val sumOfPurePoints = BigDecimal(subcategoryPointsWithDefaults.sumOf { it.points.purePoints?.value?.toDouble() ?: 0.0 }.toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
-//        val sumOfBonuses = BigDecimal(subcategoryPointsWithDefaults.sumOf { subcategory ->
-//            subcategory.points.partialBonusType.sumOf { it.partialValue.toDouble() }
-//        }.toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
-//        val sumOfAll = BigDecimal((sumOfPurePoints + sumOfBonuses).toString()).setScale(2, RoundingMode.HALF_UP).toFloat()
-//
-//        return CategoryPointsType(
-//            category = category,
-//            subcategoryPoints = subcategoryPointsWithDefaults,
-//            categoryAggregate = CategoryAggregate(
-//                category = category,
-//                sumOfPurePoints = sumOfPurePoints,
-//                sumOfBonuses = sumOfBonuses,
-//                sumOfAll = sumOfAll
-//            )
-//        )
-//    }
     private fun generateGroupName(usosId: Int, weekday: Weekdays, startTime: Time, teacher: Users): String {
         return "${weekday.weekdayAbbr}-${startTime.toString().replace(":", "").subSequence(0, 4)}-${teacher.firstName.subSequence(0, 3)}-${teacher.secondName.subSequence(0, 3)}-${usosId}"
     }

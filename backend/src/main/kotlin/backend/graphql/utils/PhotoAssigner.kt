@@ -22,17 +22,17 @@ class PhotoAssigner {
         fileId: Long?
     ): Boolean where T : HasImageFile {
         val assignee = assigneeRepository.findById(assigneeId).orElseThrow {
-            IllegalArgumentException("Invalid assignee ID")
+            IllegalArgumentException("Nie znaleziono obiektu o id $assigneeId")
         }
 
         val photo = fileId?.let {
             fileRepository.findById(it)
-                .orElseThrow { IllegalArgumentException("Invalid file ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono pliku o id $fileId") }
         } ?: fileRepository.findAllByFileType("$fileType/sample").firstOrNull()
 
         photo?.let {
             require(it.fileType == fileType || it.fileType == "$fileType/sample") {
-                "Wrong fileType of file $fileId. Please upload a file with fileType = $fileType and try again."
+                "Zły typ pliku $fileId. Proszę przesłać plik z fileType = $fileType i spróbować ponownie."
             }
         }
 
@@ -55,7 +55,7 @@ class PhotoAssigner {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid assignee ID"
+                    reason = "Nie znaleziono obiektu o id $assigneeId"
                 )
         }
 
@@ -70,7 +70,7 @@ class PhotoAssigner {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Wrong fileType of file $fileId. Please upload a file with fileType = $fileType and try again."
+                    reason = "Zły typ pliku $fileId. Proszę przesłać plik z fileType = $fileType i spróbować ponownie."
                 )
             }
         }
@@ -80,7 +80,7 @@ class PhotoAssigner {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid file ID"
+                reason = "Nie znaleziono pliku o id $fileId"
             )
         }
 

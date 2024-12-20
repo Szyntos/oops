@@ -54,7 +54,7 @@ class LevelsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can assign photos to levels"
+                reason = "Tylko koordynatorzy mogą przypisywać zdjęcia do poziomów"
             )
         }
 
@@ -62,7 +62,7 @@ class LevelsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'levelId'"
+            reason = "Nieprawidłowe lub brakujące 'levelId'"
         )
 
         val fileId = arguments.getLongField("fileId")
@@ -72,7 +72,7 @@ class LevelsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid level ID"
+                reason = "Nie znaleziono poziomu o id $levelId"
             )
 
         if (level.levelSet.edition.isNotEmpty()) {
@@ -81,7 +81,7 @@ class LevelsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has already ended"
+                    reason = "Edycja już się zakończyła"
                 )
             }
         }
@@ -107,14 +107,14 @@ class LevelsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'studentId'"
+            reason = "Nieprawidłowe lub brakujące 'studentId'"
         )
         val student = usersRepository.findById(studentId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid student ID"
+                reason = "Nie znaleziono studenta o id $studentId"
             )
 
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
@@ -123,7 +123,7 @@ class LevelsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Student can only get neighboring levels for themselves"
+                    reason = "Student może uzyskać sąsiednie poziomy tylko dla siebie"
                 )
             }
         }
@@ -136,7 +136,7 @@ class LevelsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only get neighboring levels for students in their editions"
+                    reason = "Prowadzący może uzyskać sąsiednie poziomy tylko dla studentów w swoich edycjach"
                 )
             }
         }
@@ -144,7 +144,7 @@ class LevelsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -152,14 +152,14 @@ class LevelsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         if (student.userGroups.none { it.group.edition == edition }){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Student is not in any group in the edition"
+                reason = "Student nie jest w żadnej grupie w edycji"
             )
         }
         val userLevel = student.userLevels.find { it.edition == edition }
@@ -167,7 +167,7 @@ class LevelsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Student does not have a level in the edition"
+                reason = "Student ${student.userId} nie posiada poziomu w edycji $edition.editionId"
             )
 
         return Permission(

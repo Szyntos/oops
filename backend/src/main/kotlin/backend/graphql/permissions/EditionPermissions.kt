@@ -80,7 +80,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can setup editions"
+                reason = "Tylko koordynatorzy mogą ustawiać edycje"
             )
         }
 
@@ -100,7 +100,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add editions"
+                reason = "Tylko koordynatorzy mogą dodawać edycje"
             )
         }
 
@@ -110,14 +110,14 @@ class EditionPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionName'"
+            reason = "Nieprawidłowe lub brakujące 'editionName'"
         )
 
         val editionYear = arguments.getIntField("editionYear") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionYear'"
+            reason = "Nieprawidłowe lub brakujące 'editionYear'"
         )
 
 
@@ -126,7 +126,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with name $editionName already exists"
+                reason = "Edycja o nazwie $editionName już istnieje"
             )
         }
         if (editionRepository.existsByEditionYear(editionYear)) {
@@ -134,18 +134,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with year $editionYear already exists"
-            )
-        }
-
-        val currentYear = LocalDate.now().year
-
-        if (editionYear < currentYear-1 || editionYear > currentYear + 10) {
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Edition year must be between ${currentYear-1} and ${currentYear + 10}"
+                reason = "Edycja z rokiem $editionYear już istnieje"
             )
         }
 
@@ -165,7 +154,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit editions"
+                reason = "Tylko koordynatorzy mogą edytować edycje"
             )
         }
 
@@ -178,7 +167,7 @@ class EditionPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val editionName = arguments.getStringField("editionName")
@@ -192,7 +181,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
 
@@ -201,7 +190,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         if (edition.startDate.isBefore(LocalDate.now())) {
@@ -209,7 +198,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already started"
+                reason = "Edycja już wystartowała"
             )
         }
 
@@ -219,27 +208,18 @@ class EditionPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition with name $it already exists"
+                    reason = "Edycja o nazwie $it już istnieje"
                 )
             }
         }
 
         editionYear?.let {
-            val currentYear = LocalDate.now().year
-            if (it < currentYear || it > currentYear + 10) {
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "Edition year must be between $currentYear and ${currentYear + 10}"
-                )
-            }
             if (editionRepository.existsByEditionYear(it) && it != edition.editionYear) {
                 return Permission(
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition with year $it already exists"
+                    reason = "Edycja z rokiem $it już istnieje"
                 )
             }
         }
@@ -260,7 +240,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove editions"
+                reason = "Tylko koordynatorzy mogą usuwać edycje"
             )
         }
 
@@ -268,7 +248,7 @@ class EditionPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId)
@@ -277,7 +257,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
 
@@ -286,7 +266,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         if (edition.startDate.isBefore(LocalDate.now())) {
@@ -294,7 +274,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already started"
+                reason = "Edycja już wystartowała"
             )
         }
 
@@ -382,7 +362,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can copy editions"
+                reason = "Tylko koordynatorzy mogą kopiować edycje"
             )
         }
 
@@ -390,21 +370,21 @@ class EditionPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val editionYear = arguments.getIntField("editionYear") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionYear'"
+            reason = "Nieprawidłowe lub brakujące 'editionYear'"
         )
 
         val editionName = arguments.getStringField("editionName") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionName'"
+            reason = "Nieprawidłowe lub brakujące 'editionName'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -412,26 +392,15 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
-
-        val currentYear = LocalDate.now().year
-
-        if (editionYear < currentYear-1 || editionYear > currentYear + 10) {
-            return Permission(
-                action = action,
-                arguments = arguments,
-                allow = false,
-                reason = "Edition year must be between ${currentYear-1} and ${currentYear + 10}"
-            )
-        }
 
         if (editionRepository.existsByEditionYear(editionYear)) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with year $editionYear already exists"
+                reason = "Edycja z rokiem $editionYear już istnieje"
             )
         }
 
@@ -440,7 +409,7 @@ class EditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with name $editionName already exists"
+                reason = "Edycja o nazwie $editionName już istnieje"
             )
         }
 

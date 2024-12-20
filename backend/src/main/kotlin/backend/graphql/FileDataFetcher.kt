@@ -55,7 +55,7 @@ class FileDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         val files = fileEntityRepository.findAll()
         return files.groupBy { it.fileType }
@@ -69,32 +69,32 @@ class FileDataFetcher {
                                     "addFile",
                                     objectMapper.createObjectNode(),
                                     false,
-                                    "Not applicable"),
+                                    "Nie dotyczy"),
                                 canEdit =
                                 Permission(
                                     "editFile",
                                     objectMapper.createObjectNode(),
                                     false,
-                                    "Not applicable"),
+                                    "Nie dotyczy"),
                                 canCopy =
                                 Permission(
                                     "copyFile",
                                     objectMapper.createObjectNode(),
                                     false,
-                                    "Not applicable"),
+                                    "Nie dotyczy"),
                                 canRemove = permissionService.checkPartialPermission(PermissionInput("removeFile", objectMapper.writeValueAsString(mapOf("fileId" to file.fileId)))),
                                 canSelect =
                                 Permission(
                                     "selectFile",
                                     objectMapper.createObjectNode(),
                                     false,
-                                    "Not applicable"),
+                                    "Nie dotyczy"),
                                 canUnselect =
                                 Permission(
                                     "unselectFile",
                                     objectMapper.createObjectNode(),
                                     false,
-                                    "Not applicable"),
+                                    "Nie dotyczy"),
                                 additional = emptyList()
                             )
                         )
@@ -115,7 +115,7 @@ class FileDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         val selectedFiles = fileEntityRepository.findAllByFileTypeIn(fileTypes)
         return selectedFiles.groupBy { it.fileType }
@@ -128,32 +128,32 @@ class FileDataFetcher {
                                 "addFile",
                                 objectMapper.createObjectNode(),
                                 false,
-                                "Not applicable"),
+                                "Nie dotyczy"),
                             canEdit =
                             Permission(
                                 "editFile",
                                 objectMapper.createObjectNode(),
                                 false,
-                                "Not applicable"),
+                                "Nie dotyczy"),
                             canCopy =
                             Permission(
                                 "copyFile",
                                 objectMapper.createObjectNode(),
                                 false,
-                                "Not applicable"),
+                                "Nie dotyczy"),
                             canRemove = permissionService.checkPartialPermission(PermissionInput("removeFile", objectMapper.writeValueAsString(mapOf("fileId" to file.fileId)))),
                             canSelect =
                             Permission(
                                 "selectFile",
                                 objectMapper.createObjectNode(),
                                 false,
-                                "Not applicable"),
+                                "Nie dotyczy"),
                             canUnselect =
                             Permission(
                                 "unselectFile",
                                 objectMapper.createObjectNode(),
                                 false,
-                                "Not applicable"),
+                                "Nie dotyczy"),
                             additional = emptyList()
                         )
                     )
@@ -174,7 +174,7 @@ class FileDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         fileRetrievalService.deleteFile(fileId)

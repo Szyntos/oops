@@ -76,7 +76,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can list setup groups"
+                reason = "Tylko koordynatorzy mogą wylistować grupy do setupu"
             )
         }
 
@@ -84,7 +84,7 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -92,7 +92,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         return Permission(
             action = action,
@@ -110,7 +110,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can assign photos to groups"
+                reason = "Tylko koordynatorzy mogą przypisywać zdjęcia do grup"
             )
         }
 
@@ -118,7 +118,7 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -126,7 +126,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
@@ -134,7 +134,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         val groups = groupsRepository.findByEdition(edition)
@@ -146,8 +146,8 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Not enough photos to assign to all groups. Missing ${groups.size - photosForGroups.size} photos." +
-                        " Please upload more photos with fileType = image/group and try again."
+                reason = "Nie wystarczająca ilość zdjęć do przypisania do wszystkich grup. Brakuje ${groups.size - photosForGroups.size} zdjęć." +
+                        " Proszę dodać więcej zdjęć z fileType = image/group i spróbować ponownie."
             )
         }
 
@@ -167,7 +167,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add groups"
+                reason = "Tylko koordynatorzy mogą dodawać grupy"
             )
         }
 
@@ -180,49 +180,49 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val usosId = arguments.getIntField("usosId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'usosId'"
+            reason = "Nieprawidłowe lub brakujące 'usosId'"
         )
 
         val weekdayId = arguments.getLongField("weekdayId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'weekdayId'"
+            reason = "Nieprawidłowe lub brakujące 'weekdayId'"
         )
 
         val startTime = arguments.getStringField("startTime") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'startTime'"
+            reason = "Nieprawidłowe lub brakujące 'startTime'"
         )
 
         val endTime = arguments.getStringField("endTime") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'endTime'"
+            reason = "Nieprawidłowe lub brakujące 'endTime'"
         )
 
         val teacherId = arguments.getLongField("teacherId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'teacherId'"
+            reason = "Nieprawidłowe lub brakujące 'teacherId'"
         )
 
         val groupName = arguments.getStringField("groupName") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupName'"
+            reason = "Nieprawidłowe lub brakujące 'groupName'"
         )
 
         val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
@@ -231,7 +231,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid time format, must be HH:MM"
+                reason = "Nieprawidłowy format czasu, musi być HH:MM"
             )
         }
 
@@ -244,14 +244,14 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         if (edition.levelSet == null) {
@@ -259,7 +259,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot add a group to an edition without levels"
+                reason = "Nie można dodać grupy do edycji bez poziomów"
             )
         }
         if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {
@@ -267,7 +267,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Group with USOS ID $usosId already exists for edition ${edition.editionId}"
+                reason = "Grupa z USOS ID $usosId już istnieje dla edycji ${edition.editionId}"
             )
         }
         if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName?.isNotBlank() == true }) {
@@ -275,7 +275,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Group with name $groupName already exists for edition ${edition.editionId}"
+                reason = "Grupa o nazwie $groupName już istnieje dla edycji ${edition.editionId}"
             )
         }
         if (startTimeWithSeconds.after(endTimeWithSeconds)) {
@@ -283,7 +283,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Start time must be before end time"
+                reason = "Czas rozpoczęcia musi być przed czasem zakończenia"
             )
         }
         if (startTimeWithSeconds == endTimeWithSeconds) {
@@ -291,7 +291,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Start time must be different from end time"
+                reason = "Czas rozpoczęcia musi być różny od czasu zakończenia"
             )
         }
         val weekday = weekdaysRepository.findById(weekdayId).orElse(null)
@@ -299,21 +299,21 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid weekday ID"
+                reason = "Nie znaleziono dnia tygodnia o id $weekdayId"
             )
         val teacher = usersRepository.findById(teacherId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid teacher ID"
+                reason = "Nie znaleziono nauczyciela o id $teacherId"
             )
         if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User with ID $teacherId is not a teacher nor a coordinator"
+                reason = "Użytkownik o id $teacherId nie jest prowadzącym ani koordynatorem"
             )
         }
         if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTimeWithSeconds, endTimeWithSeconds, edition)) {
@@ -321,7 +321,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Teacher is already teaching a group at this time"
+                reason = "Prowadzący już prowadzi grupę w tym czasie"
             )
         }
 
@@ -341,7 +341,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add groups"
+                reason = "Tylko koordynatorzy mogą dodawać grupy"
             )
         }
 
@@ -354,56 +354,56 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val usosId = arguments.getIntField("usosId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'usosId'"
+            reason = "Nieprawidłowe lub brakujące 'usosId'"
         )
 
         val weekdayId = arguments.getLongField("weekdayId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'weekdayId'"
+            reason = "Nieprawidłowe lub brakujące 'weekdayId'"
         )
 
         val startTime = arguments.getStringField("startTime") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'startTime'"
+            reason = "Nieprawidłowe lub brakujące 'startTime'"
         )
 
         val endTime = arguments.getStringField("endTime") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'endTime'"
+            reason = "Nieprawidłowe lub brakujące 'endTime'"
         )
 
         val teacherId = arguments.getLongField("teacherId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'teacherId'"
+            reason = "Nieprawidłowe lub brakujące 'teacherId'"
         )
 
         val groupName = arguments.getStringField("groupName") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupName'"
+            reason = "Nieprawidłowe lub brakujące 'groupName'"
         )
 
         val users = arguments.getUsersInputTypeList("users") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'users'"
+            reason = "Nieprawidłowe lub brakujące 'users'"
         )
 
         val hh_mm = Regex("([01]?[0-9]|2[0-3]):[0-5][0-9]")
@@ -412,7 +412,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid time format, must be HH:MM"
+                reason = "Nieprawidłowy format czasu, musi być HH:MM"
             )
         }
 
@@ -425,14 +425,14 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         if (edition.levelSet == null) {
@@ -440,7 +440,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot add a group to an edition without levels"
+                reason = "Nie można dodać grupy do edycji bez poziomów"
             )
         }
         if (groupsRepository.existsByUsosIdAndEdition(usosId.toLong(), edition)) {
@@ -448,7 +448,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Group with USOS ID $usosId already exists for edition ${edition.editionId}"
+                reason = "Grupa z USOS ID $usosId już istnieje dla edycji ${edition.editionId}"
             )
         }
         if (groupsRepository.findAllByGroupNameAndEdition(groupName, edition).any { it.groupName?.isNotBlank() == true }) {
@@ -456,7 +456,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Group with name $groupName already exists for edition ${edition.editionId}"
+                reason = "Grupa o nazwie $groupName już istnieje dla edycji ${edition.editionId}"
             )
         }
         if (startTimeWithSeconds.after(endTimeWithSeconds)) {
@@ -464,7 +464,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Start time must be before end time"
+                reason = "Czas rozpoczęcia musi być przed czasem zakończenia"
             )
         }
         if (startTimeWithSeconds == endTimeWithSeconds) {
@@ -472,7 +472,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Start time must be different from end time"
+                reason = "Czas rozpoczęcia musi być różny od czasu zakończenia"
             )
         }
         val weekday = weekdaysRepository.findById(weekdayId).orElse(null)
@@ -480,25 +480,25 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid weekday ID"
+                reason = "Nie znaleziono dnia tygodnia o id $weekdayId"
             )
         val teacher = usersRepository.findById(teacherId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid teacher ID"
+                reason = "Nie znaleziono nauczyciela o id $teacherId"
             )
         if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User with ID $teacherId is not a teacher nor a coordinator"
+                reason = "Użytkownik o id $teacherId nie jest nauczycielem ani koordynatorem"
             )
         }
         if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(teacher, weekday, startTimeWithSeconds, endTimeWithSeconds, edition)) {
-            throw IllegalArgumentException("Teacher is already teaching a group at this time")
+            throw IllegalArgumentException("Prowadzący już prowadzi grupę w tym czasie")
         }
 
         photoAssigner.checkAssignPhotoToAssigneePermission(groupsRepository, "image/group", null, null)
@@ -531,7 +531,7 @@ class GroupsPermissions {
                         action = action,
                         arguments = arguments,
                         allow = false,
-                        reason = "User with index number ${it.indexNumber} not found"
+                        reason = "Nie znaleziono użytkownika o numerze indeksu ${it.indexNumber}"
                     )
             }
         }
@@ -547,14 +547,14 @@ class GroupsPermissions {
         val action = "editGroup"
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            throw IllegalArgumentException("Only teachers and coordinators can edit groups")
+            throw IllegalArgumentException("Tylko nauczyciele i koordynatorzy mogą edytować grupy")
         }
 
         val groupId = arguments.getLongField("groupId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupId'"
+            reason = "Nieprawidłowe lub brakujące 'groupId'"
         )
 
         val groupName = arguments.getStringField("groupName")
@@ -577,7 +577,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid group ID"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
 
         if (currentUser.role == UsersRoles.TEACHER){
@@ -586,7 +586,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit their groups"
+                    reason = "Prowadzący może edytować tylko swoje grupy"
                 )
             }
             if (usosId != null || weekdayId != null || startTime != null || endTime != null || teacherId != null){
@@ -594,7 +594,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit groupName and label"
+                    reason = "Prowadzący może edytować tylko nazwę grupy i label"
                 )
             }
         }
@@ -604,7 +604,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -614,7 +614,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Group with name $it already exists for edition ${group.edition.editionId}"
+                    reason = "Grupa o nazwie $it już istnieje dla edycji ${group.edition.editionId}"
                 )
             }
             group.groupName = it
@@ -626,7 +626,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Group with USOS ID $it already exists for edition ${group.edition.editionId}"
+                    reason = "Grupa z USOS ID $it już istnieje dla edycji ${group.edition.editionId}"
                 )
             }
             group.usosId = it
@@ -638,7 +638,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid weekday ID"
+                    reason = "Nie znaleziono dnia tygodnia o id $weekdayId"
                 )
             group.weekday = weekday
         }
@@ -650,7 +650,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid time format, must be HH:MM"
+                    reason = "Nieprawidłowy format czasu, musi być HH:MM"
                 )
             }
 
@@ -661,7 +661,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Start time must be before end time"
+                    reason = "Czas rozpoczęcia musi być przed czasem zakończenia"
                 )
             }
             if (endTime != null && startTimeWithSeconds == Time.valueOf("$endTime:00")) {
@@ -669,7 +669,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Start time must be different from end time"
+                    reason = "Czas rozpoczęcia musi być różny od czasu zakończenia"
                 )
             }
             if (endTime == null && startTimeWithSeconds.after(group.endTime)) {
@@ -677,7 +677,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Start time must be before end time"
+                    reason = "Czas rozpoczęcia musi być przed czasem zakończenia"
                 )
             }
             group.startTime = startTimeWithSeconds
@@ -689,7 +689,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid time format, must be HH:MM"
+                    reason = "Nieprawidłowy format czasu, musi być HH:MM"
                 )
             }
 
@@ -700,7 +700,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "End time must be after start time"
+                    reason = "Czas zakończenia musi być po czasie rozpoczęcia"
                 )
             }
             if (startTime != null && Time.valueOf("$startTime:00") == endTimeWithSeconds) {
@@ -708,7 +708,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "End time must be different from start time"
+                    reason = "Czas zakończenia musi być różny od czasu rozpoczęcia"
                 )
             }
             if (startTime == null && group.startTime.after(endTimeWithSeconds)) {
@@ -716,7 +716,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "End time must be after start time"
+                    reason = "Czas zakończenia musi być po czasie rozpoczęcia"
                 )
             }
             group.endTime = endTimeWithSeconds
@@ -728,14 +728,14 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid teacher ID"
+                    reason = "Nie znaleziono nauczyciela o id $teacherId"
                 )
             if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
                 return Permission(
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "User with ID $it is not a teacher nor a coordinator"
+                    reason = "Użytkownik o id $teacherId nie jest nauczycielem ani koordynatorem"
                 )
             }
             if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(
@@ -746,7 +746,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher is already teaching a group at this time"
+                    reason = "Prowadzący już prowadzi grupę w tym czasie"
                 )
             }
             group.teacher = teacher
@@ -769,7 +769,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can edit groups"
+                reason = "Tylko nauczyciele i koordynatorzy mogą edytować grupy"
             )
         }
 
@@ -778,7 +778,7 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupId'"
+            reason = "Nieprawidłowe lub brakujące 'groupId'"
         )
 
         val groupName = arguments.getStringField("groupName")
@@ -799,7 +799,7 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'users'"
+            reason = "Nieprawidłowe lub brakujące 'users'"
         )
 
         val group = groupsRepository.findById(groupId).orElse(null)
@@ -807,7 +807,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid group ID"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
 
         if (currentUser.role == UsersRoles.TEACHER){
@@ -816,7 +816,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit their groups"
+                    reason = "Prowadzący może edytować tylko swoje grupy"
                 )
             }
             if (usosId != null || weekdayId != null || startTime != null || endTime != null || teacherId != null){
@@ -824,7 +824,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit groupName and label"
+                    reason = "Prowadzący może edytować tylko nazwę grupy i label"
                 )
             }
         }
@@ -834,7 +834,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -844,7 +844,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Group with name $it already exists for edition ${group.edition.editionId}"
+                    reason = "Grupa o nazwie $it już istnieje dla edycji ${group.edition.editionId}"
                 )
             }
             group.groupName = it
@@ -856,7 +856,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Group with USOS ID $it already exists for edition ${group.edition.editionId}"
+                    reason = "Grupa z USOS ID $it już istnieje dla edycji ${group.edition.editionId}"
                 )
             }
             group.usosId = it
@@ -868,7 +868,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid weekday ID"
+                    reason = "Nie znaleziono dnia tygodnia o id $weekdayId"
                 )
             group.weekday = weekday
         }
@@ -880,7 +880,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid time format, must be HH:MM"
+                    reason = "Nieprawidłowy format czasu, musi być HH:MM"
                 )
             }
 
@@ -891,7 +891,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Start time must be before end time"
+                    reason = "Czas rozpoczęcia musi być przed czasem zakończenia"
                 )
             }
             if (endTime != null && startTimeWithSeconds == Time.valueOf("$endTime:00")) {
@@ -899,7 +899,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Start time must be different from end time"
+                    reason = "Czas rozpoczęcia musi być różny od czasu zakończenia"
                 )
             }
             if (endTime == null && startTimeWithSeconds.after(group.endTime)) {
@@ -907,7 +907,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Start time must be before end time"
+                    reason = "Czas rozpoczęcia musi być przed czasem zakończenia"
                 )
             }
             group.startTime = startTimeWithSeconds
@@ -919,7 +919,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid time format, must be HH:MM"
+                    reason = "Nieprawidłowy format czasu, musi być HH:MM"
                 )
             }
 
@@ -930,7 +930,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "End time must be after start time"
+                    reason = "Czas zakończenia musi być po czasie rozpoczęcia"
                 )
             }
             if (startTime != null && Time.valueOf("$startTime:00") == endTimeWithSeconds) {
@@ -938,7 +938,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "End time must be different from start time"
+                    reason = "Czas zakończenia musi być różny od czasu rozpoczęcia"
                 )
             }
             if (startTime == null && group.startTime.after(endTimeWithSeconds)) {
@@ -946,7 +946,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "End time must be after start time"
+                    reason = "Czas zakończenia musi być po czasie rozpoczęcia"
                 )
             }
             group.endTime = endTimeWithSeconds
@@ -958,14 +958,14 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid teacher ID"
+                    reason = "Nie znaleziono nauczyciela o id $teacherId"
                 )
             if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
                 return Permission(
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "User with ID $it is not a teacher nor a coordinator"
+                    reason = "Użytkownik o id $teacherId nie jest nauczycielem ani koordynatorem"
                 )
             }
             if (groupsRepository.existsByTeacherAndWeekdayAndStartTimeAndEndTimeAndEdition(
@@ -976,7 +976,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher is already teaching a group at this time"
+                    reason = "Prowadzący już prowadzi grupę w tym czasie"
                 )
             }
             group.teacher = teacher
@@ -991,7 +991,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User IDs must be unique"
+                reason = "Identyfikatory użytkowników muszą być unikalne"
             )
         }
 
@@ -1005,21 +1005,21 @@ class GroupsPermissions {
             .forEach { userId ->
                 val user = usersRepository.findById(userId).getOrNull()
                 if (user == null) {
-                    permissionMsg.append("User with ID $userId not found;\n")
+                    permissionMsg.append("Użytkownik o ID $userId nie istnieje;\n")
                     return@forEach
                 }
                 if (user.role != UsersRoles.STUDENT) {
-                    permissionMsg.append("User ${user.firstName} ${user.secondName} is not a student;\n")
+                    permissionMsg.append("Użytkownik ${user.firstName} ${user.secondName} nie jest studentem;\n")
                     return@forEach
                 }
 
                 if (userGroupsRepository.existsByUserAndGroup(user, group)){
-                    permissionMsg.append("User ${user.firstName} ${user.secondName} already exists in this group;\n")
+                    permissionMsg.append("Użytkownik ${user.firstName} ${user.secondName} już istnieje w tej grupie;\n")
                     return@forEach
                 }
 
                 if (userGroupsRepository.existsByUserAndGroup_Edition(user, group.edition)){
-                    permissionMsg.append("User ${user.firstName} ${user.secondName} is already in a group in this edition;\n")
+                    permissionMsg.append("Użytkownik ${user.firstName} ${user.secondName} jest już w grupie w tej edycji;\n")
                     return@forEach
                 }
             }
@@ -1048,7 +1048,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove groups"
+                reason = "Tylko koordynatorzy mogą usuwać grupy"
             )
         }
 
@@ -1056,7 +1056,7 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupId'"
+            reason = "Nieprawidłowe lub brakujące 'groupId'"
         )
 
         val group = groupsRepository.findById(groupId).orElse(null)
@@ -1064,7 +1064,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid group ID"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
 
         if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
@@ -1072,7 +1072,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         if (group.userGroups.any { userGroup -> userGroup.user.points.isNotEmpty()}){
@@ -1080,7 +1080,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove group with users that have points"
+                reason = "Nie można usunąć grupy z użytkownikami, którzy mają przyznane punkty"
             )
         }
 
@@ -1100,7 +1100,7 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         if (currentUser.role != UsersRoles.COORDINATOR) {
@@ -1110,7 +1110,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "User is not in edition with ID $editionId"
+                    reason = "Użytkownik nie jest w edycji o id $editionId"
                 )
             }
         }
@@ -1119,7 +1119,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         return Permission(
@@ -1139,7 +1139,7 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         if (currentUser.role != UsersRoles.COORDINATOR) {
@@ -1149,7 +1149,7 @@ class GroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "User is not in edition with ID $editionId"
+                    reason = "Użytkownik nie jest w edycji o id $editionId"
                 )
             }
         }
@@ -1158,7 +1158,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         return Permission(
@@ -1177,13 +1177,13 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         if (currentUser.role != UsersRoles.COORDINATOR) {
             val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
             if (userEditions.none { it.editionId == editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID $editionId")
+                throw IllegalArgumentException("Użytkownik nie jest w edycji o id $editionId")
             }
         }
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -1191,7 +1191,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         return Permission(
@@ -1206,21 +1206,31 @@ class GroupsPermissions {
         val action = "getUsersInGroupWithPoints"
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            throw IllegalArgumentException("Student cannot view users in groups")
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Tylko prowadzący i koordynatorzy mogą przeglądać użytkowników w grupach"
+            )
         }
 
         val groupId = arguments.getLongField("groupId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupId'"
+            reason = "Nieprawidłowe lub brakujące 'groupId'"
         )
 
         if (currentUser.role == UsersRoles.TEACHER){
-            val groupEdition = groupsRepository.findById(groupId).orElseThrow { IllegalArgumentException("Invalid group ID") }.edition
+            val groupEdition = groupsRepository.findById(groupId).orElseThrow { IllegalArgumentException("Nie znaleziono grupy o id $groupId") }.edition
             val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
             if (userEditions.none { it.editionId == groupEdition.editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID ${groupEdition.editionId}")
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Użytkownik nie jest w edycji o id ${groupEdition.editionId}"
+                )
             }
         }
 
@@ -1229,7 +1239,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid group ID"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
 
         return Permission(
@@ -1244,20 +1254,30 @@ class GroupsPermissions {
         val action = "getGroupsInEdition"
         val currentUser = userMapper.getCurrentUser()
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
-            throw IllegalArgumentException("Student cannot view groups")
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Tylko prowadzący i koordynatorzy mogą przeglądać grupy"
+            )
         }
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         if (currentUser.role == UsersRoles.TEACHER){
             val userEditions = groupsRepository.findByUserGroups_User_UserId(currentUser.userId).map { it.edition }
             if (userEditions.none { it.editionId == editionId }) {
-                throw IllegalArgumentException("User is not in edition with ID $editionId")
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Użytkownik nie jest w edycji o id $editionId"
+                )
             }
         }
 
@@ -1265,7 +1285,7 @@ class GroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'teacherId'"
+            reason = "Nieprawidłowe lub brakujące 'teacherId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -1273,21 +1293,21 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         val teacher = usersRepository.findById(teacherId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid teacher ID"
+                reason = "Nie znaleziono nauczyciela o id $teacherId"
             )
         if (teacher.role != UsersRoles.TEACHER && teacher.role != UsersRoles.COORDINATOR) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User with ID $teacherId is not a teacher nor a coordinator"
+                reason = "Użytkownik o id $teacherId nie jest nauczycielem ani koordynatorem"
             )
         }
 
@@ -1312,7 +1332,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove groups"
+                reason = "Tylko koordynatorzy mogą usuwać grupy"
             )
         }
 
@@ -1321,7 +1341,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid group ID"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
 
         if (group.edition.endDate.isBefore(java.time.LocalDate.now())){
@@ -1329,7 +1349,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -1338,7 +1358,7 @@ class GroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove group with users that have points"
+                reason = "Nie można usunąć grupy z użytkownikami, którzy mają przyznane punkty"
             )
         }
 

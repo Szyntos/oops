@@ -57,7 +57,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add chests to editions"
+                reason = "Tylko koordynatorzy mogą dodawać skrzynki do edycji"
             )
         }
 
@@ -65,14 +65,14 @@ class ChestEditionPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val chest = chestsRepository.findById(chestId).orElse(null)
@@ -80,7 +80,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = ""
             )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -88,7 +88,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         if (edition.endDate.isBefore(java.time.LocalDate.now())){
@@ -96,7 +96,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -105,7 +105,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Chest with this type already exists in this edition"
+                reason = "Skrzynka z tym typem istnieje już w tej edycji"
             )
         }
 
@@ -116,7 +116,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Not all awards in this chest are available in this edition"
+                reason = "Nie wszystkie łupy są dostępne w tej edycji"
             )
         }
 
@@ -136,7 +136,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove chests from editions"
+                reason = "Tylko koordynatorzy mogą usuwać skrzynki z edycji"
             )
         }
 
@@ -144,14 +144,14 @@ class ChestEditionPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val chest = chestsRepository.findById(chestId).orElse(null)
@@ -159,7 +159,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -167,7 +167,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         if (!chestEditionRepository.existsByChestAndEdition(chest, edition)){
@@ -175,7 +175,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This chest does not exist in this edition"
+                reason = "Ta skrzynka nie istnieje w tej edycji"
             )
         }
 
@@ -184,7 +184,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -193,7 +193,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Users have already been given this chest in this edition"
+                reason = "Skrzynka już była przyznana studentom w tej edycji"
             )
         }
 
@@ -220,7 +220,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add chests to editions"
+                reason = "Tylko koordynatorzy mogą dodawać skrzynki do edycji"
             )
         }
 
@@ -229,21 +229,21 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         if (chestEditionRepository.existsByChest_ChestTypeAndEdition(chest.chestType, edition)){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Chest with this type already exists in this edition"
+                reason = "Skrzynka z tym typem istnieje już w tej edycji"
             )
         }
 
@@ -254,7 +254,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Not all awards in this chest are available in this edition"
+                reason = "Nie wszystkie łupy są dostępne w tej edycji"
             )
         }
 
@@ -282,7 +282,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove chests from editions"
+                reason = "Tylko koordynatorzy mogą usuwać skrzynki z edycji"
             )
         }
 
@@ -291,21 +291,21 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         if (!chestEditionRepository.existsByChestAndEdition(chest, edition)){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This chest does not exist in this edition"
+                reason = "Ta skrzynka nie istnieje w tej edycji"
             )
         }
 
@@ -314,7 +314,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -323,7 +323,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Users have already been given this chest in this edition"
+                reason = "Skrzynka już była przyznana studentom w tej edycji"
             )
         }
 
@@ -343,7 +343,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can activate chests in editions"
+                reason = "Tylko koordynatorzy mogą aktywować skrzynki w edycji"
             )
         }
 
@@ -351,14 +351,14 @@ class ChestEditionPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val chestEdition = chestEditionRepository.findByChest_ChestIdAndEdition_EditionId(chestId, editionId)
@@ -366,7 +366,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "ChestEdition not found"
+                reason = "Nie znaleziono edycji skrzynki dla edycji $editionId oraz skrzynki $chestId"
             )
 
         if (chestEdition.active){
@@ -374,7 +374,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Chest is already active in this edition"
+                reason = "Skrzynka już aktywna w tej edycji"
             )
         }
 
@@ -394,7 +394,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can deactivate chests in editions"
+                reason = "Tylko koordynatorzy mogą dezaktywować skrzynki w edycji"
             )
         }
 
@@ -402,14 +402,14 @@ class ChestEditionPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val chestEdition = chestEditionRepository.findByChest_ChestIdAndEdition_EditionId(chestId, editionId)
@@ -417,7 +417,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "ChestEdition not found"
+                reason = "Nie znaleziono edycji skrzynki dla edycji $editionId oraz skrzynki $chestId"
             )
 
         if (!chestEdition.active){
@@ -425,7 +425,7 @@ class ChestEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Chest is already inactive in this edition"
+                reason = "Skrzynka już dezaktywowana w tej edycji"
             )
         }
 

@@ -73,7 +73,7 @@ class AwardsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val awards = awardRepository.findAll().map {
@@ -84,7 +84,7 @@ class AwardsDataFetcher {
                         "addAward",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canEdit = permissionService.checkPartialPermission(PermissionInput("editAward", objectMapper.writeValueAsString(mapOf("awardId" to it.awardId)))),
                     canCopy = permissionService.checkPartialPermission(PermissionInput("copyAward", objectMapper.writeValueAsString(mapOf("awardId" to it.awardId)))),
                     canRemove = permissionService.checkPartialPermission(PermissionInput("removeAward", objectMapper.writeValueAsString(mapOf("awardId" to it.awardId)))),
@@ -109,7 +109,7 @@ class AwardsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return photoAssigner.assignPhotoToAssignee(awardRepository, "image/award", awardId, fileId)
     }
@@ -138,12 +138,12 @@ class AwardsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val awardType1 = AwardType.valueOf(awardType.uppercase())
 
-        val category = categoriesRepository.findById(categoryId).orElseThrow { IllegalArgumentException("Invalid category ID") }
+        val category = categoriesRepository.findById(categoryId).orElseThrow { IllegalArgumentException("Nie znaleziono Kategorii o id $categoryId") }
 
         val award = Award(
             awardName = awardName,
@@ -194,10 +194,10 @@ class AwardsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+        val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Nie znaleziono Łupu o id $awardId") }
 
         awardName?.let {
             award.awardName = it
@@ -213,7 +213,7 @@ class AwardsDataFetcher {
         }
 
         categoryId?.let {
-            val category = categoriesRepository.findById(it).orElseThrow { IllegalArgumentException("Invalid category ID") }
+            val category = categoriesRepository.findById(it).orElseThrow { IllegalArgumentException("Nie znaleziono Kategorii o id $it") }
             award.category = category
         }
 
@@ -249,10 +249,10 @@ class AwardsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+        val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Nie znaleziono Łupu o id $awardId") }
 
         chestAwardRepository.deleteAllByAward(award)
         awardEditionRepository.deleteAllByAward(award)
@@ -270,17 +270,17 @@ class AwardsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+        val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Nie znaleziono Łupu o id $awardId") }
 
         val awardNameRoot = award.awardName
         var i = 1
-        while (awardRepository.findAllByAwardName("$awardNameRoot (Copy $i)").isNotEmpty()) {
+        while (awardRepository.findAllByAwardName("$awardNameRoot (Kopia $i)").isNotEmpty()) {
             i++
         }
-        val awardName = "$awardNameRoot (Copy $i)"
+        val awardName = "$awardNameRoot (Kopia $i)"
 
         val awardCopy = Award(
             awardName = awardName,

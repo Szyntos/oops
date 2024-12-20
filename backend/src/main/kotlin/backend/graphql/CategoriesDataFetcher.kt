@@ -64,7 +64,7 @@ class CategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val categoriesList = categoriesRepository.findAll().map { category ->
@@ -88,7 +88,7 @@ class CategoriesDataFetcher {
                         "addCategory",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canEdit = permissionService.checkPartialPermission(PermissionInput("editCategory", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId)))),
                     canCopy = permissionService.checkPartialPermission(PermissionInput("copyCategory", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId)))),
                     canRemove = permissionService.checkPartialPermission(PermissionInput("removeCategory", objectMapper.writeValueAsString(mapOf("categoryId" to category.categoryId)))),
@@ -137,7 +137,7 @@ class CategoriesDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
@@ -172,11 +172,11 @@ class CategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val category = categoriesRepository.findById(categoryId)
-            .orElseThrow { IllegalArgumentException("Invalid category ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono Kategorii o id $categoryId") }
 
         val categoryEditions = category.categoryEdition
         categoryEditions.forEach {
@@ -230,10 +230,10 @@ class CategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         val category = categoriesRepository.findById(categoryId)
-            .orElseThrow { IllegalArgumentException("Invalid category ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono Kategorii o id $categoryId") }
 
 
         lightColor?.let {
@@ -272,7 +272,7 @@ class CategoriesDataFetcher {
             if (subcategoryId != null && subcategoryId > 0) {
                 // Update existing subcategory
                 val existingSubcategory = subcategoriesRepository.findById(subcategoryId)
-                    .orElseThrow { IllegalArgumentException("Invalid subcategory ID: $subcategoryId") }
+                    .orElseThrow { IllegalArgumentException("Nie znaleziono podkategorii o id $subcategoryId") }
                 existingSubcategory.subcategoryName = subcategoryInput.subcategoryName
                 existingSubcategory.maxPoints = subcategoryInput.maxPoints.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
                 existingSubcategory.ordinalNumber = subcategoryInput.ordinalNumber
@@ -315,18 +315,18 @@ class CategoriesDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val category = categoriesRepository.findById(categoryId)
-            .orElseThrow { IllegalArgumentException("Invalid category ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono Kategorii o id $categoryId") }
 
         val categoryNameRoot = category.categoryName
         var i = 1
-        while (categoriesRepository.findAllByCategoryName("$categoryNameRoot (Copy $i)").isNotEmpty()) {
+        while (categoriesRepository.findAllByCategoryName("$categoryNameRoot (Kopia $i)").isNotEmpty()) {
             i++
         }
-        val categoryName = "$categoryNameRoot (Copy $i)"
+        val categoryName = "$categoryNameRoot (Kopia $i)"
 
         val newCategory = Categories(
             categoryName = categoryName,

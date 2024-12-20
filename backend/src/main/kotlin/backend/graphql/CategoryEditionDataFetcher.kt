@@ -58,7 +58,7 @@ class CategoryEditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return addCategoryToEditionHelper(categoryId, editionId)
     }
@@ -67,11 +67,11 @@ class CategoryEditionDataFetcher {
     fun addCategoryToEditionHelper(categoryId: Long, editionId: Long) : CategoryEdition{
         val permission = categoryEditionPermissions.checkAddCategoryToEditionHelperPermission(categoryId, editionId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Category not found") }
-        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
+        val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Kategorii o id $categoryId") }
+        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Edycji o id $editionId") }
 
         val categoryEdition = CategoryEdition(
             category = category,
@@ -120,7 +120,7 @@ class CategoryEditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return removeCategoryFromEditionHelper(categoryId, editionId)
     }
@@ -129,11 +129,11 @@ class CategoryEditionDataFetcher {
     fun removeCategoryFromEditionHelper(categoryId: Long, editionId: Long): Boolean {
         val permission = categoryEditionPermissions.checkRemoveCategoryFromEditionHelperPermission(categoryId, editionId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Category not found") }
-        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
+        val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Kategorii o id $categoryId") }
+        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Edycji o id $editionId") }
 
         val subcategoriesFromEdition = subcategoriesRepository.findByCategoryAndEdition(category, edition)
         val subcategoriesFromOtherEditions = subcategoriesRepository.findByCategory(category)

@@ -68,7 +68,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a coordinator"
+                reason = "Użytkownik nie jest koordynatorem"
             )
         }
 
@@ -76,7 +76,7 @@ class GradingChecksPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -84,7 +84,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         if (gradingChecksRepository.existsByEdition(edition)) {
@@ -92,7 +92,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Grading checks for edition ${edition.editionName} already exist"
+                reason = "Edycja już zawiera zasady oceniania"
             )
         }
 
@@ -101,7 +101,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -110,7 +110,7 @@ class GradingChecksPartialPermissions {
 //                action = action,
 //                arguments = arguments,
 //                allow = false,
-//                reason = "Edition has already started"
+//                reason = "Edycja już wystartowała"
 //            )
 //        }
 
@@ -131,7 +131,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a coordinator"
+                reason = "Użytkownik nie jest koordynatorem"
             )
         }
 
@@ -139,7 +139,7 @@ class GradingChecksPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'gradingCheckId'"
+            reason = "Nieprawidłowe lub brakujące 'gradingCheckId'"
         )
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
@@ -148,7 +148,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Grading check not found"
+                reason = "Nie znaleziono zasad oceniania o id $gradingCheckId"
             )
 
         val edition = gradingCheck.edition
@@ -158,7 +158,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -167,7 +167,7 @@ class GradingChecksPartialPermissions {
 //                action = action,
 //                arguments = arguments,
 //                allow = false,
-//                reason = "Edition has already started"
+//                reason = "Edycja już wystartowała"
 //            )
 //        }
 
@@ -187,7 +187,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a coordinator"
+                reason = "Użytkownik nie jest koordynatorem"
             )
         }
 
@@ -195,7 +195,7 @@ class GradingChecksPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'gradingCheckId'"
+            reason = "Nieprawidłowe lub brakujące 'gradingCheckId'"
         )
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
@@ -204,7 +204,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Grading check not found"
+                reason = "Nie znaleziono zasad oceniania o id $gradingCheckId"
             )
 
         if (gradingCheck.edition.endDate.isBefore(LocalDate.now())) {
@@ -212,7 +212,7 @@ class GradingChecksPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 

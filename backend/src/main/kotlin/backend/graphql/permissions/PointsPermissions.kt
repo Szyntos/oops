@@ -93,7 +93,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can add points"
+                reason = "Tylko prowadzący i koordynatorzy mogą dodawać punkty"
             )
         }
 
@@ -101,28 +101,28 @@ class PointsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'studentId'"
+            reason = "Nieprawidłowe lub brakujące 'studentId'"
         )
 
         val teacherId = arguments.getLongField("teacherId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'teacherId'"
+            reason = "Nieprawidłowe lub brakujące 'teacherId'"
         )
 
         val value = arguments.getFloatField("value") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'value'"
+            reason = "Nieprawidłowe lub brakujące 'value'"
         )
 
         val subcategoryId = arguments.getLongField("subcategoryId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'subcategoryId'"
+            reason = "Nieprawidłowe lub brakujące 'subcategoryId'"
         )
 
 
@@ -153,7 +153,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can add points"
+                reason = "Tylko prowadzący i koordynatorzy mogą dodawać punkty"
             )
         }
 
@@ -161,28 +161,28 @@ class PointsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupId'"
+            reason = "Nieprawidłowe lub brakujące 'groupId'"
         )
 
         val teacherId = arguments.getLongField("teacherId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'teacherId'"
+            reason = "Nieprawidłowe lub brakujące 'teacherId'"
         )
 
         val values = arguments.getGroupPointsInputList("values") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'values'"
+            reason = "Nieprawidłowe lub brakujące 'values'"
         )
 
         val subcategoryId = arguments.getLongField("subcategoryId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'subcategoryId'"
+            reason = "Nieprawidłowe lub brakujące 'subcategoryId'"
         )
 
         val checkDates = arguments.getBooleanField("checkDates") ?: true
@@ -193,7 +193,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid group ID"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
 
         val studentsInGroup = group.userGroups.map { it.user }
@@ -204,7 +204,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid teacher ID"
+                reason = "Nie znaleziono nauczyciela o id $teacherId"
             )
 
         val subcategory = subcategoriesRepository.findById(subcategoryId).getOrNull()
@@ -212,7 +212,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid subcategory ID"
+                reason = "Nie znaleziono podkategorii o id $subcategoryId"
             )
 
         if (values.map { it.studentId }.toSet() != studentsInGroup.map{it.userId}.toSet()) {
@@ -220,7 +220,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Students in the group and in the input do not match"
+                reason = "Studenci w grupie i w wejściu nie zgadzają się"
             )
         }
         
@@ -240,7 +240,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can edit points"
+                reason = "Tylko prowadzący i koordynatorzy mogą edytować punkty"
             )
         }
 
@@ -248,7 +248,7 @@ class PointsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'pointsId'"
+            reason = "Nieprawidłowe lub brakujące 'pointsId'"
         )
 
         val value = arguments.getFloatField("value")
@@ -280,7 +280,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can remove points"
+                reason = "Tylko prowadzący i koordynatorzy mogą usuwać punkty"
             )
         }
 
@@ -288,7 +288,7 @@ class PointsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'pointsId'"
+            reason = "Nieprawidłowe lub brakujące 'pointsId'"
         )
 
         val permission = checkRemovePointsHelperPermission(pointsId)
@@ -327,7 +327,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can add points"
+                reason = "Tylko prowadzący i koordynatorzy mogą dodawać punkty"
             )
         }
 
@@ -335,28 +335,28 @@ class PointsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'studentId'"
+            reason = "Nieprawidłowe lub brakujące 'studentId'"
         )
 
         val teacherId = arguments.getLongField("teacherId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'teacherId'"
+            reason = "Nieprawidłowe lub brakujące 'teacherId'"
         )
 
         val value = arguments.getFloatField("value") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'value'"
+            reason = "Nieprawidłowe lub brakujące 'value'"
         )
 
         val subcategoryId = arguments.getLongField("subcategoryId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'subcategoryId'"
+            reason = "Nieprawidłowe lub brakujące 'subcategoryId'"
         )
 
 
@@ -367,7 +367,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid student ID"
+                reason = "Nie znaleziono studenta o id $studentId"
             )
 
         if (currentUser.role == UsersRoles.TEACHER){
@@ -376,7 +376,7 @@ class PointsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only add points as themselves"
+                    reason = "Prowadzący może dodawać punkty tylko jako on sam"
                 )
             }
             val studentTeachers = student.userGroups.map { it.group.teacher }.distinct()
@@ -385,7 +385,7 @@ class PointsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only add points to students from their groups"
+                    reason = "Prowadzący może dodawać punkty tylko studentom z jego grup"
                 )
             }
         }
@@ -395,7 +395,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid teacher ID"
+                reason = "Nie znaleziono nauczyciela o id $teacherId"
             )
 
         val subcategory = subcategoriesRepository.findById(subcategoryId).getOrNull()
@@ -403,14 +403,14 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid subcategory ID"
+                reason = "Nie znaleziono podkategorii o id $subcategoryId"
             )
         if (subcategory.edition == null){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory has no edition"
+                reason = "Podkategoria $subcategoryId nie ma wybranej edycji"
             )
         }
 
@@ -420,7 +420,7 @@ class PointsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory's edition has not started yet"
+                    reason = "Edycja podkategorii jeszcze się nie zaczęła"
                 )
             }
             if (subcategory.edition?.endDate?.isBefore(java.time.LocalDate.now()) == true){
@@ -428,7 +428,7 @@ class PointsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory's edition has already ended"
+                    reason = "Edycja podkategorii już się zakończyła"
                 )
             }
         }
@@ -437,7 +437,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This subcategory's category does not allow adding points"
+                reason = "Kategoria tej podkategorii nie pozwala na dodawanie punktów"
             )
         }
 
@@ -446,7 +446,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Points can be added only by teacher or coordinator"
+                reason = "Punkty mogą dodawać tylko prowadzący i koordynatorzy"
             )
         }
         if (student.role != UsersRoles.STUDENT) {
@@ -454,7 +454,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Points can be added only to student"
+                reason = "Punkty mogą być dodawane tylko do studenta"
             )
         }
 
@@ -463,7 +463,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Teacher is not a teacher of student's group"
+                reason = "Prowadzący nie jest prowadzącym grupy studenta"
             )
         }
 
@@ -473,16 +473,16 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Student is not participating in subcategory edition"
+                reason = "Student nie uczestniczy w edycji podkategorii"
             )
         }
         val teacherEditions = teacher.userGroups.map { it.group.edition }.distinct()
-        if (!teacherEditions.contains(subcategory.edition)) {
+        if (currentUser.role != UsersRoles.COORDINATOR && !teacherEditions.contains(subcategory.edition)) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Teacher is not participating in subcategory edition"
+                reason = "Prowadzący nie uczestniczy w edycji podkategorii"
             )
         }
         if (value < 0) {
@@ -490,7 +490,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Value cannot be negative"
+                reason = "Wartość nie może być ujemna"
             )
         }
         if (value > subcategory.maxPoints.toFloat()) {
@@ -498,7 +498,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Student cannot have more than ${subcategory.maxPoints} points in this subcategory"
+                reason = "Student nie może mieć więcej niż ${subcategory.maxPoints} punktów w tej podkategorii"
             )
         }
         val studentPoints = student.getPointsBySubcategory(subcategoryId, pointsRepository)
@@ -508,7 +508,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This student already has points in this subcategory"
+                reason = "Student ma już punkty w tej podkategorii"
             )
         }
         return Permission(
@@ -533,7 +533,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can edit points"
+                reason = "Tylko prowadzący i koordynatorzy mogą edytować punkty"
             )
         }
 
@@ -541,7 +541,7 @@ class PointsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'pointsId'"
+            reason = "Nieprawidłowe lub brakujące 'pointsId'"
         )
 
         val value = arguments.getFloatField("value")
@@ -551,7 +551,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid points ID"
+                reason = "Nie znaleziono punktów o id $pointsId"
             )
 
         if (points.subcategory.edition == null){
@@ -559,7 +559,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory has no edition"
+                reason = "Podkategoria ${points.subcategory} nie ma wybranej edycji"
             )
         }
 
@@ -569,7 +569,7 @@ class PointsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit points for students from their groups"
+                    reason = "Prowadzący może edytować punkty tylko dla studentów ze swoich grup"
                 )
             }
         }
@@ -581,7 +581,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory's edition has already ended"
+                reason = "Edycja podkategorii już się zakończyła"
             )
         }
 
@@ -590,7 +590,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Points with bonuses cannot be edited"
+                reason = "Punkty z łupów nie mogą być edytowane"
             )
         }
 
@@ -600,7 +600,7 @@ class PointsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Value cannot be negative"
+                    reason = "Warotść nie może być ujemna"
                 )
             }
 
@@ -609,7 +609,7 @@ class PointsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Student cannot have more than ${points.subcategory.maxPoints} points in this subcategory"
+                    reason = "Student nie może mieć więcej niż ${points.subcategory.maxPoints} punktów w tej podkategorii"
                 )
             }
 
@@ -622,14 +622,14 @@ class PointsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid user ID"
+                    reason = "Nie znaleziono użytkownika o id $it"
                 )
             if (updatedBy.role != UsersRoles.TEACHER && updatedBy.role != UsersRoles.COORDINATOR) {
                 return Permission(
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Points can only be updated by a teacher or coordinator"
+                    reason = "Punty mogą być edytowane tylko przez prowadzących i koordynatorów"
                 )
             }
             points.updatedBy = updatedBy
@@ -656,7 +656,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can remove points"
+                reason = "Tylko prowadzący i koordynatorzy mogą usuwać punkty"
             )
         }
 
@@ -664,7 +664,7 @@ class PointsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'pointsId'"
+            reason = "Nieprawidłowe lub brakujące 'pointsId'"
         )
 
         val points = pointsRepository.findById(pointsId).orElse(null)
@@ -672,7 +672,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid points ID"
+                reason = "Nie znaleziono punktów o id $pointsId"
             )
 
         if (points.subcategory.edition == null){
@@ -680,7 +680,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory has no edition"
+                reason = "Podkategoria ${points.subcategory} nie ma wybranej edycji"
             )
         }
 
@@ -690,7 +690,7 @@ class PointsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only remove points for students from their groups"
+                    reason = "Prowadzący może usuwać punkty tylko dla studentów ze swoich grup"
                 )
             }
         }
@@ -700,7 +700,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory's edition has already ended"
+                reason = "Edycja podkategorii już się zakończyła"
             )
         }
         if (bonusesRepository.findByPoints(points).isNotEmpty()) {
@@ -708,7 +708,7 @@ class PointsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Points with bonuses cannot be removed"
+                reason = "Punkty z łupów nie mogą być usuwane"
             )
         }
 

@@ -68,14 +68,14 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can list setup awards"
+                reason = "Tylko koordynatorzy mogą wylistować łupy do setupu"
             )
         }
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -83,7 +83,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         return Permission(
@@ -102,7 +102,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can assign photos to awards"
+                reason = "Tylko koordynatorzy mogą przypisywać zdjęcia do łupów"
             )
         }
 
@@ -110,7 +110,7 @@ class AwardsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -118,7 +118,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         val fileId = arguments.getLongField("fileId")
@@ -149,7 +149,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add awards"
+                reason = "Tylko koordynatorzy mogą dodawać łupy"
             )
         }
 
@@ -157,28 +157,28 @@ class AwardsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardName'"
+            reason = "Nieprawidłowe lub brakujące 'awardName'"
         )
 
         val awardType = arguments.getStringField("awardType") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardType'"
+            reason = "Nieprawidłowe lub brakujące 'awardType'"
         )
 
         val awardValue = arguments.getFloatField("awardValue") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardValue'"
+            reason = "Nieprawidłowe lub brakujące 'awardValue'"
         )
 
         val categoryId = arguments.getLongField("categoryId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'categoryId'"
+            reason = "Nieprawidłowe lub brakujące 'categoryId'"
         )
 
         val maxUsages = arguments.getIntField("maxUsages")
@@ -187,7 +187,7 @@ class AwardsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'description'"
+            reason = "Nieprawidłowe lub brakujące 'description'"
         )
 
         val fileId = arguments.getLongField("fileId")
@@ -199,7 +199,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award type"
+                reason = "Nieprawidłowy typ nagrody"
             )
         }
 
@@ -210,7 +210,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Additive award value must be greater than or equal to 0"
+                reason = "Wartość nagrody addytywnej musi być większa lub równa 0"
             )
         }
 
@@ -219,7 +219,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Multiplicative award value must be greater than 0 and less than or equal to 1"
+                reason = "Wartość nagrody multiplikatywnej musi być większa od 0 i mniejsza lub równa 1"
             )
         }
 
@@ -228,7 +228,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid category ID"
+                reason = "Nie znaleziono Kategorii o id $categoryId"
             )
 
         val awardsWithSameName = awardRepository.findAllByAwardName(awardName)
@@ -237,7 +237,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award with this name cannot be added with this type (already exists with different type)"
+                reason = "Łup o tej nazwie nie może być dodany z tym typem (już istnieje z innym typem)"
             )
         }
         if (awardsWithSameName.any { it.awardValue == awardValue.toBigDecimal().setScale(2, RoundingMode.HALF_UP)  }) {
@@ -245,7 +245,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award with this name and value already exists"
+                reason = "Łup o tej nazwie i wartości już istnieje"
             )
         }
         if (!category.canAddPoints) {
@@ -253,7 +253,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This category does not allow adding points from awards"
+                reason = "Ta kategoria nie pozwala na dodawanie punktów z łupów"
             )
         }
 
@@ -283,7 +283,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit awards"
+                reason = "Tylko koordynatorzy mogą edytować łupy"
             )
         }
 
@@ -291,7 +291,7 @@ class AwardsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -299,7 +299,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         val awardName = arguments.getStringField("awardName")
@@ -321,7 +321,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with this award has already ended"
+                reason = "Edycja z tą łupem już się zakończyła"
             )
         }
 
@@ -330,7 +330,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with this award has already started"
+                reason = "Edycja z tą łupem już wystartowała"
             )
         }
 
@@ -341,7 +341,7 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Award with this name cannot be added with this type (already exists with different type)"
+                    reason = "Łup o tej nazwie nie może być dodany z tym typem (już istnieje z innym typem)"
                 )
             }
             if (otherAwardsWithSameName.any { it.awardValue == award.awardValue }) {
@@ -349,7 +349,7 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Award with this name and value already exists"
+                    reason = "Łup o tej nazwie i wartości już istnieje"
                 )
             }
         }
@@ -362,7 +362,7 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid award type"
+                    reason = "Nieprawidłowy typ nagrody"
                 )
             }
 
@@ -374,7 +374,7 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Additive award value must be greater than or equal to 0"
+                    reason = "Wartość nagrody addytywnej musi być większa lub równa 0"
                 )
             }
 
@@ -383,7 +383,7 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Multiplicative award value must be greater than 0 and less than or equal to 1"
+                    reason = "Wartość nagrody multiplikatywnej musi być większa od 0 i mniejsza lub równa 1"
                 )
             }
         }
@@ -396,7 +396,7 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid award type"
+                    reason = "Nieprawidłowy typ nagrody"
                 )
             }
             val oldAwardValue = award.awardValue
@@ -409,7 +409,7 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Additive award value must be greater than or equal to 0"
+                    reason = "Wartość nagrody addytywnej musi być większa lub równa 0"
                 )
             }
 
@@ -418,7 +418,7 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Multiplicative award value must be greater than 0 and less than or equal to 1"
+                    reason = "Wartość nagrody multiplikatywnej musi być większa od 0 i mniejsza lub równa 1"
                 )
             }
         }
@@ -433,7 +433,7 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Additive award value must be greater than or equal to 0"
+                    reason = "Wartość nagrody addytywnej musi być większa lub równa 0"
                 )
             }
 
@@ -442,7 +442,7 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Multiplicative award value must be greater than 0 and less than or equal to 1"
+                    reason = "Wartość nagrody multiplikatywnej musi być większa od 0 i mniejsza lub równa 1"
                 )
             }
         }
@@ -453,14 +453,14 @@ class AwardsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid category ID"
+                    reason = "Nie znaleziono Kategorii o id $categoryId"
                 )
             if (!category.canAddPoints) {
                 return Permission(
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "This category does not allow adding points from awards"
+                    reason = "Ta kategoria nie pozwala na dodawanie punktów z łupów"
                 )
             }
         }
@@ -483,7 +483,7 @@ class AwardsPermissions {
 //                action = action,
 //                arguments = arguments,
 //                allow = false,
-//                reason = "Award is already in use"
+//                reason = "Łup jest już w użyciu"
 //            )
 //        }
 
@@ -503,7 +503,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove awards"
+                reason = "Tylko koordynatorzy mogą usuwać łupy"
             )
         }
 
@@ -511,7 +511,7 @@ class AwardsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -519,7 +519,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         if (award.awardEditions.map { it.edition }.any { it.endDate.isBefore(LocalDate.now()) }) {
@@ -527,7 +527,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with this award has already ended"
+                reason = "Edycja z tą łupem już się zakończyła"
             )
         }
 
@@ -536,7 +536,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award is already in use"
+                reason = "Łup jest już w użyciu"
             )
         }
 
@@ -547,7 +547,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Removing this award would cause some chests to have their award bundle count bigger than the number of awards in them"
+                reason = "Usunięcie tego łupu spowoduje, że w niektórych skrzyniach maksymalna liczba możliwych do zdobycia przedmiotów przekroczy faktyczną liczbę dostępnych łupów"
             )
         }
 
@@ -567,7 +567,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can copy awards"
+                reason = "Tylko koordynatorzy mogą kopiować łupy"
             )
         }
 
@@ -575,7 +575,7 @@ class AwardsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -583,7 +583,7 @@ class AwardsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         return Permission(

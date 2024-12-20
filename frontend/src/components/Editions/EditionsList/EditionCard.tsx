@@ -2,8 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { pathsGenerator } from "../../../router/paths";
 import { SetupButtons } from "../../Edition/Sections/SetupButtons";
 import { Edition } from "../../../hooks/Editions/useEditionsScreen";
-import { coordinatorStyles, getCardStyles } from "../../../utils/utils";
+import {
+  coordinatorStyles,
+  getCardStyles,
+  getTimestamp,
+  isEditionActive,
+} from "../../../utils/utils";
 import { CustomText } from "../../CustomText";
+import { tokens } from "../../../tokens";
 
 type EditionCardProps = {
   data: Edition;
@@ -27,9 +33,22 @@ export const EditionCard = ({
         <CustomText style={coordinatorStyles.title}>
           {edition.editionName}
         </CustomText>
-        <CustomText>
-          {`${edition.startDate.slice(0, 4)}/${edition.endDate.slice(0, 4)}`}
-        </CustomText>
+        <div style={coordinatorStyles.textContainer}>
+          <CustomText>
+            {getTimestamp(edition.startDate, edition.endDate)}
+          </CustomText>
+          <CustomText
+            color={
+              isEditionActive(edition.startDate, edition.endDate)
+                ? tokens.color.accent.dark
+                : undefined
+            }
+          >
+            {isEditionActive(edition.startDate, edition.endDate)
+              ? "aktywna"
+              : "nieaktywna"}
+          </CustomText>
+        </div>
       </div>
 
       <SetupButtons

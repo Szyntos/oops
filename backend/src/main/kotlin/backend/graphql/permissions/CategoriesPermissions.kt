@@ -73,7 +73,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can list setup categories"
+                reason = "Tylko koordynatorzy mogą wylistować kategorie do setupu"
             )
         }
         val editionId = arguments.getLongField("editionId")
@@ -81,7 +81,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'editionId'"
+                reason = "Nieprawidłowe lub brakujące 'editionId'"
             )
 
         val edition = editionRepository.findById(editionId).getOrNull()
@@ -89,7 +89,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with id $editionId not found"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         return Permission(
             action = action,
@@ -108,7 +108,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add categories"
+                reason = "Tylko koordynatorzy mogą dodawać kategorie"
             )
         }
 
@@ -116,14 +116,14 @@ class CategoriesPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'categoryName'"
+            reason = "Nieprawidłowe lub brakujące 'categoryName'"
         )
 
         val canAddPoints = arguments.getBooleanField("canAddPoints") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'canAddPoints'"
+            reason = "Nieprawidłowe lub brakujące 'canAddPoints'"
         )
 
         val lightColor = arguments.getStringField("lightColor")
@@ -134,7 +134,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'subcategories'"
+                reason = "Nieprawidłowe lub brakujące 'subcategories'"
             )
 
         val categoriesWithSameName = categoriesRepository.findAllByCategoryName(categoryName)
@@ -143,14 +143,14 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category with this name and canAddPoints already exists"
+                reason = "Kategoria o tej nazwie i canAddPoints już istnieje"
             )
         }
         if (lightColor != null && !isValidHexColor(lightColor)) {
-            throw IllegalArgumentException("Invalid light color")
+            throw IllegalArgumentException("Nieprawidłowy kolor jasny")
         }
         if (darkColor != null && !isValidHexColor(darkColor)) {
-            throw IllegalArgumentException("Invalid dark color")
+            throw IllegalArgumentException("Nieprawidłowy kolor ciemny")
         }
 
         val category = Categories(
@@ -177,7 +177,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove categories"
+                reason = "Tylko koordynatorzy mogą usuwać kategorie"
             )
         }
 
@@ -186,21 +186,21 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'categoryId'"
+                reason = "Nieprawidłowe lub brakujące 'categoryId'"
             )
 
         val category = categoriesRepository.findById(categoryId).getOrNull() ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Category with id $categoryId not found"
+            reason = "Nie znaleziono kategorii o id $categoryId"
         )
         if (category.categoryEdition.any { categoryEdition -> categoryEdition.edition.endDate.isBefore(LocalDate.now()) }) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already in an edition that has ended"
+                reason = "Kategoria jest już w edycji która się zakończyła"
             )
         }
         if (category.categoryEdition.any { categoryEdition -> categoryEdition.edition.startDate.isBefore(LocalDate.now()) }) {
@@ -208,7 +208,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already in an edition that has started"
+                reason = "Kategoria jest już w edycji która już wystartowała"
             )
         }
         if (category.subcategories.any { subcategory -> subcategory.points.isNotEmpty() }){
@@ -216,7 +216,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category has subcategories connected to points"
+                reason = "Kategoria posiada podkategorie, do których już przyznano punkty"
             )
         }
         if (awardRepository.existsByCategory(category)) {
@@ -224,7 +224,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already used in awards"
+                reason = "Kategoria jest już używana w łupach"
             )
         }
         if (gradingChecksRepository.existsByProject(category)) {
@@ -232,7 +232,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already used in grading checks"
+                reason = "Kategoria jest już używana w zasadach oceniania"
             )
         }
 
@@ -252,7 +252,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit categories"
+                reason = "Tylko koordynatorzy mogą edytować kategorie"
             )
         }
 
@@ -261,7 +261,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'categoryId'"
+                reason = "Nieprawidłowe lub brakujące 'categoryId'"
             )
 
         val categoryName = arguments.getStringField("categoryName")
@@ -277,14 +277,14 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'subcategories'"
+                reason = "Nieprawidłowe lub brakujące 'subcategories'"
             )
 
         val category = categoriesRepository.findById(categoryId).getOrNull() ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Category with id $categoryId not found"
+            reason = "Nie znaleziono kategorii o id $categoryId"
         )
 
         if (category.categoryEdition.any { it.edition.endDate.isBefore(LocalDate.now()) }) {
@@ -292,7 +292,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already in an edition that has ended"
+                reason = "Kategoria jest już w edycji która się zakończyła"
             )
         }
         if (category.categoryEdition.any { it.edition.startDate.isBefore(LocalDate.now()) }) {
@@ -300,7 +300,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already in an edition that has started"
+                reason = "Kategoria jest już w edycji która już wystartowała"
             )
         }
 
@@ -311,7 +311,7 @@ class CategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid light color"
+                    reason = "Nieprawidłowy kolor jasny"
                 )
             }
             category.lightColor = it
@@ -322,7 +322,7 @@ class CategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid dark color"
+                    reason = "Nieprawidłowy kolor ciemny"
                 )
             }
             category.darkColor = it
@@ -336,7 +336,7 @@ class CategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Category with this name and canAddPoints already exists"
+                    reason = "Kategoria o tej nazwie i canAddPoints już istnieje"
                 )
             }
             category.categoryName = it
@@ -356,7 +356,7 @@ class CategoriesPermissions {
                         action = action,
                         arguments = arguments,
                         allow = false,
-                        reason = "Subcategory with id $subcategoryId not found"
+                        reason = "Nie znaleziono podkategorii o id $subcategoryId"
                     )
 
                 if (existingSubcategory.category.categoryId != categoryId) {
@@ -364,7 +364,7 @@ class CategoriesPermissions {
                         action = action,
                         arguments = arguments,
                         allow = false,
-                        reason = "Subcategory does not belong to the specified category"
+                        reason = "Podkategoria nie należy do tej kategorii"
                     )
                 }
 
@@ -375,7 +375,7 @@ class CategoriesPermissions {
                         action = action,
                         arguments = arguments,
                         allow = false,
-                        reason = "Subcategory with this ordinal number already exists"
+                        reason = "Podkategoria z tym numerem porządkowym już istnieje"
                     )
                 }
                 existingSubcategory.ordinalNumber = subcategoryInput.ordinalNumber
@@ -401,7 +401,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can copy categories"
+                reason = "Tylko koordynatorzy mogą kopiować kategorie"
             )
         }
 
@@ -410,7 +410,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'categoryId'"
+                reason = "Nieprawidłowe lub brakujące 'categoryId'"
             )
 
         val category = categoriesRepository.findById(categoryId).getOrNull()
@@ -418,7 +418,7 @@ class CategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category with id $categoryId not found"
+                reason = "Nie znaleziono kategorii o id $categoryId"
             )
 
         return Permission(

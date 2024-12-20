@@ -47,10 +47,10 @@ class Bonuses(
 
     fun updateMultiplicativePoints(bonusRepository: BonusesRepository, pointsRepository: PointsRepository) {
         if (award.awardType != AwardType.MULTIPLICATIVE) {
-            throw IllegalArgumentException("Award type is not MULTIPLICATIVE")
+            throw IllegalArgumentException("Typ Łupu nie jest MULTIPLICATIVE")
         }
         if (points.subcategory.edition == null) {
-            throw IllegalArgumentException("Points edition is null")
+            throw IllegalArgumentException("Edycja punktów jest nullem")
         }
         val pointsInAwardCategory = points.student.getPointsByEditionAndCategory(
             points.subcategory.edition!!,
@@ -69,10 +69,10 @@ class Bonuses(
 
     fun updateAdditivePrevPoints(subcategoriesRepository: SubcategoriesRepository, bonusRepository: BonusesRepository, pointsRepository: PointsRepository, edition: Edition, updatedBonuses: List<Points>): Points {
         if (award.awardType != AwardType.ADDITIVE_PREV) {
-            throw IllegalArgumentException("Award type is not ADDITIVE_PREV")
+            throw IllegalArgumentException("Typ Łupu nie jest ADDITIVE_PREV")
         }
         if (points.subcategory.edition == null){
-            throw IllegalArgumentException("Points edition is null")
+            throw IllegalArgumentException("Edycja punktów jest nullem")
         }
 
         val purePointsInAwardCategory = chestHistory.user.getPointsByEditionAndCategory(edition, award.category, pointsRepository)

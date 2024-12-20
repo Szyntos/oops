@@ -54,6 +54,7 @@ export const StudentsScreen = () => {
           `${student.firstName} ${student.secondName}`,
           student.index.toString(),
           student.group.name,
+          student.nick,
         ]);
 
       return doesGroupMatch && doesInputMatch;
@@ -94,6 +95,7 @@ export const StudentsScreen = () => {
       <div style={styles.topBar}>
         <StudentsListSearcher
           onInputChange={(input: string) => setInput(input)}
+          placeholder="Wyszukaj studenta"
         />
         <RadioFilterGroups
           options={groupsRadioButtonOptions}

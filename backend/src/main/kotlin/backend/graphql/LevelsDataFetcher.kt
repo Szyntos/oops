@@ -68,10 +68,10 @@ class LevelsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val level = levelsRepository.findById(levelId).orElseThrow { IllegalArgumentException("Invalid level ID") }
+        val level = levelsRepository.findById(levelId).orElseThrow { IllegalArgumentException("Nie znaleziono poziomu o id $levelId") }
 
         return photoAssigner.assignPhotoToAssignee(levelsRepository, "image/level", levelId, fileId)
     }
@@ -90,16 +90,16 @@ class LevelsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
         val student = usersRepository.findById(studentId)
-            .orElseThrow { IllegalArgumentException("Invalid student ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono studenta o id $studentId") }
 
         val userLevel = student.userLevels.find { it.edition == edition }
-            ?: throw IllegalArgumentException("Student does not have a level in the edition")
+            ?: throw IllegalArgumentException("Student ${student.userId} nie posiada poziomu w edycji $edition.editionId")
         val currentLevel = userLevel.level
         val previousLevel =
             levelsRepository.findByLevelSet(currentLevel.levelSet)

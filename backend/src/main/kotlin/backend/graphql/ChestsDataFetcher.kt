@@ -86,7 +86,7 @@ class ChestsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val chests = chestsRepository.findAll().map {
@@ -97,7 +97,7 @@ class ChestsDataFetcher {
                         "addChest",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canEdit = permissionService.checkPartialPermission(PermissionInput("editChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
                     canCopy = permissionService.checkPartialPermission(PermissionInput("copyChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
                     canRemove = permissionService.checkPartialPermission(PermissionInput("removeChest", objectMapper.writeValueAsString(mapOf("chestId" to it.chestId)))),
@@ -124,7 +124,7 @@ class ChestsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
@@ -152,7 +152,7 @@ class ChestsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val chest = Chests(
@@ -166,7 +166,7 @@ class ChestsDataFetcher {
         }
 
         awardIds.forEach { awardId ->
-            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Nie znaleziono Łupu o id $awardId") }
             val chestAward = ChestAward(
                 chest = savedChest,
                 award = award,
@@ -203,10 +203,10 @@ class ChestsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
+        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Nie znaleziono skrzynki o id $chestId") }
 
         chestType?.let {
             chest.chestType = it
@@ -233,14 +233,14 @@ class ChestsDataFetcher {
         val toAdd = newAwardIds.minus(oldAwardIds)
 
         toRemove.forEach { awardId ->
-            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Nie znaleziono Łupu o id $awardId") }
             chestAwardRepository.findByChestAndAward(chest, award)?.let {
                 chestAwardRepository.delete(it)
             }
         }
 
         toAdd.forEach { awardId ->
-            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Invalid award ID") }
+            val award = awardRepository.findById(awardId).orElseThrow { IllegalArgumentException("Nie znaleziono Łupu o id $awardId") }
             val chestAward = ChestAward(
                 chest = chest,
                 award = award,
@@ -265,10 +265,10 @@ class ChestsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
+        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Nie znaleziono skrzynki o id $chestId") }
 
         chestEditionRepository.deleteByChest(chest)
         chestAwardRepository.findByChest(chest).forEach {
@@ -292,17 +292,17 @@ class ChestsDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Invalid chest ID") }
+        val chest = chestsRepository.findById(chestId).orElseThrow { IllegalArgumentException("Nie znaleziono skrzynki o id $chestId") }
 
         val chestTypeRoot = chest.chestType
         var i = 1
-        while (chestsRepository.findAllByChestType("$chestTypeRoot (Copy $i)").isNotEmpty()) {
+        while (chestsRepository.findAllByChestType("$chestTypeRoot (Kopia $i)").isNotEmpty()) {
             i++
         }
-        val chestType = "$chestTypeRoot (Copy $i)"
+        val chestType = "$chestTypeRoot (Kopia $i)"
 
 
         val newChest = Chests(

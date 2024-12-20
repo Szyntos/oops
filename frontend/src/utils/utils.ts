@@ -4,7 +4,6 @@ import {
   UsersRolesType,
 } from "../__generated__/schema.graphql.types";
 import { Permissions } from "../components/Edition/Sections/SetupButtons";
-import { Edition } from "../contexts/userContext";
 import { tokens } from "../tokens";
 import { Styles } from "./Styles";
 
@@ -33,9 +32,9 @@ export const hasRole = (user: User, allowedRoles: UsersRolesType[]) => {
   return allowedRoles.includes(user.role as UsersRolesType);
 };
 
-export const isEditionActive = (edition: Edition) => {
+export const isEditionActive = (startDate: string, endDate: string) => {
   const now = new Date();
-  return new Date(edition.startDate) < now && now < new Date(edition.endDate);
+  return new Date(startDate) < now && now < new Date(endDate);
 };
 
 export const mockPermissions = {
@@ -133,7 +132,11 @@ export const getGroupTimeString = (
   startTime: string,
   endTime: string,
 ) => {
-  return `${weekday}, ${getTimeWithoutSeconds(startTime)}-${getTimeWithoutSeconds(endTime)}`;
+  return `${weekday}, ${getTimestamp(startTime, endTime)}`;
+};
+
+export const getTimestamp = (startTime: string, endTime: string) => {
+  return `${getTimeWithoutSeconds(startTime)}-${getTimeWithoutSeconds(endTime)}`;
 };
 
 export const ERROR_MESSAGE = "Wystąpił błąd...";

@@ -21,7 +21,7 @@ export const CustomButton = ({
     return {
       ...styles.button,
       ...(disabled ? styles.disabled : undefined),
-      backgroundColor: color ?? tokens.color.accent.dark,
+      backgroundColor: color ?? tokens.color.accent.light,
     };
   };
   const buttonStyles = getButtonStyles();

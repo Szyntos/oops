@@ -98,6 +98,11 @@ class CategoryEditionDataFetcher {
                 }
         }
 
+        val colorPalette = getUniqueRandomColorPalette(editionId)
+        resultCategoryEdition.category.lightColor = colorPalette.first
+        resultCategoryEdition.category.darkColor = colorPalette.second
+        categoriesRepository.save(resultCategoryEdition.category)
+
         return resultCategoryEdition
     }
 
@@ -140,5 +145,22 @@ class CategoryEditionDataFetcher {
         }
         categoryEditionRepository.deleteByCategoryAndEdition(category, edition)
         return true
+    }
+
+    fun getUniqueRandomColorPalette(editionId: Long): Pair<String, String> {
+        val colorPalettes = listOf(
+            "#DDD9AB" to "#666936",
+            "#F4D2A1" to "#8B5D17",
+            "#54AA5D" to "#2A512A",
+            "#E7BBEC" to "#4D2C44",
+            "#99DDC1" to "#176B74",
+        )
+        val usedColors = categoriesRepository.findByCategoryEdition_Edition_EditionId(editionId).map { it.lightColor to it.darkColor }.toSet()
+
+        val availableColorPalettes = colorPalettes.filter { it !in usedColors }
+        if (availableColorPalettes.isEmpty()) {
+            return colorPalettes.random()
+        }
+        return availableColorPalettes.random()
     }
 }

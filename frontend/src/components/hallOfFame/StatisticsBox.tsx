@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Styles } from "../../utils/Styles";
 import {
   ComposedChart,
@@ -24,10 +24,10 @@ interface StatisticsBoxProps {
   highlightedStudent?: Student | null;
 }
 
-export const StatisticsBox: React.FC<StatisticsBoxProps> = ({
+export const StatisticsBox = ({
   students,
   highlightedStudent,
-}) => {
+}: StatisticsBoxProps) => {
   const [binCount, setBinCount] = useState(10); // State to control bin count
   const { levels } = useLevelsData(); // Fetch level data
 
@@ -237,10 +237,8 @@ export const StatisticsBox: React.FC<StatisticsBoxProps> = ({
 
 const styles: Styles = {
   container: {
-    backgroundColor: "lightyellow",
-    padding: "1rem",
     borderRadius: "8px",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    border: "1px solid blue",
   },
   sliderContainer: {
     margin: "1rem 0",

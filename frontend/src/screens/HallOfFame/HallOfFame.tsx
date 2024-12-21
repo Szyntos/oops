@@ -11,6 +11,8 @@ import { tokens } from "../../tokens";
 import { LoadingScreen } from "../Loading/LoadingScreen";
 import { ErrorScreen } from "../Error/ErrorScreen";
 import { StatisticsBox } from "../../components/hallOfFame/StatisticsBox";
+import { CustomDialog } from "../../components/dialogs/CustomDialog";
+import { CustomButton } from "../../components/CustomButton";
 
 export const HallOfFame = () => {
   const { isUserRoleStudent, students, highlightedStudent, loading, error } =
@@ -27,6 +29,8 @@ export const HallOfFame = () => {
       studentElement.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [highlightedStudent?.id]);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (highlightedStudent?.id) {
@@ -47,12 +51,9 @@ export const HallOfFame = () => {
 
   return (
     <div style={styles.container}>
+      <CustomButton onClick={() => setIsOpen(true)}>stat</CustomButton>
       <div style={styles.leftSide}>
         <Podium students={displayStudents} />
-        <StatisticsBox
-          students={displayStudents}
-          highlightedStudent={highlightedStudent}
-        />
       </div>
 
       <div style={styles.sideBarContainer}>
@@ -81,6 +82,17 @@ export const HallOfFame = () => {
           showStudentName={!isUserRoleStudent}
         />
       </div>
+      <CustomDialog
+        size="lg"
+        isOpen={isOpen}
+        title={"Statystyki"}
+        onCloseClick={() => setIsOpen(false)}
+      >
+        <StatisticsBox
+          students={displayStudents}
+          highlightedStudent={highlightedStudent}
+        />
+      </CustomDialog>
     </div>
   );
 };

@@ -25,16 +25,16 @@
         "number_of_editions": 2,
         "number_of_teachers": 7,
         "max_points_in_level": {
-            "is_computed": true,
+            "is_computed": false,
             "if_not_computed": 100
         },
         "number_of_groups_per_year_bounds": [
-            12,
-            14
+            18,
+            22
         ],
         "students_per_group_bounds": [
-            15,
-            20
+            10,
+            15
         ],
         "levels_data": [
             {
@@ -76,19 +76,19 @@
         "category_data": [
             {
                 "name": "LABORATORIUM",
-                "number_of_subcategories": 14,
+                "number_of_subcategories": 8,
                 "subcategory_prefix": "lab_",
-                "max_points_per_subcategory": 10,
+                "max_points_per_subcategory": 4,
                 "can_add_points": true,
                 "light_color": "#a58bce",
                 "dark_color": "#242263",
                 "editions": "all"
             },
             {
-                "name": "KARTKÓWKI",
-                "number_of_subcategories": 14,
-                "subcategory_prefix": "kart_",
-                "max_points_per_subcategory": 5,
+                "name": "KARTKÓWKA",
+                "number_of_subcategories": 8,
+                "subcategory_prefix": "test_",
+                "max_points_per_subcategory": 2,
                 "can_add_points": true,
                 "light_color": "#7cbcce",
                 "dark_color": "#223863",
@@ -96,9 +96,9 @@
             },
             {
                 "name": "PROJEKT",
-                "number_of_subcategories": 3,
+                "number_of_subcategories": 1,
                 "subcategory_prefix": "proj_",
-                "max_points_per_subcategory": 40,
+                "max_points_per_subcategory": 32,
                 "can_add_points": true,
                 "light_color": "#ceaa8b",
                 "dark_color": "#632222",
@@ -112,58 +112,111 @@
                 "can_add_points": false,
                 "light_color": "#8bcebb",
                 "dark_color": "#1c4b5c",
-                "editions": "first"
+                "editions": "all"
             },
             {
-                "name": "WYDARZENIE Z PUNKTAMI",
-                "number_of_subcategories": 10,
+                "name": "JEDNORAZOWE",
+                "number_of_subcategories": 1,
                 "subcategory_prefix": null,
-                "max_points_per_subcategory": null,
+                "max_points_per_subcategory": 4,
                 "can_add_points": true,
                 "light_color": "#1c4b5c",
                 "dark_color": "#8bcebb",
-                "editions": "last"
+                "editions": "all"
             }
         ],
         "category_names_to_populate": [
+            "JEDNORAZOWE",
             "LABORATORIUM",
-            "KARTKÓWKI",
+            "KARTKÓWKA",
             "PROJEKT"
         ],
         "chests_data": [
             {
-                "name": "Złota Skrzynia",
+                "name": "Złota skrzynia (część laboratoryjna)",
                 "filename": "ZlotaSkrzynia.png",
                 "content_type": [
                     "multiplicative",
                     "additive"
+                ],
+                "awardBundleCount": 2,
+                "content": [
+                    1,
+                    2
                 ]
             },
             {
-                "name": "Srebrna Skrzynia",
+                "name": "Srbrna skrzynia (część laboratoryjna)",
                 "filename": "SrebrnaSkrzynia.png",
                 "content_type": [
                     "additive_next",
                     "additive_prev"
+                ],
+                "awardBundleCount": 1,
+                "content": [
+                    1,
+                    2
                 ]
             },
             {
-                "name": "Brazowa Skrzynia",
+                "name": "Brązowa skrzynia (część laboratoryjna)",
                 "filename": "BrazowaSkrzynia.png",
                 "content_type": [
                     "additive_prev"
+                ],
+                "awardBundleCount": 1,
+                "content": [
+                    2
+                ]
+
+            },
+            {
+                "name": "Złota skrzynia (część projektowa)",
+                "filename": "ZlotaSkrzynia.png",
+                "content_type": [
+                    "multiplicative",
+                    "additive"
+                ],
+                "awardBundleCount": 2,
+                "content": [
+                    3,
+                    4
+                ]
+            },
+            {
+                "name": "Srebrna skrzynia (część projektowa)",
+                "filename": "SrebrnaSkrzynia.png",
+                "content_type": [
+                    "additive_next",
+                    "additive_prev"
+                ],
+                "awardBundleCount": 1,
+                "content": [
+                    3,
+                    4
+                ]
+            },
+            {
+                "name": "Brązowa skrzynia (część projektowa)",
+                "filename": "BrazowaSkrzynia.png",
+                "content_type": [
+                    "additive_prev"
+                ],
+                "awardBundleCount": 1,
+                "content": [
+                    4
                 ]
             }
         ],
         "awards_data": [
             {
-                "name": "Lekarstwo",
-                "filename": "Lekarstwo.png",
-                "award_type": "additive_next",
-                "award_value": 10,
+                "name": "Marchewka",
+                "filename": "MarchewkaLaboratoryjna.png",
+                "award_type": "multiplicative",
+                "award_value": 0.1,
                 "category_id": 1,
-                "max_usages": 6,
-                "description": "Lekarstwo na wszelkie dolegliwości",
+                "max_usages": 3,
+                "description": "zdrowa alternatywa dla kija",
                 "label": "",
                 "editions": "all"
             },
@@ -171,72 +224,39 @@
                 "name": "Weterynarz",
                 "filename": "Weterynarz.png",
                 "award_type": "additive_prev",
-                "award_value": 20,
-                "category_id": 2,
-                "max_usages": 8,
-                "description": "Bardzo dobry weterynarz",
-                "label": "",
-                "editions": "first"
-            },
-            {
-                "name": "Rabat na sianko",
-                "filename": "RabatNaSianko.png",
-                "award_type": "additive",
-                "award_value": 12,
-                "category_id": 1,
-                "max_usages": 12,
-                "description": "Sianko dla zwierzaków",
-                "label": "",
-                "editions": "last"
-            },
-            {
-                "name": "Marchewka laboratoryjna",
-                "filename": "MarchewkaLaboratoryjna.png",
-                "award_type": "multiplicative",
-                "award_value": 0.3,
-                "category_id": 1,
-                "max_usages": 5,
-                "description": "Niezbędna w laboratorium",
-                "label": "",
-                "editions": "all"
-            },
-            {
-                "name": "Marchewka projektowa",
-                "filename": "MarchewkaProjektowa.png",
-                "award_type": "multiplicative",
-                "award_value": 0.6,
-                "category_id": 3,
-                "max_usages": 6,
-                "description": "Pomaga w projekcie",
-                "label": "",
-                "editions": "all"
-            },
-            {
-                "name": "LekarstwoV2",
-                "filename": "LekarstwoV2.png",
-                "award_type": "additive_next",
-                "award_value": 14,
-                "category_id": 1,
-                "max_usages": 2,
-                "description": "Gdy lekarstwo nie wystarczy",
-                "label": "",
-                "editions": "first"
-            },
-            {
-                "name": "WeterynarzV2",
-                "filename": "WeterynarzV2.png",
-                "award_type": "additive_prev",
-                "award_value": 16,
+                "award_value": 2,
                 "category_id": 2,
                 "max_usages": -1,
-                "description": "Gdy weterynarz nie wystarczy",
+                "description": "darmowy zastrzyk wiedzy",
                 "label": "",
-                "editions": "last"
+                "editions": "all"
+            },
+            {
+                "name": "Pietruszka",
+                "filename": "Lekarstwo.png",
+                "award_type": "multiplicative",
+                "award_value": 0.1,
+                "category_id": 3,
+                "max_usages": 4,
+                "description": "to o nią toczy się gra",
+                "label": "",
+                "editions": "all"
+            },
+            {
+                "name": "Plaster",
+                "filename": "RabatNaSianko.png",
+                "award_type": "additive_prev",
+                "award_value": 2,
+                "category_id": 1,
+                "max_usages": -1,
+                "description": "na wypadek wystąpienia dziur w kodzie",
+                "label": "",
+                "editions": "all"
             }
         ],
         "subcategories_percentage": 0.6,
-        "chest_percentage": 0.6,
-        "open_chest_percentage": 0.2,
+        "chest_percentage": 0.5,
+        "open_chest_percentage": 0.7,
         "seed": 1234
     }
 }

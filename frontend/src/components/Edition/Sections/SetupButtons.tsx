@@ -216,7 +216,7 @@ const styles: Styles = {
   button: {
     border: "none",
     fontSize: tokens.font.small,
-    color: tokens.color.text.secondary,
+    color: tokens.color.text.primary,
     borderRadius: 4,
     cursor: "pointer",
     padding: 4,

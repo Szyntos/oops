@@ -30,7 +30,7 @@ export const StudentsListCard = ({
               {student.nick}
             </CustomText>
             <div style={styles.secondaryTextContainer}>
-              <CustomText color={tokens.color.text.secondary}>
+              <CustomText color={tokens.color.text.primary}>
                 {student.firstName} {student.secondName}
               </CustomText>
               <CustomText color={tokens.color.text.secondary}>

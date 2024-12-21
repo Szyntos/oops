@@ -1,6 +1,7 @@
 import { SetupChestsQuery } from "../../../../../graphql/setupChests.graphql.types";
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
+import { tokens } from "../../../../../tokens";
 import {
   coordinatorStyles,
   getCardStyles,
@@ -61,7 +62,7 @@ export const ChestCard = ({
             <CustomText style={coordinatorStyles.title}>
               {chest.chest.chestType}
             </CustomText>
-            <CustomText>
+            <CustomText color={tokens.color.text.secondary}>
               łupy do zebrania: {chest.chest.awardBundleCount}
             </CustomText>
           </div>

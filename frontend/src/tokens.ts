@@ -4,12 +4,12 @@ export const tokens = {
       primary: "#514c42",
     },
     card: {
-      light: "#3e372b",
-      dark: "#2d271e",
+      light: "#2d271e",
+      dark: "#3e372b",
     },
     text: {
       primary: "#ffffff",
-      secondary: "#ffffff",
+      secondary: "#b1b1b1",
       // MUI
       tertiary: "#b1b1b1",
     },

@@ -122,7 +122,7 @@ export const IconMapper = ({
         ...(isDisabled && styles.disabled),
         width: size,
         height: size,
-        color: color ?? tokens.color.text.secondary,
+        color: color ?? tokens.color.text.primary,
       }}
     />
   );

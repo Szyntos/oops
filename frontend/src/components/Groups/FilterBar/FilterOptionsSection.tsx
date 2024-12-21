@@ -43,7 +43,7 @@ export const FilterOptionsSection = ({
                   checked={selectedIds.includes(option.id)}
                   onChange={() => handleOptionChange(option.id)}
                   sx={{
-                    color: tokens.color.text.primary,
+                    color: tokens.color.text.secondary,
                     "&.Mui-checked": {
                       color: tokens.color.accent.dark,
                     },

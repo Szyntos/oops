@@ -30,6 +30,9 @@ export const tokens = {
       white: "rgba(255, 255, 255, 0.6)",
       accent: "rgba(108, 216, 93, 0.5)",
     },
+    progressBar: {
+      empty: "#363026",
+    },
   },
   padding: {
     xxs: 4,

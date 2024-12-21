@@ -106,7 +106,7 @@ const styles: Styles = {
   },
   empty: {
     height: BAR_HEIGHT,
-    backgroundColor: tokens.color.state.disabled,
+    backgroundColor: tokens.color.progressBar.empty,
     borderRadius: BORDER_RADIUS,
     position: "relative",
   },

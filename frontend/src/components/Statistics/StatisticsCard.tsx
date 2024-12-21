@@ -52,21 +52,26 @@ export const StatisticsCard = ({
       highlighted: false,
     }));
 
-    points.forEach((point) => {
-      const binIndex = Math.min(
-        Math.floor((point - min) / binSize),
-        binCount - 1,
-      );
-      bins[binIndex].count += 1;
+    let pointsSum = 0;
+    points.forEach((p) => (pointsSum += p));
 
-      if (
-        highlightedStudent &&
-        point === highlightedStudent.totalPoints &&
-        bins[binIndex].highlighted === false
-      ) {
-        bins[binIndex].highlighted = true;
-      }
-    });
+    if (pointsSum) {
+      points.forEach((point) => {
+        const binIndex = Math.min(
+          Math.floor((point - min) / binSize),
+          binCount - 1,
+        );
+        bins[binIndex].count += 1;
+
+        if (
+          highlightedStudent &&
+          point === highlightedStudent.totalPoints &&
+          bins[binIndex].highlighted === false
+        ) {
+          bins[binIndex].highlighted = true;
+        }
+      });
+    }
 
     return { bins, min, max };
   };

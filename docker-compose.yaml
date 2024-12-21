@@ -134,7 +134,7 @@ services:
     entrypoint: >
       /bin/sh -c "
       echo 'Installing Python dependencies...' &&
-      pip install --no-cache-dir requests psycopg2-binary faker tqdm scipy numpy &&
+      pip install --no-cache-dir requests psycopg2-binary faker tqdm scipy numpy python-dotenv &&
       echo 'Waiting for Hasura metadata to be applied...' &&
       sleep 5 &&
       echo 'Executing insert_data.py...' &&

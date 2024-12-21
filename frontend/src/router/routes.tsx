@@ -20,7 +20,9 @@ import { UsersSection } from "../components/Edition/Sections/UsersSection/UsersS
 import { GradingChecksSection } from "../components/Edition/Sections/GradingChecksSection/GradingChecksSection";
 import { ChestsSection } from "../components/Edition/Sections/ChestsSection/ChestsSection";
 import { HallOfFameTeacher } from "../screens/HallOfFame/HallOfFameTeacher";
-import { Statistics } from "../components/Statistics/Statistics";
+import { StudentStatistics } from "../components/Statistics/StudentStatistics";
+import { TeacherStatistics } from "../components/Statistics/TeacherStatistice";
+import { CoordinatorStatistics } from "../components/Statistics/CoordinatorStatistics";
 
 const commonPaths = pathsWithParameters.common;
 const studentPaths = pathsWithParameters.student;
@@ -59,7 +61,7 @@ export const routes = createBrowserRouter([
         path: studentPaths.Statistics.path,
         element: (
           <ProtectedRoute
-            element={<Statistics role="student" />}
+            element={<StudentStatistics />}
             allowedRoles={studentPaths.Statistics.allowedRoles}
           />
         ),
@@ -68,7 +70,7 @@ export const routes = createBrowserRouter([
         path: teacherPaths.Statistics.path,
         element: (
           <ProtectedRoute
-            element={<Statistics role="teacher" />}
+            element={<TeacherStatistics />}
             allowedRoles={teacherPaths.Statistics.allowedRoles}
           />
         ),
@@ -77,7 +79,7 @@ export const routes = createBrowserRouter([
         path: coordinatorPaths.Statistics.path,
         element: (
           <ProtectedRoute
-            element={<Statistics role="coordinator" />}
+            element={<CoordinatorStatistics />}
             allowedRoles={coordinatorPaths.Statistics.allowedRoles}
           />
         ),

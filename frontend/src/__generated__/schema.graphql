@@ -8929,6 +8929,7 @@ type HallOfFame {
   nick: String
   secondName: String
   sumOfPoints: numeric
+  teacherId: bigint
   userId: bigint
   userImageId: bigint
 }
@@ -8967,6 +8968,7 @@ type HallOfFameAvgFields {
   levelId: Float
   levelImageId: Float
   sumOfPoints: Float
+  teacherId: Float
   userId: Float
   userImageId: Float
 }
@@ -8989,6 +8991,7 @@ input HallOfFameBoolExp {
   nick: StringComparisonExp
   secondName: StringComparisonExp
   sumOfPoints: NumericComparisonExp
+  teacherId: BigintComparisonExp
   userId: BigintComparisonExp
   userImageId: BigintComparisonExp
 }
@@ -9008,6 +9011,7 @@ type HallOfFameMaxFields {
   nick: String
   secondName: String
   sumOfPoints: numeric
+  teacherId: bigint
   userId: bigint
   userImageId: bigint
 }
@@ -9027,6 +9031,7 @@ type HallOfFameMinFields {
   nick: String
   secondName: String
   sumOfPoints: numeric
+  teacherId: bigint
   userId: bigint
   userImageId: bigint
 }
@@ -9046,6 +9051,7 @@ input HallOfFameOrderBy {
   nick: OrderBy
   secondName: OrderBy
   sumOfPoints: OrderBy
+  teacherId: OrderBy
   userId: OrderBy
   userImageId: OrderBy
 }
@@ -9112,6 +9118,11 @@ enum HallOfFameSelectColumn {
   """
   column name
   """
+  teacherId
+
+  """
+  column name
+  """
   userId
 
   """
@@ -9129,6 +9140,7 @@ type HallOfFameStddevFields {
   levelId: Float
   levelImageId: Float
   sumOfPoints: Float
+  teacherId: Float
   userId: Float
   userImageId: Float
 }
@@ -9142,6 +9154,7 @@ type HallOfFameStddevPopFields {
   levelId: Float
   levelImageId: Float
   sumOfPoints: Float
+  teacherId: Float
   userId: Float
   userImageId: Float
 }
@@ -9155,6 +9168,7 @@ type HallOfFameStddevSampFields {
   levelId: Float
   levelImageId: Float
   sumOfPoints: Float
+  teacherId: Float
   userId: Float
   userImageId: Float
 }
@@ -9189,6 +9203,7 @@ input HallOfFameStreamCursorValueInput {
   nick: String
   secondName: String
   sumOfPoints: numeric
+  teacherId: bigint
   userId: bigint
   userImageId: bigint
 }
@@ -9202,6 +9217,7 @@ type HallOfFameSumFields {
   levelId: bigint
   levelImageId: bigint
   sumOfPoints: numeric
+  teacherId: bigint
   userId: bigint
   userImageId: bigint
 }
@@ -9215,6 +9231,7 @@ type HallOfFameVarPopFields {
   levelId: Float
   levelImageId: Float
   sumOfPoints: Float
+  teacherId: Float
   userId: Float
   userImageId: Float
 }
@@ -9228,6 +9245,7 @@ type HallOfFameVarSampFields {
   levelId: Float
   levelImageId: Float
   sumOfPoints: Float
+  teacherId: Float
   userId: Float
   userImageId: Float
 }
@@ -9241,6 +9259,7 @@ type HallOfFameVarianceFields {
   levelId: Float
   levelImageId: Float
   sumOfPoints: Float
+  teacherId: Float
   userId: Float
   userImageId: Float
 }

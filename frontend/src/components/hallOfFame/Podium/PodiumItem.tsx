@@ -15,14 +15,19 @@ type PodiumItemProps = {
 
 const placeMap = {
   color: {
-    1: tokens.color.unique.gold,
-    2: tokens.color.unique.silver,
-    3: tokens.color.unique.brown,
+    1: tokens.color.unique.first,
+    2: tokens.color.unique.second,
+    3: tokens.color.unique.third,
   },
   height: {
     1: 3,
     2: 2,
     3: 1.2,
+  },
+  shadow: {
+    1: tokens.color.unique.gold,
+    2: tokens.color.unique.silver,
+    3: tokens.color.unique.brown,
   },
 };
 
@@ -30,7 +35,7 @@ const PLACE_HEIGHT_RATIO = 120;
 
 export const PodiumItem = ({ student, place }: PodiumItemProps) => {
   const getPodiumShadow = () => {
-    return { boxShadow: `0px 0px 20px ${placeMap.color[place]}` };
+    return { boxShadow: `0px 0px 20px ${placeMap.shadow[place]}` };
   };
 
   const getPodiumStyle = (): CSSProperties => {

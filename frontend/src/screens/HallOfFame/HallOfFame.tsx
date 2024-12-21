@@ -10,20 +10,10 @@ import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenCon
 import { tokens } from "../../tokens";
 import { LoadingScreen } from "../Loading/LoadingScreen";
 import { ErrorScreen } from "../Error/ErrorScreen";
-import { CustomDialog } from "../../components/dialogs/CustomDialog";
-import { CustomButton } from "../../components/CustomButton";
-import { StatisticsList } from "../../components/hallOfFame/StatisticsList";
 
 export const HallOfFame = () => {
-  const {
-    isUserRoleStudent,
-    students,
-    highlightedStudent,
-    loading,
-    error,
-    levels,
-    groupedStudents,
-  } = useHallOfFameData();
+  const { isUserRoleStudent, students, highlightedStudent, loading, error } =
+    useHallOfFameData();
   const [showStudentsFromAllGroups, setShowStudentsFromAllGroups] =
     useState(!isUserRoleStudent);
   const [searchInput, setSearchInput] = useState("");
@@ -36,8 +26,6 @@ export const HallOfFame = () => {
       studentElement.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   }, [highlightedStudent?.id]);
-
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (highlightedStudent?.id) {
@@ -58,7 +46,6 @@ export const HallOfFame = () => {
 
   return (
     <div style={styles.container}>
-      <CustomButton onClick={() => setIsOpen(true)}>stat</CustomButton>
       <div style={styles.leftSide}>
         <Podium students={displayStudents} />
       </div>
@@ -89,19 +76,6 @@ export const HallOfFame = () => {
           showStudentName={!isUserRoleStudent}
         />
       </div>
-      <CustomDialog
-        size="lg"
-        isOpen={isOpen}
-        title={"Statystyki"}
-        onCloseClick={() => setIsOpen(false)}
-      >
-        <StatisticsList
-          groupedStudents={groupedStudents}
-          highlightedStudent={highlightedStudent}
-          levels={levels}
-          role="student"
-        />
-      </CustomDialog>
     </div>
   );
 };

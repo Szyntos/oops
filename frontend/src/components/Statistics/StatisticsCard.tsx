@@ -13,7 +13,6 @@ import {
 } from "recharts";
 import * as d3 from "d3";
 import { useLevelsData } from "../../hooks/StudentProfile/useLevelsData";
-import { Level } from "../../hooks/StudentProfile/types";
 import { CustomText } from "../CustomText";
 import { tokens } from "../../tokens";
 import Slider from "@mui/material/Slider";
@@ -24,18 +23,17 @@ interface Student {
   totalPoints: number;
 }
 
-interface StatisticsBoxProps {
+interface StatisticsCardProps {
   students: Student[];
   highlightedStudent?: Student | null;
-  levels: Level[];
   title: string;
 }
 
-export const StatisticsBox = ({
+export const StatisticsCard = ({
   students,
   highlightedStudent,
   title,
-}: StatisticsBoxProps) => {
+}: StatisticsCardProps) => {
   const [binCount, setBinCount] = useState(10); // State to control bin count
   const { levels } = useLevelsData(); // Fetch level data
 

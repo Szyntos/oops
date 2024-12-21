@@ -16,5 +16,6 @@ query HallOfFameTeacher($editionId: bigint) {
     userImageId
     firstName
     secondName
+    teacherId
   }
 }

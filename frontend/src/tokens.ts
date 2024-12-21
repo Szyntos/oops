@@ -13,10 +13,13 @@ export const tokens = {
       mui: "#b1b1b1",
     },
     accent: {
-      dark: "#0a6e3c",
-      light: "#30af58",
+      dark: "#1A7431",
+      light: "#2DC653",
     },
     unique: {
+      first: "#CED4DA",
+      second: "#ADB5BD",
+      third: "#6C757D",
       gold: "#AF9500",
       silver: "#B4B4B4",
       brown: "#AD8A56",

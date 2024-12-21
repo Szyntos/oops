@@ -75,8 +75,9 @@ export const COLOR_TRANSITION_ANIMATION = "color 0.3s ease";
 export const getLinearGradient = (
   firstColor: string,
   secondColor: string,
+  thirdColor?: string,
 ): string => {
-  return `linear-gradient(to right, ${firstColor}, ${secondColor})`;
+  return `linear-gradient(to right, ${firstColor}, ${secondColor}${thirdColor ? "," + thirdColor : ""})`;
 };
 
 export const getTimeWithoutSeconds = (time: string) => {

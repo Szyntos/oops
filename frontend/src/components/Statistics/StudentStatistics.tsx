@@ -1,40 +1,34 @@
-import { Level } from "../../hooks/StudentProfile";
+import { useHallOfFameData } from "../../hooks/HallOfFame/useHallOfFameData";
+import { ErrorScreen } from "../../screens/Error/ErrorScreen";
+import { LoadingScreen } from "../../screens/Loading/LoadingScreen";
 import { Styles } from "../../utils/Styles";
-import { HallOfFameStudentData } from "../hallOfFame/HallOfFameStudentCard";
-import { StatisticsBox } from "../hallOfFame/StatisticsBox";
+import { StatisticsCard } from "./StatisticsCard";
 import { CONTENT_CONTAINER_HEIGHT_CALC } from "../layout/ScreenContentContainer";
 
-type StudentStatisticsProps = {
-  students: HallOfFameStudentData[];
-  highlightedStudent?: HallOfFameStudentData | null;
-  levels: Level[];
-  groupedStudents: Record<string, HallOfFameStudentData[]>;
-};
-export const StudentStatistics = ({
-  highlightedStudent,
-  levels,
-  groupedStudents,
-  students,
-}: StudentStatisticsProps) => {
+export const StudentStatistics = () => {
+  const { students, loading, error, groupedStudents, highlightedStudent } =
+    useHallOfFameData();
+
+  if (loading) return <LoadingScreen />;
+  if (error) return <ErrorScreen />;
+
   const studentGroupId = highlightedStudent?.groupId ?? "";
 
   return (
     <div style={styles.container}>
       <>
-        <StatisticsBox
+        <StatisticsCard
           title={`Grupa ${studentGroupId}`}
           key={studentGroupId}
           students={groupedStudents[studentGroupId] ?? []}
           highlightedStudent={highlightedStudent}
-          levels={levels}
         />
 
-        <StatisticsBox
+        <StatisticsCard
           title={`Wszystkie grupy`}
           key={"all"}
           students={students}
           highlightedStudent={highlightedStudent}
-          levels={levels}
         />
       </>
     </div>

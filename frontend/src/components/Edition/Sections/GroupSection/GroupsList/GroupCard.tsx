@@ -23,7 +23,7 @@ export const GroupCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div style={getCardStyles(false)}>
+    <div style={getCardStyles(true)}>
       <div style={{ ...coordinatorStyles.textContainer, minWidth: 220 }}>
         <CustomText style={coordinatorStyles.title}>
           {group.group.generatedName}

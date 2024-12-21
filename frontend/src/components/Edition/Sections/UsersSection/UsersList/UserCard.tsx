@@ -23,7 +23,7 @@ export const UserCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div style={{ ...getCardStyles(false), minWidth: 260 }}>
+    <div style={{ ...getCardStyles(true), minWidth: 260 }}>
       {user.user.role === UsersRolesType.Student ? (
         <div style={coordinatorStyles.avatarContainer}>
           <Avatar id={user.user.imageFile?.fileId} size={"s"} />

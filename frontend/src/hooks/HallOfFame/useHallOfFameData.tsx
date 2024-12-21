@@ -29,6 +29,7 @@ export const useHallOfFameData = () => {
         groupId: student.groupsId ?? "",
         avatarImgId: student.userImageId ?? undefined,
         levelImgId: student.levelImageId ?? undefined,
+        groupName: student.generatedName ?? "",
       };
     }) ?? [];
 

@@ -31,6 +31,7 @@ export const useHallOfFameDataTeacher = () => {
         avatarImgId: student.userImageId ?? undefined,
         levelImgId: student.levelImageId ?? undefined,
         teacherId: student.teacherId ?? undefined,
+        groupName: student.generatedName ?? "",
       };
     }) ?? [];
 

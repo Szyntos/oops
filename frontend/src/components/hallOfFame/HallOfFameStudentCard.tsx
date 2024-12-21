@@ -23,6 +23,7 @@ export type HallOfFameStudentData = {
   avatarImgId?: string;
   levelImgId?: string;
   teacherId?: string;
+  groupName: string;
 };
 
 export const HallOfFameStudentCard = ({

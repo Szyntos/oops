@@ -32,7 +32,7 @@ export const TeacherStatistics = () => {
         })
         .map((groupId) => (
           <StatisticsCard
-            title={`Grupa ${groupId}`}
+            title={groupedStudents[groupId][0].groupName}
             key={groupId}
             students={groupedStudents[groupId] ?? []}
             highlight={false}

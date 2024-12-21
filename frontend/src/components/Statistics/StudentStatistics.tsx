@@ -18,7 +18,7 @@ export const StudentStatistics = () => {
     <div style={styles.container}>
       <>
         <StatisticsCard
-          title={`Grupa ${studentGroupId}`}
+          title={groupedStudents[studentGroupId][0].groupName}
           key={studentGroupId}
           students={groupedStudents[studentGroupId] ?? []}
           highlightedStudent={highlightedStudent}

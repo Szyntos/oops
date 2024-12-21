@@ -171,12 +171,12 @@ const SetupButton = ({
   {
     if (isBigVariant) {
       return isClickable ? (
-        <CustomButton onClick={handleClick} disabled={!isClickable}>
+        <CustomButton onClick={handleClick} disabled={false}>
           {title}
         </CustomButton>
       ) : (
         <TooltipWrapper tooltipContent={<div>{reason ?? emptyReason}</div>}>
-          <CustomButton onClick={handleClick} disabled={!isClickable}>
+          <CustomButton onClick={handleClick} disabled={true}>
             {title}
           </CustomButton>
         </TooltipWrapper>

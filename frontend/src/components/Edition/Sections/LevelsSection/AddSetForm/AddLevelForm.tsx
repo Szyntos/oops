@@ -135,11 +135,13 @@ export const AddLevelForm = ({
 
             <FormControl>
               <InputLabel
+                size="small"
                 error={Boolean(formik.touched.grade && formik.errors.grade)}
               >
                 Ocena
               </InputLabel>
               <Select
+                label="Ocena"
                 size="small"
                 name="grade"
                 value={formik.values.grade}

@@ -20,8 +20,8 @@ export const CustomButton = ({
   const getButtonStyles = (): CSSProperties => {
     return {
       ...styles.button,
+      backgroundColor: color ?? tokens.color.accent.dark,
       ...(disabled ? styles.disabled : undefined),
-      backgroundColor: color ?? tokens.color.accent.light,
     };
   };
   const buttonStyles = getButtonStyles();

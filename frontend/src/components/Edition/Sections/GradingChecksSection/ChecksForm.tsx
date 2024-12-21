@@ -99,6 +99,7 @@ export const ChecksForm = ({
               Poziom do zdobycia przed końcem laboratorium
             </InputLabel>
             <Select
+              label="Poziom do zdobycia przed końcem laboratorium"
               name="endOfLabsLevelsThreshold"
               value={formik.values.endOfLabsLevelsThreshold}
               onChange={formik.handleChange}
@@ -128,6 +129,7 @@ export const ChecksForm = ({
               Kategoria
             </InputLabel>
             <Select
+              label="Kategoria"
               name="projectId"
               value={formik.values.projectId}
               onChange={formik.handleChange}

@@ -56,7 +56,7 @@ export const AwardWithTooltip = ({ props, size }: AwardWithTooltipProps) => {
             <div>{getAwardValueString(type, typeValue)}</div>
           )}
           <div>{description}</div>
-          {value && <div>Punkty: {value.toFixed(2)}</div>}
+          {value !== undefined && <div>Punkty: {value.toFixed(2)}</div>}
           {displayDate && (
             <div>{displayDate.toLocaleDateString("pl-PL", dateOptions)}</div>
           )}

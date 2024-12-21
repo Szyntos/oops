@@ -51,6 +51,7 @@ export const OverrideGradeForm = ({
               Nowa ocena
             </InputLabel>
             <Select
+              label="Ocena"
               name="grade"
               value={formik.values.grade}
               onChange={formik.handleChange}

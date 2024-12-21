@@ -49,6 +49,7 @@ export function StudentCard({
         size={tokens.font.header}
         bold={true}
         color={tokens.color.accent.dark}
+        style={{ paddingBottom: 6 }}
       >
         {nick}
       </CustomText>

@@ -204,9 +204,10 @@ export const AddGroupForm = ({
                 formik.touched.weekdayId && formik.errors.weekdayId,
               )}
             >
-              Dzień Tygodnia
+              Dzień tygodnia
             </InputLabel>
             <Select
+              label="Dzień tygodnia"
               name="weekdayId"
               value={formik.values.weekdayId}
               onChange={formik.handleChange}
@@ -235,6 +236,7 @@ export const AddGroupForm = ({
               Prowadzący
             </InputLabel>
             <Select
+              label="Prowadzący"
               name="teacherId"
               value={formik.values.teacherId}
               onChange={formik.handleChange}

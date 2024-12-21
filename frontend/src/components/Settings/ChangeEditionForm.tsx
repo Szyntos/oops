@@ -58,6 +58,7 @@ export const ChangeEditionForm = ({
               Edycja
             </InputLabel>
             <Select
+              label="Edycja"
               name="editionId"
               value={formik.values.editionId}
               onChange={formik.handleChange}
@@ -68,8 +69,7 @@ export const ChangeEditionForm = ({
             >
               {editions.map((e) => (
                 <MenuItem key={e.editionId} value={e.editionId}>
-                  {/* TODO change to name  */}
-                  {e.editionId}
+                  {e.name}
                 </MenuItem>
               ))}
             </Select>

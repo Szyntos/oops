@@ -12,7 +12,6 @@ const ValidationSchema = z.object({
   firstName: z.string().min(1, "required"),
   secondName: z.string().min(1, "required"),
   indexNumber: z.number().min(100000).max(999999),
-  nick: z.string().min(1, "required"),
 });
 
 type AddStudentFormProps = {
@@ -28,7 +27,6 @@ export const AddStudentForm = ({
     firstName: "",
     secondName: "",
     indexNumber: 100000,
-    nick: "",
   },
 }: AddStudentFormProps) => {
   const formik = useFormik({
@@ -77,18 +75,6 @@ export const AddStudentForm = ({
               formik.touched.secondName && formik.errors.secondName,
             )}
             helperText={formik.touched.secondName && formik.errors.secondName}
-          />
-
-          <TextField
-            fullWidth
-            name="nick"
-            label="Nick"
-            variant="outlined"
-            value={formik.values.nick}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={Boolean(formik.touched.nick && formik.errors.nick)}
-            helperText={formik.touched.nick && formik.errors.nick}
           />
 
           <TextField

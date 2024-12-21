@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { ZodError, z } from "zod";
 import { useState } from "react";
 import { FormPoints } from "./types";
-import { Category, formStyles } from "../../../utils/utils";
+import { Category, formErrors, formStyles } from "../../../utils/utils";
 import {
   FormControl,
   InputLabel,
@@ -17,9 +17,9 @@ import { FormButton } from "../../form/FormButton";
 export type PointsFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  categoryId: z.string().min(1, "Wymagane"),
-  subcategoryId: z.string().min(1, "Wymagane"),
-  points: z.number().min(0, "Minimalna liczba punktów to 0"),
+  categoryId: z.string().min(1, formErrors.required),
+  subcategoryId: z.string().min(1, formErrors.required),
+  points: z.number().min(0, formErrors.minNumber(0)),
 });
 
 type PointFormProps = {
@@ -64,7 +64,7 @@ export const PointsForm = ({
         selectedSubcategory &&
         values.points > selectedSubcategory.maxPoints
       ) {
-        errors.points = `Max to ${selectedSubcategory.maxPoints}`;
+        errors.points = formErrors.maxNumber(selectedSubcategory.maxPoints);
       }
 
       return errors;
@@ -106,6 +106,7 @@ export const PointsForm = ({
               Kategoria
             </InputLabel>
             <Select
+              label="Kategoria"
               name="categoryId"
               value={formik.values.categoryId}
               onChange={handleCategoryChange}
@@ -134,6 +135,7 @@ export const PointsForm = ({
               Subkategoria
             </InputLabel>
             <Select
+              label="Subkategoria"
               name="subcategoryId"
               value={formik.values.subcategoryId}
               onChange={formik.handleChange}

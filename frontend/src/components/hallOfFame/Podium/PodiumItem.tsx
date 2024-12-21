@@ -39,8 +39,7 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
       borderTopLeftRadius: place !== 3 ? PODIUM_TOP_RADIUS : 0,
       borderBottomLeftRadius: place === 2 ? PODIUM_BOTTOM_RADIUS : 0,
       borderBottomRightRadius: place === 3 ? PODIUM_BOTTOM_RADIUS : 0,
-      backgroundColor:
-        place === 1 ? tokens.color.accent.dark : tokens.color.accent.light,
+      backgroundColor: placeMap.color[place],
       height: placeMap.height[place] * PLACE_HEIGHT_RATIO,
     };
   };
@@ -53,7 +52,9 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
           size={"l"}
           imageStyle={getPodiumShadow()}
         />
-        <CustomText size={tokens.font.title}>{student.nick}</CustomText>
+        <CustomText size={tokens.font.title} bold={true}>
+          {student.nick}
+        </CustomText>
       </div>
       <div
         style={{
@@ -63,7 +64,7 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
       >
         <CustomText
           style={styles.place}
-          color={tokens.color.accent.dark}
+          color={tokens.color.card.light}
           size={tokens.font.title}
         >
           {place}
@@ -93,7 +94,7 @@ const styles: Styles = {
     paddingTop: 12,
   },
   place: {
-    backgroundColor: "white",
+    backgroundColor: tokens.color.text.primary,
     width: 32,
     height: 32,
     display: "flex",

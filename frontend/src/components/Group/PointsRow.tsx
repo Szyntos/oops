@@ -4,9 +4,10 @@ import { TextField } from "@mui/material";
 import { Styles } from "../../utils/Styles";
 import { Student } from "../../hooks/Group/useGroupTableData";
 import { CustomText } from "../CustomText";
+import { formErrors } from "../../utils/utils";
 
 const ValidationSchema = z.object({
-  points: z.number().min(0, "<0").nullable(),
+  points: z.number().min(0, formErrors.minNumber(0)).nullable(),
 });
 
 export type SubcategoryPointsFormValues = z.infer<typeof ValidationSchema>;
@@ -41,7 +42,7 @@ export const PointsRow = ({
         }
       }
       if (values.points && values.points > maxPoints) {
-        errors.points = `>${maxPoints}`;
+        errors.points = formErrors.maxNumber(maxPoints);
       }
       return errors;
     },

@@ -85,6 +85,9 @@ export const useAwardsSection = (editionId: number) => {
           categoryId: parseInt(values.categoryId),
           fileId: parseInt(values.imageId ?? "-1"),
           label: "",
+          maxUsages: values.hasAwardsBundleCount
+            ? parseInt(values.maxUsages as string)
+            : -1,
         },
       });
       refetch();
@@ -131,6 +134,9 @@ export const useAwardsSection = (editionId: number) => {
           awardId: parseInt(selectedAward?.award.awardId ?? "-1"),
           categoryId: parseInt(values.categoryId),
           fileId: parseInt(values.imageId ?? "-1"),
+          maxUsages: values.hasAwardsBundleCount
+            ? parseInt(values.maxUsages as string)
+            : -1,
         },
       });
       refetch();

@@ -1,16 +1,16 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { TextField } from "@mui/material";
-import { formStyles } from "../../../../utils/utils";
+import { formErrors, formStyles } from "../../../../utils/utils";
 import { FormButton } from "../../../form/FormButton";
 import { FormError } from "../../../form/FormError";
 
 export type TeacherFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  firstName: z.string().min(1, "required"),
-  secondName: z.string().min(1, "required"),
-  email: z.string().email(),
+  firstName: z.string().min(1, formErrors.required),
+  secondName: z.string().min(1, formErrors.required),
+  email: z.string().min(1, formErrors.required).email(formErrors.email),
 });
 
 type AddTeacherFormProps = {
@@ -38,8 +38,6 @@ export const AddTeacherForm = ({
           return error.formErrors.fieldErrors;
         }
       }
-
-      // TODO create subuser validation
     },
     onSubmit: (values: TeacherFormValues) => {
       handleConfirm(values);

@@ -10,15 +10,19 @@ import {
 } from "@mui/material";
 import { WithAddedLevelsValidateErrors } from "./AddSetForm";
 import { SelectImage } from "../../../../inputs/SelectImage";
-import { formStyles, GRADE_STRINGS } from "../../../../../utils/utils";
+import {
+  formErrors,
+  formStyles,
+  GRADE_STRINGS,
+} from "../../../../../utils/utils";
 import { RowButton } from "../../CategoriesSection/AddCategoryForm/RowButton";
 import { FormError } from "../../../../form/FormError";
 
 const ValidationSchema = z.object({
-  name: z.string().min(1),
-  maxPoints: z.number().min(0),
-  grade: z.string().min(0),
-  imageId: z.string().min(1, "Musisz wybrać ikonę."),
+  name: z.string().min(1, formErrors.required),
+  maxPoints: z.number().min(0, formErrors.minNumber(0)),
+  grade: z.string().min(1, formErrors.required),
+  imageId: z.string().min(1, formErrors.required),
 });
 
 export type LevelFormValues = z.infer<typeof ValidationSchema>;
@@ -135,11 +139,13 @@ export const AddLevelForm = ({
 
             <FormControl>
               <InputLabel
+                size="small"
                 error={Boolean(formik.touched.grade && formik.errors.grade)}
               >
                 Ocena
               </InputLabel>
               <Select
+                label="Ocena"
                 size="small"
                 name="grade"
                 value={formik.values.grade}

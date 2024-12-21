@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { ZodError, z } from "zod";
 import { useState } from "react";
-import { Category, formStyles } from "../../utils/utils";
+import { Category, formErrors, formStyles } from "../../utils/utils";
 import { Chest } from "../../hooks/StudentProfile/useCoordinatorActions";
 import { FormButton } from "../../components/form/FormButton";
 import { FormError } from "../../components/form/FormError";
@@ -12,9 +12,9 @@ import { SelectChangeEvent } from "@mui/material";
 export type ChestFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  categoryId: z.string().min(1, "required"),
-  subcategoryId: z.string().min(1, "required"),
-  chestId: z.string().min(1, "required"),
+  categoryId: z.string().min(1, formErrors.required),
+  subcategoryId: z.string().min(1, formErrors.required),
+  chestId: z.string().min(1, formErrors.required),
 });
 
 type AddChestToUserFormProps = {
@@ -88,6 +88,7 @@ export const AddChestToUserForm = ({
               Kategoria
             </InputLabel>
             <Select
+              label="Kategoria"
               name="categoryId"
               value={formik.values.categoryId}
               onChange={handleCategoryChange}
@@ -116,6 +117,7 @@ export const AddChestToUserForm = ({
               Subkategoria
             </InputLabel>
             <Select
+              label="Subkategoria"
               name="subcategoryId"
               value={formik.values.subcategoryId}
               onChange={formik.handleChange}

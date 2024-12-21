@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { tokens } from "../tokens";
 import { Styles } from "../utils/Styles";
 import { BACKGROUND_COLOR_ANIMATION } from "../utils/utils";
@@ -16,14 +17,20 @@ export const FilterButton = ({
   isActive,
   onClick,
 }: FilterButtonProps) => {
+  const [hovered, setHovered] = useState(false);
   return (
-    <div onClick={onClick}>
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <CustomText
-        color={isActive ? tokens.color.text.primary : tokens.color.accent.dark}
         style={{
           ...styles.button,
-          backgroundColor: isActive ? tokens.color.accent.dark : undefined,
+          backgroundColor:
+            isActive || hovered ? tokens.color.accent.dark : undefined,
+          cursor: hovered ? "pointer" : "auto",
         }}
+        onClick={onClick}
       >
         {option}
       </CustomText>

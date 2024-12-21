@@ -4,6 +4,7 @@ type ShowChestContentProps = {
   entry: Chest;
 };
 export const ShowChestContent = ({ entry }: ShowChestContentProps) => {
+  console.log(entry);
   return (
     <div>
       {entry.chest.chestType}

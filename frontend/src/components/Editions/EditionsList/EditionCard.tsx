@@ -40,7 +40,7 @@ export const EditionCard = ({
           <CustomText
             color={
               isEditionActive(edition.startDate, edition.endDate)
-                ? tokens.color.accent.dark
+                ? tokens.color.accent.light
                 : undefined
             }
           >

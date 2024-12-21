@@ -4,6 +4,8 @@ type ShowAwardContentProps = {
   entry: Award;
 };
 export const ShowAwardContent = ({ entry }: ShowAwardContentProps) => {
+  console.log("HERE");
+  console.log(entry);
   return (
     <div>
       {entry.award.awardName}

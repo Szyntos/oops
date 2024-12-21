@@ -4,33 +4,36 @@ export const tokens = {
       primary: "#514c42",
     },
     card: {
-      light: "#2d271e",
-      dark: "#3e372b",
+      dark: "#2d271e",
+      light: "#3e372b",
     },
     text: {
       primary: "#ffffff",
-      secondary: "#ffffff",
-      // MUI
-      tertiary: "#b1b1b1",
+      secondary: "#b1b1b1",
+      mui: "#b1b1b1",
     },
     accent: {
-      light: "#0a6e3c",
-      dark: "#30af58",
+      dark: "#0a6e3c",
+      light: "#30af58",
     },
     unique: {
-      gold: "#FFD700",
-      silver: "#C0C0C0",
-      brown: "#b66f28",
+      gold: "#AF9500",
+      silver: "#B4B4B4",
+      brown: "#AD8A56",
     },
     state: {
       disabled: "grey",
       // MUI
       error: "#f44336",
       success: "green",
+      errorLight: "#ff6e4f",
     },
     shadow: {
       white: "rgba(255, 255, 255, 0.6)",
       accent: "rgba(108, 216, 93, 0.5)",
+    },
+    progressBar: {
+      empty: "#363026",
     },
   },
   padding: {

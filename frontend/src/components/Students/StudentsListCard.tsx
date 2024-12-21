@@ -60,7 +60,7 @@ const styles: Styles = {
     width: 240,
     padding: CARD_PADDING,
     gap: 12,
-    backgroundColor: tokens.color.card.dark,
+    backgroundColor: tokens.color.card.light,
     borderRadius: CARD_BORDER,
     cursor: "pointer",
     position: "relative",

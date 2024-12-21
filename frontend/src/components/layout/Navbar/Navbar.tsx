@@ -138,7 +138,7 @@ export const navbarStyles: Styles = {
     paddingRight: tokens.padding.xl,
     paddingLeft: tokens.padding.xl,
     height: NAV_BAR_HEIGHT,
-    backgroundColor: tokens.color.card.light,
+    backgroundColor: tokens.color.card.dark,
     borderBottom: `${BORDER_HEIGHT}px solid ${tokens.color.text.secondary}`,
     position: "sticky",
     top: 0,

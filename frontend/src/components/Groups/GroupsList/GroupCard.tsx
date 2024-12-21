@@ -64,7 +64,7 @@ const styles: Styles = {
     padding: CARD_PADDING,
     paddingBottom: 4,
     position: "relative",
-    backgroundColor: tokens.color.card.dark,
+    backgroundColor: tokens.color.card.light,
     borderRadius: CARD_BORDER,
   },
   img: {

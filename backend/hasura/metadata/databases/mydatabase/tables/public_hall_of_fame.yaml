@@ -16,6 +16,7 @@ select_permissions:
         - nick
         - second_name
         - sum_of_points
+        - teacher_id
         - user_id
         - user_image_id
       filter: {}
@@ -25,16 +26,16 @@ select_permissions:
     permission:
       columns:
         - edition_id
+        - generated_name
+        - group_name
         - groups_id
         - level_id
         - level_image_id
-        - user_id
-        - user_image_id
-        - generated_name
-        - group_name
         - level_name
         - nick
         - sum_of_points
+        - user_id
+        - user_image_id
       filter: {}
       allow_aggregations: true
     comment: ""
@@ -52,6 +53,7 @@ select_permissions:
         - nick
         - second_name
         - sum_of_points
+        - teacher_id
         - user_id
         - user_image_id
       filter: {}

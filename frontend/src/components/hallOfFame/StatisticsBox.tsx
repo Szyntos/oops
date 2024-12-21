@@ -211,7 +211,7 @@ export const StatisticsBox = ({
           min={5}
           max={50}
           step={1}
-          onChange={(e, newValue) => setBinCount(newValue as number)}
+          onChange={(_e, newValue) => setBinCount(newValue as number)}
           valueLabelDisplay="auto"
           valueLabelFormat={(value) => `${value} kolumn`}
           marks={marks}

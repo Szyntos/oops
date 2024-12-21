@@ -80,7 +80,7 @@ export const AddChestForm = ({
         <div style={formStyles.fieldsContainer}>
           <TextField
             fullWidth
-            name="maxUsages"
+            name="awardBundleCount"
             label="Maksymalna liczba nagród do wyboru ze skrzynki"
             variant="outlined"
             type="number"

@@ -17,12 +17,14 @@ import { tokens } from "../../../tokens";
 import { NavbarItem } from "./NavarItem";
 import { IconMapper } from "../../IconMapper";
 import { ChestsNavbarItem } from "./ChestsNavbarItem";
-import { CustomText } from "../../CustomText";
 import { CustomDialog } from "../../dialogs/CustomDialog";
+import Logo from "../../../assets/logo.svg";
 
 const NAV_BAR_HEIGHT = 64;
 const BORDER_HEIGHT = 2;
 export const NAV_BAR_HEIGHT_WITH_BORDER = NAV_BAR_HEIGHT + BORDER_HEIGHT;
+
+const LOGO_HEIGHT = 64 - 24;
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -68,9 +70,9 @@ export const Navbar = () => {
         </div>
       </div>
 
-      <CustomText style={navbarStyles.logo} size={tokens.font.header}>
-        LOGO
-      </CustomText>
+      <div style={navbarStyles.logo}>
+        <img src={Logo} alt="logo" style={{ height: LOGO_HEIGHT }} />
+      </div>
 
       <div style={navbarStyles.itemsContainer}>
         <div style={navbarStyles.rightItemsContainer}>
@@ -158,5 +160,10 @@ export const navbarStyles: Styles = {
     gap: tokens.padding.m,
     display: "flex",
     justifyContent: "end",
+  },
+  logo: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
 };

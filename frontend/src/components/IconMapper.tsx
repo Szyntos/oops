@@ -23,7 +23,7 @@ import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import { MdAutoGraph } from "react-icons/md";
 import { PiTreasureChestLight } from "react-icons/pi";
 import { GiBackForth } from "react-icons/gi";
-import { BiSolidMedal } from "react-icons/bi";
+import BookRoundedIcon from "@mui/icons-material/BookRounded";
 import { Styles } from "../utils/Styles";
 import { tokens } from "../tokens";
 
@@ -88,7 +88,7 @@ const iconMap = {
   yes: CheckCircleRoundedIcon,
   no: CancelRoundedIcon,
   sum: FunctionsIcon,
-  grade: BiSolidMedal,
+  grade: BookRoundedIcon,
   level2: MdAutoGraph,
   chest2: PiTreasureChestLight,
   startEnd: GiBackForth,

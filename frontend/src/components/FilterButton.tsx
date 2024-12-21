@@ -28,10 +28,6 @@ export const FilterButton = ({
           ...styles.button,
           backgroundColor:
             isActive || hovered ? tokens.color.accent.dark : undefined,
-          color:
-            isActive || hovered
-              ? tokens.color.text.primary
-              : tokens.color.accent.dark,
           cursor: hovered ? "pointer" : "auto",
         }}
         onClick={onClick}

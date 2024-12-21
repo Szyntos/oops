@@ -39,9 +39,11 @@ export const CategoryCard = ({
               <CustomText>
                 {index + 1}. {s.subcategoryName}{" "}
               </CustomText>
-              <CustomText color={tokens.color.text.tertiary}>
-                {s.maxPoints}pkt
-              </CustomText>
+              {category.category.canAddPoints && (
+                <CustomText color={tokens.color.text.tertiary}>
+                  {s.maxPoints}pkt
+                </CustomText>
+              )}
             </div>
           );
         })}

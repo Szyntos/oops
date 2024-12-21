@@ -59,7 +59,7 @@ export const AwardCard = ({
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
-        handleShow={() => openShowDialog(award)}
+        handleShow={() => openShowDialog(award, "award")}
         permissions={award.permissions}
       />
     </div>

@@ -1,17 +1,13 @@
 import { createContext, useState, ReactNode } from "react";
-import { Category } from "../hooks/Edition/categories/useCategoriesSection";
-import { LevelSet } from "../hooks/Edition/useLevelSetsSection";
-import { Award } from "../hooks/Edition/useAwardsSection";
-import { Chest } from "../hooks/Edition/useChestsSection";
-import { Group } from "../hooks/Edition/useGroupsSection";
-import { User } from "../hooks/Edition/users/useUsersSection";
-
-export type Entry = Category | LevelSet | Award | Chest | Group | User;
+import {
+  Entry,
+  EntryType,
+} from "../components/Edition/ShowEntryContent/ShowEntryContent";
 
 type EditionSectionsContextType = {
-  selectedEntry: Entry | undefined;
+  selectedEntry: { entry: Entry; type: EntryType } | undefined;
   isShowDialogOpen: boolean;
-  openShowDialog: (entry: Entry) => void;
+  openShowDialog: (entry: Entry, type: EntryType) => void;
   closeShowDialog: () => void;
 };
 
@@ -24,14 +20,14 @@ export const EditionSectionsProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [selectedEntry, setSelectedEntry] = useState<Entry | undefined>(
-    undefined,
-  );
+  const [selectedEntry, setSelectedEntry] = useState<
+    { entry: Entry; type: EntryType } | undefined
+  >(undefined);
 
   const [isShowDialogOpen, setIsShowDialogOpen] = useState(false);
 
-  const openShowDialog = (entry: Entry) => {
-    setSelectedEntry(entry);
+  const openShowDialog = (entry: Entry, type: EntryType) => {
+    setSelectedEntry({ entry, type });
     setIsShowDialogOpen(true);
   };
 

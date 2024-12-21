@@ -78,7 +78,7 @@ export const ChestCard = ({
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
-        handleShow={() => openShowDialog(chest)}
+        handleShow={() => openShowDialog(chest, "chest")}
         handleMarkChestActiveness={onChestActivateClick}
         isChestActive={isChestActive(
           chest.chest.chestEdition.map((e) => ({

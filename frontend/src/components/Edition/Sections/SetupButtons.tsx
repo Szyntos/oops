@@ -116,7 +116,7 @@ export const SetupButtons = ({
         handleClick: handleShow,
         isClickable: true,
         reason: undefined,
-        title: "Pokaż",
+        title: "JSON",
       }
     : undefined;
 

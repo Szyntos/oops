@@ -6,12 +6,12 @@ import { useState } from "react";
 import { SubcategoriesFormValues } from "./SubcategoryRow";
 import { FormError } from "../../../../form/FormError";
 import { FormButton } from "../../../../form/FormButton";
-import { formStyles } from "../../../../../utils/utils";
+import { formErrors, formStyles } from "../../../../../utils/utils";
 
 export type CategoriesFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  categoryName: z.string().min(1, "required"),
+  categoryName: z.string().min(1, formErrors.required),
   canAddPoints: z.boolean(),
 });
 

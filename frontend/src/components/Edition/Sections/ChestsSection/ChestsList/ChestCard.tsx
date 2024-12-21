@@ -1,6 +1,7 @@
 import { SetupChestsQuery } from "../../../../../graphql/setupChests.graphql.types";
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Chest } from "../../../../../hooks/Edition/useChestsSection";
+import { tokens } from "../../../../../tokens";
 import {
   coordinatorStyles,
   getCardStyles,
@@ -61,7 +62,7 @@ export const ChestCard = ({
             <CustomText style={coordinatorStyles.title}>
               {chest.chest.chestType}
             </CustomText>
-            <CustomText>
+            <CustomText color={tokens.color.text.secondary}>
               łupy do zebrania: {chest.chest.awardBundleCount}
             </CustomText>
           </div>
@@ -77,7 +78,7 @@ export const ChestCard = ({
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
-        handleShow={() => openShowDialog(chest)}
+        handleShow={() => openShowDialog(chest, "chest")}
         handleMarkChestActiveness={onChestActivateClick}
         isChestActive={isChestActive(
           chest.chest.chestEdition.map((e) => ({

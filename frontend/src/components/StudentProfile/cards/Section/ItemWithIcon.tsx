@@ -20,6 +20,6 @@ const styles: Styles = {
   container: {
     display: "flex",
     alignItems: "center",
-    gap: 4,
+    gap: 6,
   },
 };

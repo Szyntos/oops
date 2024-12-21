@@ -116,7 +116,7 @@ export const SetupButtons = ({
         handleClick: handleShow,
         isClickable: true,
         reason: undefined,
-        title: "Pokaż",
+        title: "JSON",
       }
     : undefined;
 
@@ -216,13 +216,13 @@ const styles: Styles = {
   button: {
     border: "none",
     fontSize: tokens.font.small,
-    color: tokens.color.text.secondary,
+    color: tokens.color.text.primary,
     borderRadius: 4,
     cursor: "pointer",
     padding: 4,
     paddingLeft: 8,
     paddingRight: 8,
-    backgroundColor: tokens.color.accent.light,
+    backgroundColor: tokens.color.accent.dark,
   },
   disabled: {
     cursor: "auto",

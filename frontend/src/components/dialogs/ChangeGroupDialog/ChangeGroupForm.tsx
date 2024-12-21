@@ -2,14 +2,14 @@ import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { Group } from "./ChangeGroupDialog";
-import { formStyles } from "../../../utils/utils";
+import { formErrors, formStyles } from "../../../utils/utils";
 import { FormError } from "../../form/FormError";
 import { FormButton } from "../../form/FormButton";
 
 export type ChangeGroupFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  groupId: z.string().min(1, "required"),
+  groupId: z.string().min(1, formErrors.required),
 });
 
 type ChangeGroupFormProps = {

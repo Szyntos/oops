@@ -168,7 +168,7 @@ export const formStyles: Styles = {
     gap: 12,
   },
   label: {
-    color: tokens.color.text.tertiary,
+    color: tokens.color.text.mui,
     paddingLeft: 12,
     fontSize: 13,
     paddingBottom: 12,
@@ -195,4 +195,12 @@ export const mapAwardTypeToPolish = (type: AwardTypeType) => {
       break;
   }
   return text.toUpperCase();
+};
+
+export const formErrors = {
+  required: "wymagane",
+  minNumber: (x: number) => `>${x}`,
+  maxNumber: (x: number) => `<${x}`,
+  regexp: (r: string) => `oczekiwany format ${r}`,
+  email: "błędny format",
 };

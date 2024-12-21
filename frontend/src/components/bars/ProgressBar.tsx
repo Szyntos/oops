@@ -31,8 +31,8 @@ export const ProgressBar = ({
   thresholds,
   showPoints,
   title,
-  lightColor = tokens.color.accent.light,
-  darkColor = tokens.color.accent.dark,
+  lightColor = tokens.color.accent.dark,
+  darkColor = tokens.color.accent.light,
 }: ProgressBarProps) => {
   if (points < 0) {
     console.error("Punkty nie mogą być ujemne.");
@@ -106,7 +106,7 @@ const styles: Styles = {
   },
   empty: {
     height: BAR_HEIGHT,
-    backgroundColor: tokens.color.state.disabled,
+    backgroundColor: tokens.color.progressBar.empty,
     borderRadius: BORDER_RADIUS,
     position: "relative",
   },
@@ -114,7 +114,7 @@ const styles: Styles = {
     height: "100%",
     display: "flex",
     alignItems: "center",
-    backgroundColor: tokens.color.accent.light,
+    backgroundColor: tokens.color.accent.dark,
     borderTopLeftRadius: BORDER_RADIUS,
     borderBottomLeftRadius: BORDER_RADIUS,
   },

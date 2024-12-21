@@ -1,7 +1,7 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { TextField } from "@mui/material";
-import { formStyles } from "../../../../utils/utils";
+import { formErrors, formStyles } from "../../../../utils/utils";
 import { FormError } from "../../../form/FormError";
 import { FormButton } from "../../../form/FormButton";
 import { getEnvVariable } from "../../../../utils/constants";
@@ -9,9 +9,12 @@ import { getEnvVariable } from "../../../../utils/constants";
 export type StudentFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  firstName: z.string().min(1, "required"),
-  secondName: z.string().min(1, "required"),
-  indexNumber: z.number().min(100000).max(999999),
+  firstName: z.string().min(1, formErrors.required),
+  secondName: z.string().min(1, formErrors.required),
+  indexNumber: z
+    .number()
+    .min(100000, formErrors.minNumber(100000))
+    .max(999999, formErrors.maxNumber(999999)),
 });
 
 type AddStudentFormProps = {
@@ -39,8 +42,6 @@ export const AddStudentForm = ({
           return error.formErrors.fieldErrors;
         }
       }
-
-      // TODO create subuser validation
     },
     onSubmit: (values: StudentFormValues) => {
       handleConfirm(values);

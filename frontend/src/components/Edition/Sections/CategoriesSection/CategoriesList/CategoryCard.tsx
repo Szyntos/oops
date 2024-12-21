@@ -40,7 +40,7 @@ export const CategoryCard = ({
                 {index + 1}. {s.subcategoryName}{" "}
               </CustomText>
               {category.category.canAddPoints && (
-                <CustomText color={tokens.color.text.tertiary}>
+                <CustomText color={tokens.color.text.secondary}>
                   {s.maxPoints}pkt
                 </CustomText>
               )}
@@ -56,7 +56,7 @@ export const CategoryCard = ({
         handleSelect={handleSelectClick}
         handleEdit={handleEditClick}
         handleDelete={handleDeleteClick}
-        handleShow={() => openShowDialog(category)}
+        handleShow={() => openShowDialog(category, "category")}
       />
     </div>
   );

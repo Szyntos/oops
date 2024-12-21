@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 import sys
+from dotenv import load_dotenv
 
 import psycopg2
 import requests
@@ -25,8 +26,17 @@ from utils.insert_subcategories import insert_subcategories
 from utils.insert_chests_with_awards import insert_chests_with_awards
 from utils.insert_chest_awards import insert_chest_awards
 from utils.insert_points import insert_points
+from inserts_from_gh.insert_data_for_demo import insert_data_for_demo
 
-
+dotenv_path = os.path.join("../../../../", ".env")
+loaded_dotenv = False
+# Check if the .env file exists
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+    loaded_dotenv = True
+    print(f".env file found and loaded from {dotenv_path}")
+else:
+    print(f".env file not found at {dotenv_path}, continuing without it.")
 
 def create_connection():
     return psycopg2.connect(
@@ -120,6 +130,7 @@ def truncate_and_restart_sequences():
 
 
 def insert_data():
+
     number_of_editions = data_insertion_config['number_of_editions']
     number_of_teachers = data_insertion_config['number_of_teachers']
     number_of_groups_per_year_bounds = data_insertion_config['number_of_groups_per_year_bounds']
@@ -141,7 +152,9 @@ def insert_data():
         (
             chest['name'],
             chest['filename'],
-            chest['content_type']
+            chest['content_type'],
+            chest.get('awardBundleCount', 1),
+            chest.get('content', [])
         )
         for chest in chests_data_struct
     ]
@@ -280,6 +293,10 @@ if __name__ == '__main__':
     old_style = config['style']["old_style"]
     backend_resources_path = data_insertion_config['backend_resources_path']
     admin_mail = data_insertion_config['admin_mail']
+    if loaded_dotenv:
+        admin_mail = os.getenv("ADMIN_MAIL")
+        headers["x-hasura-admin-secret"] = os.getenv("HASURA_GRAPHQL_ADMIN_SECRET")
+        headers["Authorization"] = f"Bearer {os.getenv('VITE_BYPASS_TOKEN')}1"
 
     if path_to_config == "config_for_demo.json":
         do_insert_demo_data = os.getenv("DO_INSERT_DEMO_DATA", "true").lower() == "true"
@@ -316,5 +333,8 @@ if __name__ == '__main__':
     if old_style:
         insert_data_old(conn, cursor, fake, random)
     else:
-        insert_data()
+        if path_to_config == "config_for_demo.json":
+            insert_data_for_demo(data_insertion_config, base_url, hasura_url, headers, conn, fake, random, admin_mail, cursor)
+        else:
+            insert_data()
     print("Data inserted successfully.")

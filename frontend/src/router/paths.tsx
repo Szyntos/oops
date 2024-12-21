@@ -164,6 +164,16 @@ export const getNavigationItems = (
   const statisticsItem = getStatisticsNavigationItem(role);
   return [
     {
+      title: "Grupy",
+      path: pathsWithParameters.teacher.Groups.path,
+      allowedRoles: pathsWithParameters.teacher.Groups.allowedRoles,
+    },
+    {
+      title: "Studenci",
+      path: pathsWithParameters.teacher.Students.path,
+      allowedRoles: pathsWithParameters.teacher.Students.allowedRoles,
+    },
+    {
       title: "Profil studenta",
       path: pathsWithParameters.student.StudentProfile.path,
       allowedRoles: pathsWithParameters.student.StudentProfile.allowedRoles,
@@ -180,16 +190,6 @@ export const getNavigationItems = (
           : pathsWithParameters.teacher.HallOfFame.allowedRoles,
     },
     statisticsItem,
-    {
-      title: "Grupy",
-      path: pathsWithParameters.teacher.Groups.path,
-      allowedRoles: pathsWithParameters.teacher.Groups.allowedRoles,
-    },
-    {
-      title: "Studenci",
-      path: pathsWithParameters.teacher.Students.path,
-      allowedRoles: pathsWithParameters.teacher.Students.allowedRoles,
-    },
     {
       title: "Edycje",
       path: pathsWithParameters.coordinator.Editions.path,

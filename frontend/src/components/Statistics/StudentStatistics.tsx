@@ -22,6 +22,7 @@ export const StudentStatistics = () => {
           key={studentGroupId}
           students={groupedStudents[studentGroupId] ?? []}
           highlightedStudent={highlightedStudent}
+          highlight={false}
         />
 
         <StatisticsCard
@@ -29,6 +30,7 @@ export const StudentStatistics = () => {
           key={"all"}
           students={students}
           highlightedStudent={highlightedStudent}
+          highlight={true}
         />
       </>
     </div>

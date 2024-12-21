@@ -27,12 +27,14 @@ interface StatisticsCardProps {
   students: Student[];
   highlightedStudent?: Student | null;
   title: string;
+  highlight: boolean;
 }
 
 export const StatisticsCard = ({
   students,
   highlightedStudent,
   title,
+  highlight,
 }: StatisticsCardProps) => {
   const [binCount, setBinCount] = useState(10); // State to control bin count
   const { levels } = useLevelsData(); // Fetch level data
@@ -189,14 +191,20 @@ export const StatisticsCard = ({
     <div style={styles.card}>
       <div style={styles.headerContainer}>
         <CustomText
-          color={tokens.color.accent.light}
+          color={
+            highlight ? tokens.color.accent.light : tokens.color.text.primary
+          }
           bold={true}
           size={tokens.font.header}
         >
           {title}
         </CustomText>
         {highlightedStudent && (
-          <CustomText color={tokens.color.accent.light}>
+          <CustomText
+            color={
+              highlight ? tokens.color.accent.light : tokens.color.text.primary
+            }
+          >
             Twój percentyl: {percentile}%
           </CustomText>
         )}

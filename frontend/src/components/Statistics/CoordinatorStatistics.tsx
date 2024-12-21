@@ -15,19 +15,21 @@ export const CoordinatorStatistics = () => {
 
   return (
     <div style={styles.container}>
+      <StatisticsCard
+        title={`Wszystkie grupy`}
+        key={"all"}
+        students={students}
+        highlight={true}
+      />
+
       {groupIds.map((groupId) => (
         <StatisticsCard
           title={`Grupa ${groupId}`}
           key={groupId}
           students={groupedStudents[groupId] ?? []}
+          highlight={false}
         />
       ))}
-
-      <StatisticsCard
-        title={`Wszystkie grupy`}
-        key={"all"}
-        students={students}
-      />
     </div>
   );
 };

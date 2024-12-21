@@ -18,6 +18,13 @@ export const TeacherStatistics = () => {
 
   return (
     <div style={styles.container}>
+      <StatisticsCard
+        title={`Wszystkie grupy`}
+        key={"all"}
+        students={students}
+        highlight={true}
+      />
+
       {groupIds
         .filter((groupId) => {
           const group = groupedStudents[groupId];
@@ -28,14 +35,9 @@ export const TeacherStatistics = () => {
             title={`Grupa ${groupId}`}
             key={groupId}
             students={groupedStudents[groupId] ?? []}
+            highlight={false}
           />
         ))}
-
-      <StatisticsCard
-        title={`Wszystkie grupy`}
-        key={"all"}
-        students={students}
-      />
     </div>
   );
 };

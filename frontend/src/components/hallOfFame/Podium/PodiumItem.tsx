@@ -52,7 +52,9 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
           size={"l"}
           imageStyle={getPodiumShadow()}
         />
-        <CustomText size={tokens.font.title}>{student.nick}</CustomText>
+        <CustomText size={tokens.font.title} bold={true}>
+          {student.nick}
+        </CustomText>
       </div>
       <div
         style={{

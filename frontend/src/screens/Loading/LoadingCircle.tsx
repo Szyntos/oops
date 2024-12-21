@@ -7,7 +7,7 @@ type LoadingCircleProps = {
 export const LoadingCircle = ({ size = "small" }: LoadingCircleProps) => {
   return (
     <CircularProgress
-      sx={{ color: tokens.color.accent.dark }}
+      sx={{ color: tokens.color.accent.light }}
       size={`${size === "small" ? 24 : 40}px`}
     />
   );

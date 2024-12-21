@@ -42,6 +42,6 @@ const styles: Styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: tokens.color.accent.light,
+    backgroundColor: tokens.color.accent.dark,
   },
 };

@@ -64,7 +64,7 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
       >
         <CustomText
           style={styles.place}
-          color={tokens.color.accent.dark}
+          color={tokens.color.card.dark}
           size={tokens.font.title}
         >
           {place}
@@ -94,7 +94,7 @@ const styles: Styles = {
     paddingTop: 12,
   },
   place: {
-    backgroundColor: "white",
+    backgroundColor: tokens.color.text.primary,
     width: 32,
     height: 32,
     display: "flex",

@@ -222,7 +222,7 @@ const styles: Styles = {
     padding: 4,
     paddingLeft: 8,
     paddingRight: 8,
-    backgroundColor: tokens.color.accent.light,
+    backgroundColor: tokens.color.accent.dark,
   },
   disabled: {
     cursor: "auto",

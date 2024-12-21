@@ -160,7 +160,7 @@ export const GroupTable = ({
   };
 
   const getCellColor = (cell: CellValueType) => {
-    return cell.colored ? tokens.color.accent.light : undefined;
+    return cell.colored ? tokens.color.accent.dark : undefined;
   };
 
   // TODO last 4 columns could be centered

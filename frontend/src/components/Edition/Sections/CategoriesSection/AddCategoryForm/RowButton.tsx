@@ -25,7 +25,7 @@ export const RowButton = ({
     }
     return {
       ...styles.button,
-      backgroundColor: color ?? tokens.color.accent.dark,
+      backgroundColor: color ?? tokens.color.accent.light,
     };
   };
 
@@ -46,7 +46,7 @@ const styles: Styles = {
   button: {
     display: "flex",
     border: "none",
-    backgroundColor: tokens.color.accent.dark,
+    backgroundColor: tokens.color.accent.light,
     width: 32,
     height: 32,
     borderRadius: 6,

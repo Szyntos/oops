@@ -12,8 +12,8 @@ export const tokens = {
       secondary: "#b1b1b1",
     },
     accent: {
-      light: "#0a6e3c",
-      dark: "#30af58",
+      dark: "#0a6e3c",
+      light: "#30af58",
     },
     unique: {
       gold: "#AF9500",

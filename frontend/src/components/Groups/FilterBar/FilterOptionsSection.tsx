@@ -45,7 +45,7 @@ export const FilterOptionsSection = ({
                   sx={{
                     color: tokens.color.text.secondary,
                     "&.Mui-checked": {
-                      color: tokens.color.accent.dark,
+                      color: tokens.color.accent.light,
                     },
                     padding: 0,
                   }}

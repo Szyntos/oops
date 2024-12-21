@@ -12,7 +12,7 @@ export const EditableIndicator = () => {
 const styles: Styles = {
   editable: {
     borderRadius: "100%",
-    backgroundColor: tokens.color.accent.dark,
+    backgroundColor: tokens.color.accent.light,
     width: 36,
     height: 36,
     display: "flex",

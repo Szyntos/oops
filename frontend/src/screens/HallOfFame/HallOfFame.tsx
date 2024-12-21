@@ -10,13 +10,20 @@ import { CONTENT_CONTAINER_HEIGHT_CALC } from "../../components/layout/ScreenCon
 import { tokens } from "../../tokens";
 import { LoadingScreen } from "../Loading/LoadingScreen";
 import { ErrorScreen } from "../Error/ErrorScreen";
-import { StatisticsBox } from "../../components/hallOfFame/StatisticsBox";
 import { CustomDialog } from "../../components/dialogs/CustomDialog";
 import { CustomButton } from "../../components/CustomButton";
+import { StatisticsList } from "../../components/hallOfFame/StatisticsList";
 
 export const HallOfFame = () => {
-  const { isUserRoleStudent, students, highlightedStudent, loading, error } =
-    useHallOfFameData();
+  const {
+    isUserRoleStudent,
+    students,
+    highlightedStudent,
+    loading,
+    error,
+    levels,
+    groupedStudents,
+  } = useHallOfFameData();
   const [showStudentsFromAllGroups, setShowStudentsFromAllGroups] =
     useState(!isUserRoleStudent);
   const [searchInput, setSearchInput] = useState("");
@@ -88,9 +95,11 @@ export const HallOfFame = () => {
         title={"Statystyki"}
         onCloseClick={() => setIsOpen(false)}
       >
-        <StatisticsBox
-          students={displayStudents}
+        <StatisticsList
+          groupedStudents={groupedStudents}
           highlightedStudent={highlightedStudent}
+          levels={levels}
+          role="student"
         />
       </CustomDialog>
     </div>

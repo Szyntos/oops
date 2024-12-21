@@ -3,6 +3,7 @@ import { HallOfFameStudentData } from "../../components/hallOfFame/HallOfFameStu
 import { useHallOfFameQuery } from "../../graphql/hallOfFame.graphql.types";
 import { useEditionSelection } from "../common/useEditionSelection";
 import { useUser } from "../common/useUser";
+import { useLevelsData } from "../StudentProfile";
 
 export const useHallOfFameData = () => {
   const { selectedEdition } = useEditionSelection();
@@ -12,6 +13,12 @@ export const useHallOfFameData = () => {
     variables: { editionId: selectedEdition?.editionId },
     skip: !selectedEdition,
   });
+
+  const {
+    levels,
+    loading: levelsLoading,
+    error: levelsError,
+  } = useLevelsData();
 
   // TODO backend - missing avatarId and animalId (photos)
   // it is a view so there is no way to avoid nulls
@@ -32,16 +39,31 @@ export const useHallOfFameData = () => {
       };
     }) ?? [];
 
+  const groupedStudents: Record<string, HallOfFameStudentData[]> = {};
+
+  for (const student of students) {
+    if (student.groupId) {
+      if (!groupedStudents[student.groupId]) {
+        groupedStudents[student.groupId] = [];
+      }
+      groupedStudents[student.groupId].push(student);
+    }
+  }
+
   const highlightedStudent = students.find((student) => {
     return student.id === user.userId;
   });
+
+  console.log(groupedStudents);
 
   return {
     isUserRoleStudent: user.role === UsersRolesType.Student,
     students,
     highlightedStudent:
       user.role === UsersRolesType.Student ? highlightedStudent : undefined,
-    loading,
-    error,
+    groupedStudents, // Return grouped students
+    loading: loading || levelsLoading,
+    error: error || levelsError,
+    levels,
   };
 };

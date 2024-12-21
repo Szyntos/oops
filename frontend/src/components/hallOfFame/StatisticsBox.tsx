@@ -13,7 +13,12 @@ import {
 } from "recharts";
 import * as d3 from "d3";
 import { useLevelsData } from "../../hooks/StudentProfile/useLevelsData";
+import { Level } from "../../hooks/StudentProfile/types";
+import { CustomText } from "../CustomText";
+import { tokens } from "../../tokens";
+import Slider from "@mui/material/Slider";
 
+const SLIDER_WIDTH = 340;
 interface Student {
   nick: string;
   totalPoints: number;
@@ -22,11 +27,14 @@ interface Student {
 interface StatisticsBoxProps {
   students: Student[];
   highlightedStudent?: Student | null;
+  levels: Level[];
+  title: string;
 }
 
 export const StatisticsBox = ({
   students,
   highlightedStudent,
+  title,
 }: StatisticsBoxProps) => {
   const [binCount, setBinCount] = useState(10); // State to control bin count
   const { levels } = useLevelsData(); // Fetch level data
@@ -125,20 +133,18 @@ export const StatisticsBox = ({
     bins: histogramData,
     min,
     max,
-  } = getHistogramData(students, binCount); // Dynamically use binCount
+  } = getHistogramData(students, binCount);
   const stats = calculateStatistics(students);
   const percentile = calculatePercentile(students, highlightedStudent);
   const fittedCurve = fitSkewedDistribution(students, [min, max]);
 
-  // Scale PDF values to match histogram count range
   const maxCount = Math.max(...histogramData.map((bin) => bin.count));
   const maxPDF = Math.max(...fittedCurve.map((curve) => curve.pdf));
   const scaledCurve = fittedCurve.map((curve) => ({
     midpoint: curve.midpoint,
-    pdf: (curve.pdf / maxPDF) * maxCount, // Scale to match histogram height
+    pdf: (curve.pdf / maxPDF) * maxCount,
   }));
 
-  // Combine histogram and scaled curve data for plotting
   const combinedData = histogramData.map((bin) => {
     let lower = null;
     let upper = null;
@@ -168,33 +174,52 @@ export const StatisticsBox = ({
     };
   });
 
+  const marks = [
+    { value: 5, label: "5" },
+    { value: 10, label: "10" },
+    { value: 15, label: "15" },
+    { value: 20, label: "20" },
+    { value: 25, label: "25" },
+    { value: 30, label: "30" },
+    { value: 35, label: "35" },
+    { value: 40, label: "40" },
+    { value: 45, label: "45" },
+    { value: 50, label: "50" },
+  ];
+
   return (
-    <div style={styles.container}>
-      <h3>Points Distribution</h3>
-      <p>
-        <strong>Mean:</strong> {stats.mean.toFixed(2)} |{" "}
-        <strong>Median:</strong> {stats.median.toFixed(2)} |{" "}
-        <strong>Std. Dev:</strong> {stats.stdDev.toFixed(2)}
-      </p>
-      {highlightedStudent && (
-        <p>
-          <strong>{highlightedStudent.nick}'s Percentile:</strong> {percentile}%
-        </p>
-      )}
+    <div style={styles.card}>
+      <div style={styles.headerContainer}>
+        <CustomText
+          color={tokens.color.accent.light}
+          bold={true}
+          size={tokens.font.header}
+        >
+          {title}
+        </CustomText>
+        {highlightedStudent && (
+          <CustomText color={tokens.color.accent.light}>
+            Twój percentyl: {percentile}%
+          </CustomText>
+        )}
+      </div>
+
       <div style={styles.sliderContainer}>
-        <label>
-          <strong>Bin Count: {binCount}</strong>
-        </label>
-        <input
-          type="range"
-          min="5"
-          max="50"
-          step="1"
+        <CustomText>Dostosuj liczbę kolumn: </CustomText>
+        <Slider
           value={binCount}
-          onChange={(e) => setBinCount(Number(e.target.value))}
+          min={5}
+          max={50}
+          step={1}
+          onChange={(e, newValue) => setBinCount(newValue as number)}
+          valueLabelDisplay="auto"
+          valueLabelFormat={(value) => `${value} kolumn`}
+          marks={marks}
+          style={{ width: SLIDER_WIDTH }}
         />
       </div>
-      <ResponsiveContainer width="100%" height={300}>
+
+      <ResponsiveContainer height={300} width={SLIDER_WIDTH + 150}>
         <ComposedChart data={combinedData}>
           <XAxis
             dataKey="midpoint"
@@ -231,19 +256,43 @@ export const StatisticsBox = ({
           ))}
         </ComposedChart>
       </ResponsiveContainer>
+
+      <div style={styles.resultsContainer}>
+        <CustomText>Średnia: {stats.mean.toFixed(2)}</CustomText>
+        <CustomText>Mediana: {stats.median.toFixed(2)} </CustomText>
+        <CustomText>
+          Odchylenie standardowe: {stats.stdDev.toFixed(2)}
+        </CustomText>
+      </div>
     </div>
   );
 };
 
 const styles: Styles = {
-  container: {
-    borderRadius: "8px",
-    border: "1px solid blue",
+  card: {
+    display: "flex",
+    flexDirection: "column",
+    background: tokens.color.card.light,
+    padding: 16,
+    borderRadius: 12,
+    gap: 16,
+    width: 540,
+  },
+  headerContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  resultsContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: 12,
   },
   sliderContainer: {
-    margin: "1rem 0",
+    flex: 1,
     display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: "column",
+    gap: 2,
+    paddingBottom: 10,
   },
 };

@@ -107,5 +107,27 @@ def add_chest(hasura_url, headers, name, chest_name_to_filename, awards, edition
             return None
 
         print(f"Successfully inserted chest edition for chest ID {chest['chestId']} and edition ID {edition}")
+        if "projektowa" in name:
+            mutation = """
+                            mutation DeactivateChestInEdition($chestId: Int!, $editionId: Int!) {
+                                deactivateChestInEdition(chestId: $chestId, editionId: $editionId)
+                            }
+                    """
+            variables = {
+                "chestId": chest['chestId'],
+                "editionId": edition
+            }
+
+            response = requests.post(
+                hasura_url,
+                json={"query": mutation, "variables": variables},
+                headers=headers
+            )
+
+            data = response.json()
+            if "errors" in data:
+                print(
+                    f"Error deactivating chest in edition for chest ID {chest['chestId']} and edition ID {edition}: {data['errors']}")
+                return None
 
     return chest['chestId']

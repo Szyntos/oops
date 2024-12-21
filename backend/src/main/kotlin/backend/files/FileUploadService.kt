@@ -15,14 +15,16 @@ class FileUploadService(private val fileEntityRepository: FileEntityRepository) 
     private lateinit var uploadDir: String
 
     fun saveFile(file: MultipartFile, fileType: String): FileEntity {
-        val originalFilename = file.originalFilename ?: throw IllegalArgumentException("File name is invalid")
+        val originalFilename = Paths.get(file.originalFilename ?: "").fileName.toString()
         val fileExtension = getFileExtension(originalFilename)
         val filenameWithoutExtension = getFilenameWithoutExtension(originalFilename)
         validateFileType(fileType)
 
         // Resolve the relative path to an absolute path
         val directoryPath = Paths.get(uploadDir).toAbsolutePath().resolve(fileType)
-        Files.createDirectories(directoryPath) // Ensure the directory exists
+        if (Files.notExists(directoryPath)) {
+            Files.createDirectories(directoryPath)
+        }
 
         var targetPath = directoryPath.resolve(originalFilename)
         var counter = 1
@@ -38,7 +40,7 @@ class FileUploadService(private val fileEntityRepository: FileEntityRepository) 
         try {
             Files.copy(file.inputStream, targetPath)
         } catch (e: IOException) {
-            throw RuntimeException("Failed to store file $originalFilename due to IO error: ${e.message}", e)
+            throw RuntimeException("Błąd podczas zapisywania pliku $originalFilename do $targetPath - ${e.message}", e)
         }
 
         // Create a new FileEntity and save it to the database
@@ -53,7 +55,7 @@ class FileUploadService(private val fileEntityRepository: FileEntityRepository) 
     private fun validateFileType(fileType: String) {
         val allowedPattern = Regex("^[a-zA-Z0-9/_-]+$")
         if (!allowedPattern.matches(fileType)) {
-            throw IllegalArgumentException("Invalid fileType: '$fileType'. It should only contain alphanumeric characters, underscores, hyphens, and slashes.")
+            throw IllegalArgumentException("Nieprawidłowy typ pliku: '$fileType'. Powinien zawierać tylko znaki alfanumeryczne, podkreślenia, myślniki i ukośniki.")
         }
     }
 

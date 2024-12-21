@@ -86,7 +86,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add users to groups"
+                reason = "Tylko koordynatorzy mogą dodawać użytkowników do grup"
             )
         }
 
@@ -94,14 +94,14 @@ class UserGroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val groupId = arguments.getLongField("groupId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupId'"
+            reason = "Nieprawidłowe lub brakujące 'groupId'"
         )
 
         val user = usersRepository.findById(userId).orElse(null)
@@ -109,7 +109,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User not found"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         val group = groupsRepository.findById(groupId).orElse(null)
@@ -117,7 +117,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Group not found"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
 
         if (userGroupsRepository.existsByUserAndGroup(user, group)){
@@ -125,7 +125,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This User already exists in this Group"
+                reason = "Ten użytkownik już istnieje w tej grupie"
             )
         }
 
@@ -134,7 +134,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This User already exists in this Edition"
+                reason = "Ten użytkownik już istnieje w tej edycji"
             )
         }
 
@@ -143,7 +143,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -163,7 +163,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can remove users from groups"
+                reason = "Tylko koordynatorzy mogą usuwać użytkowników z grup"
             )
         }
 
@@ -171,14 +171,14 @@ class UserGroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupId'"
+            reason = "Nieprawidłowe lub brakujące 'groupId'"
         )
         val group = groupsRepository.findById(groupId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Group not found"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
         if (currentUser.role == UsersRoles.TEACHER){
             if (group.teacher.userId != currentUser.userId){
@@ -186,7 +186,7 @@ class UserGroupsPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only remove users from their groups"
+                    reason = "Prowadzący może usuwać tylko użytkowników ze swoich grup"
                 )
             }
         }
@@ -195,7 +195,7 @@ class UserGroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val user = usersRepository.findById(userId).orElse(null)
@@ -203,7 +203,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User not found"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (!userGroupsRepository.existsByUserAndGroup(user, group)){
@@ -211,7 +211,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This User does not exist in this Group"
+                reason = "Ten użytkownik nie istnieje w tej grupie"
             )
         }
 
@@ -220,7 +220,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -240,7 +240,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Student cannot change groups"
+                reason = "Tylko prowadzący i koordynatorzy mogą zmieniać grupy studentom"
             )
         }
 
@@ -248,46 +248,58 @@ class UserGroupsPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'groupId'"
+            reason = "Nieprawidłowe lub brakujące 'groupId'"
         )
+
         val group = groupsRepository.findById(groupId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Group not found"
+                reason = "Nie znaleziono grupy o id $groupId"
             )
-
-        if (currentUser.role == UsersRoles.TEACHER){
-            if (group.teacher.userId != currentUser.userId){
-                return Permission(
-                    action = action,
-                    arguments = arguments,
-                    allow = false,
-                    reason = "Teacher can only change groups of their students")
-            }
-        }
 
         val userId = arguments.getLongField("userId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
+
+        if (currentUser.role == UsersRoles.TEACHER){
+            if (!currentUser.groups.flatMap{ it.userGroups }.map{ it.user.userId }.contains(userId)){
+                return Permission(
+                    action = action,
+                    arguments = arguments,
+                    allow = false,
+                    reason = "Prowadzący może zmieniać grupy tylko swoich studentów"
+                )
+            }
+        }
 
         val user = usersRepository.findById(userId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User not found"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
+
+        if (user.userGroups.none{ it.group.edition == group.edition }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Ta grupa nie jest w tej samej edycji co użytkownik"
+            )
+        }
+
         if (user.role != UsersRoles.STUDENT){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This mutation is only for students"
+                reason = "Tę operację można wykonać tylko na studentach"
             )
         }
 
@@ -296,7 +308,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This User already exists in this Group"
+                reason = "Ten użytkownik już istnieje w tej grupie"
             )
         }
 
@@ -305,7 +317,7 @@ class UserGroupsPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 

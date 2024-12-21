@@ -1,11 +1,12 @@
-import { Dialog } from "@mui/material";
 import { useChangeGroup } from "../../../hooks/common/useChangeGroup";
-import { CloseHeader } from "../CloseHeader";
 import {
   GroupsQuery,
   useGroupsQuery,
 } from "../../../graphql/groups.graphql.types";
 import { ChangeGroupForm } from "./ChangeGroupForm";
+import { ERROR_MESSAGE } from "../../../utils/utils";
+import { CustomText } from "../../CustomText";
+import { CustomDialog } from "../CustomDialog";
 
 export type Group = NonNullable<GroupsQuery["editionByPk"]>["groups"][number];
 
@@ -26,13 +27,13 @@ export const ChangeGroupDialog = () => {
   const groups: Group[] = data?.editionByPk?.groups ?? [];
 
   const getDialogContent = () => {
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>ERROR: {error.message}</div>;
-    if (!data || !initData) return <div>something went wrong...</div>;
+    if (loading) return <></>;
+    if (error || !data || !initData)
+      return <CustomText>{ERROR_MESSAGE}</CustomText>;
+
     return (
       <ChangeGroupForm
         handleConfirm={handleChangeGroupConfirm}
-        title={"Change student group"}
         groups={groups}
         initGroupId={initData.groupId}
         formError={formError}
@@ -41,9 +42,12 @@ export const ChangeGroupDialog = () => {
   };
 
   return (
-    <Dialog open={isChangeGroupOpen}>
-      <CloseHeader onCloseClick={closeChangeGroup} />
+    <CustomDialog
+      isOpen={isChangeGroupOpen}
+      onCloseClick={closeChangeGroup}
+      title="Zmień grupę studenta"
+    >
       {getDialogContent()}
-    </Dialog>
+    </CustomDialog>
   );
 };

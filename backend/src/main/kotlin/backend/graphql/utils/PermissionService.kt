@@ -162,6 +162,7 @@ class PermissionService {
             "getFilesGroupedByTypeBySelectedTypes" -> filePermissions.checkGetFilesGroupedByTypeBySelectedTypesPermission(jsonArguments)
             // GradingChecksPermissions
             "listSetupGradingChecks" -> gradingChecksPermissions.checkListSetupGradingChecksPermission(jsonArguments)
+            "getQuoteVariables" -> gradingChecksPermissions.checkGetQuoteVariablesPermission(jsonArguments)
             "addGradingCheck" -> gradingChecksPermissions.checkAddGradingCheckPermission(jsonArguments)
             "editGradingCheck" -> gradingChecksPermissions.checkEditGradingCheckPermission(jsonArguments)
             "removeGradingCheck" -> gradingChecksPermissions.checkRemoveGradingCheckPermission(jsonArguments)
@@ -231,7 +232,7 @@ class PermissionService {
                 action = input.action,
                 arguments = jsonArguments,
                 allow = false,
-                reason = "Unknown action '${input.action}'"
+                reason = "Nieznana akcja '${input.action}'"
             )
         }
     }
@@ -292,7 +293,7 @@ class PermissionService {
                 action = input.action,
                 arguments = jsonArguments,
                 allow = false,
-                reason = "Unknown action '${input.action}'"
+                reason = "Nieznana akcja '${input.action}'"
             )
         }
     }
@@ -325,8 +326,6 @@ data class ListPermissionsOutput(
     val canSelect: Permission,
     val canUnselect: Permission,
     val additional: List<Permission>,
-    val canOverride: Permission? = null,
-    val canTurnOffOverride: Permission? = null,
     val canMarkAsActive: Permission? = null,
     val canMarkAsInactive: Permission? = null,
     val canActivate: Permission? = null,

@@ -1,11 +1,13 @@
-import { Dialog } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useChestsSection } from "../../../../hooks/Edition/useChestsSection";
 
 import { useParams } from "react-router-dom";
 import { ChestsList } from "./ChestsList/ChestsList";
 import { AddChestForm } from "./AddChestForm/AddChestForm";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const ChestsSection = () => {
   const params = useParams();
@@ -42,18 +44,18 @@ export const ChestsSection = () => {
     handleActivateChest,
   } = useChestsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (loading) return <LoadingScreen type="edition" />;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
-      <button onClick={openAddChest}>add chest</button>
+    <div style={coordinatorStyles.container}>
+      <CustomButton onClick={openAddChest}>Dodaj skrzynkę</CustomButton>
 
       <ChestsList
         chests={selectedChests}
         selectedChests={selectedChests}
         handleSelectChest={handleSelectChest}
-        title={"Selected chests"}
+        title={"Wybrane skrzynki"}
         handleEditChest={openEditChest}
         handleDeleteChest={handleDeleteChest}
         handleCopyChest={handleCopyChest}
@@ -64,7 +66,7 @@ export const ChestsSection = () => {
         chests={chests}
         selectedChests={selectedChests}
         handleSelectChest={handleSelectChest}
-        title={"All chests"}
+        title={"Wszystkie skrzynki"}
         handleEditChest={openEditChest}
         handleDeleteChest={handleDeleteChest}
         handleCopyChest={handleCopyChest}
@@ -72,12 +74,14 @@ export const ChestsSection = () => {
         editionId={editionId}
       />
 
-      <Dialog open={isAddChest}>
-        <CloseHeader onCloseClick={closeAddChest} />
+      <CustomDialog
+        isOpen={isAddChest}
+        title="Dodaj skrzynkę"
+        onCloseClick={closeAddChest}
+      >
         <AddChestForm
           formError={formError}
           handleConfirm={handleAddChest}
-          title="Add Chest"
           imageIds={imageIds}
           awardsThisEdition={selectedAwards}
           awardsNotThisEdition={awards.filter(
@@ -87,10 +91,13 @@ export const ChestsSection = () => {
               ),
           )}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditChest}>
-        <CloseHeader onCloseClick={closeEditChest} />
+      <CustomDialog
+        isOpen={isEditChest}
+        title="Edytuj skrzynkę"
+        onCloseClick={closeEditChest}
+      >
         <AddChestForm
           formError={formError}
           handleConfirm={handleEditChest}
@@ -126,17 +133,8 @@ export const ChestsSection = () => {
                 }
               : undefined
           }
-          title="Edit Chest"
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

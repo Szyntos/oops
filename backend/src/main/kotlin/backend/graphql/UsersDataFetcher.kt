@@ -109,7 +109,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val users = usersRepository.findAll().map {
@@ -120,29 +120,27 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                         "addUser",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canEdit = permissionService.checkPartialPermission(PermissionInput("editUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
                     canCopy = Permission(
                         "copyUser",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canRemove = permissionService.checkPartialPermission(PermissionInput("removeUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId))),),
                     canSelect =
                     Permission(
                         "selectUser",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     canUnselect =
                     Permission(
                         "unselectUser",
                         objectMapper.createObjectNode(),
                         false,
-                        "Not applicable"),
+                        "Nie dotyczy"),
                     additional = emptyList(),
-                    canOverride = permissionService.checkPartialPermission(PermissionInput("overrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
-                    canTurnOffOverride =  permissionService.checkPartialPermission(PermissionInput("turnOffOverrideComputedGradeForUser", objectMapper.writeValueAsString(mapOf("userId" to it.userId, "editionId" to editionId)))),
                     canMarkAsInactive = permissionService.checkPartialPermission(PermissionInput("markStudentAsInactive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
                     canMarkAsActive =  permissionService.checkPartialPermission(PermissionInput("markStudentAsActive", objectMapper.writeValueAsString(mapOf("userId" to it.userId)))),
                 )
@@ -166,10 +164,10 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
 
         val result = photoAssigner.assignPhotoToAssignee(usersRepository, "image/user", userId, fileId)
 
@@ -208,7 +206,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         return addUserHelper(indexNumber, nick, firstName, secondName, role, email, label, createFirebaseUser, sendEmail)
@@ -235,7 +233,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         return addUserHelper(-1, "", firstName, secondName, "teacher", email, label, createFirebaseUser, sendEmail)
@@ -255,10 +253,10 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        val user = usersRepository.findById(userId).orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
 
         user.nick = nick
         if (userMapper.getCurrentUser().userId == userId){
@@ -282,11 +280,11 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
-        val file = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("File not found") }
+        val file = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("Nie znaleziono pliku o id $fileId") }
         val usosId = csvReader.extractGroupNumber(file.fileName).toLong()
         val users = csvReader.getUsersFromCsv(file)
         val parsedUsers = ParsedUsersType(users, usosId)
@@ -309,10 +307,10 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
         val notValidUsers = userIndexes.mapNotNull { index -> usersRepository.findByIndexNumber(index) }
             .filter { user -> user.userGroups.any { it.group.edition == edition } }
             .map { user ->
@@ -348,11 +346,11 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val user = usersRepository.findById(userId)
-            .orElseThrow { IllegalArgumentException("User not found") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
 
 
         indexNumber?.let {
@@ -398,13 +396,13 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
 
         val user = usersRepository.findById(userId)
-            .orElseThrow { IllegalArgumentException("User not found") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
 
         userLevelRepository.deleteAllByUser_UserId(userId)
         try {
@@ -433,11 +431,11 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val user = usersRepository.findByUserId(userId)
-            .orElseThrow { IllegalArgumentException("User not found") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
         return firebaseUserService.resetPassword(user.email)
     }
 
@@ -454,7 +452,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         if (usersRepository.existsByEmail(email)) {
@@ -476,10 +474,10 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
         val passingStudents = usersRepository.findByUserGroups_Group_Edition(edition).filter { it.role == UsersRoles.STUDENT }
             .filter { user -> user.userLevels.any { it.computedGrade >= 3.0 }}
         passingStudents.forEach { it.active = false }
@@ -500,10 +498,10 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
         user.active = false
         usersRepository.save(user)
         return true
@@ -522,10 +520,10 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
         user.active = true
         usersRepository.save(user)
         return true
@@ -547,13 +545,13 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
         val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
-            ?: throw IllegalArgumentException("User has no levels for this edition")
+            ?: throw IllegalArgumentException("Student ${user.userId} nie posiada poziomu w edycji ${edition.editionId}")
 
         userLevel.coordinatorOverride = true
         userLevelRepository.save(userLevel)
@@ -576,13 +574,13 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Invalid user ID") }
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val user = usersRepository.findByUserId(userId).orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
         val userLevel = userLevelRepository.findByUserAndEdition(user, edition)
-            ?: throw IllegalArgumentException("User has no levels for this edition")
+            ?: throw IllegalArgumentException("Student ${user.userId} nie posiada poziomu w edycji ${edition.editionId}")
 
         userLevel.coordinatorOverride = false
         userLevelRepository.save(userLevel)
@@ -609,17 +607,17 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
-        val user = usersRepository.findById(studentId).orElseThrow { IllegalArgumentException("Invalid student ID") }
+        val user = usersRepository.findById(studentId).orElseThrow { IllegalArgumentException("Nie znaleziono studenta o id $studentId") }
 
 
 
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
         val teacher = user.userGroups.firstOrNull { it.group.edition == edition }?.group?.teacher
-            ?: throw IllegalArgumentException("Student is not in any group")
+            ?: throw IllegalArgumentException("Student nie znajduje się w żadnej grupie.")
         val points = pointsRepository.findAllByStudentAndSubcategory_Edition(user, edition)
         val bonuses = bonusesRepository.findByChestHistory_User_UserId(studentId)
 
@@ -772,12 +770,12 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val user = usersRepository.findById(studentId).orElseThrow { IllegalArgumentException("Invalid student ID") }
+        val user = usersRepository.findById(studentId).orElseThrow { IllegalArgumentException("Nie znaleziono studenta o id $studentId") }
 
-        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Invalid edition ID") }
+        val edition = editionRepository.findById(editionId).orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
         val points = pointsRepository.findAllByStudentAndSubcategory_Edition(user, edition)
         val bonuses = bonusesRepository.findByChestHistory_User_UserId(studentId).filter { it.points.subcategory.edition == edition }
         val categories = categoriesRepository.findByCategoryEdition_Edition(edition)
@@ -813,7 +811,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         val user = userMapper.getCurrentUser()
         val editions = if (user.role == UsersRoles.COORDINATOR){
@@ -838,7 +836,7 @@ class UsersDataFetcher (private val fileRetrievalService: FileRetrievalService){
                                imageFileId: Long? = null): Users {
         val permission = usersPermissions.checkAddUserHelperPermission(indexNumber, nick, firstName, secondName, role, email, label, createFirebaseUser, sendEmail, imageFileId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 

@@ -39,8 +39,7 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
       borderTopLeftRadius: place !== 3 ? PODIUM_TOP_RADIUS : 0,
       borderBottomLeftRadius: place === 2 ? PODIUM_BOTTOM_RADIUS : 0,
       borderBottomRightRadius: place === 3 ? PODIUM_BOTTOM_RADIUS : 0,
-      backgroundColor:
-        place === 1 ? tokens.color.accent.dark : tokens.color.accent.light,
+      backgroundColor: placeMap.color[place],
       height: placeMap.height[place] * PLACE_HEIGHT_RATIO,
     };
   };

@@ -1,6 +1,5 @@
 import { Edition } from "../../contexts/userContext";
 import { useEditionSelection } from "../../hooks/common/useEditionSelection";
-import { Styles } from "../../utils/Styles";
 import { ChangeEditionForm } from "./ChangeEditionForm";
 
 type SettingsProps = {
@@ -12,24 +11,17 @@ export const Settings = ({
   handleChangeEditionConfirm,
 }: SettingsProps) => {
   const { selectedEdition } = useEditionSelection();
+  const sortedEditions = editions
+    .slice()
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div style={styles.container}>
-      <ChangeEditionForm
-        handleConfirm={handleChangeEditionConfirm}
-        editions={editions}
-        initialValues={
-          selectedEdition ? { editionId: selectedEdition.editionId } : undefined
-        }
-      />
-    </div>
+    <ChangeEditionForm
+      handleConfirm={handleChangeEditionConfirm}
+      editions={sortedEditions}
+      initialValues={
+        selectedEdition ? { editionId: selectedEdition.editionId } : undefined
+      }
+    />
   );
-};
-
-const styles: Styles = {
-  container: {
-    padding: 20,
-    paddingTop: 60,
-    width: 300,
-  },
 };

@@ -3,6 +3,7 @@ import { Styles } from "../../../../../utils/Styles";
 import { TextField } from "@mui/material";
 import { useState } from "react";
 import { tokens } from "../../../../../tokens";
+import { RowButton } from "./RowButton";
 
 export type SubcategoriesFormValues = z.infer<typeof ValidationSchema>;
 
@@ -14,7 +15,7 @@ const ValidationSchema = z.object({
 
 type SubcategoryRowProps = {
   initialValues: SubcategoriesFormValues;
-  disabled?: boolean;
+  variant: "edit" | "add";
   blockUp?: boolean;
   blockDown?: boolean;
   handleAdd: (subcategory: SubcategoriesFormValues) => void;
@@ -27,7 +28,7 @@ type SubcategoryRowProps = {
 
 export const SubcategoryRow = ({
   initialValues,
-  disabled = false,
+  variant,
   blockUp = false,
   blockDown = false,
   handleAdd,
@@ -42,68 +43,64 @@ export const SubcategoryRow = ({
     <div style={styles.innerContainer}>
       <TextField
         name="ordinal"
-        label="ord"
         variant="outlined"
-        value={initialValues.ordinal}
-        style={styles.points}
+        label="Lp."
+        value={`${initialValues.ordinal}.`}
+        style={styles.ordinal}
         disabled={true}
+        size="small"
       />
 
       <TextField
         name="maxPoints"
-        label="max"
+        label="Max. punktów"
         variant="outlined"
         value={maxPoints}
         onChange={(e) => setMaxPoints(parseInt(e.target.value))}
         onBlur={() => {}}
         error={undefined}
         helperText={undefined}
-        style={styles.points}
+        style={styles.maxPoints}
         type="number"
-        disabled={disabled}
+        disabled={variant === "edit"}
+        size="small"
       />
 
       <TextField
         fullWidth
         name="name"
-        label="name"
+        label="Nazwa"
         variant="outlined"
         value={name}
         onChange={(e) => setName(e.target.value)}
         onBlur={() => {}}
         error={undefined}
         helperText={undefined}
-        style={styles.number}
-        disabled={disabled}
+        disabled={variant === "edit"}
+        size="small"
       />
 
-      {disabled ? (
-        <div>
-          <button
-            type="button"
-            disabled={blockUp}
+      {variant === "edit" ? (
+        <>
+          <RowButton
             onClick={() => handleUp(initialValues.ordinal)}
-          >
-            up
-          </button>
-          <button
-            type="button"
-            onClick={() => handleDown(initialValues.ordinal)}
-            disabled={blockDown}
-          >
-            do
-          </button>
-
-          <button
-            type="button"
+            isDisabled={blockUp}
+            icon="up"
+          />
+          <RowButton
+            color={tokens.color.state.error}
             onClick={() => handleDelete(initialValues.ordinal)}
-          >
-            -
-          </button>
-        </div>
+            isDisabled={false}
+            icon="delete"
+          />
+          <RowButton
+            onClick={() => handleDown(initialValues.ordinal)}
+            isDisabled={blockDown}
+            icon="down"
+          />
+        </>
       ) : (
-        <button
-          type="button"
+        <RowButton
           onClick={() => {
             handleAdd({
               ordinal: initialValues.ordinal,
@@ -111,9 +108,9 @@ export const SubcategoryRow = ({
               name,
             });
           }}
-        >
-          +
-        </button>
+          isDisabled={false}
+          icon="add"
+        />
       )}
     </div>
   );
@@ -123,17 +120,13 @@ const styles: Styles = {
   innerContainer: {
     display: "flex",
     flexDirection: "row",
-    gap: 12,
-    padding: 12,
-    width: 500,
+    gap: 8,
+    alignItems: "center",
   },
-  points: {
-    width: 80,
+  ordinal: {
+    maxWidth: 52,
   },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
+  maxPoints: {
+    maxWidth: 110,
   },
 };

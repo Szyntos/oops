@@ -69,7 +69,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can generate subcategories"
+                reason = "Tylko koordynatorzy mogą generować podkategorie"
             )
         }
 
@@ -77,34 +77,34 @@ class SubcategoriesPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
         val categoryId = arguments.getLongField("categoryId")?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'categoryId'"
+            reason = "Nieprawidłowe lub brakujące 'categoryId'"
         )
 
         val subcategoryPrefix = arguments.getStringField("subcategoryPrefix")?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'subcategoryPrefix'"
+            reason = "Nieprawidłowe lub brakujące 'subcategoryPrefix'"
         )
 
         val subcategoryCount = arguments.getIntField("subcategoryCount")?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'subcategoryCount'"
+            reason = "Nieprawidłowe lub brakujące 'subcategoryCount'"
         )
 
         val maxPoints = arguments.getFloatField("maxPoints")?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'maxPoints'"
+            reason = "Nieprawidłowe lub brakujące 'maxPoints'"
         )
 
         val edition = editionRepository.findById(editionId).getOrNull()
@@ -112,14 +112,14 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with id $editionId not found"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         if (edition.endDate.isBefore(LocalDate.now())){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
         val category = categoriesRepository.findById(categoryId).getOrNull()
@@ -127,14 +127,14 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category with id $categoryId not found"
+                reason = "Nie znaleziono kategorii o id $categoryId"
             )
         if (category.categoryEdition.none { it.edition == edition }) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category with id $categoryId does not exist in edition with id $editionId"
+                reason = "Kategoria o id $categoryId nie istnieje w edycji o id $editionId"
             )
         }
         if (subcategoriesRepository.findByCategoryAndEdition(category, edition).isNotEmpty()) {
@@ -142,7 +142,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategories for category with id $categoryId and edition with id $editionId already exist"
+                reason = "Podkategorie dla kategorii o id $categoryId i edycji o id $editionId już istnieją"
             )
         }
         val subcategories = mutableListOf<Subcategories>()
@@ -151,7 +151,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory count must be greater than 0"
+                reason = "Liczba podkategorii musi być większa od 0"
             )
         }
         if (maxPoints < 0) {
@@ -159,7 +159,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Max points must be greater than or equal to 0"
+                reason = "Maksymalna liczba punktów musi być większa lub równa 0"
             )
         }
         if (subcategoryPrefix.isBlank()) {
@@ -167,7 +167,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory prefix must not be blank"
+                reason = "Prefiks podkategorii nie może być pusty"
             )
         }
         return Permission(
@@ -184,7 +184,7 @@ class SubcategoriesPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'subcategory'"
+            reason = "Nieprawidłowe lub brakujące 'subcategory'"
         )
 
         val currentUser = userMapper.getCurrentUser()
@@ -193,7 +193,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add subcategories"
+                reason = "Tylko koordynatorzy mogą dodawać podkategorie"
             )
         }
 
@@ -220,7 +220,7 @@ class SubcategoriesPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'subcategoryId'"
+            reason = "Nieprawidłowe lub brakujące 'subcategoryId'"
         )
 
         val currentUser = userMapper.getCurrentUser()
@@ -229,7 +229,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit subcategories"
+                reason = "Tylko koordynatorzy mogą edytować podkategorie"
             )
         }
 
@@ -246,7 +246,7 @@ class SubcategoriesPermissions {
                                 action = action,
                                 arguments = arguments,
                                 allow = false,
-                                reason = "Subcategory with id $subcategoryId not found"
+                                reason = "Nie znaleziono podkategorii o id $subcategoryId"
                                 )
 
         if (subcategory.edition == null){
@@ -254,7 +254,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory's edition is null"
+                reason = "Edycja podkategorii jest nullem"
             )
         }
 
@@ -263,7 +263,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory's edition has already ended"
+                reason = "Edycja podkategorii już się zakończyła"
             )
         }
 
@@ -274,7 +274,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory name must not be blank"
+                    reason = "Nazwa podkategorii nie może być pusta"
                 )
             }
             if (subcategoriesRepository.findBySubcategoryNameAndCategoryAndEdition(it, subcategory.category,
@@ -284,7 +284,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory with name $it already exists in the same category and edition"
+                    reason = "Podkategoria o nazwie $it już istnieje w tej samej kategorii i edycji"
                 )
             }
             subcategory.subcategoryName = it
@@ -296,7 +296,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory's edition has already started"
+                    reason = "Edycja podkategorii już się rozpoczęła"
                 )
             }
             if (it < 0) {
@@ -304,7 +304,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Max points must be greater than or equal to 0"
+                    reason = "Maksymalna liczba punktów musi być większa lub równa 0"
                 )
             }
             subcategory.maxPoints = it.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
@@ -316,7 +316,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory's edition has already started"
+                    reason = "Edycja podkategorii już się rozpoczęła"
                 )
             }
             if (it < 0) {
@@ -324,7 +324,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Ordinal number must be greater or equal to 0"
+                    reason = "Liczba porządkowa musi być większa lub równa 0"
                 )
             }
             val ordinalNumbers = subcategoriesRepository.findByCategoryAndEdition(subcategory.category,
@@ -336,7 +336,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory with ordinal number $it already exists"
+                    reason = "Podkategoria o numerze porządkowym $it już istnieje"
                 )
             }
             if (ordinalNumbers.isEmpty() && it != 0) {
@@ -344,7 +344,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "First subcategory must have ordinal number 0"
+                    reason = "Pierwsza podkategoria musi mieć numer porządkowy 0"
                 )
             }
             subcategory.ordinalNumber = it
@@ -364,7 +364,7 @@ class SubcategoriesPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'subcategoryId'"
+            reason = "Nieprawidłowe lub brakujące 'subcategoryId'"
         )
 
         val currentUser = userMapper.getCurrentUser()
@@ -373,7 +373,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove subcategories"
+                reason = "Tylko koordynatorzy mogą usuwać podkategorie"
             )
         }
 
@@ -382,7 +382,7 @@ class SubcategoriesPermissions {
                                 action = action,
                                 arguments = arguments,
                                 allow = false,
-                                reason = "Subcategory with id $subcategoryId not found"
+                                reason = "Nie znaleziono podkategorii o id $subcategoryId"
                                 )
 
         if (subcategory.edition != null && subcategory.edition!!.endDate.isBefore(java.time.LocalDate.now())){
@@ -390,7 +390,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory's edition has already ended"
+                reason = "Edycja podkategorii już się zakończyła"
             )
         }
         if (pointsRepository.findBySubcategory(subcategory).isNotEmpty()) {
@@ -398,7 +398,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory has points"
+                reason = "Podkategoria ma przypisane punkty"
             )
         }
 
@@ -429,7 +429,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add subcategories"
+                reason = "Tylko koordynatorzy mogą dodawać podkategorie"
             )
         }
 
@@ -438,7 +438,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "You cannot specify subcategoryId when adding a new subcategory"
+                reason = "Nie można określić subcategoryId podczas dodawania nowej podkategorii"
             )
         }
         if (subcategory.categoryId == -1L || subcategory.categoryId == null) {
@@ -446,7 +446,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category ID must be specified"
+                reason = "categoryId musi być określone"
             )
         }
         val category = categoriesRepository.findById(subcategory.categoryId!!).getOrNull()
@@ -454,7 +454,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category with id ${subcategory.categoryId} not found"
+                reason = "Nie znaleziono kategorii o id ${subcategory.categoryId}"
             )
 
         val edition = if (!(subcategory.editionId == -1L || subcategory.editionId == null)) {
@@ -463,7 +463,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition with id ${subcategory.editionId} not found"
+                    reason = "Nie znaleziono edycji o id ${subcategory.editionId}"
                 )
 
             if (edition.endDate.isBefore(LocalDate.now())){
@@ -471,7 +471,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has already ended"
+                    reason = "Edycja już się zakończyła"
                 )
             }
             if (category.categoryEdition.none { it.edition == edition }) {
@@ -479,7 +479,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Category with id ${subcategory.categoryId} does not exist in edition with id ${subcategory.editionId}"
+                    reason = "Kategoria o id ${subcategory.categoryId} nie istnieje w edycji o id ${subcategory.editionId}"
                 )
             }
             if (subcategoriesRepository.findBySubcategoryNameAndCategoryAndEdition(subcategory.subcategoryName, category, edition).isPresent) {
@@ -487,7 +487,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory with name ${subcategory.subcategoryName} already exists in category with id ${subcategory.categoryId} and edition with id ${subcategory.editionId}"
+                    reason = "Podkategoria o nazwie ${subcategory.subcategoryName} już istnieje w kategorii o id ${subcategory.categoryId} i edycji o id ${subcategory.editionId}"
                 )
             }
             edition
@@ -497,7 +497,7 @@ class SubcategoriesPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Subcategory with name ${subcategory.subcategoryName} already exists in category with id ${subcategory.categoryId}"
+                    reason = "Podkategoria o nazwie ${subcategory.subcategoryName} już istnieje w kategorii o id ${subcategory.categoryId}"
                 )
             }
             null
@@ -512,7 +512,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory name must not be blank"
+                reason = "Nazwa podkategorii nie może być pusta"
             )
         }
         if (subcategory.maxPoints < 0) {
@@ -520,7 +520,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Max points must be greater than or equal to 0"
+                reason = "Maksymalna liczba punktów musi być większa lub równa 0"
             )
         }
         if (subcategory.ordinalNumber < 0) {
@@ -528,7 +528,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Ordinal number must be greater or equal to 0"
+                reason = "Liczba porządkowa musi być większa lub równa 0"
             )
         }
         if (ordinalNumbers.contains(subcategory.ordinalNumber)) {
@@ -536,7 +536,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory with ordinal number ${subcategory.ordinalNumber} already exists"
+                reason = "Podkategoria z numerem porządkowym ${subcategory.ordinalNumber} już istnieje"
             )
         }
         if (ordinalNumbers.isEmpty() && subcategory.ordinalNumber != 0) {
@@ -544,7 +544,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "First subcategory must have ordinal number 0"
+                reason = "Pierwsza podkategoria musi mieć numer porządkowy 0"
             )
         }
         if (ordinalNumbers.isNotEmpty() && ordinalNumbers.max() != subcategory.ordinalNumber - 1) {
@@ -552,7 +552,7 @@ class SubcategoriesPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Ordinal number must be greater by 1 than the previous subcategory-(${ordinalNumbers.max()})"
+                reason = "Liczba porządkowa musi być większa o 1 od poprzedniej podkategorii-(${ordinalNumbers.max()})"
             )
         }
         return Permission(

@@ -24,7 +24,7 @@ export const NumberInput = ({
       <label>{label}</label>
       <input
         name={name}
-        type="number"
+        type="Numer"
         onChange={handleChange}
         onBlur={handleBlur}
         value={value}

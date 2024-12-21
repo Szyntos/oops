@@ -68,7 +68,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit awards"
+                reason = "Tylko koordynatorzy mogą edytować łupy"
             )
         }
 
@@ -76,7 +76,7 @@ class AwardsPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -84,7 +84,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         if (award.awardEditions.map { it.edition }.any { it.endDate.isBefore(java.time.LocalDate.now()) }) {
@@ -92,7 +92,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with this award has already ended"
+                reason = "Edycja z tą łupem już się zakończyła"
             )
         }
 
@@ -101,7 +101,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with this award has already started"
+                reason = "Edycja z tą łupem już wystartowała"
             )
         }
 
@@ -110,7 +110,7 @@ class AwardsPartialPermissions {
 //                action = action,
 //                arguments = arguments,
 //                allow = false,
-//                reason = "Award is already in use"
+//                reason = "Łup jest już w użyciu"
 //            )
 //        }
 
@@ -130,7 +130,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove awards"
+                reason = "Tylko koordynatorzy mogą usuwać łupy"
             )
         }
 
@@ -138,7 +138,7 @@ class AwardsPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -146,7 +146,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         if (award.awardEditions.map { it.edition }.any { it.endDate.isBefore(LocalDate.now()) }) {
@@ -154,7 +154,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with this award has already ended"
+                reason = "Edycja z tą łupem już się zakończyła"
             )
         }
 
@@ -163,7 +163,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award is already in use"
+                reason = "Łup jest już w użyciu"
             )
         }
 
@@ -174,7 +174,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Removing this award would cause some chests to have their award bundle count bigger than the number of awards in them"
+                reason = "Usunięcie tego łupu spowoduje, że w niektórych skrzyniach maksymalna liczba możliwych do zdobycia przedmiotów przekroczy faktyczną liczbę dostępnych łupów"
             )
         }
 
@@ -194,7 +194,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can copy awards"
+                reason = "Tylko koordynatorzy mogą kopiować łupy"
             )
         }
 
@@ -202,7 +202,7 @@ class AwardsPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -210,7 +210,7 @@ class AwardsPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         return Permission(

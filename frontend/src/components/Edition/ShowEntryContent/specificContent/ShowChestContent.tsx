@@ -7,7 +7,7 @@ export const ShowChestContent = ({ entry }: ShowChestContentProps) => {
   return (
     <div>
       {entry.chest.chestType}
-      <pre>{JSON.stringify(entry)}</pre>
+      <pre>{JSON.stringify(entry, null, 2)}</pre>
     </div>
   );
 };

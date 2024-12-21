@@ -2,7 +2,9 @@ import { useEditionSections } from "../../../../../hooks/common/useEditionSectio
 import { LevelSet } from "../../../../../hooks/Edition/useLevelSetsSection";
 import { tokens } from "../../../../../tokens";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
-import { Styles } from "../../../../../utils/Styles";
+import { coordinatorStyles, getCardStyles } from "../../../../../utils/utils";
+import { Avatar } from "../../../../avatars/Avatar";
+import { CustomText } from "../../../../CustomText";
 import { SetupButtons } from "../../SetupButtons";
 
 type LevelSetCardProps = {
@@ -13,6 +15,8 @@ type LevelSetCardProps = {
   onDeleteClick: () => void;
   onCopyClick: () => void;
 };
+
+// poziomy: id, ocena, max point, nazwa
 
 export const LevelSetCard = ({
   levelSet,
@@ -25,23 +29,23 @@ export const LevelSetCard = ({
   const { openShowDialog } = useEditionSections();
 
   return (
-    <div
-      style={{
-        ...styles.card,
-        backgroundColor: isSelected ? "pink" : undefined,
-      }}
-    >
-      <div>[{levelSet.levelSet.levelSetId}]</div>
-
-      <div>
-        {levelSet.levelSet.levels.length > 0
-          ? levelSet.levelSet.levels.map((l) => (
-              <div>
-                {l.ordinalNumber + 1}. {l.levelName}, {l.minimumPoints}-
-                {l.maximumPoints}
+    <div style={getCardStyles(isSelected)}>
+      <div style={{ ...coordinatorStyles.textContainer, gap: 8, flex: 1 }}>
+        {levelSet.levelSet.levels.length > 0 ? (
+          levelSet.levelSet.levels.map((l) => (
+            <div style={coordinatorStyles.avatarContainer}>
+              <Avatar id={l.imageFile?.fileId} size={"xs"} />
+              <div style={coordinatorStyles.textContainer}>
+                <CustomText>{l.levelName}</CustomText>
+                <CustomText color={tokens.color.text.tertiary}>
+                  {l.minimumPoints}pkt - {l.maximumPoints}pkt
+                </CustomText>
               </div>
-            ))
-          : EMPTY_FIELD_STRING}
+            </div>
+          ))
+        ) : (
+          <CustomText>{EMPTY_FIELD_STRING}</CustomText>
+        )}
       </div>
 
       <SetupButtons
@@ -55,14 +59,4 @@ export const LevelSetCard = ({
       />
     </div>
   );
-};
-
-const styles: Styles = {
-  card: {
-    border: "1px solid black",
-    padding: 12,
-  },
-  subtitle: {
-    color: tokens.color.state.disabled,
-  },
 };

@@ -62,7 +62,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can list setup level sets"
+                reason = "Tylko koordynatorzy mogą wylistować zbiory poziomów do setupu"
             )
         }
 
@@ -70,7 +70,7 @@ class LevelSetPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -78,7 +78,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         return Permission(
@@ -97,7 +97,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add level sets"
+                reason = "Tylko koordynatorzy mogą dodawać zbiory poziomów"
             )
         }
 
@@ -105,7 +105,7 @@ class LevelSetPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'levels'"
+            reason = "Nieprawidłowe lub brakujące 'levels'"
         )
 
         // not validating further, as the levels are validated in checkAddLevelHelperPermission
@@ -126,7 +126,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can copy level sets"
+                reason = "Tylko koordynatorzy mogą kopiować zbiory poziomów"
             )
         }
 
@@ -134,7 +134,7 @@ class LevelSetPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'levelSetId'"
+            reason = "Nieprawidłowe lub brakujące 'levelSetId'"
         )
 
         val levelSet = levelSetRepository.findById(levelSetId).orElse(null)
@@ -142,7 +142,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid level set ID"
+                reason = "Nie znaleziono zbioru poziomów o id $levelSetId"
             )
 
        // not validating further, as the levels are validated in checkAddLevelHelperPermission
@@ -163,7 +163,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit level sets"
+                reason = "Tylko koordynatorzy mogą edytować zbiory poziomów"
             )
         }
 
@@ -171,7 +171,7 @@ class LevelSetPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'levelSetId'"
+            reason = "Nieprawidłowe lub brakujące 'levelSetId'"
         )
 
         val levelSet = levelSetRepository.findById(levelSetId).orElse(null)
@@ -179,7 +179,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid level set ID"
+                reason = "Nie znaleziono zbioru poziomów o id $levelSetId"
             )
 
         if (levelSet.edition.isNotEmpty()) {
@@ -188,7 +188,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has already ended"
+                    reason = "Edycja już się zakończyła"
                 )
             }
             if (levelSet.edition.any { it.startDate.isBefore(java.time.LocalDate.now()) }) {
@@ -196,7 +196,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has already started"
+                    reason = "Edycja już wystartowała"
                 )
             }
             if (groupsRepository.findAll().any { it.edition.levelSet == levelSet }) {
@@ -204,7 +204,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "There are groups using the level set"
+                    reason = "Zbiór poziomów jest wykorzystywany w przez użytkowników w grupach"
                 )
             }
         }
@@ -213,7 +213,7 @@ class LevelSetPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'levels'"
+            reason = "Nieprawidłowe lub brakujące 'levels'"
         )
 
         if (levelSet.levels.any { it.userLevels.isNotEmpty() }){
@@ -221,7 +221,16 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Level set has users assigned to it"
+                reason = "Zbiór poziomów zawiera poziomy przypisane użytkownikom"
+            )
+        }
+
+        if (levelSet.levels.any { it.gradingChecks.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Zbiór poziomów jest wykorzystywany w zasadach oceniania"
             )
         }
 
@@ -243,7 +252,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove level sets"
+                reason = "Tylko koordynatorzy mogą usuwać zbiory poziomów"
             )
         }
 
@@ -251,7 +260,7 @@ class LevelSetPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'levelSetId'"
+            reason = "Nieprawidłowe lub brakujące 'levelSetId'"
         )
 
         val levelSet = levelSetRepository.findById(levelSetId).orElse(null)
@@ -259,7 +268,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid level set ID"
+                reason = "Nie znaleziono zbioru poziomów o id $levelSetId"
             )
 
         val levelsInSet = levelSet.levels.sortedBy { it.ordinalNumber }
@@ -270,7 +279,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has already ended"
+                    reason = "Edycja już się zakończyła"
                 )
             }
             if (levelSet.edition.any { it.startDate.isBefore(java.time.LocalDate.now()) }) {
@@ -278,7 +287,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has already started"
+                    reason = "Edycja już wystartowała"
                 )
             }
             if (groupsRepository.findAll().any { it.edition.levelSet == levelSet }) {
@@ -286,9 +295,18 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "There are groups using the level set"
+                    reason = "Zbiór poziomów jest wykorzystywany w przez użytkowników w grupach"
                 )
             }
+        }
+
+        if (levelSet.levels.any { it.gradingChecks.isNotEmpty() }){
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Zbiór poziomów jest wykorzystywany w zasadach oceniania"
+            )
         }
         return Permission(
             action = action,
@@ -306,7 +324,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add level sets to edition"
+                reason = "Tylko koordynatorzy mogą dodawać zbiory poziomów do edycji"
             )
         }
 
@@ -314,14 +332,14 @@ class LevelSetPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'levelSetId'"
+            reason = "Nieprawidłowe lub brakujące 'levelSetId'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val levelSet = levelSetRepository.findById(levelSetId).orElse(null)
@@ -329,7 +347,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid level set ID"
+                reason = "Nie znaleziono zbioru poziomów o id $levelSetId"
             )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -337,7 +355,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         if (edition.endDate.isBefore(java.time.LocalDate.now())) {
@@ -345,7 +363,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -355,7 +373,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition already has the level set"
+                    reason = "Edycja zawiera ten zbiór poziomów"
                 )
             }
             if (edition.levelSet!!.levels.any { level -> level.userLevels.any { it.edition == edition } }) {
@@ -363,7 +381,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition already has users assigned to the selected level set"
+                    reason = "Zbiór poziomów jest wykorzystywany przez użytkowników w tej edycji"
                 )
             }
 
@@ -372,7 +390,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has grading checks using the selected level set"
+                    reason = "Zbiór poziomów jest wykorzystywany przez zasady oceniania w tej edycji"
                 )
             }
         }
@@ -393,7 +411,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove level sets from edition"
+                reason = "Tylko koordynatorzy mogą usuwać zbiory poziomów z edycji"
             )
         }
 
@@ -401,14 +419,14 @@ class LevelSetPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'levelSetId'"
+            reason = "Nieprawidłowe lub brakujące 'levelSetId'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val levelSet = levelSetRepository.findById(levelSetId).orElse(null)
@@ -416,7 +434,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid level set ID"
+                reason = "Nie znaleziono zbioru poziomów o id $levelSetId"
             )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -424,7 +442,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         if (edition.endDate.isBefore(java.time.LocalDate.now())) {
@@ -432,7 +450,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -441,7 +459,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already started"
+                reason = "Edycja już wystartowała"
             )
         }
 
@@ -450,7 +468,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has grading checks using the level set"
+                reason = "Zbiór poziomów jest wykorzystywany przez zasady oceniania w tej edycji"
             )
         }
 
@@ -459,7 +477,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition does not have the level set"
+                reason = "Edycja nie zawiera tego zbioru poziomów"
             )
         }
 
@@ -469,7 +487,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition already has users assigned to the selected level set"
+                    reason = "Zbiór poziomów jest wykorzystywany przez użytkowników w tej edycji"
                 )
             }
         }
@@ -513,7 +531,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add levels"
+                reason = "Tylko koordynatorzy mogą dodawać poziomy"
             )
         }
         // Not validating further, as the levels are validated in addLevelHelper
@@ -553,7 +571,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit levels"
+                reason = "Tylko koordynatorzy mogą edytować poziomy"
             )
         }
 
@@ -562,7 +580,7 @@ class LevelSetPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid level ID"
+                reason = "Nie znaleziono poziomu o id $levelId"
             )
 
         if (level.levelSet.edition.isNotEmpty()) {
@@ -571,7 +589,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has already ended"
+                    reason = "Edycja już się zakończyła"
                 )
             }
             if (level.levelSet.edition.any { it.startDate.isBefore(java.time.LocalDate.now()) }) {
@@ -579,7 +597,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has already started"
+                    reason = "Edycja już wystartowała"
                 )
             }
         }
@@ -590,7 +608,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Level with the same name already exists in the edition"
+                    reason = "Poziom o takiej nazwie już istnieje w zbiorze"
                 )
             }
             level.levelName = newName
@@ -610,7 +628,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Maximum points must be a positive value"
+                    reason = "Punkty maksymalne muszą być wartością dodatnią"
                 )
             }
             if (previousLevel != null && previousLevel.maximumPoints >= it.toBigDecimal()){
@@ -618,7 +636,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Maximum points must be higher than the previous level"
+                    reason = "Punkty maksymalne muszą być wyższe niż w poprzednim poziomie"
                 )
             }
             if (nextLevel != null && nextLevel.maximumPoints <= it.toBigDecimal()){
@@ -626,7 +644,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Maximum points must be lower than the next level"
+                    reason = "Punkty maksymalne muszą być niższe niż w następnym poziomie"
                 )
             }
             level.maximumPoints = it.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
@@ -638,7 +656,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Grade must be a non-negative value"
+                    reason = "Ocena musi być wartością nieujemną"
                 )
             }
             if (previousLevel != null && previousLevel.grade > it.toBigDecimal()){
@@ -646,7 +664,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Grade must be higher or equal to the previous level"
+                    reason = "Ocena musi być wyższa lub równa niż w poprzednim poziomie"
                 )
             }
             if (nextLevel != null && nextLevel.grade < it.toBigDecimal()){
@@ -654,7 +672,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Grade must be lower or equal to the next level"
+                    reason = "Ocenia musi być niższa lub równa niż w następnym poziomie"
                 )
             }
             level.grade = it.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
@@ -683,7 +701,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Ordinal number must be a non-negative value"
+                    reason = "Liczba porządkowa musi być wartością nieujemną"
                 )
             }
             val levelsInSet = levelsRepository.findByLevelSet(level.levelSet)
@@ -692,7 +710,7 @@ class LevelSetPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Ordinal number must be lower than the number of levels in the set"
+                    reason = "Liczba porządkowa musi być mniejsza niż liczba poziomów w zbiorze"
                 )
             }
         }

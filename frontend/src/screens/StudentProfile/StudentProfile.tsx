@@ -3,6 +3,8 @@ import { useStudentProfileData } from "../../hooks/StudentProfile";
 import { SideBar } from "../../components/StudentProfile/SideBar";
 import { StudentTableWithFilters } from "../../components/StudentProfile/table/StudentTableWithFilters";
 import { ScreenContentContainer } from "../../components/layout/ScreenContentContainer";
+import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
 
 export function StudentProfile() {
   const { user } = useUser();
@@ -22,10 +24,8 @@ export function StudentProfile() {
 
   // TODO: add components for loading state and error message
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-  if (!studentData) return <p>Student is undefined</p>;
-  if (!currLevel) return <p>Curr level is undefined</p>;
+  if (loading) return <LoadingScreen />;
+  if (error || !studentData || !currLevel) return <ErrorScreen />;
 
   return (
     <ScreenContentContainer

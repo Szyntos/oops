@@ -1,5 +1,7 @@
 import { Student } from "../../../../../hooks/Edition/useGroupsSection";
 import { EMPTY_FIELD_STRING } from "../../../../../utils/constants";
+import { formStyles } from "../../../../../utils/utils";
+import { CustomText } from "../../../../CustomText";
 import { StudentRow } from "./StudentRow";
 
 type SelectedStudentsProps = {
@@ -15,13 +17,24 @@ export const SelectedStudentsList = ({
 }: SelectedStudentsProps) => {
   return (
     <div>
-      <div>{title}</div>
-      <div>
-        {students.length > 0
-          ? students.map((s) => (
-              <StudentRow student={s} handleDelete={handleDelete} />
+      <CustomText style={formStyles.label}>{title}</CustomText>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {students.length > 0 ? (
+          students
+            .slice()
+            .sort((a, b) => {
+              return (a.fullName ?? "").localeCompare(b.fullName ?? "");
+            })
+            .map((s, index) => (
+              <StudentRow
+                student={s}
+                handleDelete={handleDelete}
+                ordinal={index}
+              />
             ))
-          : EMPTY_FIELD_STRING}
+        ) : (
+          <CustomText>{EMPTY_FIELD_STRING}</CustomText>
+        )}
       </div>
     </div>
   );

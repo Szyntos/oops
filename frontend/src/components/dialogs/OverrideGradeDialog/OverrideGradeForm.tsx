@@ -1,9 +1,9 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { Styles } from "../../../utils/Styles";
-import { GRADE_STRINGS } from "../../../utils/utils";
-import { tokens } from "../../../tokens";
+import { formStyles, GRADE_STRINGS } from "../../../utils/utils";
+import { FormError } from "../../form/FormError";
+import { FormButton } from "../../form/FormButton";
 
 export type OverrideGradeFormValues = z.infer<typeof ValidationSchema>;
 
@@ -15,13 +15,11 @@ type OverrideGradeFormProps = {
   handleConfirm: (values: OverrideGradeFormValues) => void;
   formError: string | undefined;
   initGrade: string;
-  title: string;
 };
 
 export const OverrideGradeForm = ({
   handleConfirm,
   formError,
-  title,
   initGrade,
 }: OverrideGradeFormProps) => {
   const formik = useFormik({
@@ -43,13 +41,17 @@ export const OverrideGradeForm = ({
   });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div style={styles.fieldsContainer}>
+        <div style={formStyles.fieldsContainer}>
           <FormControl>
-            <InputLabel>Grade</InputLabel>
+            <InputLabel
+              error={Boolean(formik.touched.grade && formik.errors.grade)}
+            >
+              Nowa ocena
+            </InputLabel>
             <Select
+              label="Ocena"
               name="grade"
               value={formik.values.grade}
               onChange={formik.handleChange}
@@ -63,33 +65,15 @@ export const OverrideGradeForm = ({
               ))}
             </Select>
             {formik.touched.grade && formik.errors.grade && (
-              <div style={styles.error}>{formik.errors.grade}</div>
+              <FormError error={formik.errors.grade} />
             )}
           </FormControl>
-          <button type="submit">confirm</button>
+
+          <FormError error={formError} isFormError={true} />
+
+          <FormButton />
         </div>
       </form>
-      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    border: "1px solid black",
-  },
-  fieldsContainer: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
 };

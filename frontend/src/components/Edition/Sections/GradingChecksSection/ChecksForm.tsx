@@ -7,21 +7,23 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
 import { Category } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { Level } from "../../../../hooks/Edition/useLevelSetsSection";
-import { tokens } from "../../../../tokens";
-
-const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // 'YYYY-MM-DD'
+import { DATE_YYYY_MM_DD_REGEXP, formStyles } from "../../../../utils/utils";
+import { FormError } from "../../../form/FormError";
+import { FormButton } from "../../../form/FormButton";
 
 const ValidationSchema = z.object({
   endOfLabsDate: z
     .string()
-    .min(1, "Date is required")
-    .regex(dateRegex, "Invalid date format, expected YYYY-MM-DD"),
-  endOfLabsLevelsThreshold: z.string().min(1, "Threshold is required"),
-  projectPointsThreshold: z.number().min(1, "Points threshold is required"),
-  projectId: z.string().min(1, "Project ID is required"),
+    .min(1, "Data jest wymagana")
+    .regex(
+      DATE_YYYY_MM_DD_REGEXP,
+      "Zły format daty, wymagany format: YYYY-MM-DD",
+    ),
+  endOfLabsLevelsThreshold: z.string().min(1, "Próg jest wymagany"),
+  projectPointsThreshold: z.number().min(1, "Próg punktowy jest wymagany"),
+  projectId: z.string().min(1, "Project ID jest wymagane"),
 });
 
 export type GradingChecksFormValues = z.infer<typeof ValidationSchema>;
@@ -31,7 +33,6 @@ type GradingChecksFormProps = {
   formError?: string;
   levels: Level[];
   initialValues?: GradingChecksFormValues;
-  title: string;
   categories: Category[];
 };
 
@@ -47,7 +48,6 @@ export const ChecksForm = ({
   levels,
   formError,
   initialValues = defaultInitialValues,
-  title,
   categories,
 }: GradingChecksFormProps) => {
   const formik = useFormik({
@@ -69,14 +69,13 @@ export const ChecksForm = ({
   });
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
+    <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div style={styles.fieldsContainer}>
+        <div style={formStyles.fieldsContainer}>
           <TextField
             fullWidth
             name="endOfLabsDate"
-            label="End of Labs Date"
+            label="Data końca laboratorium"
             placeholder="YYYY-MM-DD"
             variant="outlined"
             value={formik.values.endOfLabsDate}
@@ -89,9 +88,18 @@ export const ChecksForm = ({
               formik.touched.endOfLabsDate && formik.errors.endOfLabsDate
             }
           />
+
           <FormControl fullWidth>
-            <InputLabel>End of Labs</InputLabel>
+            <InputLabel
+              error={Boolean(
+                formik.touched.endOfLabsLevelsThreshold &&
+                  formik.errors.endOfLabsLevelsThreshold,
+              )}
+            >
+              Poziom do zdobycia przed końcem laboratorium
+            </InputLabel>
             <Select
+              label="Poziom do zdobycia przed końcem laboratorium"
               name="endOfLabsLevelsThreshold"
               value={formik.values.endOfLabsLevelsThreshold}
               onChange={formik.handleChange}
@@ -108,30 +116,20 @@ export const ChecksForm = ({
               ))}
             </Select>
             {formik.touched.projectId && formik.errors.projectId && (
-              <div style={styles.error}>{formik.errors.projectId}</div>
+              <FormError error={formik.errors.projectId} />
             )}
           </FormControl>
-          <TextField
-            fullWidth
-            name="projectPointsThreshold"
-            label="projectPointsThreshold"
-            type="number"
-            variant="outlined"
-            value={formik.values.projectPointsThreshold}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={Boolean(
-              formik.touched.projectPointsThreshold &&
-                formik.errors.projectPointsThreshold,
-            )}
-            helperText={
-              formik.touched.projectPointsThreshold &&
-              formik.errors.projectPointsThreshold
-            }
-          />
+
           <FormControl fullWidth>
-            <InputLabel>Project</InputLabel>
+            <InputLabel
+              error={Boolean(
+                formik.touched.projectId && formik.errors.projectId,
+              )}
+            >
+              Kategoria
+            </InputLabel>
             <Select
+              label="Kategoria"
               name="projectId"
               value={formik.values.projectId}
               onChange={formik.handleChange}
@@ -150,34 +148,34 @@ export const ChecksForm = ({
               ))}
             </Select>
             {formik.touched.projectId && formik.errors.projectId && (
-              <div style={styles.error}>{formik.errors.projectId}</div>
+              <FormError error={formik.errors.projectId} />
             )}
           </FormControl>
+
+          <TextField
+            fullWidth
+            name="projectPointsThreshold"
+            label="Liczba punktów do zdobycia za daną kategorię"
+            type="number"
+            variant="outlined"
+            value={formik.values.projectPointsThreshold}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={Boolean(
+              formik.touched.projectPointsThreshold &&
+                formik.errors.projectPointsThreshold,
+            )}
+            helperText={
+              formik.touched.projectPointsThreshold &&
+              formik.errors.projectPointsThreshold
+            }
+          />
+
+          <FormError error={formError} isFormError={true} />
+
+          <FormButton />
         </div>
-        <button type="submit">confirm</button>
       </form>
-      {formError && <p style={styles.error}>Error: {formError}</p>}
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-    padding: 12,
-    width: 500,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: tokens.color.state.error,
-  },
-  fieldsContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

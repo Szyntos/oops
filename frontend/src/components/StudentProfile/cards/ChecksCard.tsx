@@ -1,3 +1,4 @@
+import { tokens } from "../../../tokens";
 import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { IconMapper } from "../../IconMapper";
@@ -13,13 +14,25 @@ export const ChecksCard = ({ levelCheck, projectCheck }: ChecksCardProps) => {
     <Section title="Warunki zaliczenia">
       <div style={styles.checksContainer}>
         <div style={styles.checkRow}>
-          <CustomText>status wyklucia:</CustomText>
-          <IconMapper icon={levelCheck ? "yes" : "no"} />
+          <CustomText>Status wyklucia:</CustomText>
+          <IconMapper
+            icon={levelCheck ? "yes" : "no"}
+            color={
+              levelCheck ? tokens.color.state.success : tokens.color.state.error
+            }
+          />
         </div>
 
         <div style={styles.checkRow}>
-          <CustomText>status projektu:</CustomText>
-          <IconMapper icon={projectCheck ? "yes" : "no"} />
+          <CustomText>Status projektu:</CustomText>
+          <IconMapper
+            icon={projectCheck ? "yes" : "no"}
+            color={
+              projectCheck
+                ? tokens.color.state.success
+                : tokens.color.state.error
+            }
+          />
         </div>
       </div>
     </Section>

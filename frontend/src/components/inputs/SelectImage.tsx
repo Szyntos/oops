@@ -1,8 +1,11 @@
-import { FormHelperText } from "@mui/material";
 import { Styles } from "../../utils/Styles";
-import { Avatar } from "../avatars/Avatar";
+import { Avatar, AvatarSize } from "../avatars/Avatar";
 import { Award } from "../../hooks/Edition/useAwardsSection";
 import { TooltipWrapper } from "../TooltipWrapper";
+import { CustomText } from "../CustomText";
+import { FormError } from "../form/FormError";
+import { EMPTY_FIELD_STRING } from "../../utils/constants";
+import { formStyles } from "../../utils/utils";
 
 type SelectImageProps = {
   selectedIds: string[];
@@ -11,17 +14,26 @@ type SelectImageProps = {
   touched: boolean | undefined;
   selectVariant: "multiple" | "single";
   title: string;
-} & (AwardProps | WithoutTooltip);
+} & (AwardProps | WithoutTooltipProps | ChestProps);
 
 type AwardProps = {
   type: "award";
   options: Award[];
+  imageSize?: AvatarSize;
 };
 
-type WithoutTooltip = {
+type WithoutTooltipProps = {
   type: "withoutTooltip";
   // ids of images
   options: string[];
+  imageSize?: AvatarSize;
+};
+
+type ChestProps = {
+  type: "chest";
+  // ids of images
+  options: string[];
+  imageSize?: AvatarSize;
 };
 
 export const SelectImage = ({
@@ -33,6 +45,7 @@ export const SelectImage = ({
   touched,
   selectVariant,
   title,
+  imageSize = "s",
 }: SelectImageProps) => {
   const handleSelect = (selectedId: string) => {
     if (selectVariant === "single") {
@@ -66,7 +79,7 @@ export const SelectImage = ({
             >
               <Avatar
                 id={award.award.imageFile?.fileId}
-                size={"l"}
+                size={imageSize}
                 disabled={!selectedIds.some((id) => id === award.award.awardId)}
               />
             </TooltipWrapper>
@@ -80,7 +93,20 @@ export const SelectImage = ({
           >
             <Avatar
               id={imageId}
-              size="s"
+              size={imageSize}
+              disabled={!selectedIds.some((id) => id === imageId)}
+            />
+          </div>
+        ));
+      case "chest":
+        return options.map((imageId) => (
+          <div
+            style={styles.imageWrapper}
+            onClick={() => handleSelect(imageId)}
+          >
+            <Avatar
+              id={imageId}
+              size={imageSize}
               disabled={!selectedIds.some((id) => id === imageId)}
             />
           </div>
@@ -89,27 +115,31 @@ export const SelectImage = ({
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.title}>{title}</div>
-      <div style={styles.listContainer}>{getOptionsImagesBasedOnType()}</div>
-      {error && touched && (
-        <FormHelperText style={styles.error}>{error}</FormHelperText>
-      )}
+    <div style={formStyles.container}>
+      <CustomText style={formStyles.label}>{title}</CustomText>
+      <div style={styles.listContainer}>
+        {getOptionsImagesBasedOnType().length > 0 ? (
+          getOptionsImagesBasedOnType()
+        ) : (
+          <CustomText style={{ paddingLeft: 12 }}>
+            {EMPTY_FIELD_STRING}
+          </CustomText>
+        )}
+      </div>
+      {error && touched && <FormError error={error} isFormError={false} />}
     </div>
   );
 };
 
 const styles: Styles = {
   container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 8,
+    paddingTop: 4,
   },
   listContainer: {
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
+    gap: 8,
   },
   imageWrapper: {
     cursor: "pointer",

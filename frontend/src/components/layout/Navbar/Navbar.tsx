@@ -7,8 +7,6 @@ import { hasRole, isEditionActive } from "../../../utils/utils";
 import { useLogin } from "../../../hooks/auth/useLogin";
 import { UsersRolesType } from "../../../__generated__/schema.graphql.types";
 import { useChests } from "../../../hooks/chest/useChests";
-import { Dialog } from "@mui/material";
-import { CloseHeader } from "../../dialogs/CloseHeader";
 import { OpenChest } from "../../OpenChest";
 import { Settings } from "../../Settings/Settings";
 import { useSettings } from "../../../hooks/useSettings";
@@ -19,8 +17,14 @@ import { tokens } from "../../../tokens";
 import { NavbarItem } from "./NavarItem";
 import { IconMapper } from "../../IconMapper";
 import { ChestsNavbarItem } from "./ChestsNavbarItem";
+import { CustomDialog } from "../../dialogs/CustomDialog";
+import Logo from "../../../assets/logo.svg";
 
-export const NAV_BAR_HEIGHT = 52;
+const NAV_BAR_HEIGHT = 64;
+const BORDER_HEIGHT = 2;
+export const NAV_BAR_HEIGHT_WITH_BORDER = NAV_BAR_HEIGHT + BORDER_HEIGHT;
+
+const LOGO_HEIGHT = 64 - 24;
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -51,62 +55,76 @@ export const Navbar = () => {
   );
 
   return (
-    <div style={styles.navbar}>
-      <div style={styles.itemsContainer}>
-        {navigationItems
-          .filter((item) => hasRole(user, item.allowedRoles))
-          .map((item) => (
-            <NavbarItem
-              onClick={() => navigate(item.path)}
-              title={item.title}
-              isActive={item.path === location.pathname}
-            />
-          ))}
-      </div>
-
-      <div style={styles.itemsContainer}>
-        {/* logged in user items */}
-        {user.role !== UsersRolesType.UnauthenticatedUser && (
-          <>
-            <NavbarItem
-              color={tokens.color.accent.light}
-              title={
-                selectedEdition
-                  ? `${selectedEdition.name}${isEditionActive(selectedEdition) ? "" : " [not active]"}`
-                  : "no edition selected"
-              }
-            />
-            {/* student items */}
-            {user.role === UsersRolesType.Student && (
-              <ChestsNavbarItem
-                quantity={chestsToOpen.length}
-                onClick={openChestDialog}
+    <div style={navbarStyles.navbar}>
+      <div style={navbarStyles.itemsContainer}>
+        <div style={navbarStyles.leftItemsContainer}>
+          {navigationItems
+            .filter((item) => hasRole(user, item.allowedRoles))
+            .map((item) => (
+              <NavbarItem
+                onClick={() => navigate(item.path)}
+                title={item.title}
+                isActive={item.path === location.pathname}
               />
-            )}
-            <IconMapper onClick={async () => await logout()} icon="logout" />
-            {editions.length > 1 && (
-              <IconMapper onClick={openSettings} icon="settings" />
-            )}
-          </>
-        )}
+            ))}
+        </div>
       </div>
 
-      <Dialog open={isChestDialogOpen}>
-        <CloseHeader onCloseClick={closeChestDialog} />
+      <div style={navbarStyles.logo}>
+        <img src={Logo} alt="logo" style={{ height: LOGO_HEIGHT }} />
+      </div>
+
+      <div style={navbarStyles.itemsContainer}>
+        <div style={navbarStyles.rightItemsContainer}>
+          {/* logged in user items */}
+          {user.role !== UsersRolesType.UnauthenticatedUser && (
+            <>
+              <NavbarItem
+                title={
+                  selectedEdition
+                    ? `${selectedEdition.name}${isEditionActive(selectedEdition.startDate, selectedEdition.endDate) ? "" : " [not active]"}`
+                    : "no edition selected"
+                }
+              />
+              {/* student items */}
+              {user.role === UsersRolesType.Student && (
+                <ChestsNavbarItem
+                  quantity={chestsToOpen.length}
+                  onClick={openChestDialog}
+                />
+              )}
+              {editions.length > 1 && (
+                <IconMapper onClick={openSettings} icon="settings" />
+              )}
+              <IconMapper onClick={async () => await logout()} icon="logout" />
+            </>
+          )}
+        </div>
+      </div>
+
+      <CustomDialog
+        isOpen={isChestDialogOpen}
+        title="Otwórz skrzynkę"
+        subtitle={chestsToOpen[0]?.chest.type}
+        onCloseClick={closeChestDialog}
+      >
         <OpenChest
-          chest={chestsToOpen[0]}
+          chest={chestsToOpen.length > 0 ? chestsToOpen[0] : undefined}
           handleOpenChestClick={handleOpenChestConfirm}
           chestError={chestError}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={AreSettingsOpen}>
-        <CloseHeader onCloseClick={closeSettings} />
+      <CustomDialog
+        isOpen={AreSettingsOpen}
+        onCloseClick={closeSettings}
+        title="Ustawienia"
+      >
         <Settings
           editions={editions}
           handleChangeEditionConfirm={handleChangeEditionConfirm}
         />
-      </Dialog>
+      </CustomDialog>
 
       <ConfirmPopupDialog />
       <ChangeGroupDialog />
@@ -115,22 +133,37 @@ export const Navbar = () => {
   );
 };
 
-const styles: Styles = {
+export const navbarStyles: Styles = {
   navbar: {
     display: "flex",
-    justifyContent: "space-between",
+    alignItems: "center",
     paddingRight: tokens.padding.xl,
     paddingLeft: tokens.padding.xl,
-    minHeight: NAV_BAR_HEIGHT,
+    height: NAV_BAR_HEIGHT,
     backgroundColor: tokens.color.card.dark,
+    borderBottom: `${BORDER_HEIGHT}px solid ${tokens.color.text.secondary}`,
+    position: "sticky",
+    top: 0,
+    zIndex: 1000,
   },
   itemsContainer: {
     display: "flex",
-    gap: tokens.padding.l,
     alignItems: "center",
+    flex: 1,
   },
-  editionName: {
-    marginLeft: "auto",
-    padding: 12,
+  leftItemsContainer: {
+    gap: tokens.padding.l,
+    display: "flex",
+  },
+  rightItemsContainer: {
+    flex: 1,
+    gap: tokens.padding.m,
+    display: "flex",
+    justifyContent: "end",
+  },
+  logo: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
 };

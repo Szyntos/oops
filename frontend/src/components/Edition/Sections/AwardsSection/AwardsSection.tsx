@@ -1,11 +1,13 @@
-import { Dialog } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
 import { AwardsList } from "./AwardsList/AwardsList";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useAwardsSection } from "../../../../hooks/Edition/useAwardsSection";
 import { AddAwardForm } from "./AddAwardForm/AddAwardForm";
 
 import { useParams } from "react-router-dom";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const AwardsSection = () => {
   const params = useParams();
@@ -38,18 +40,18 @@ export const AwardsSection = () => {
     handleCopyAward,
   } = useAwardsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (loading) return <LoadingScreen type="edition" />;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
-      <button onClick={openAddAward}>add award</button>
+    <div style={coordinatorStyles.container}>
+      <CustomButton onClick={openAddAward}>Dodaj nagrodę</CustomButton>
 
       <AwardsList
         awards={selectedAwards}
         selectedAwards={selectedAwards}
         handleSelectAward={handleSelectAward}
-        title={"Selected awards"}
+        title={"Wybrane nagrody"}
         handleEditAward={openEditAward}
         handleDeleteAward={handleDeleteAward}
         handleCopyAward={handleCopyAward}
@@ -58,25 +60,30 @@ export const AwardsSection = () => {
         awards={awards}
         selectedAwards={selectedAwards}
         handleSelectAward={handleSelectAward}
-        title={"All awards"}
+        title={"Wszystkie nagrody"}
         handleEditAward={openEditAward}
         handleDeleteAward={handleDeleteAward}
         handleCopyAward={handleCopyAward}
       />
 
-      <Dialog open={isAddAward}>
-        <CloseHeader onCloseClick={closeAddAward} />
+      <CustomDialog
+        isOpen={isAddAward}
+        title={"Dodaj nagrodę"}
+        onCloseClick={closeAddAward}
+      >
         <AddAwardForm
           formError={formError}
           handleConfirm={handleAddAward}
           categories={formCategories}
-          title="Add Award"
           imageIds={imageIds}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditAward}>
-        <CloseHeader onCloseClick={closeEditAward} />
+      <CustomDialog
+        isOpen={isEditAward}
+        title={"Edytuj nagrodę"}
+        onCloseClick={closeEditAward}
+      >
         <AddAwardForm
           formError={formError}
           handleConfirm={handleEditAward}
@@ -88,22 +95,18 @@ export const AwardsSection = () => {
                   ...selectedAward.award,
                   awardType: selectedAward.award.awardType.toUpperCase(),
                   awardValue: parseFloat(selectedAward.award.awardValue),
-                  imageId: selectedAward.award.imageFile?.fileId ?? "-1",
+                  imageId: selectedAward.award.imageFile?.fileId ?? "",
                   categoryId: selectedAward.award.category.categoryId,
+                  hasAwardsBundleCount: selectedAward.award.maxUsages > 0,
+                  maxUsages:
+                    selectedAward.award.maxUsages === -1
+                      ? ""
+                      : selectedAward.award.maxUsages,
                 }
               : undefined
           }
-          title="Edit Award"
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

@@ -3,9 +3,13 @@ import { TextInput } from "../inputs/TextInput";
 
 type SearchStudentProps = {
   onInputChange: (input: string) => void;
+  placeholder: string;
 };
 
-export const StudentsListSearcher = ({ onInputChange }: SearchStudentProps) => {
+export const StudentsListSearcher = ({
+  onInputChange,
+  placeholder,
+}: SearchStudentProps) => {
   const [searchInputValue, setSearchInputValue] = useState("");
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -19,7 +23,7 @@ export const StudentsListSearcher = ({ onInputChange }: SearchStudentProps) => {
       handleChange={handleSearchInputChange}
       value={searchInputValue}
       name={"searchStudent"}
-      placeholder="wyszukaj studenta"
+      placeholder={placeholder}
     />
   );
 };

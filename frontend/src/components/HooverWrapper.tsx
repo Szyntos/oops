@@ -2,14 +2,18 @@ import { ReactElement, useState } from "react";
 
 type HooverWrapperProps = {
   children: ReactElement;
+  opacity?: number;
 };
 
-export const HooverWrapper = ({ children }: HooverWrapperProps) => {
+export const HooverWrapper = ({
+  children,
+  opacity = 0.9,
+}: HooverWrapperProps) => {
   const [isHoovered, setIsHoovered] = useState(false);
 
   return (
     <div
-      style={{ opacity: isHoovered ? 0.9 : 1 }}
+      style={{ opacity: isHoovered ? opacity : 1 }}
       onMouseEnter={() => setIsHoovered(true)}
       onMouseLeave={() => setIsHoovered(false)}
     >

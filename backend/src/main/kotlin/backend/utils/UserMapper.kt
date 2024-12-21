@@ -20,7 +20,6 @@ class UserMapper(
         val bypassAuth = System.getProperty("BYPASS_AUTH") ?: System.getenv("BYPASS_AUTH")
         if (bypassAuth == "true") {
             val bypassToken = System.getProperty("VITE_BYPASS_TOKEN") ?: System.getenv("VITE_BYPASS_TOKEN")
-
             if (token.startsWith(bypassToken)) {
                 val id = token.substringAfter(bypassToken).toLongOrNull()
                 if (id?.toInt() == 0){
@@ -49,6 +48,6 @@ class UserMapper(
     }
 
     fun getCurrentUser(): Users {
-        return getUserFromToken() ?: throw IllegalArgumentException("User not authenticated")
+        return getUserFromToken() ?: throw IllegalArgumentException("Użytkownik nie jest zalogowany")
     }
 }

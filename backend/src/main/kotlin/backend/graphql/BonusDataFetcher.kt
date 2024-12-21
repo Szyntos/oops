@@ -78,18 +78,18 @@ class BonusDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val chestHistory = chestHistoryRepository.findById(chestHistoryId)
-            .orElseThrow { IllegalArgumentException("Invalid chest history ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono chestHistory o id $chestHistoryId") }
 
-        val awards = awardIds.map { awardRepository.findById(it).orElseThrow { IllegalArgumentException("Invalid award ID") } }
+        val awards = awardIds.map { awardRepository.findById(it).orElseThrow { IllegalArgumentException("Nie znaleziono Łupu o id $it") } }
 
         val savedBonuses = mutableListOf<AddBonusReturnType>()
 
         awards.forEach { award ->
-            val edition = chestHistory.subcategory.edition ?: throw IllegalArgumentException("Subcategory's edition is not set.")
+            val edition = chestHistory.subcategory.edition ?: throw IllegalArgumentException("Podkategoria ${chestHistory.subcategory} nie ma wybranej edycji")
 
             val points = when (award.awardType) {
                 AwardType.ADDITIVE -> createAdditivePoints(chestHistory, award)
@@ -122,7 +122,7 @@ class BonusDataFetcher {
             updatedBy = chestHistory.teacher,
             value = award.awardValue,
             subcategory = chestHistory.subcategory,
-            label = "Points awarded for ${award.awardName}"
+            label = "Punkty przyznane za ${award.awardName}"
         )
     }
 
@@ -138,11 +138,11 @@ class BonusDataFetcher {
                 lastSubcategory.category, edition, lastSubcategory.ordinalNumber
             ).orElseGet {
                 subcategoriesRepository.findFirstByCategoryAndEditionOrderByOrdinalNumberAsc(lastSubcategory.category, edition)
-                    .orElseThrow { IllegalArgumentException("No subcategory found in the specified category.") }
+                    .orElseThrow { IllegalArgumentException("Nie znaleziono podkategorii w określonej kategorii") }
             }
         } else {
             subcategoriesRepository.findFirstByCategoryAndEditionOrderByOrdinalNumberAsc(chestHistory.subcategory.category, edition)
-                .orElseThrow { IllegalArgumentException("No subcategory found in the specified category.") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono podkategorii w określonej kategorii") }
         }
 
         return Points(
@@ -151,7 +151,7 @@ class BonusDataFetcher {
             updatedBy = chestHistory.teacher,
             value = min(award.awardValue.toFloat(), nextSubcategory.maxPoints.toFloat()).toBigDecimal().setScale(2, RoundingMode.HALF_UP),
             subcategory = nextSubcategory,
-            label = "Points awarded for ${award.awardName}"
+            label = "Punkty przyznane za ${award.awardName}"
         )
     }
 
@@ -177,7 +177,7 @@ class BonusDataFetcher {
             updatedBy = chestHistory.teacher,
             value = pointsToAdd.toBigDecimal().setScale(2, RoundingMode.HALF_UP),
             subcategory = pointsInAwardCategory.first().subcategory,
-            label = "Points awarded for ${award.awardName}"
+            label = "Punkty przyznane za ${award.awardName}"
         )
     }
 
@@ -190,7 +190,7 @@ class BonusDataFetcher {
 
         val subcategory = subcategoriesRepository.findFirstByCategoryAndEditionOrderByOrdinalNumberAsc(
             award.category, edition
-        ).orElseThrow { IllegalArgumentException("No subcategory found in the specified category.") }
+        ).orElseThrow { IllegalArgumentException("Nie znaleziono podkategorii w określonej kategorii") }
 
         return Points(
             student = chestHistory.user,
@@ -198,7 +198,7 @@ class BonusDataFetcher {
             updatedBy = chestHistory.teacher,
             value = (totalPointsValue * award.awardValue.toFloat()).toBigDecimal().setScale(2, RoundingMode.HALF_UP),
             subcategory = subcategory,
-            label = "Points awarded for ${award.awardName}"
+            label = "Punkty przyznane za ${award.awardName}"
         )
     }
 }

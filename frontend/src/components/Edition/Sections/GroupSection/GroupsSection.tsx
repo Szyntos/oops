@@ -1,10 +1,13 @@
-import { Dialog } from "@mui/material";
 import { GroupsList } from "./GroupsList/GroupsList";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { AddGroupForm } from "./GroupAddForm";
 import { useGroupsSection } from "../../../../hooks/Edition/useGroupsSection";
 import { useParams } from "react-router-dom";
 import { UsersRolesType } from "../../../../__generated__/schema.graphql.types";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const GroupsSection = () => {
   const params = useParams();
@@ -33,27 +36,34 @@ export const GroupsSection = () => {
     handleMarkAllPassingStudents,
   } = useGroupsSection(editionId);
 
-  if (loading) return <div>loading...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (loading) return <LoadingScreen type="edition" />;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div>
-      <div>
-        <button onClick={() => openAddGroup("select")}>add group</button>
-        <button onClick={() => openAddGroup("import")}>import group</button>
-        <button onClick={handleMarkAllPassingStudents}>
-          mark all passing students as inactive
-        </button>
+    <div style={coordinatorStyles.container}>
+      <div style={coordinatorStyles.buttonsContainer}>
+        <CustomButton onClick={() => openAddGroup("select")}>
+          Dodaj grupę
+        </CustomButton>
+        <CustomButton onClick={() => openAddGroup("import")}>
+          Zaimportuj grupę
+        </CustomButton>
+        <CustomButton onClick={handleMarkAllPassingStudents}>
+          Deaktywuj wszystkich zdających studentów
+        </CustomButton>
       </div>
       <GroupsList
         groups={groups}
-        title="groups"
+        title="Grupy"
         editClick={openEditDialog}
         deleteClick={handleDeleteGroup}
       />
 
-      <Dialog open={isAddGroupOpen}>
-        <CloseHeader onCloseClick={closeAddGroup} />
+      <CustomDialog
+        isOpen={isAddGroupOpen}
+        onCloseClick={closeAddGroup}
+        title={`${variant === "select" ? "Dodaj" : "Importuj"} grupę`}
+      >
         <AddGroupForm
           createError={formError}
           handleAddGroup={handleAddGroup}
@@ -63,12 +73,14 @@ export const GroupsSection = () => {
           handleUploadStudents={handleUploadStudents}
           editionId={editionId}
           variant={variant}
-          title={"Add group"}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isEditGroupOpen}>
-        <CloseHeader onCloseClick={closeEditDialog} />
+      <CustomDialog
+        isOpen={isEditGroupOpen}
+        onCloseClick={closeEditDialog}
+        title="Edytuj grupę"
+      >
         <AddGroupForm
           createError={formError}
           handleAddGroup={handleEditGroupConfirm}
@@ -95,9 +107,8 @@ export const GroupsSection = () => {
                 }
               : undefined
           }
-          title="Edit group"
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
 };

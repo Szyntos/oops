@@ -10,9 +10,12 @@ import backend.graphql.permissions.GradingChecksPermissions
 import backend.graphql.utils.PermissionDeniedException
 import backend.graphql.utils.PermissionInput
 import backend.graphql.utils.PermissionService
+import backend.levels.Levels
 import backend.levels.LevelsRepository
 import backend.points.PointsRepository
+import backend.users.Users
 import backend.users.UsersRepository
+import backend.users.UsersRoles
 import backend.utils.UserMapper
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
@@ -21,6 +24,7 @@ import com.netflix.graphql.dgs.InputArgument
 import com.netflix.graphql.dgs.internal.BaseDgsQueryExecutor.objectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.jvm.optionals.getOrNull
 
@@ -70,11 +74,11 @@ class GradingChecksDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
 
         val gradingCheck = gradingChecksRepository.findByEdition(edition).getOrNull()
 
@@ -88,25 +92,59 @@ class GradingChecksDataFetcher {
                     "copyGradingCheck",
                     objectMapper.createObjectNode(),
                     false,
-                    "Not applicable"),
+                    "Nie dotyczy"),
                 canRemove = permissionService.checkPartialPermission(PermissionInput("removeGradingCheck", objectMapper.writeValueAsString(mapOf("gradingCheckId" to gradingCheck?.gradingCheckId)))),
                 canSelect =
                 Permission(
                     "selectGradingCheck",
                     objectMapper.createObjectNode(),
                     false,
-                    "Not applicable"),
+                    "Nie dotyczy"),
                 canUnselect =
                 Permission(
                     "unselectGradingCheck",
                     objectMapper.createObjectNode(),
                     false,
-                    "Not applicable"),
+                    "Nie dotyczy"),
                 additional = emptyList()
             )
         )
 
         return gradingCheckPermissions
+    }
+
+    @DgsQuery
+    @Transactional
+    fun getQuoteVariables(@InputArgument editionId: Long): QuoteVariables {
+        val action = "getQuoteVariables"
+        val arguments = mapOf(
+            "editionId" to editionId
+        )
+
+        val permissionInput = PermissionInput(
+            action = action,
+            arguments = objectMapper.writeValueAsString(arguments)
+        )
+        val permission = permissionService.checkFullPermission(permissionInput)
+        if (!permission.allow) {
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
+        }
+
+        val edition = editionRepository.findById(editionId)
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
+
+        val coordinator = usersRepository.findByRole(UsersRoles.COORDINATOR)
+            .firstOrNull()
+            ?: throw IllegalArgumentException("Nie znaleziono koordynatora")
+
+        val firstPassingLevel = edition.levelSet?.let {
+            levelsRepository.findFirstByGradeAndLevelSetOrderByOrdinalNumber(3.0.toBigDecimal(), it)
+        }
+        return QuoteVariables(
+            firstPassingLevel = firstPassingLevel,
+            gradingCheck = gradingChecksRepository.findByEdition(edition).getOrNull(),
+            coordinator = coordinator
+        )
     }
 
     @DgsMutation
@@ -130,19 +168,19 @@ class GradingChecksDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val edition = editionRepository.findById(editionId)
-            .orElseThrow { IllegalArgumentException("Invalid edition ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono edycji o id $editionId") }
 
         val endOfLabsDateParsed = LocalDate.parse(endOfLabsDate)
 
         val endOfLabsLevelsThresholdLevel = levelsRepository.findById(endOfLabsLevelsThreshold)
-            .orElseThrow { IllegalArgumentException("Invalid level ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono poziomu o id $endOfLabsLevelsThreshold") }
 
         val project = categoriesRepository.findById(projectId)
-            .orElseThrow { IllegalArgumentException("Invalid project ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono kategorii (projektu) o id $projectId") }
 
         val gradingCheck = GradingChecks(
             endOfLabsDate = endOfLabsDateParsed,
@@ -178,11 +216,11 @@ class GradingChecksDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
-            .orElseThrow { IllegalArgumentException("Grading check not found") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono zasad oceniania o id $gradingCheckId") }
 
         endOfLabsDate?.let {
             gradingCheck.endOfLabsDate = LocalDate.parse(it)
@@ -190,7 +228,7 @@ class GradingChecksDataFetcher {
 
         endOfLabsLevelsThreshold?.let {
             val level = levelsRepository.findById(it)
-                .orElseThrow { IllegalArgumentException("Invalid level ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono poziomu o id $it") }
             gradingCheck.endOfLabsLevelsThreshold = level
         }
 
@@ -200,7 +238,7 @@ class GradingChecksDataFetcher {
 
         projectId?.let {
             val project = categoriesRepository.findById(it)
-                .orElseThrow { IllegalArgumentException("Invalid project ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono kategorii (projektu) o id $projectId") }
             gradingCheck.project = project
         }
 
@@ -220,7 +258,7 @@ class GradingChecksDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         return removeGradingCheckHelper(gradingCheckId)
@@ -229,11 +267,11 @@ class GradingChecksDataFetcher {
     fun removeGradingCheckHelper(gradingCheckId: Long): Boolean {
         val permission = gradingChecksPermissions.checkRemoveGradingCheckHelperPermission(gradingCheckId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
-            .orElseThrow { IllegalArgumentException("Grading check not found") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono zasad oceniania o id $gradingCheckId") }
 
         gradingChecksRepository.delete(gradingCheck)
         return true
@@ -244,4 +282,10 @@ class GradingChecksDataFetcher {
 data class GradingCheckWithPermissions(
     val gradingCheck: GradingChecks?,
     val permissions: ListPermissionsOutput
+)
+
+data class QuoteVariables(
+    val firstPassingLevel: Levels?,
+    val gradingCheck: GradingChecks?,
+    val coordinator: Users
 )

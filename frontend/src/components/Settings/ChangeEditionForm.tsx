@@ -2,7 +2,9 @@ import { z, ZodError } from "zod";
 import { FormikErrors, useFormik } from "formik";
 import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { Edition } from "../../contexts/userContext";
-import { Styles } from "../../utils/Styles";
+import { formStyles } from "../../utils/utils";
+import { FormButton } from "../form/FormButton";
+import { FormError } from "../form/FormError";
 
 const ValidationSchema = z.object({
   editionId: z.string().min(1),
@@ -44,37 +46,41 @@ export const ChangeEditionForm = ({
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <div style={styles.container}>
-        <FormControl fullWidth>
-          <InputLabel>Edition</InputLabel>
-          <Select
-            name="editionId"
-            value={formik.values.editionId}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={Boolean(formik.touched.editionId && formik.errors.editionId)}
-          >
-            {editions.map((e) => (
-              <MenuItem key={e.editionId} value={e.editionId}>
-                {/* TODO change to name  */}
-                {e.editionId}
-              </MenuItem>
-            ))}
-          </Select>
-          {formik.touched.editionId && formik.errors.editionId && (
-            <div style={styles.error}>{formik.errors.editionId}</div>
-          )}
-        </FormControl>
-        <button type="submit">confirm</button>
-      </div>
-    </form>
-  );
-};
+    <div style={formStyles.formContainer}>
+      <form onSubmit={formik.handleSubmit}>
+        <div style={formStyles.filedsContainer}>
+          <FormControl fullWidth>
+            <InputLabel
+              error={Boolean(
+                formik.touched.editionId && formik.errors.editionId,
+              )}
+            >
+              Edycja
+            </InputLabel>
+            <Select
+              label="Edycja"
+              name="editionId"
+              value={formik.values.editionId}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={Boolean(
+                formik.touched.editionId && formik.errors.editionId,
+              )}
+            >
+              {editions.map((e) => (
+                <MenuItem key={e.editionId} value={e.editionId}>
+                  {e.name}
+                </MenuItem>
+              ))}
+            </Select>
+            {formik.touched.editionId && formik.errors.editionId && (
+              <FormError error={formik.errors.editionId} />
+            )}
+          </FormControl>
 
-const styles: Styles = {
-  container: {
-    display: "flex",
-    gap: 4,
-  },
+          <FormButton />
+        </div>
+      </form>
+    </div>
+  );
 };

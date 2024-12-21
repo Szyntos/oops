@@ -31,7 +31,7 @@ export const UsersListWithFilter = ({
     <div>
       <input
         type="text"
-        placeholder="Search Users"
+        placeholder="Wyszukaj studentów"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         style={styles.searchInput}

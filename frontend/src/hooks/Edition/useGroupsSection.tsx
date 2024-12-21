@@ -44,7 +44,6 @@ export const useGroupsSection = (editionId: number) => {
 
   const { data, loading, error, refetch } = useSetupGroupsQuery({
     variables: { editionId },
-    fetchPolicy: "no-cache",
   });
 
   const groups: Group[] = data?.listSetupGroups ?? [];
@@ -71,9 +70,6 @@ export const useGroupsSection = (editionId: number) => {
     usersData?.users.filter(
       (u) => u.role.toLocaleUpperCase() === UsersRolesType.Student && u.active,
     ) ?? [];
-
-  console.log("TEACHERS: ", teachers);
-  console.log("STUDENTS: ", students);
 
   // ADD
   const [createGroup] = useSetupGroupCreateMutation();
@@ -198,9 +194,9 @@ export const useGroupsSection = (editionId: number) => {
 
       return uploadedStudents;
     } catch (error) {
-      console.error("Failed to upload file", error);
+      console.error("Błąd ładowania pliku", error);
       setFormError(
-        error instanceof Error ? error.message : "Failed to upload file.",
+        error instanceof Error ? error.message : "Błąd załadowania pliku.",
       );
       return [];
     }

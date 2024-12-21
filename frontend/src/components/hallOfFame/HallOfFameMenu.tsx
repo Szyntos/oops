@@ -25,15 +25,15 @@ export const HallOfFameMenu = ({
     <div style={styles.container}>
       {isUserRoleStudent ? (
         <>
-          <CustomButton onClick={scrollToStudent}>wyszukaj mnie</CustomButton>
+          <CustomButton onClick={scrollToStudent}>Wyszukaj mnie</CustomButton>
           <HallOfFameStudentSearcher onInputChange={onSearchChange} />
           <FilterButton
-            option={"moja grupa"}
+            option={"Moja grupa"}
             isActive={!showStudentsFromAllGroups}
             onClick={() => onShowStudentsFromAllGroupsChange(false)}
           />
           <FilterButton
-            option={"wszystkie grupy"}
+            option={"Wszystkie grupy"}
             isActive={showStudentsFromAllGroups}
             onClick={() => onShowStudentsFromAllGroupsChange(true)}
           />

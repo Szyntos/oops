@@ -69,7 +69,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a coordinator"
+                reason = "Użytkownik nie jest koordynatorem"
             )
         }
 
@@ -77,7 +77,7 @@ class GradingChecksPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).getOrNull()
@@ -85,8 +85,35 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
+
+        return Permission(
+            action = action,
+            arguments = arguments,
+            allow = true,
+            reason = null
+        )
+    }
+
+    fun checkGetQuoteVariablesPermission(arguments: JsonNode): Permission {
+        val action = "getQuoteVariables"
+        val currentUser = userMapper.getCurrentUser()
+        if (currentUser.role != UsersRoles.COORDINATOR) {
+            return Permission(
+                action = action,
+                arguments = arguments,
+                allow = false,
+                reason = "Użytkownik nie jest koordynatorem"
+            )
+        }
+
+        val editionId = arguments.getLongField("editionId") ?: return Permission(
+            action = action,
+            arguments = arguments,
+            allow = false,
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
+        )
 
         return Permission(
             action = action,
@@ -104,7 +131,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a coordinator"
+                reason = "Użytkownik nie jest koordynatorem"
             )
         }
 
@@ -112,35 +139,35 @@ class GradingChecksPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val endOfLabsDate = arguments.getStringField("endOfLabsDate") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'endOfLabsDate'"
+            reason = "Nieprawidłowe lub brakujące 'endOfLabsDate'"
         )
 
         val endOfLabsLevelsThreshold = arguments.getLongField("endOfLabsLevelsThreshold") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'endOfLabsLevelsThreshold'"
+            reason = "Nieprawidłowe lub brakujące 'endOfLabsLevelsThreshold'"
         )
 
         val projectPointsThreshold = arguments.getFloatField("projectPointsThreshold") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'projectPointsThreshold'"
+            reason = "Nieprawidłowe lub brakujące 'projectPointsThreshold'"
         )
 
         val projectId = arguments.getLongField("projectId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'projectId'"
+            reason = "Nieprawidłowe lub brakujące 'projectId'"
         )
 
         val checkDates = arguments.getBooleanField("checkDates") ?: true
@@ -151,7 +178,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         if (gradingChecksRepository.existsByEdition(edition)) {
@@ -159,7 +186,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Grading checks for edition ${edition.editionName} already exist"
+                reason = "Edycja już zawiera zasady oceniania"
             )
         }
 
@@ -171,7 +198,7 @@ class GradingChecksPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has already ended"
+                    reason = "Edycja już się zakończyła"
                 )
             }
 //            if (edition.startDate.isBefore(LocalDate.now())) {
@@ -179,7 +206,7 @@ class GradingChecksPermissions {
 //                    action = action,
 //                    arguments = arguments,
 //                    allow = false,
-//                    reason = "Edition has already started"
+//                    reason = "Edycja już wystartowała"
 //                )
 //            }
 //            if (endOfLabsDateParsed.isBefore(LocalDate.now())) {
@@ -197,7 +224,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "End of labs date must be between ${edition.startDate} and ${edition.endDate}"
+                reason = "Koniec laboratoriów musi być pomiędzy ${edition.startDate} a ${edition.endDate}"
             )
         }
 
@@ -206,7 +233,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid level ID"
+                reason = "Nie znaleziono poziomu o id $endOfLabsLevelsThreshold"
             )
 
         val project = categoriesRepository.findById(projectId).orElse(null)
@@ -214,7 +241,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid project ID"
+                reason = "Nie znaleziono kategorii (projektu) o id $projectId"
             )
 
         if (categoryEditionRepository.findByCategoryAndEdition(project, edition).isEmpty()) {
@@ -222,7 +249,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Project ${project.categoryName} is not part of edition ${edition.editionName}"
+                reason = "Projekt ${project.categoryName} nie jest częścią edycji ${edition.editionName}"
             )
         }
 
@@ -231,7 +258,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Project points threshold cannot be negative"
+                reason = "Pułap punktów projektu nie może być ujemny"
             )
         }
 
@@ -251,7 +278,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a coordinator"
+                reason = "Użytkownik nie jest koordynatorem"
             )
         }
 
@@ -260,7 +287,7 @@ class GradingChecksPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'gradingCheckId'"
+            reason = "Nieprawidłowe lub brakujące 'gradingCheckId'"
         )
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
@@ -269,7 +296,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Grading check not found"
+                reason = "Nie znaleziono zasad oceniania o id $gradingCheckId"
             )
 
         val edition = gradingCheck.edition
@@ -279,7 +306,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -288,7 +315,7 @@ class GradingChecksPermissions {
 //                action = action,
 //                arguments = arguments,
 //                allow = false,
-//                reason = "Edition has already started"
+//                reason = "Edycja już wystartowała"
 //            )
 //        }
 
@@ -305,7 +332,7 @@ class GradingChecksPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid date format for endOfLabsDate"
+                    reason = "Nieprawidłowy format daty dla endOfLabsDate"
                 )
             }
 
@@ -316,7 +343,7 @@ class GradingChecksPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Edition has already ended"
+                    reason = "Edycja już się zakończyła"
                 )
             }
 //            if (endOfLabsDateParsed.isBefore(LocalDate.now())) {
@@ -333,7 +360,7 @@ class GradingChecksPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "End of labs date must be between ${edition.startDate} and ${edition.endDate}"
+                    reason = "Koniec laboratoriów musi być pomiędzy ${edition.startDate} a ${edition.endDate}"
                 )
             }
 
@@ -346,7 +373,7 @@ class GradingChecksPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid level ID"
+                    reason = "Nie znaleziono poziomu o id $it"
                 )
             gradingCheck.endOfLabsLevelsThreshold = level
         }
@@ -357,7 +384,7 @@ class GradingChecksPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Project points threshold cannot be negative"
+                    reason = "Pułap punktów projektu nie może być ujemny"
                 )
             }
 
@@ -370,7 +397,7 @@ class GradingChecksPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid project ID"
+                    reason = "Nie znaleziono kategorii (projektu) o id $projectId"
                 )
 
             if (categoryEditionRepository.findByCategoryAndEdition(project, gradingCheck.edition).isEmpty()) {
@@ -400,7 +427,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a coordinator"
+                reason = "Użytkownik nie jest koordynatorem"
             )
         }
 
@@ -408,7 +435,7 @@ class GradingChecksPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'gradingCheckId'"
+            reason = "Nieprawidłowe lub brakujące 'gradingCheckId'"
         )
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
@@ -417,7 +444,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Grading check not found"
+                reason = "Nie znaleziono zasad oceniania o id $gradingCheckId"
             )
 
         if (gradingCheck.edition.endDate.isBefore(LocalDate.now())) {
@@ -425,7 +452,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -450,7 +477,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a coordinator"
+                reason = "Użytkownik nie jest koordynatorem"
             )
         }
 
@@ -458,7 +485,7 @@ class GradingChecksPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'gradingCheckId'"
+            reason = "Nieprawidłowe lub brakujące 'gradingCheckId'"
         )
 
         val gradingCheck = gradingChecksRepository.findById(gradingCheckId)
@@ -467,7 +494,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Grading check not found"
+                reason = "Nie znaleziono zasad oceniania o id $gradingCheckId"
             )
 
         if (gradingCheck.edition.endDate.isBefore(LocalDate.now())) {
@@ -475,7 +502,7 @@ class GradingChecksPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 

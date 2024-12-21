@@ -1,9 +1,12 @@
-import { Styles } from "../../utils/Styles";
-import { Dialog } from "@mui/material";
-import { CloseHeader } from "../../components/dialogs/CloseHeader";
 import { AddEditionForm } from "../../components/Editions/AddEditionForm";
-import { EditionsList } from "../../components/Editions/EditionsList/EditionsList";
 import { useEditionsScreen } from "../../hooks/Editions/useEditionsScreen";
+import { LoadingScreen } from "../Loading/LoadingScreen";
+import { ErrorScreen } from "../Error/ErrorScreen";
+import { coordinatorStyles } from "../../utils/utils";
+import { CustomButton } from "../../components/CustomButton";
+import { CardsSection } from "../../components/Edition/CardsSection";
+import { EditionCard } from "../../components/Editions/EditionsList/EditionCard";
+import { CustomDialog } from "../../components/dialogs/CustomDialog";
 
 export const EditionsScreen = () => {
   const {
@@ -31,43 +34,48 @@ export const EditionsScreen = () => {
     handleDeleteClick,
   } = useEditionsScreen();
 
-  if (loading) return <div>loading...</div>;
-  if (error) return <div>ERROR: {error?.message}</div>;
+  if (loading) return <LoadingScreen />;
+  if (error) return <ErrorScreen />;
 
   return (
-    <div style={styles.container}>
-      <Dialog open={isAddOpen}>
-        <CloseHeader onCloseClick={closeAddDialog} />
+    <div style={{ ...coordinatorStyles.container, margin: 20 }}>
+      <div style={coordinatorStyles.buttonsContainer}>
+        <CustomButton onClick={openAddDialog}>Utwórz edycję</CustomButton>
+      </div>
+
+      <CardsSection
+        title={"Edycje"}
+        cards={
+          editions.map((edition) => (
+            <EditionCard
+              data={edition}
+              handleDeleteClick={() => handleDeleteClick(edition)}
+              handleCopyClick={() => openCopyDialog(edition)}
+              handleEditClick={() => openEditDialog(edition)}
+            />
+          )) ?? []
+        }
+      ></CardsSection>
+
+      <CustomDialog
+        isOpen={isAddOpen}
+        onCloseClick={closeAddDialog}
+        title="Dodaj edycję"
+      >
         <AddEditionForm
           createError={formError}
           handleAddEdition={handleCreateClick}
-          title={"Add Edition"}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={isCopyOpen}>
-        <CloseHeader onCloseClick={closeCopyDialog} />
-        <AddEditionForm
-          createError={formError}
-          handleAddEdition={handleCopyClick}
-          title={"Copy Edition"}
-          initialValues={
-            selectedEdition
-              ? {
-                  name: selectedEdition.edition.editionName,
-                  year: selectedEdition.edition.editionYear,
-                }
-              : undefined
-          }
-        />
-      </Dialog>
-
-      <Dialog open={isEditOpen}>
-        <CloseHeader onCloseClick={closeEditDialog} />
+      <CustomDialog
+        isOpen={isEditOpen}
+        onCloseClick={closeEditDialog}
+        title="Edytuj edycję"
+      >
         <AddEditionForm
           createError={formError}
           handleAddEdition={handleEditClick}
-          title={"Edit Edition"}
           initialValues={
             selectedEdition
               ? {
@@ -77,25 +85,26 @@ export const EditionsScreen = () => {
               : undefined
           }
         />
-      </Dialog>
+      </CustomDialog>
 
-      <button onClick={openAddDialog}>utwórz edycję</button>
-
-      <EditionsList
-        editions={editions}
-        handleDeleteClick={handleDeleteClick}
-        handleCopyClick={openCopyDialog}
-        handleEditClick={openEditDialog}
-      />
+      <CustomDialog
+        isOpen={isCopyOpen}
+        onCloseClick={closeCopyDialog}
+        title="Kopiuj edycję"
+      >
+        <AddEditionForm
+          createError={formError}
+          handleAddEdition={handleCopyClick}
+          initialValues={
+            selectedEdition
+              ? {
+                  name: selectedEdition.edition.editionName,
+                  year: selectedEdition.edition.editionYear,
+                }
+              : undefined
+          }
+        />
+      </CustomDialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    gap: 12,
-    flexDirection: "column",
-    margin: 12,
-  },
 };

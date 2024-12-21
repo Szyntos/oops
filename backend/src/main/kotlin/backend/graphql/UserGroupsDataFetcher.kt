@@ -75,11 +75,11 @@ class UserGroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val user = usersRepository.findById(userId).orElseThrow { throw IllegalArgumentException("User not found") }
-        val group = groupsRepository.findById(groupId).orElseThrow { throw IllegalArgumentException("Group not found") }
+        val user = usersRepository.findById(userId).orElseThrow { throw IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
+        val group = groupsRepository.findById(groupId).orElseThrow { throw IllegalArgumentException("Nie znaleziono grupy o id $groupId") }
 
         val userGroup = UserGroups(
             user = user,
@@ -102,12 +102,12 @@ class UserGroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val group = groupsRepository.findById(groupId).orElseThrow { throw IllegalArgumentException("Group not found") }
+        val group = groupsRepository.findById(groupId).orElseThrow { throw IllegalArgumentException("Nie znaleziono grupy o id $groupId") }
 
-        val user = usersRepository.findById(userId).orElseThrow { throw IllegalArgumentException("User not found") }
+        val user = usersRepository.findById(userId).orElseThrow { throw IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
 
         userGroupsRepository.deleteByUserAndGroup(user, group)
         return true
@@ -127,17 +127,15 @@ class UserGroupsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val group = groupsRepository.findById(groupId).orElseThrow { throw IllegalArgumentException("Group not found") }
+        val group = groupsRepository.findById(groupId).orElseThrow { throw IllegalArgumentException("Nie znaleziono grupy o id $groupId") }
 
-        val user = usersRepository.findById(userId).orElseThrow { throw IllegalArgumentException("User not found") }
+        val user = usersRepository.findById(userId).orElseThrow { throw IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
 
-        val userGroups = userGroupsRepository.findByUserAndGroup_Edition(user, group.edition)
-        userGroups.forEach {
-            userGroupsRepository.delete(it)
-        }
+        userGroupsRepository.deleteByUserAndEdition(user.userId, group.edition.editionId)
+
         val newUserGroup = UserGroups(
             user = user,
             group = group

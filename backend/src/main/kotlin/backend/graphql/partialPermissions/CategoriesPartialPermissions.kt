@@ -66,7 +66,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove categories"
+                reason = "Tylko koordynatorzy mogą usuwać kategorie"
             )
         }
 
@@ -75,21 +75,21 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'categoryId'"
+                reason = "Nieprawidłowe lub brakujące 'categoryId'"
             )
 
         val category = categoriesRepository.findById(categoryId).getOrNull() ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Category with id $categoryId not found"
+            reason = "Nie znaleziono kategorii o id $categoryId"
         )
         if (category.categoryEdition.any { categoryEdition -> categoryEdition.edition.endDate.isBefore(LocalDate.now()) }) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already in an edition that has ended"
+                reason = "Kategoria jest już w edycji która się zakończyła"
             )
         }
         if (category.categoryEdition.any { categoryEdition -> categoryEdition.edition.startDate.isBefore(LocalDate.now()) }) {
@@ -97,7 +97,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already in an edition that has started"
+                reason = "Kategoria jest już w edycji która już wystartowała"
             )
         }
         if (awardRepository.existsByCategory(category)) {
@@ -105,7 +105,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already used in awards"
+                reason = "Kategoria jest już używana w łupach"
             )
         }
         if (gradingChecksRepository.existsByProject(category)) {
@@ -113,7 +113,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already used in grading checks"
+                reason = "Kategoria jest już używana w zasadach oceniania"
             )
         }
 
@@ -133,7 +133,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can edit categories"
+                reason = "Tylko koordynatorzy mogą edytować kategorie"
             )
         }
 
@@ -142,7 +142,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'categoryId'"
+                reason = "Nieprawidłowe lub brakujące 'categoryId'"
             )
 
 
@@ -150,7 +150,7 @@ class CategoriesPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Category with id $categoryId not found"
+            reason = "Nie znaleziono kategorii o id $categoryId"
         )
 
         if (category.categoryEdition.any { it.edition.endDate.isBefore(LocalDate.now()) }) {
@@ -158,7 +158,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already in an edition that has ended"
+                reason = "Kategoria jest już w edycji która się zakończyła"
             )
         }
         if (category.categoryEdition.any { it.edition.startDate.isBefore(LocalDate.now()) }) {
@@ -166,7 +166,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category is already in an edition that has started"
+                reason = "Kategoria jest już w edycji która już wystartowała"
             )
         }
 
@@ -175,7 +175,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category has subcategories connected to points"
+                reason = "Kategoria posiada podkategorie, do których już przyznano punkty"
             )
         }
 
@@ -196,7 +196,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can copy categories"
+                reason = "Tylko koordynatorzy mogą kopiować kategorie"
             )
         }
 
@@ -205,7 +205,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid or missing 'categoryId'"
+                reason = "Nieprawidłowe lub brakujące 'categoryId'"
             )
 
         val category = categoriesRepository.findById(categoryId).getOrNull()
@@ -213,7 +213,7 @@ class CategoriesPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Category with id $categoryId not found"
+                reason = "Nie znaleziono kategorii o id $categoryId"
             )
 
         return Permission(

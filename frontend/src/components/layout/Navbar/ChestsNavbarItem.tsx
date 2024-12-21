@@ -9,16 +9,20 @@ type ChestsNavbarItem = {
 };
 
 export const ChestsNavbarItem = ({ quantity, onClick }: ChestsNavbarItem) => {
+  const disabled = quantity < 1;
   return (
     <div style={styles.wrapper}>
       <IconMapper
-        onClick={quantity > 0 ? onClick : undefined}
+        onClick={disabled ? undefined : onClick}
         icon="chest"
         style={styles.icon}
+        isDisabled={disabled}
       />
-      <CustomText style={styles.circle} size={tokens.font.small}>
-        {quantity}
-      </CustomText>
+      {!disabled && (
+        <CustomText style={styles.circle} size={tokens.font.small}>
+          {quantity}
+        </CustomText>
+      )}
     </div>
   );
 };

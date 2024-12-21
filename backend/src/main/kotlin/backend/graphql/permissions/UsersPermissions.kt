@@ -63,21 +63,21 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can list setup users"
+                reason = "Tylko koordynatorzy mogą wylistować użytkowników do setupu"
             )
         }
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         return Permission(
@@ -96,7 +96,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != userId) {
@@ -104,7 +104,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can assign photos to other users"
+                reason = "Tylko prowadzący i koordynatorzy mogą przypisywać zdjęcia do innych użytkowników"
             )
         }
 
@@ -113,7 +113,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (currentUser.role == UsersRoles.TEACHER && user.role == UsersRoles.COORDINATOR) {
@@ -121,7 +121,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Teacher cannot assign a photo to a coordinator"
+                reason = "Prowadzący nie może przypisać zdjęcia do koordynatora"
             )
         }
 
@@ -131,7 +131,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Student already has an avatar"
+                    reason = "Student już ma przypisane zdjęcie"
                 )
             }
         }
@@ -162,14 +162,14 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val nick = arguments.getStringField("nick") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'nick'"
+            reason = "Nieprawidłowe lub brakujące 'nick'"
         )
 
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != userId) {
@@ -177,7 +177,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can set nicks to other users"
+                reason = "Tylko prowadzący i koordynatorzy mogą ustawiać nicki innym użytkownikom"
             )
         }
 
@@ -186,7 +186,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (user.role != UsersRoles.STUDENT) {
@@ -194,7 +194,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a student"
+                reason = "Użytkownik nie jest studentem"
             )
         }
 
@@ -204,7 +204,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Student already set their nick"
+                    reason = "Student już ustawił swój nick"
                 )
             }
         }
@@ -214,7 +214,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User with nick $nick already exists"
+                reason = "Użytkownik o nicku $nick już istnieje"
             )
         }
 
@@ -226,7 +226,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only set nicks of students that are in their editions"
+                    reason = "Prowadzący może ustawić nicki tylko studentom z jego grup"
                 )
             }
         }
@@ -247,56 +247,56 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'indexNumber'"
+            reason = "Nieprawidłowe lub brakujące 'indexNumber'"
         )
 
         val nick = arguments.getStringField("nick") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'nick'"
+            reason = "Nieprawidłowe lub brakujące 'nick'"
         )
 
         val firstName = arguments.getStringField("firstName") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'firstName'"
+            reason = "Nieprawidłowe lub brakujące 'firstName'"
         )
 
         val secondName = arguments.getStringField("secondName") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'secondName'"
+            reason = "Nieprawidłowe lub brakujące 'secondName'"
         )
 
         val role = arguments.getStringField("role") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'role'"
+            reason = "Nieprawidłowe lub brakujące 'role'"
         )
 
         val email = arguments.getStringField("email") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'email'"
+            reason = "Nieprawidłowe lub brakujące 'email'"
         )
 
         val createFirebaseUser = arguments.getBooleanField("createFirebaseUser") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'createFirebaseUser'"
+            reason = "Nieprawidłowe lub brakujące 'createFirebaseUser'"
         )
 
         val sendEmail = arguments.getBooleanField("sendEmail") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'sendEmail'"
+            reason = "Nieprawidłowe lub brakujące 'sendEmail'"
         )
 
         val permission = checkAddUserHelperPermission(indexNumber, nick, firstName, secondName, role, email, "", createFirebaseUser, sendEmail)
@@ -325,42 +325,42 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'firstName'"
+            reason = "Nieprawidłowe lub brakujące 'firstName'"
         )
 
         val secondName = arguments.getStringField("secondName") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'secondName'"
+            reason = "Nieprawidłowe lub brakujące 'secondName'"
         )
 
         val label = arguments.getStringField("label") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'label'"
+            reason = "Nieprawidłowe lub brakujące 'label'"
         )
 
         val email = arguments.getStringField("email") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'email'"
+            reason = "Nieprawidłowe lub brakujące 'email'"
         )
 
         val createFirebaseUser = arguments.getBooleanField("createFirebaseUser") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'createFirebaseUser'"
+            reason = "Nieprawidłowe lub brakujące 'createFirebaseUser'"
         )
 
         val sendEmail = arguments.getBooleanField("sendEmail") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'sendEmail'"
+            reason = "Nieprawidłowe lub brakujące 'sendEmail'"
         )
 
         val permission = checkAddUserHelperPermission(-1, "", firstName, secondName, "teacher", email, label, createFirebaseUser, sendEmail)
@@ -390,7 +390,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can parse users from a CSV file"
+                reason = "Tylko koordynatorzy mogą parsować użytkowników z pliku CSV"
             )
         }
 
@@ -398,7 +398,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'fileId'"
+            reason = "Nieprawidłowe lub brakujące 'fileId'"
         )
 
         val file = fileEntityRepository.findById(fileId).orElse(null)
@@ -406,14 +406,14 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid file ID"
+                reason = "Nie znaleziono pliku o id $fileId"
             )
         if (file.fileType != "text/csv") {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid file type"
+                reason = "Nieprawidłowy typ pliku"
             )
         }
         return Permission(
@@ -428,21 +428,21 @@ class UsersPermissions {
         val action = "validateUsersToBeAdded"
         val currentUser = userMapper.getCurrentUser()
         if (currentUser.role != UsersRoles.COORDINATOR) {
-            throw IllegalArgumentException("Only a coordinator can validate users to be added")
+            throw IllegalArgumentException("Tylko koordynatorzy mogą walidować użtkowników do dodania")
         }
 
         val userIndexes = arguments.getIntList("userIndexes") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userIndexes'"
+            reason = "Nieprawidłowe lub brakujące 'userIndexes'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -450,7 +450,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         return Permission(
@@ -469,7 +469,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val indexNumber = arguments.getIntField("indexNumber")
@@ -489,7 +489,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
@@ -498,7 +498,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Students can only edit themselves"
+                    reason = "Studenci mogę jedynie edytować samych siebie"
                 )
             }
             if (indexNumber != null || firstName != null || secondName != null || role != null || label != null){
@@ -506,7 +506,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Students can only edit their own nick"
+                    reason = "Studenci mogą jedynie edytować swój nick"
                 )
             }
         }
@@ -516,7 +516,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit students or themselves"
+                    reason = "Prowadzący mogą edytować tylko studentów lub siebie"
                 )
             }
             if (currentUser.userId == userId){
@@ -525,7 +525,7 @@ class UsersPermissions {
                         action = action,
                         arguments = arguments,
                         allow = false,
-                        reason = "Teacher cannot edit their own role"
+                        reason = "Prowadzący nie może edytować swojej roli"
                     )
                 }
             }
@@ -536,7 +536,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit students that are in an active edition"
+                    reason = "Prowadzący mogą edytować tylko studentów z aktywnej edycji"
                 )
             }
 
@@ -546,7 +546,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit students that are in their groups"
+                    reason = "Prowadzący mogą edytować tylko studentów z ich grup"
                 )
             }
             if (role != null){
@@ -554,7 +554,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher cannot edit role of a student"
+                    reason = "Prowadzący nie może edytować roli studenta"
                 )
             }
         }
@@ -566,7 +566,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "User with index number $it already exists"
+                    reason = "Użytkownik o indeksie $it już istnieje"
                 )
             }
             user.indexNumber = it
@@ -578,7 +578,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "User with nick $it already exists"
+                    reason = "Użytkownik o nicku $it już istnieje"
                 )
             }
             user.nick = it
@@ -600,7 +600,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Invalid role"
+                    reason = "Nieprawidłowa rola"
                 )
             }
             user.role = userRole
@@ -622,14 +622,14 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
         if (currentUser.role != UsersRoles.COORDINATOR){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can remove a user"
+                reason = "Tylko koordynatorzy mogą usuwać użytkowników"
             )
         }
         if (currentUser.userId == userId){
@@ -637,7 +637,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove yourself"
+                reason = "Nie można usunąć siebie"
             )
         }
 
@@ -646,7 +646,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (user.role == UsersRoles.COORDINATOR){
@@ -654,7 +654,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove coordinator"
+                reason = "Nie można usunąć koordynatora"
             )
         }
 
@@ -663,7 +663,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove user that is in a group"
+                reason = "Nie można usunąć użytkownika, który jest w grupie"
             )
         }
 
@@ -673,7 +673,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove user that has points"
+                reason = "Nie można usunąć użytkownika, który jest ma przypisane punkty"
             )
         }
 
@@ -694,7 +694,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != userId) {
@@ -702,7 +702,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can reset passwords of other users"
+                reason = "Tylko prowadzący i koordynatorzy mogą resetować hasła innym użytkownikom"
             )
         }
 
@@ -711,7 +711,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
         return Permission(
             action = action,
@@ -728,7 +728,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'email'"
+            reason = "Nieprawidłowe lub brakujące 'email'"
         )
 
         return Permission(
@@ -747,7 +747,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can mark passing students from an edition as inactive"
+                reason = "Tylko koordynatorzy mogą dezaktywować wszystkich zdających studentów z edycji"
             )
         }
 
@@ -755,7 +755,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -763,7 +763,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         if (edition.endDate.isAfter(java.time.LocalDate.now().plusDays(60))){
@@ -771,7 +771,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Can only mark students as inactive if edition ends in 60 days or less"
+                reason = "Można dezaktywować studentów z edycji tylko jeśli kończy się za 60 dni lub mniej"
             )
         }
 
@@ -791,7 +791,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can mark student as inactive"
+                reason = "Tylko koordynatorzy mogą ustawić dezaktywować studenta"
             )
         }
 
@@ -799,7 +799,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val user = usersRepository.findById(userId).orElse(null)
@@ -807,7 +807,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (user.role != UsersRoles.STUDENT){
@@ -815,7 +815,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a student"
+                reason = "Użytkownik nie jest studentem"
             )
         }
 
@@ -824,7 +824,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is already inactive"
+                reason = "Użytkownik już jest dezaktywowany"
             )
         }
 
@@ -844,7 +844,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can mark student as active"
+                reason = "Tylko koordynatorzy mogą ustawić aktywować studenta"
             )
         }
 
@@ -852,7 +852,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val user = usersRepository.findById(userId).orElse(null)
@@ -860,7 +860,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (user.role != UsersRoles.STUDENT){
@@ -868,7 +868,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a student"
+                reason = "Użytkownik nie jest studentem"
             )
         }
 
@@ -877,7 +877,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is already active"
+                reason = "Użytkownik już jest aktywny"
             )
         }
 
@@ -892,12 +892,12 @@ class UsersPermissions {
     fun checkOverrideComputedGradeForUserPermission(arguments: JsonNode): Permission {
         val action = "overrideComputedGradeForUser"
         val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
+        if (currentUser.role != UsersRoles.COORDINATOR && currentUser.role != UsersRoles.TEACHER){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can override computed grade for a user"
+                reason = "Tylko prowadzący i koordynatorzy mogą nadpisać ocenę studentowi"
             )
         }
 
@@ -905,21 +905,21 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val grade = arguments.getFloatField("grade") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'grade'"
+            reason = "Nieprawidłowe lub brakujące 'grade'"
         )
 
         val user = usersRepository.findById(userId).orElse(null)
@@ -927,21 +927,21 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         val userLevel = user.userLevels.find { it.edition == edition }
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User has no user level in this edition"
+                reason = "Użytkownik nie posiada poziomów w tej edycji"
             )
         // grade should be 2.0 or 3.0 or 3.5 or 4.0 or 4.5 or 5.0
         if (grade != 2.0f && grade != 3.0f && grade != 3.5f && grade != 4.0f && grade != 4.5f && grade != 5.0f){
@@ -949,7 +949,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid grade"
+                reason = "Nieprawidłowa ocena"
             )
         }
 
@@ -964,12 +964,12 @@ class UsersPermissions {
     fun checkTurnOffOverrideComputedGradeForUserPermission(arguments: JsonNode): Permission {
         val action = "turnOffOverrideComputedGradeForUser"
         val currentUser = userMapper.getCurrentUser()
-        if (currentUser.role != UsersRoles.COORDINATOR){
+        if (currentUser.role != UsersRoles.COORDINATOR && currentUser.role != UsersRoles.TEACHER){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can turn off override for computed grade for a user"
+                reason = "Tylko prowadzący i koordynatorzy mogą przywrócić ocenę studentowi"
             )
         }
 
@@ -977,14 +977,14 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
 
@@ -993,21 +993,21 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         val userLevel = user.userLevels.find { it.edition == edition }
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User has no user level in this edition"
+                reason = "Użytkownik nie posiada poziomów w tej edycji"
             )
 
         return Permission(
@@ -1026,7 +1026,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'studentId'"
+            reason = "Nieprawidłowe lub brakujące 'studentId'"
         )
 
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != studentId) {
@@ -1034,7 +1034,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can view points of other users"
+                reason = "Tylko prowadzący i koordynatorzy mogą oglądać punkty innych użytkowników"
             )
         }
 
@@ -1042,7 +1042,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val user = usersRepository.findById(studentId).orElse(null)
@@ -1050,14 +1050,14 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid student ID"
+                reason = "Nie znaleziono studenta o id $studentId"
             )
         if (user.role != UsersRoles.STUDENT) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a student"
+                reason = "Użytkownik nie jest studentem"
             )
         }
 
@@ -1069,7 +1069,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only view points of students that are in their editions"
+                    reason = "Prowadzący może oglądać punkty tylko studentów z jego grup"
                 )
             }
         }
@@ -1079,14 +1079,14 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         if (user.userGroups.none { it.group.edition == edition }) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Student is not participating in this edition"
+                reason = "Student nie uczestniczy w tej edycji"
             )
         }
         val teacher = user.userGroups.firstOrNull { it.group.edition == edition }?.group?.teacher
@@ -1094,7 +1094,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Student is not participating in this edition"
+                reason = "Student nie ma przypisanego prowadzącego"
             )
 
         return Permission(
@@ -1113,14 +1113,14 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'studentId'"
+            reason = "Nieprawidłowe lub brakujące 'studentId'"
         )
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR) && currentUser.userId != studentId) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only teachers and coordinators can view points of other users"
+                reason = "Tylko prowadzący i koordynatorzy mogą oglądać punkty innych użytkowników"
             )
         }
 
@@ -1128,7 +1128,7 @@ class UsersPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val user = usersRepository.findById(studentId).orElse(null)
@@ -1136,14 +1136,14 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid student ID"
+                reason = "Nie znaleziono studenta o id $studentId"
             )
         if (user.role != UsersRoles.STUDENT) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a student"
+                reason = "Użytkownik nie jest studentem"
             )
         }
 
@@ -1155,7 +1155,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only view points of students that are in their editions"
+                    reason = "Prowadzący może oglądać punkty tylko studentów z jego grup"
                 )
             }
         }
@@ -1165,14 +1165,14 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         if (user.userGroups.none { it.group.edition == edition }) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Student is not participating in this edition"
+                reason = "Student nie uczestniczy w tej edycji"
             )
         }
 
@@ -1221,7 +1221,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator or a teacher can add a user"
+                reason = "Tylko prowadzący i koordynatorzy mogą dodawać użytkowników"
             )
         }
 
@@ -1231,7 +1231,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Only a coordinator can add a teacher"
+                    reason = "Tylko koordynator może dodać prowadzącego"
                 )
             }
             if (UsersRoles.valueOf(role.uppercase()) != UsersRoles.TEACHER) {
@@ -1239,7 +1239,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Only a teacher can be added with this mutation"
+                    reason = "Tylko prowadzącego można dodać z tym zapytaniem"
                 )
             }
             if (email.isEmpty()) {
@@ -1247,7 +1247,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Email is required for a teacher"
+                    reason = "Email jest wymagany dla prowadzącego"
                 )
             }
             -2137
@@ -1261,7 +1261,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Nick is not required for a teacher"
+                    reason = "Nick nie jest wymagany dla prowadzącego"
                 )
             }
             "$firstName.$secondName.$indexNumberToSet"
@@ -1271,7 +1271,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Nick is required"
+                    reason = "Nick jest wymagany"
                 )
             }
             nick
@@ -1284,7 +1284,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Only a coordinator can be added with this bypass"
+                    reason = "Tylko koordynatora można dodać tym zapytaniem z tym tokenem"
                 )
             }
             if (usersRepository.existsByRole(UsersRoles.COORDINATOR)) {
@@ -1292,7 +1292,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Coordinator already exists"
+                    reason = "Koordynator już istnieje"
                 )
             }
         }
@@ -1303,7 +1303,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Current user is not allowed to add a coordinator"
+                    reason = "Tylko koordynator może dodać koordynatora"
                 )
             }
         }
@@ -1314,7 +1314,7 @@ class UsersPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Only a coordinator can add a teacher"
+                    reason = "Tylko koordynator może dodać prowadzącego"
                 )
             }
         }
@@ -1325,7 +1325,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User with index number $indexNumberToSet already exists"
+                reason = "Użytkownik o indeksie $indexNumberToSet już istnieje"
             )
         }
         if (usersRepository.findByNick(nickToBeSet) != null) {
@@ -1333,7 +1333,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User with nick $nickToBeSet already exists"
+                reason = "Użytkownik o nicku $nickToBeSet już istnieje"
             )
         }
         val userRole1 = try {
@@ -1343,7 +1343,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid role"
+                reason = "Nieprawidłowa rola"
             )
         }
         var userEmail = email
@@ -1354,7 +1354,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid email"
+                reason = "Nieprawidłowy email"
             )
         }
 
@@ -1363,7 +1363,7 @@ class UsersPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User with email $userEmail already exists"
+                reason = "Użytkownik z emailem $userEmail już istnieje"
             )
         }
 

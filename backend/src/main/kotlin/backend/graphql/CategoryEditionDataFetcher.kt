@@ -58,7 +58,7 @@ class CategoryEditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return addCategoryToEditionHelper(categoryId, editionId)
     }
@@ -67,11 +67,11 @@ class CategoryEditionDataFetcher {
     fun addCategoryToEditionHelper(categoryId: Long, editionId: Long) : CategoryEdition{
         val permission = categoryEditionPermissions.checkAddCategoryToEditionHelperPermission(categoryId, editionId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Category not found") }
-        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
+        val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Kategorii o id $categoryId") }
+        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Edycji o id $editionId") }
 
         val categoryEdition = CategoryEdition(
             category = category,
@@ -98,6 +98,11 @@ class CategoryEditionDataFetcher {
                 }
         }
 
+        val colorPalette = getUniqueRandomColorPalette(editionId)
+        resultCategoryEdition.category.lightColor = colorPalette.first
+        resultCategoryEdition.category.darkColor = colorPalette.second
+        categoriesRepository.save(resultCategoryEdition.category)
+
         return resultCategoryEdition
     }
 
@@ -115,7 +120,7 @@ class CategoryEditionDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return removeCategoryFromEditionHelper(categoryId, editionId)
     }
@@ -124,11 +129,11 @@ class CategoryEditionDataFetcher {
     fun removeCategoryFromEditionHelper(categoryId: Long, editionId: Long): Boolean {
         val permission = categoryEditionPermissions.checkRemoveCategoryFromEditionHelperPermission(categoryId, editionId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Category not found") }
-        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
+        val category = categoriesRepository.findById(categoryId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Kategorii o id $categoryId") }
+        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Edycji o id $editionId") }
 
         val subcategoriesFromEdition = subcategoriesRepository.findByCategoryAndEdition(category, edition)
         val subcategoriesFromOtherEditions = subcategoriesRepository.findByCategory(category)
@@ -140,5 +145,22 @@ class CategoryEditionDataFetcher {
         }
         categoryEditionRepository.deleteByCategoryAndEdition(category, edition)
         return true
+    }
+
+    fun getUniqueRandomColorPalette(editionId: Long): Pair<String, String> {
+        val colorPalettes = listOf(
+            "#DDD9AB" to "#666936",
+            "#F4D2A1" to "#8B5D17",
+            "#54AA5D" to "#2A512A",
+            "#E7BBEC" to "#4D2C44",
+            "#99DDC1" to "#176B74",
+        )
+        val usedColors = categoriesRepository.findByCategoryEdition_Edition_EditionId(editionId).map { it.lightColor to it.darkColor }.toSet()
+
+        val availableColorPalettes = colorPalettes.filter { it !in usedColors }
+        if (availableColorPalettes.isEmpty()) {
+            return colorPalettes.random()
+        }
+        return availableColorPalettes.random()
     }
 }

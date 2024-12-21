@@ -90,16 +90,6 @@ export type SetupGroupsQuery = {
         allow: boolean;
         reason?: string | null;
       } | null;
-      canOverride?: {
-        __typename?: "PermissionType";
-        allow: boolean;
-        reason?: string | null;
-      } | null;
-      canTurnOffOverride?: {
-        __typename?: "PermissionType";
-        allow: boolean;
-        reason?: string | null;
-      } | null;
       canActivate?: {
         __typename?: "PermissionType";
         allow: boolean;
@@ -184,14 +174,6 @@ export const SetupGroupsDocument = gql`
           reason
         }
         canMarkAsInactive {
-          allow
-          reason
-        }
-        canOverride {
-          allow
-          reason
-        }
-        canTurnOffOverride {
           allow
           reason
         }

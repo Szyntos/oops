@@ -1,12 +1,13 @@
+import { Styles } from "../../../utils/Styles";
 import { StudentCardData } from "../../../hooks/StudentProfile/useStudentProfileData/useStudentData";
 import { Section } from "./Section/Section";
 import { ItemWithIcon, ItemWithIconProps } from "./Section/ItemWithIcon";
 import { EMPTY_FIELD_STRING } from "../../../utils/constants";
-import { Styles } from "../../../utils/Styles";
 import { CustomText } from "../../CustomText";
 import { tokens } from "../../../tokens";
 import { Avatar } from "../../avatars/Avatar";
 import { getTimeWithoutSeconds } from "../../../utils/utils";
+import { getEnvVariable } from "../../../utils/constants";
 
 export function StudentCard({
   nick,
@@ -16,16 +17,17 @@ export function StudentCard({
   avatarId,
   grade,
   totalPoints,
+  override,
 }: StudentCardData) {
   const profileItems: ItemWithIconProps[] = [
     { icon: "name", title: displayName },
-    { icon: "email", title: `${index}@student.agh.edu.pl` },
+    { icon: "email", title: `${index}@${getEnvVariable("VITE_EMAIL_DOMAIN")}` },
     { icon: "index", title: index },
   ];
 
   const performanceItems: ItemWithIconProps[] = [
-    { icon: "grade", title: grade },
-    { icon: "score", title: totalPoints },
+    { icon: "grade", title: `${grade}${override ? "*" : ""}` },
+    { title: "∑ " + totalPoints + "pkt" },
   ];
 
   const centerItems: ItemWithIconProps[] = [
@@ -47,6 +49,7 @@ export function StudentCard({
         size={tokens.font.header}
         bold={true}
         color={tokens.color.accent.dark}
+        style={{ paddingBottom: 6 }}
       >
         {nick}
       </CustomText>

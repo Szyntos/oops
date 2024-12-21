@@ -1,10 +1,12 @@
-import { Dialog } from "@mui/material";
-import { Styles } from "../../../../utils/Styles";
 import { AddCategoryForm } from "./AddCategoryForm/AddCategoryForm";
 import { CategoriesList } from "./CategoriesList/CategoriesList";
-import { CloseHeader } from "../../../dialogs/CloseHeader";
 import { useCategoriesSection } from "../../../../hooks/Edition/categories/useCategoriesSection";
 import { useParams } from "react-router-dom";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
+import { CustomDialog } from "../../../dialogs/CustomDialog";
 
 export const CategoriesSection = () => {
   const params = useParams();
@@ -30,12 +32,12 @@ export const CategoriesSection = () => {
     handleCopyCategory,
   } = useCategoriesSection(editionId);
 
-  if (loading) return <div>loading...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (loading) return <LoadingScreen type="edition" />;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
-      <button onClick={openAddCategory}>add category</button>
+    <div style={coordinatorStyles.container}>
+      <CustomButton onClick={openAddCategory}>Dodaj kategorię</CustomButton>
 
       <CategoriesList
         categories={selectedCategories}
@@ -44,7 +46,7 @@ export const CategoriesSection = () => {
         handleEditClick={openEditCategory}
         handleDeleteClick={handleDeleteCategory}
         handleCopyClick={handleCopyCategory}
-        title="Selected categories"
+        title="Wybrane kategorie"
       />
       <CategoriesList
         categories={categories}
@@ -53,24 +55,30 @@ export const CategoriesSection = () => {
         handleEditClick={openEditCategory}
         handleDeleteClick={handleDeleteCategory}
         handleCopyClick={handleCopyCategory}
-        title="All categories"
+        title="Wszystkie kategorie"
       />
 
-      <Dialog open={isAddCategory}>
-        <CloseHeader onCloseClick={closeAddCategory} />
+      <CustomDialog
+        isOpen={isAddCategory}
+        title="Dodaj kategorię"
+        onCloseClick={closeAddCategory}
+        size="lg"
+      >
         <AddCategoryForm
           formError={formError}
           handleConfirm={handleAddCategory}
-          title={"Add Category"}
         />
-      </Dialog>
+      </CustomDialog>
 
-      <Dialog open={iseEditCategory}>
-        <CloseHeader onCloseClick={closeEditCategory} />
+      <CustomDialog
+        isOpen={iseEditCategory}
+        title="Edytuj kategorię"
+        onCloseClick={closeEditCategory}
+        size="lg"
+      >
         <AddCategoryForm
           formError={formError}
           handleConfirm={handleEditCategory}
-          title={"Edit Category"}
           initialValues={selectedCategory?.category}
           initialSelectedSubcategories={
             selectedCategory?.category.subcategories.map((s) => ({
@@ -79,15 +87,7 @@ export const CategoriesSection = () => {
             })) ?? []
           }
         />
-      </Dialog>
+      </CustomDialog>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

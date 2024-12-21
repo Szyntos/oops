@@ -8,6 +8,8 @@ type NavbarProps = {
   isActive?: boolean;
   title: string;
   color?: string;
+  bold?: boolean;
+  size?: number;
 };
 
 export const NavbarItem = ({
@@ -15,7 +17,16 @@ export const NavbarItem = ({
   isActive,
   title,
   color,
+  bold,
+  size,
 }: NavbarProps) => {
+  const isBold = () => {
+    if (bold !== undefined) {
+      return bold;
+    }
+    return Boolean(onClick);
+  };
+
   return (
     <div
       onClick={onClick}
@@ -24,7 +35,12 @@ export const NavbarItem = ({
         ...(onClick && styles.clickable),
       }}
     >
-      <CustomText style={{ ...(isActive && styles.active) }} color={color}>
+      <CustomText
+        style={{ ...(isActive && styles.active) }}
+        color={color}
+        bold={isBold()}
+        size={size ?? tokens.font.text}
+      >
         {title}
       </CustomText>
     </div>

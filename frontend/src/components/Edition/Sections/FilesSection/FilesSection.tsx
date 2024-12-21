@@ -1,22 +1,31 @@
 import { useEffect, useState, useRef } from "react";
 import { useFilesLazyQuery } from "../../../../graphql/files.graphql.types";
-import { Styles } from "../../../../utils/Styles";
 import { useParams } from "react-router-dom";
-import { Folder, FolderNavbar } from "./FolderNavbar/FolderNavbar";
-import { FileItem, ImagesList } from "./ImagesList/ImagesList";
+import { Folder, FilesNavbar } from "./FilesNavbar";
 import { useError } from "../../../../hooks/common/useGlobalError";
 import { UPLOAD_FILES_URL } from "../../../../utils/constants";
 import { useDeleteFileMutation } from "../../../../graphql/deleteFile.graphql.types";
 import { useConfirmPopup } from "../../../../hooks/common/useConfirmPopup";
+import { LoadingScreen } from "../../../../screens/Loading/LoadingScreen";
+import { ErrorScreen } from "../../../../screens/Error/ErrorScreen";
+import { CustomButton } from "../../../CustomButton";
+import { coordinatorStyles } from "../../../../utils/utils";
+import { CardsSection } from "../../CardsSection";
+import { Permissions } from "../SetupButtons";
+import { FileCard } from "./FileCard";
 
 const folders: Folder[] = [
-  { title: "award", pathPrefix: `image/award` },
-  { title: "chest", pathPrefix: `image/chest` },
-  { title: "group", pathPrefix: `image/group` },
-  { title: "level", pathPrefix: `image/level` },
-  { title: "users", pathPrefix: `image/user` },
+  { title: "Łupy", pathPrefix: `image/award` },
+  { title: "Skrzynki", pathPrefix: `image/chest` },
+  { title: "Grupy", pathPrefix: `image/group` },
+  { title: "Poziomy", pathPrefix: `image/level` },
+  { title: "Awatary", pathPrefix: `image/user` },
 ];
 
+export type FileItem = {
+  id: string;
+  permissions: Permissions;
+};
 export const FilesSection = () => {
   const params = useParams();
   const editionId = params.id ? parseInt(params.id) : -1;
@@ -24,9 +33,7 @@ export const FilesSection = () => {
   const { globalErrorWrapper } = useError();
 
   const [activeFolder, setActiveFolder] = useState<Folder>(folders[0]);
-  const [fetchFiles, { loading, error, data, refetch }] = useFilesLazyQuery({
-    fetchPolicy: "no-cache",
-  });
+  const [fetchFiles, { loading, error, data, refetch }] = useFilesLazyQuery();
 
   const files: FileItem[] =
     data?.getFilesGroupedByTypeBySelectedTypes.flatMap((a) =>
@@ -75,38 +82,39 @@ export const FilesSection = () => {
     });
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>ERROR: {error.message}</div>;
+  if (loading) return <LoadingScreen type="edition" />;
+  if (error) return <ErrorScreen type="edition" />;
 
   return (
-    <div style={styles.container}>
-      <FolderNavbar
+    <div>
+      <FilesNavbar
         folders={folders}
         active={activeFolder}
         setActive={setActiveFolder}
       />
-      <button onClick={handleUploadClick}>Upload file</button>
-      <input
-        type="file"
-        accept="image/*"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        style={{ display: "none" }}
-      />
+      <div style={coordinatorStyles.container}>
+        <div style={coordinatorStyles.buttonsContainer}>
+          <CustomButton onClick={handleUploadClick}>Załącz plik</CustomButton>
+        </div>
 
-      <ImagesList
-        files={files}
-        title={`All ${activeFolder.title} files`}
-        handleDelete={handleDelete}
-      />
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          style={{ display: "none" }}
+        />
+
+        <CardsSection
+          title={"Pliki"}
+          cards={files.map((entry) => (
+            <FileCard
+              item={entry}
+              handleDelete={() => handleDelete(entry.id)}
+            />
+          ))}
+        ></CardsSection>
+      </div>
     </div>
   );
-};
-
-const styles: Styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
 };

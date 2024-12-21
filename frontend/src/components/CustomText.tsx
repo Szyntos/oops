@@ -15,7 +15,7 @@ export const CustomText = ({
   children,
   style,
   size = tokens.font.text,
-  color = tokens.color.text.secondary,
+  color = tokens.color.text.primary,
   bold,
   onClick,
 }: CustomTextProps) => {
@@ -37,6 +37,6 @@ export const CustomText = ({
 
 const styles: Styles = {
   text: {
-    userSelect: "none",
+    // userSelect: "none",
   },
 };

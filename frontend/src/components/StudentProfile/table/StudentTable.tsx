@@ -14,7 +14,6 @@ import { PointsCellContent } from "./cellContent/PointsCellContent";
 import { AwardsCellContent } from "./cellContent/AwardsCellContent";
 import { DateCellContent } from "./cellContent/DateCellContent";
 import { CustomIconButton } from "../../CustomIconButton";
-import { tokens } from "../../../tokens";
 
 type StudentTableProps = {
   points: Points[];
@@ -35,13 +34,13 @@ type HeaderTitle = {
 };
 
 const headerTitles: HeaderTitle[] = [
-  { name: "nazwa", align: "center" },
-  { name: "bonusy", align: "center" },
-  { name: "kategoria", align: "center" },
-  { name: "punkty", align: "center" },
-  { name: "max punktów", align: "center" },
-  { name: "data", align: "center" },
-  { name: "prowadzący", align: "center" },
+  { name: "Nazwa", align: "center" },
+  { name: "Łupy", align: "center" },
+  { name: "Kategoria", align: "center" },
+  { name: "Punkty", align: "center" },
+  { name: "Max punktów", align: "center" },
+  { name: "Data", align: "center" },
+  { name: "Prowadzący", align: "center" },
 ];
 
 export const StudentTable = ({
@@ -52,7 +51,7 @@ export const StudentTable = ({
 }: StudentTableProps) => {
   if (showActionButtons && !editFunctions) {
     throw new Error(
-      "Invalid arguments passed - handleEditClick or handleDeleteClick is undefined.",
+      "Niepoprawne dane - handleEditClick lub handleDeleteClick niepodane.",
     );
   }
 
@@ -61,7 +60,8 @@ export const StudentTable = ({
       <Table>
         <TableHead>
           <TableRow>
-            {showActionButtons && <TableCell />}
+            {showActionButtons && <TableCell width={18} align="center" />}
+
             {headerTitles.map((header) => (
               <TableCell style={styles.header} align={header.align}>
                 {header.name}
@@ -99,7 +99,6 @@ export const StudentTable = ({
                       disabled={
                         blockActionButtons || !p.points.purePoints?.pointsId
                       }
-                      color={tokens.color.state.error}
                     />
                   </div>
                 </TableCell>
@@ -143,6 +142,6 @@ const styles: Styles = {
   buttonsContainer: {
     display: "flex",
     flexDirection: "row",
-    gap: 8,
+    gap: 6,
   },
 };

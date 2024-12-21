@@ -47,7 +47,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add awards to chests"
+                reason = "Tylko koordynatorzy mogą dodawać łupy do skrzynek"
             )
         }
 
@@ -55,14 +55,14 @@ class ChestsAwardPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val chestId = arguments.getLongField("chestId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -70,7 +70,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         val chest = chestsRepository.findById(chestId).orElse(null)
@@ -78,7 +78,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
         val chestEditions = chest.chestEdition.map { it.edition }
 
@@ -87,7 +87,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -96,7 +96,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award does not exist in this edition"
+                reason = "Łup nie istnieje w tej edycji"
             )
         }
 
@@ -105,7 +105,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award already exists in this chest"
+                reason = "Łup już istnieje w tej skrzynce"
             )
         }
 
@@ -125,7 +125,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove awards from chests"
+                reason = "Tylko koordynatorzy mogą usuwać łupy ze skrzynek"
             )
         }
 
@@ -133,14 +133,14 @@ class ChestsAwardPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val chestId = arguments.getLongField("chestId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestId'"
+            reason = "Nieprawidłowe lub brakujące 'chestId'"
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -148,7 +148,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         val chest = chestsRepository.findById(chestId).orElse(null)
@@ -156,7 +156,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest ID"
+                reason = "Nie znaleziono skrzynki o id $chestId"
             )
 
         val chestEditions = chest.chestEdition.map { it.edition }
@@ -166,7 +166,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition with this chest has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -175,7 +175,7 @@ class ChestsAwardPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This award does not exist in this chest"
+                reason = "Łup nie istnieje w tej skrzynce"
             )
         }
 

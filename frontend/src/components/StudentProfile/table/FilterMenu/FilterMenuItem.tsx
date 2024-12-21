@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Styles } from "../../../../utils/Styles";
 import { BACKGROUND_COLOR_ANIMATION } from "../../../../utils/utils";
 import { CustomText } from "../../../CustomText";
@@ -16,18 +17,25 @@ export const FilterMenuItem = ({
   isSelected,
   onClick,
 }: FilterMenuItemProps) => {
+  const [hovered, setHovered] = useState(false);
   return (
-    <CustomText
-      color={item.lightColor}
-      onClick={onClick}
-      style={{
-        ...styles.item,
-        backgroundColor: isSelected ? item.darkColor : undefined,
-        border: `${BORDER_WIDTH}px solid ${isSelected ? item.darkColor : item.lightColor}`,
-      }}
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      {item.name}
-    </CustomText>
+      <CustomText
+        color={item.lightColor}
+        onClick={onClick}
+        style={{
+          ...styles.item,
+          backgroundColor: isSelected || hovered ? item.darkColor : undefined,
+          border: `${BORDER_WIDTH}px solid ${isSelected || hovered ? item.darkColor : item.lightColor}`,
+          cursor: hovered ? "pointer" : "auto",
+        }}
+      >
+        {item.name}
+      </CustomText>
+    </div>
   );
 };
 

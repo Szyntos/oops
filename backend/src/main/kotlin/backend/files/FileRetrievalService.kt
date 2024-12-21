@@ -11,20 +11,20 @@ import org.springframework.web.multipart.MultipartFile
 class FileRetrievalService(private val fileEntityRepository: FileEntityRepository) {
 
     fun getFileContent(fileId: Long): Pair<Path, ByteArray> {
-        val fileEntity = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("Invalid file ID") }
+        val fileEntity = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("Nie znaleziono pliku o id $fileId") }
         val filePath = Paths.get(fileEntity.pathToFile)
         val fileContent = Files.readAllBytes(filePath)
         return Pair(filePath, fileContent)
     }
     fun deleteFile(fileId: Long) {
-        val fileEntity = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("Invalid file ID") }
+        val fileEntity = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("Nie znaleziono pliku o id $fileId") }
         val filePath = Paths.get(fileEntity.pathToFile)
         Files.deleteIfExists(filePath)
         fileEntityRepository.delete(fileEntity)
     }
 
     fun updateFile(fileId: Long, newFile: MultipartFile): FileEntity {
-        val fileEntity = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("Invalid file ID") }
+        val fileEntity = fileEntityRepository.findById(fileId).orElseThrow { IllegalArgumentException("Nie znaleziono pliku o id $fileId") }
         val filePath = Paths.get(fileEntity.pathToFile)
 
         // Delete the old file

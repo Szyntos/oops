@@ -1,7 +1,10 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Category } from "../../../../../hooks/Edition/categories/useCategoriesSection";
-import { Styles } from "../../../../../utils/Styles";
 import { SetupButtons } from "../../SetupButtons";
+import { coordinatorStyles, getCardStyles } from "../../../../../utils/utils";
+import { CustomText } from "../../../../CustomText";
+import { Styles } from "../../../../../utils/Styles";
+import { tokens } from "../../../../../tokens";
 
 type CategoryCardProps = {
   category: Category;
@@ -22,23 +25,29 @@ export const CategoryCard = ({
 }: CategoryCardProps) => {
   const { openShowDialog } = useEditionSections();
 
-  const getSubcategoriesString = (category: Category) => {
-    const subcategoryNames = category.category.subcategories.map(
-      (subcategory) => subcategory.subcategoryName,
-    );
-    const n = subcategoryNames.length;
-    return `(${n}) ${subcategoryNames.splice(0, Math.min(2, n)).join(", ")}${n > 2 ? "..." : ""}`;
-  };
-
   return (
     <div
-      style={{
-        ...styles.card,
-        backgroundColor: isSelected ? "pink" : undefined,
-      }}
+      style={{ ...getCardStyles(isSelected), justifyContent: "space-between" }}
     >
-      <div>{category.category.categoryName}</div>
-      <div>subcategories: {getSubcategoriesString(category)}</div>
+      <div style={coordinatorStyles.textContainer}>
+        <CustomText style={coordinatorStyles.title}>
+          {category.category.categoryName}
+        </CustomText>
+        {category.category.subcategories.map((s, index) => {
+          return (
+            <div style={styles.subcategoryRow}>
+              <CustomText>
+                {index + 1}. {s.subcategoryName}{" "}
+              </CustomText>
+              {category.category.canAddPoints && (
+                <CustomText color={tokens.color.text.tertiary}>
+                  {s.maxPoints}pkt
+                </CustomText>
+              )}
+            </div>
+          );
+        })}
+      </div>
 
       <SetupButtons
         isSelected={isSelected}
@@ -54,8 +63,8 @@ export const CategoryCard = ({
 };
 
 const styles: Styles = {
-  card: {
-    border: "1px solid black",
-    padding: 12,
+  subcategoryRow: {
+    display: "flex",
+    gap: 8,
   },
 };

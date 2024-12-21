@@ -69,7 +69,7 @@ class PointsDataFetcher {
         val permission = permissionService.checkFullPermission(permissionInput)
 
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return addPointsHelper(studentId, teacherId, value, subcategoryId, checkDates)
     }
@@ -95,21 +95,21 @@ class PointsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
 
         val group = groupsRepository.findById(groupId)
-            .orElseThrow { IllegalArgumentException("Invalid group ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono grupy o id $groupId") }
 
         val studentsInGroup = group.userGroups.map { it.user }
             .filter { it.role == UsersRoles.STUDENT }
 
         val teacher = usersRepository.findByUserId(teacherId)
-            .orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono nauczyciela o id $teacherId") }
 
         val subcategory = subcategoriesRepository.findById(subcategoryId)
-            .orElseThrow { IllegalArgumentException("Invalid subcategory ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono podkategorii o id $subcategoryId") }
 
         val oldPoints = pointsRepository.findBySubcategoryAndStudent_UserGroups_Group(subcategory, group)
             .filter { bonusRepository.findByPoints(it).isEmpty() }.associate { it.student.userId to it.value }
@@ -131,7 +131,7 @@ class PointsDataFetcher {
         val resultedPoints = mutableListOf<GroupPoints>()
         pointsNotChanged.forEach { point ->
             val student = usersRepository.findByUserId(point.studentId)
-                .orElseThrow { IllegalArgumentException("Invalid user ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id ${point.studentId}") }
             val studentPoints = pointsRepository.findByStudentAndSubcategory(student, subcategory)
                 .filter { bonusRepository.findByPoints(it).isEmpty() }
             if (studentPoints.isNotEmpty()) {
@@ -142,13 +142,13 @@ class PointsDataFetcher {
         }
         pointsToAdd.forEach { point ->
             val student = usersRepository.findByUserId(point.studentId)
-                .orElseThrow { IllegalArgumentException("Invalid user ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id ${point.studentId}") }
             val studentPoints = addPointsHelper(point.studentId, teacherId, point.value!!, subcategoryId, checkDates)
             resultedPoints.add(GroupPoints(student, studentPoints))
         }
         pointsToRemove.forEach { point ->
             val student = usersRepository.findByUserId(point.studentId)
-                .orElseThrow { IllegalArgumentException("Invalid user ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id ${point.studentId}") }
             val studentPoints = pointsRepository.findByStudentAndSubcategory(student, subcategory)
                 .filter { bonusRepository.findByPoints(it).isEmpty() }
             if (studentPoints.isNotEmpty()) {
@@ -158,11 +158,11 @@ class PointsDataFetcher {
         }
         pointsToEdit.forEach { point ->
             val student = usersRepository.findByUserId(point.studentId)
-                .orElseThrow { IllegalArgumentException("Invalid user ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id ${point.studentId}") }
             val studentPoints = pointsRepository.findByStudentAndSubcategory(student, subcategory)
                 .filter { bonusRepository.findByPoints(it).isEmpty() }
             if (studentPoints.isEmpty()) {
-                throw IllegalArgumentException("Error while editing points - student has no points in this subcategory")
+                throw IllegalArgumentException("Błąd przy edycji punktów - student ${student.userId} nie ma punktów w podkategorii $subcategoryId")
             }
             val editedPoints = editPointsHelper(studentPoints[0].pointsId, point.value)
 
@@ -189,7 +189,7 @@ class PointsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return editPointsHelper(pointsId, value)
     }
@@ -207,7 +207,7 @@ class PointsDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return removePointsHelper(pointsId)
     }
@@ -217,19 +217,19 @@ class PointsDataFetcher {
                         subcategoryId: Long, checkDates: Boolean = true): Points {
         val permission = pointsPermissions.checkAddPointsHelperPermission(studentId, teacherId, value, subcategoryId, checkDates)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         val currentUser = userMapper.getCurrentUser()
 
         val student = usersRepository.findByUserId(studentId)
-            .orElseThrow { IllegalArgumentException("Invalid user ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $studentId") }
 
 
         val teacher = usersRepository.findByUserId(teacherId)
-            .orElseThrow { IllegalArgumentException("Invalid user ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $teacherId") }
 
         val subcategory = subcategoriesRepository.findById(subcategoryId)
-            .orElseThrow { IllegalArgumentException("Invalid subcategory ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono podkategorii o id $subcategoryId") }
         val points = Points(
             student = student,
             teacher = teacher,
@@ -266,16 +266,16 @@ class PointsDataFetcher {
     fun editPointsHelper(pointsId: Long, value: Float?) : Points {
         val permission = pointsPermissions.checkEditPointsHelperPermission(pointsId, value)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val currentUser = userMapper.getCurrentUser()
 
         val points = pointsRepository.findById(pointsId)
-            .orElseThrow { IllegalArgumentException("Invalid points ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono punktów o id $pointsId") }
 
         if (points.subcategory.edition == null){
-            throw IllegalArgumentException("Subcategory has no edition")
+            throw IllegalArgumentException("Podkategoria ${points.subcategory} nie ma wybranej edycji")
         }
 
         val updatedById = currentUser.userId
@@ -286,7 +286,7 @@ class PointsDataFetcher {
 
         updatedById.let {
             val updatedBy = usersRepository.findByUserId(it)
-                .orElseThrow { IllegalArgumentException("Invalid user ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $it") }
             points.updatedBy = updatedBy
         }
 
@@ -318,11 +318,11 @@ class PointsDataFetcher {
     fun removePointsHelper(pointsId: Long) : Boolean{
         val permission = pointsPermissions.checkRemovePointsHelperPermission(pointsId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val points = pointsRepository.findById(pointsId)
-            .orElseThrow { IllegalArgumentException("Invalid points ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono punktów o id $pointsId") }
 
         val bonusesMultiplicative = bonusRepository.findByAward_AwardTypeAndPoints_Student(AwardType.MULTIPLICATIVE, points.student)
             .filter { bonus -> bonus.points.subcategory.edition == points.subcategory.edition }

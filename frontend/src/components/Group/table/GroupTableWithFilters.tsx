@@ -1,9 +1,10 @@
-import { Styles } from "../../../utils/Styles";
 import { useState } from "react";
 import { GroupTable } from "./GroupTable";
 import { Category, Subcategory } from "../../../utils/utils";
 import { GroupTableRow, Student } from "../../../hooks/Group/useGroupTableData";
 import FilterMenu from "../../StudentProfile/table/FilterMenu/FilterMenu";
+import { Styles } from "../../../utils/Styles";
+import { NotEditableInfo } from "../../StudentProfile/NotEditableInfo";
 
 type GroupTableWithFiltersProps = {
   rows: GroupTableRow[];
@@ -11,6 +12,9 @@ type GroupTableWithFiltersProps = {
   handleStudentClick: (student: Student) => void;
   handleSubcategoryClick: (subcategory: Subcategory) => void;
   editable: boolean;
+  disableEditMode: boolean;
+  hasEditableRights: boolean;
+  isSelectedEditionActive: boolean;
 };
 
 export const GroupTableWithFilters = ({
@@ -19,6 +23,9 @@ export const GroupTableWithFilters = ({
   handleStudentClick,
   handleSubcategoryClick,
   editable,
+  disableEditMode,
+  hasEditableRights,
+  isSelectedEditionActive,
 }: GroupTableWithFiltersProps) => {
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
 
@@ -37,36 +44,56 @@ export const GroupTableWithFilters = ({
   });
 
   return (
-    <div style={styles.container}>
-      <FilterMenu
-        pickedCategoryIds={selectedCategoryIds}
-        onSelectChange={(selectedIds) => {
-          setSelectedCategoryIds(selectedIds);
-        }}
-        filterItems={categories.map((c) => {
-          return {
-            id: c.id,
-            name: c.name,
-            lightColor: c.lightColor,
-            darkColor: c.darkColor,
-          };
-        })}
-      />
+    <>
+      <div style={styles.filterWrapper}>
+        {disableEditMode && (
+          <NotEditableInfo
+            hasEditableRights={hasEditableRights}
+            isSelectedEditionActive={isSelectedEditionActive}
+            type={"group"}
+          />
+        )}
 
-      <GroupTable
-        rows={rowsToDisplay}
-        handleStudentClick={handleStudentClick}
-        handleSubcategoryClick={handleSubcategoryClick}
-        editable={editable}
-      />
-    </div>
+        <FilterMenu
+          pickedCategoryIds={selectedCategoryIds}
+          onSelectChange={(selectedIds) => {
+            setSelectedCategoryIds(selectedIds);
+          }}
+          filterItems={categories.map((c) => {
+            return {
+              id: c.id,
+              name: c.name,
+              lightColor: c.lightColor,
+              darkColor: c.darkColor,
+            };
+          })}
+        />
+      </div>
+
+      <div style={styles.tableWrapper}>
+        <GroupTable
+          rows={rowsToDisplay}
+          handleStudentClick={handleStudentClick}
+          handleSubcategoryClick={handleSubcategoryClick}
+          editable={editable}
+        />
+      </div>
+    </>
   );
 };
 
 const styles: Styles = {
-  container: {
+  filterWrapper: {
+    padding: 12,
+    paddingBottom: 0,
     display: "flex",
     flexDirection: "column",
     gap: 12,
+  },
+  tableWrapper: {
+    flex: 1,
+    overflowY: "auto",
+    padding: 12,
+    paddingTop: 0,
   },
 };

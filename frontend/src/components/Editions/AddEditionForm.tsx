@@ -1,16 +1,18 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { TextField } from "@mui/material";
-import { formStyles } from "../../utils/utils";
+import { formErrors, formStyles } from "../../utils/utils";
 import { FormError } from "../form/FormError";
 import { FormButton } from "../form/FormButton";
 
 export type EditionFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  name: z.string().min(1, "Wymagane"),
-  // TODO validation
-  year: z.number().min(2000).max(2500),
+  name: z.string().min(1, formErrors.required),
+  year: z
+    .number()
+    .min(2000, formErrors.minNumber(2000))
+    .max(2500, formErrors.maxNumber(2500)),
 });
 
 const defaultValues = {

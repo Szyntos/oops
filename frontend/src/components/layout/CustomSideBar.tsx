@@ -24,6 +24,6 @@ const styles: Styles = {
     flexDirection: "column",
     padding: 16,
     gap: 20,
-    backgroundColor: tokens.color.card.light,
+    backgroundColor: tokens.color.card.dark,
   },
 };

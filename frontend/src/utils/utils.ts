@@ -90,8 +90,8 @@ export const getCardStyles = (isSelected: boolean): CSSProperties => ({
   padding: 12,
   borderRadius: 12,
   backgroundColor: isSelected
-    ? tokens.color.card.dark
-    : tokens.color.card.light,
+    ? tokens.color.card.light
+    : tokens.color.card.dark,
 });
 
 export const coordinatorStyles: Styles = {

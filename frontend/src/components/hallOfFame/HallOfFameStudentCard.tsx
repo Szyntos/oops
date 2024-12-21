@@ -35,7 +35,10 @@ export const HallOfFameStudentCard = ({
       style={{
         ...styles.item,
         background: isHighlighted
-          ? getLinearGradient(tokens.color.accent.light, tokens.color.card.dark)
+          ? getLinearGradient(
+              tokens.color.accent.light,
+              tokens.color.card.light,
+            )
           : undefined,
       }}
     >
@@ -64,7 +67,7 @@ const styles: Styles = {
     padding: 12,
     paddingLeft: 24,
     paddingRight: 24,
-    backgroundColor: tokens.color.card.dark,
+    backgroundColor: tokens.color.card.light,
   },
   position: {
     width: 18,

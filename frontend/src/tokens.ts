@@ -4,8 +4,8 @@ export const tokens = {
       primary: "#514c42",
     },
     card: {
-      light: "#2d271e",
-      dark: "#3e372b",
+      light: "#3e372b",
+      dark: "#2d271e",
     },
     text: {
       primary: "#ffffff",

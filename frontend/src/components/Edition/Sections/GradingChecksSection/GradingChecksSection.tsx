@@ -86,7 +86,7 @@ export const GradingChecksSection = () => {
               <div style={styles.row}>
                 <CustomText>Data końca laboratorium: </CustomText>
 
-                <CustomText color={tokens.color.text.tertiary}>
+                <CustomText color={tokens.color.text.secondary}>
                   {displayDate}
                 </CustomText>
               </div>
@@ -95,14 +95,14 @@ export const GradingChecksSection = () => {
                 <CustomText>
                   Poziom do zdobycia przed końcem laboratorium:
                 </CustomText>
-                <CustomText color={tokens.color.text.tertiary}>
+                <CustomText color={tokens.color.text.secondary}>
                   {displayLevel}
                 </CustomText>
               </div>
 
               <div style={styles.row}>
                 <CustomText>Wybrana kategoria: </CustomText>
-                <CustomText color={tokens.color.text.tertiary}>
+                <CustomText color={tokens.color.text.secondary}>
                   {displayCategory}
                 </CustomText>
               </div>
@@ -111,7 +111,7 @@ export const GradingChecksSection = () => {
                 <CustomText>
                   Liczba punktów do zdobycia za daną kategorię:
                 </CustomText>
-                <CustomText color={tokens.color.text.tertiary}>
+                <CustomText color={tokens.color.text.secondary}>
                   {displayPoints}pkt
                 </CustomText>
               </div>
@@ -142,7 +142,7 @@ export const GradingChecksSection = () => {
                 {displayLevel} przed końcem laboratoriów {displayDate}
                 ."
               </CustomText>
-              <CustomText color={tokens.color.text.tertiary}>
+              <CustomText color={tokens.color.text.secondary}>
                 ~ {quotes?.getQuoteVariables.coordinator.firstName}{" "}
                 {quotes?.getQuoteVariables.coordinator.secondName}
               </CustomText>

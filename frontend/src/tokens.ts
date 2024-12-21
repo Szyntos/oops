@@ -10,8 +10,6 @@ export const tokens = {
     text: {
       primary: "#ffffff",
       secondary: "#b1b1b1",
-      // MUI
-      tertiary: "#b1b1b1",
     },
     accent: {
       light: "#0a6e3c",

@@ -15,19 +15,23 @@ import { SelectImage } from "../../../../inputs/SelectImage";
 import { FormButton } from "../../../../form/FormButton";
 import { FormError } from "../../../../form/FormError";
 import {
+  formErrors,
   formStyles,
   mapAwardTypeToPolish,
   MULTIPLICATIVE_TYPE_STRING,
 } from "../../../../../utils/utils";
 
 const ValidationSchema = z.object({
-  awardName: z.string().min(1),
-  awardType: z.string().min(1),
-  awardValue: z.number().min(0),
-  categoryId: z.string().min(1),
-  description: z.string().min(1),
-  maxUsages: z.union([z.number().min(0), z.literal("")]),
-  imageId: z.string().min(1),
+  awardName: z.string().min(1, formErrors.required),
+  awardType: z.string().min(1, formErrors.required),
+  awardValue: z.number().min(0, formErrors.minNumber(0)),
+  categoryId: z.string().min(1, formErrors.required),
+  description: z.string().min(1, formErrors.required),
+  maxUsages: z.union([
+    z.number().min(1, formErrors.minNumber(1)),
+    z.literal(""),
+  ]),
+  imageId: z.string().min(1, formErrors.required),
   hasAwardsBundleCount: z.boolean(),
 });
 
@@ -73,7 +77,7 @@ export const AddAwardForm = ({
         }
       }
       if (values.hasAwardsBundleCount && values.maxUsages === "") {
-        errors.maxUsages = "wymagane";
+        errors.maxUsages = formErrors.required;
       }
       return errors;
     },

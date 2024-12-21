@@ -1,14 +1,14 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { formStyles, GRADE_STRINGS } from "../../../utils/utils";
+import { formErrors, formStyles, GRADE_STRINGS } from "../../../utils/utils";
 import { FormError } from "../../form/FormError";
 import { FormButton } from "../../form/FormButton";
 
 export type OverrideGradeFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  grade: z.string().min(1, "required"),
+  grade: z.string().min(1, formErrors.required),
 });
 
 type OverrideGradeFormProps = {

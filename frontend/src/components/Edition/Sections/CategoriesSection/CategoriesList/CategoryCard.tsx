@@ -56,7 +56,7 @@ export const CategoryCard = ({
         handleSelect={handleSelectClick}
         handleEdit={handleEditClick}
         handleDelete={handleDeleteClick}
-        handleShow={() => openShowDialog(category)}
+        handleShow={() => openShowDialog(category, "category")}
       />
     </div>
   );

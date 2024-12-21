@@ -26,6 +26,7 @@ export const tokens = {
       // MUI
       error: "#f44336",
       success: "green",
+      errorLight: "#ff6e4f",
     },
     shadow: {
       white: "rgba(255, 255, 255, 0.6)",

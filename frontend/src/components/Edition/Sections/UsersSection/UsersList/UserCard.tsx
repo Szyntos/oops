@@ -59,14 +59,14 @@ export const UserCard = ({
           handleEdit={handleEditClick}
           isStudentActive={user.user.active}
           handleMarkStudentActiveness={() => handleStudentActiveness(user)}
-          handleShow={() => openShowDialog(user)}
+          handleShow={() => openShowDialog(user, "user")}
         />
       ) : (
         <SetupButtons
           permissions={user.permissions}
           handleDelete={handleDeleteClick}
           handleEdit={handleEditClick}
-          handleShow={() => openShowDialog(user)}
+          handleShow={() => openShowDialog(user, "user")}
         />
       )}
     </div>

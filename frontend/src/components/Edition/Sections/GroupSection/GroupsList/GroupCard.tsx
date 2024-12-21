@@ -53,7 +53,7 @@ export const GroupCard = ({
         permissions={group.permissions}
         handleEdit={editClick}
         handleDelete={deleteClick}
-        handleShow={() => openShowDialog(group)}
+        handleShow={() => openShowDialog(group, "group")}
       />
     </div>
   );

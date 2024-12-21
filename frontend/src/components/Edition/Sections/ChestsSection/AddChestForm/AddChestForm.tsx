@@ -3,14 +3,14 @@ import { FormikErrors, useFormik } from "formik";
 import { TextField } from "@mui/material";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
 import { SelectImage } from "../../../../inputs/SelectImage";
-import { formStyles } from "../../../../../utils/utils";
+import { formErrors, formStyles } from "../../../../../utils/utils";
 import { FormButton } from "../../../../form/FormButton";
 import { FormError } from "../../../../form/FormError";
 
 const ValidationSchema = z.object({
-  awardBundleCount: z.number().min(0),
-  fileId: z.string(),
-  name: z.string().min(1),
+  awardBundleCount: z.number().min(1, formErrors.minNumber(1)),
+  fileId: z.string().min(1, formErrors.required),
+  name: z.string().min(1, formErrors.required),
   awardThisEditionIds: z.array(z.string()),
   awardNotThisEditionIds: z.array(z.string()),
 });
@@ -55,16 +55,16 @@ export const AddChestForm = ({
       }
 
       if (values.fileId === "") {
-        errors.fileId = "Wybierz plik";
+        errors.fileId = formErrors.required;
       }
 
       if (values.awardThisEditionIds.length === 0) {
-        errors.awardThisEditionIds = "Wybierz co najmniej jedną nagrodę";
+        errors.awardThisEditionIds = "zybierz co najmniej jedną nagrodę";
       }
 
       if (values.awardThisEditionIds.length < values.awardBundleCount) {
         errors.awardThisEditionIds =
-          "Liczba wybranych nagród  edycji nie może być mniejsza niż maksymalna liczba nagród do wyboru ze skrzynki";
+          "liczba wybranych nagród edycji nie może być mniejsza niż maksymalna liczba nagród do wyboru ze skrzynki";
       }
 
       return errors;

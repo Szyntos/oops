@@ -56,7 +56,7 @@ export const SelectedSetCard = ({
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
-        handleShow={() => openShowDialog(levelSet)}
+        handleShow={() => openShowDialog(levelSet, "level")}
       />
     </div>
   );

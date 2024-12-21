@@ -196,3 +196,11 @@ export const mapAwardTypeToPolish = (type: AwardTypeType) => {
   }
   return text.toUpperCase();
 };
+
+export const formErrors = {
+  required: "wymagane",
+  minNumber: (x: number) => `>${x}`,
+  maxNumber: (x: number) => `<${x}`,
+  regexp: (r: string) => `oczekiwany format ${r}`,
+  email: "błędny format",
+};

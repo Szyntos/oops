@@ -21,6 +21,7 @@ type GroupTableProps = {
   handleStudentClick: (student: Student) => void;
   handleSubcategoryClick: (subcategory: Subcategory) => void;
   editable: boolean;
+  showAggregatedValues: boolean;
 };
 
 const OPACITY = 0.7;
@@ -30,6 +31,7 @@ export const GroupTable = ({
   handleStudentClick,
   handleSubcategoryClick,
   editable,
+  showAggregatedValues,
 }: GroupTableProps) => {
   type CellValueType = {
     data: number | string | boolean | undefined;
@@ -52,30 +54,33 @@ export const GroupTable = ({
       }
       values.push({ data: category.sums.sumOfBonuses, colored: true });
     }
-    // add aggregate values
-    const sums = getOverallSumValues(row);
-    values.push({ data: sums.purePointsSum, colored: true });
-    values.push({ data: sums.bonusesSum, colored: true });
-    values.push({ data: sums.overallSum, colored: true });
-    // add grade values
-    values.push({
-      data: row.student.computedValues.level.levelName,
-      colored: true,
-    });
-    values.push({
-      data: row.student.computedValues.level.grade,
-      colored: true,
-    });
-    values.push({
-      data: Boolean(row.student.computedValues.endOfLabsLevelsReached),
-    });
-    values.push({
-      data: Boolean(row.student.computedValues.projectPointsThresholdReached),
-    });
-    values.push({
-      data: row.student.computedValues.computedGrade.toFixed(1),
-      colored: true,
-    });
+    if (showAggregatedValues) {
+      // add aggregate values
+      const sums = getOverallSumValues(row);
+      values.push({ data: sums.purePointsSum, colored: true });
+      values.push({ data: sums.bonusesSum, colored: true });
+      values.push({ data: sums.overallSum, colored: true });
+      // add grade values
+      values.push({
+        data: row.student.computedValues.level.levelName,
+        colored: true,
+      });
+      values.push({
+        data: row.student.computedValues.level.grade,
+        colored: true,
+      });
+      values.push({
+        data: Boolean(row.student.computedValues.endOfLabsLevelsReached),
+      });
+      values.push({
+        data: Boolean(row.student.computedValues.projectPointsThresholdReached),
+      });
+      values.push({
+        data: row.student.computedValues.computedGrade.toFixed(1),
+        colored: true,
+      });
+    }
+
     return values;
   };
 
@@ -120,19 +125,22 @@ export const GroupTable = ({
         for (const award of category.awards) {
           headers.push({ cell: { data: award.name } });
         }
-        headers.push({ cell: { data: "Punkty za łupy", colored: true } });
+        headers.push({ cell: { data: "Zdobyte łupy", colored: true } });
       }
     }
-    // add aggregate values
-    headers.push({ cell: { data: "dobyte punkty", colored: true } });
-    headers.push({ cell: { data: "Zagregowane łupy", colored: true } });
-    headers.push({ cell: { data: "Razem", colored: true } });
-    // levels...
-    headers.push({ cell: { data: "Poziom", colored: true } });
-    headers.push({ cell: { data: "Przewidywana ocena", colored: true } });
-    headers.push({ cell: { data: "Status wyklucia", colored: true } });
-    headers.push({ cell: { data: "Status projektu", colored: true } });
-    headers.push({ cell: { data: "Ocena końcowa", colored: true } });
+    if (showAggregatedValues) {
+      // add aggregate values
+      headers.push({ cell: { data: "dobyte punkty", colored: true } });
+      headers.push({ cell: { data: "Zagregowane łupy", colored: true } });
+      headers.push({ cell: { data: "Razem", colored: true } });
+      // levels...
+      headers.push({ cell: { data: "Poziom", colored: true } });
+      headers.push({ cell: { data: "Przewidywana ocena", colored: true } });
+      headers.push({ cell: { data: "Status wyklucia", colored: true } });
+      headers.push({ cell: { data: "Status projektu", colored: true } });
+      headers.push({ cell: { data: "Ocena końcowa", colored: true } });
+    }
+
     return headers;
   };
 

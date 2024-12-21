@@ -52,7 +52,9 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
           size={"l"}
           imageStyle={getPodiumShadow()}
         />
-        <CustomText size={tokens.font.title}>{student.nick}</CustomText>
+        <CustomText size={tokens.font.title} bold={true}>
+          {student.nick}
+        </CustomText>
       </div>
       <div
         style={{
@@ -62,7 +64,7 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
       >
         <CustomText
           style={styles.place}
-          color={tokens.color.accent.dark}
+          color={tokens.color.card.light}
           size={tokens.font.title}
         >
           {place}
@@ -92,7 +94,7 @@ const styles: Styles = {
     paddingTop: 12,
   },
   place: {
-    backgroundColor: "white",
+    backgroundColor: tokens.color.text.primary,
     width: 32,
     height: 32,
     display: "flex",

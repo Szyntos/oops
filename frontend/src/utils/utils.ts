@@ -168,7 +168,7 @@ export const formStyles: Styles = {
     gap: 12,
   },
   label: {
-    color: tokens.color.text.tertiary,
+    color: tokens.color.text.mui,
     paddingLeft: 12,
     fontSize: 13,
     paddingBottom: 12,

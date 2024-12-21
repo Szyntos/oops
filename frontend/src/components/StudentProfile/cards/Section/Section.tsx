@@ -14,7 +14,7 @@ export const Section = ({ title, children }: SectionProps) => {
       {title && (
         <div style={styles.sep}>
           <CustomText
-            color={tokens.color.text.tertiary}
+            color={tokens.color.text.secondary}
             bold={true}
             size={tokens.font.text}
           >
@@ -31,7 +31,7 @@ export const Section = ({ title, children }: SectionProps) => {
 const styles: Styles = {
   separator: {
     height: 1,
-    backgroundColor: tokens.color.text.tertiary,
+    backgroundColor: tokens.color.text.secondary,
     flex: 1,
   },
   sep: {

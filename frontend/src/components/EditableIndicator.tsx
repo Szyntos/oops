@@ -1,10 +1,11 @@
 import { tokens } from "../tokens";
 import { Styles } from "../utils/Styles";
+import { IconMapper } from "./IconMapper";
 
 export const EditableIndicator = () => {
   return (
     <div style={styles.editable}>
-      <div style={styles.editIcon}>✎</div>
+      <IconMapper icon={"edit"} />
     </div>
   );
 };
@@ -18,9 +19,5 @@ const styles: Styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-  },
-  editIcon: {
-    fontSize: 22,
-    color: tokens.color.text.primary,
   },
 };

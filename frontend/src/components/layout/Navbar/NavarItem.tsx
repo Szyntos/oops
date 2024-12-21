@@ -53,7 +53,7 @@ const styles: Styles = {
     alignContent: "center",
   },
   active: {
-    color: tokens.color.accent.dark,
+    color: tokens.color.accent.light,
     transition: COLOR_TRANSITION_ANIMATION,
   },
   clickable: {

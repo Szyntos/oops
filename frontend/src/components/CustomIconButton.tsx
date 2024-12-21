@@ -11,7 +11,7 @@ type CustomIconButtonProps = {
 
 export const CustomIconButton = ({
   icon,
-  color = tokens.color.accent.light,
+  color = tokens.color.accent.dark,
   disabled,
   onClick,
 }: CustomIconButtonProps) => {

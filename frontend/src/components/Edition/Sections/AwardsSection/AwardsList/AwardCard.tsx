@@ -1,5 +1,6 @@
 import { useEditionSections } from "../../../../../hooks/common/useEditionSection";
 import { Award } from "../../../../../hooks/Edition/useAwardsSection";
+import { tokens } from "../../../../../tokens";
 import {
   coordinatorStyles,
   getAwardMaxUsageString,
@@ -48,7 +49,9 @@ export const AwardCard = ({
         </div>
       </div>
 
-      <CustomText>{getAwardMaxUsageString(award.award.maxUsages)}</CustomText>
+      <CustomText color={tokens.color.text.secondary}>
+        {getAwardMaxUsageString(award.award.maxUsages)}
+      </CustomText>
 
       <SetupButtons
         isSelected={isSelected}

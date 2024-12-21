@@ -76,6 +76,9 @@ export const GroupTableWithFilters = ({
           handleStudentClick={handleStudentClick}
           handleSubcategoryClick={handleSubcategoryClick}
           editable={editable}
+          showAggregatedValues={
+            !applyFilters || selectedCategoryIds.length === categories.length
+          }
         />
       </div>
     </>

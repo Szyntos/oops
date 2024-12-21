@@ -27,11 +27,7 @@ export const FilterButton = ({
         style={{
           ...styles.button,
           backgroundColor:
-            isActive || hovered ? tokens.color.accent.light : undefined,
-          color:
-            isActive || hovered
-              ? tokens.color.text.primary
-              : tokens.color.accent.light,
+            isActive || hovered ? tokens.color.accent.dark : undefined,
           cursor: hovered ? "pointer" : "auto",
         }}
         onClick={onClick}
@@ -50,6 +46,6 @@ const styles: Styles = {
     borderRadius: 8,
     cursor: "pointer",
     transition: BACKGROUND_COLOR_ANIMATION,
-    border: `${BORDER_WIDTH}px solid ${tokens.color.accent.light}`,
+    border: `${BORDER_WIDTH}px solid ${tokens.color.accent.dark}`,
   },
 };

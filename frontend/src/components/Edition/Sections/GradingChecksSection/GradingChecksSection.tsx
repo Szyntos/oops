@@ -78,14 +78,15 @@ export const GradingChecksSection = () => {
         title={"Warunki zaliczenia"}
         cards={[
           <div style={{ ...getCardStyles(true), minWidth: 400 }}>
-            <CustomText style={coordinatorStyles.title}>
-              Warunki zaliczenia
-            </CustomText>
             <div style={coordinatorStyles.textContainer}>
+              <CustomText style={coordinatorStyles.title}>
+                Warunki zaliczenia
+              </CustomText>
+
               <div style={styles.row}>
                 <CustomText>Data końca laboratorium: </CustomText>
 
-                <CustomText color={tokens.color.text.tertiary}>
+                <CustomText color={tokens.color.text.secondary}>
                   {displayDate}
                 </CustomText>
               </div>
@@ -94,14 +95,14 @@ export const GradingChecksSection = () => {
                 <CustomText>
                   Poziom do zdobycia przed końcem laboratorium:
                 </CustomText>
-                <CustomText color={tokens.color.text.tertiary}>
+                <CustomText color={tokens.color.text.secondary}>
                   {displayLevel}
                 </CustomText>
               </div>
 
               <div style={styles.row}>
                 <CustomText>Wybrana kategoria: </CustomText>
-                <CustomText color={tokens.color.text.tertiary}>
+                <CustomText color={tokens.color.text.secondary}>
                   {displayCategory}
                 </CustomText>
               </div>
@@ -110,7 +111,7 @@ export const GradingChecksSection = () => {
                 <CustomText>
                   Liczba punktów do zdobycia za daną kategorię:
                 </CustomText>
-                <CustomText color={tokens.color.text.tertiary}>
+                <CustomText color={tokens.color.text.secondary}>
                   {displayPoints}pkt
                 </CustomText>
               </div>
@@ -129,20 +130,23 @@ export const GradingChecksSection = () => {
         title={"Podgląd"}
         cards={[
           <div style={{ ...getCardStyles(true), maxWidth: 420 }}>
-            <CustomText style={coordinatorStyles.title}>Podgląd</CustomText>
+            <div style={coordinatorStyles.textContainer}>
+              <CustomText style={coordinatorStyles.title}>Podgląd</CustomText>
 
-            <CustomText>
-              "Aby zaliczyć przedmiot Twój zwierzak musi być na koniec co
-              najmniej {quotes?.getQuoteVariables.firstPassingLevel?.levelName}{" "}
-              oraz powinien zdobyć co najmniej {displayPoints}
-              pkt w trakcie {displayCategory}. Ponadto musi on wykluć się z{" "}
-              {displayLevel} przed końcem laboratoriów {displayDate}
-              ."
-            </CustomText>
-            <CustomText color={tokens.color.text.tertiary}>
-              ~ {quotes?.getQuoteVariables.coordinator.firstName}{" "}
-              {quotes?.getQuoteVariables.coordinator.secondName}
-            </CustomText>
+              <CustomText>
+                "Aby zaliczyć przedmiot Twój zwierzak musi być na koniec co
+                najmniej{" "}
+                {quotes?.getQuoteVariables.firstPassingLevel?.levelName} oraz
+                powinien zdobyć co najmniej {displayPoints}
+                pkt w trakcie {displayCategory}. Ponadto musi on wykluć się z{" "}
+                {displayLevel} przed końcem laboratoriów {displayDate}
+                ."
+              </CustomText>
+              <CustomText color={tokens.color.text.secondary}>
+                ~ {quotes?.getQuoteVariables.coordinator.firstName}{" "}
+                {quotes?.getQuoteVariables.coordinator.secondName}
+              </CustomText>
+            </div>
           </div>,
         ]}
       />

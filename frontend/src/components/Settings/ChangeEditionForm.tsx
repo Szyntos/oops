@@ -48,7 +48,7 @@ export const ChangeEditionForm = ({
   return (
     <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div style={formStyles.filedsContainer}>
+        <div style={formStyles.fieldsContainer}>
           <FormControl fullWidth>
             <InputLabel
               error={Boolean(

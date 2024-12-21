@@ -10,7 +10,7 @@ export type FileCardProps = {
 
 export const FileCard = ({ item, handleDelete }: FileCardProps) => {
   return (
-    <div style={getCardStyles(false)}>
+    <div style={getCardStyles(true)}>
       <Avatar id={item.id} size="l" />
       <SetupButtons
         permissions={item.permissions}

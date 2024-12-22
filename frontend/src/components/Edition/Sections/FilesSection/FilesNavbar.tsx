@@ -11,7 +11,7 @@ export type Folder = {
   pathPrefix: string;
 };
 
-const FILES_NAVBAR_HEIGHT = 28;
+const FILES_NAVBAR_HEIGHT = 30;
 const NAVBAR_BORDER = 1;
 
 type FilesNavarProps = {

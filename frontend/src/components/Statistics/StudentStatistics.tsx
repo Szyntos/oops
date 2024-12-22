@@ -9,29 +9,33 @@ export const StudentStatistics = () => {
   const { students, loading, error, groupedStudents, highlightedStudent } =
     useHallOfFameData();
 
-  if (loading) return <LoadingScreen />;
-  if (error) return <ErrorScreen />;
-
   const studentGroupId = highlightedStudent?.groupId ?? "";
+
+  if (loading) return <LoadingScreen />;
+  if (error || students.length === 0) return <ErrorScreen />;
 
   return (
     <div style={styles.container}>
       <>
-        <StatisticsCard
-          title={groupedStudents[studentGroupId][0].groupName}
-          key={studentGroupId}
-          students={groupedStudents[studentGroupId] ?? []}
-          highlightedStudent={highlightedStudent}
-          highlight={false}
-        />
+        {groupedStudents[studentGroupId].length > 0 && (
+          <StatisticsCard
+            title={groupedStudents[studentGroupId][0].groupName}
+            key={studentGroupId}
+            students={groupedStudents[studentGroupId] ?? []}
+            highlightedStudent={highlightedStudent}
+            highlight={false}
+          />
+        )}
 
-        <StatisticsCard
-          title={`Wszystkie grupy`}
-          key={"all"}
-          students={students}
-          highlightedStudent={highlightedStudent}
-          highlight={true}
-        />
+        {students.length && (
+          <StatisticsCard
+            title={`Wszystkie grupy`}
+            key={"all"}
+            students={students}
+            highlightedStudent={highlightedStudent}
+            highlight={true}
+          />
+        )}
       </>
     </div>
   );

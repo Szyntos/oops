@@ -11,33 +11,39 @@ export const TeacherStatistics = () => {
   const { students, loading, error, groupedStudents } =
     useHallOfFameDataTeacher();
 
-  if (loading) return <LoadingScreen />;
-  if (error) return <ErrorScreen />;
-
   const groupIds = Object.keys(groupedStudents);
+
+  if (loading) return <LoadingScreen />;
+  if (error || students.length === 0) return <ErrorScreen />;
 
   return (
     <div style={styles.container}>
-      <StatisticsCard
-        title={`Wszystkie grupy`}
-        key={"all"}
-        students={students}
-        highlight={true}
-      />
+      {students.length > 0 && (
+        <StatisticsCard
+          title={`Wszystkie grupy`}
+          key={"all"}
+          students={students}
+          highlight={true}
+        />
+      )}
 
       {groupIds
         .filter((groupId) => {
           const group = groupedStudents[groupId];
           return group[0].teacherId === user.userId;
         })
-        .map((groupId) => (
-          <StatisticsCard
-            title={groupedStudents[groupId][0].groupName}
-            key={groupId}
-            students={groupedStudents[groupId] ?? []}
-            highlight={false}
-          />
-        ))}
+        .map((groupId) =>
+          groupedStudents[groupId].length > 0 ? (
+            <StatisticsCard
+              title={groupedStudents[groupId][0].groupName}
+              key={groupId}
+              students={groupedStudents[groupId] ?? []}
+              highlight={false}
+            />
+          ) : (
+            <></>
+          ),
+        )}
     </div>
   );
 };

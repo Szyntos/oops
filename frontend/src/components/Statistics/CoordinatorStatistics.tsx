@@ -9,27 +9,33 @@ export const CoordinatorStatistics = () => {
     useHallOfFameDataTeacher();
 
   if (loading) return <LoadingScreen />;
-  if (error) return <ErrorScreen />;
+  if (error || students.length === 0) return <ErrorScreen />;
 
   const groupIds = Object.keys(groupedStudents);
 
   return (
     <div style={styles.container}>
-      <StatisticsCard
-        title={`Wszystkie grupy`}
-        key={"all"}
-        students={students}
-        highlight={true}
-      />
-
-      {groupIds.map((groupId) => (
+      {students.length > 0 && (
         <StatisticsCard
-          title={groupedStudents[groupId][0].groupName}
-          key={groupId}
-          students={groupedStudents[groupId] ?? []}
-          highlight={false}
+          title={`Wszystkie grupy`}
+          key={"all"}
+          students={students}
+          highlight={true}
         />
-      ))}
+      )}
+
+      {groupIds.map((groupId) =>
+        groupedStudents[groupId].length > 0 ? (
+          <StatisticsCard
+            title={groupedStudents[groupId][0].groupName}
+            key={groupId}
+            students={groupedStudents[groupId] ?? []}
+            highlight={false}
+          />
+        ) : (
+          <></>
+        ),
+      )}
     </div>
   );
 };

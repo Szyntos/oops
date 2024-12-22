@@ -15,6 +15,8 @@ import { IconMapper } from "../../IconMapper";
 import { tokens } from "../../../tokens";
 import { HooverWrapper } from "../../HooverWrapper";
 import { CustomText } from "../../CustomText";
+import { pathsGenerator } from "../../../router/paths";
+import { useNavigate } from "react-router-dom";
 
 type GroupTableProps = {
   rows: GroupTableRow[];
@@ -28,7 +30,6 @@ const OPACITY = 0.7;
 
 export const GroupTable = ({
   rows,
-  handleStudentClick,
   handleSubcategoryClick,
   editable,
   showAggregatedValues,
@@ -39,6 +40,8 @@ export const GroupTable = ({
     colored?: boolean;
     clickable?: boolean;
   };
+
+  const navigate = useNavigate();
 
   // order: subcategories, pure points sum, awards, bonus points sum
   const getRowValues = (row: GroupTableRow): CellValueType[] => {
@@ -212,23 +215,19 @@ export const GroupTable = ({
               <TableCell
                 style={{
                   ...styles.regularStudentCell,
-                  cursor: editable ? "pointer" : "auto",
+                  cursor: "pointer",
                 }}
                 onClick={() => {
-                  if (editable) {
-                    handleStudentClick(row.student);
-                  }
+                  navigate(
+                    pathsGenerator.teacher.StudentProfile(row.student.id),
+                  );
                 }}
               >
-                {editable ? (
-                  <HooverWrapper opacity={OPACITY}>
-                    <div>
-                      {index + 1}. {row.student.fullName}
-                    </div>
-                  </HooverWrapper>
-                ) : (
-                  `${index + 1}. ${row.student.fullName}`
-                )}
+                <HooverWrapper opacity={OPACITY}>
+                  <div>
+                    {index + 1}. {row.student.fullName}
+                  </div>
+                </HooverWrapper>
               </TableCell>
               {getRowValues(row).map((value, index) => (
                 <TableCell

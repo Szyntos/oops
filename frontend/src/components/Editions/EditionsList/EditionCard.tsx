@@ -55,7 +55,7 @@ export const EditionCard = ({
         handleDelete={handleDeleteClick}
         handleCopy={handleCopyClick}
         handleEdit={handleEditClick}
-        handleShow={() =>
+        onDisplayClick={() =>
           navigate(pathsGenerator.coordinator.Edition(edition.editionId))
         }
         permissions={permissions}

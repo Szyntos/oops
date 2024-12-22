@@ -22,6 +22,7 @@ type SetupButtonsProps = {
   isStudentActive?: boolean;
   isChestActive?: boolean;
   isBigVariant?: boolean;
+  onDisplayClick?: () => void;
 };
 
 export const SetupButtons = ({
@@ -38,6 +39,7 @@ export const SetupButtons = ({
   isStudentActive,
   isChestActive,
   isBigVariant,
+  onDisplayClick,
 }: SetupButtonsProps) => {
   const copy: SetupButtonProps | undefined = handleCopy
     ? {
@@ -129,6 +131,14 @@ export const SetupButtons = ({
       }
     : undefined;
 
+  const disp: SetupButtonProps | undefined = onDisplayClick
+    ? {
+        handleClick: onDisplayClick,
+        isClickable: true,
+        reason: undefined,
+        title: "Pokaż",
+      }
+    : undefined;
   return (
     <div
       style={
@@ -147,6 +157,7 @@ export const SetupButtons = ({
         <SetupButton {...chestActiveness} isBigVariant={isBigVariant} />
       )}
       {show && <SetupButton {...show} isBigVariant={isBigVariant} />}
+      {disp && <SetupButton {...disp} isBigVariant={isBigVariant} />}
     </div>
   );
 };

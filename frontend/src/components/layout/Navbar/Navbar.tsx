@@ -50,9 +50,18 @@ export const Navbar = () => {
     handleChangeEditionConfirm,
   } = useSettings();
 
-  const navigationItems = getNavigationItems(
-    user.role === UsersRolesType.Student,
-  );
+  const getRole = () => {
+    switch (user.role) {
+      case UsersRolesType.Coordinator:
+        return "coordinator";
+      case UsersRolesType.Student:
+        return "student";
+      default:
+        return "teacher";
+    }
+  };
+
+  const navigationItems = getNavigationItems(getRole());
 
   return (
     <div style={navbarStyles.navbar}>

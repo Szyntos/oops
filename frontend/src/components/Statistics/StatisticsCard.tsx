@@ -227,6 +227,18 @@ export const StatisticsCard = ({
           valueLabelFormat={(value) => `${value} kolumn`}
           marks={marks}
           style={{ width: SLIDER_WIDTH }}
+          sx={{
+            color: "rgba(45, 198, 83, 0.4)",
+            "& .MuiSlider-thumb": {
+              backgroundColor: "white",
+            },
+            "& .MuiSlider-rail": {
+              backgroundColor: "white",
+            },
+            "& .MuiSlider-track": {
+              backgroundColor: "rgba(45, 198, 83, 0.4)",
+            },
+          }}
         />
       </div>
 

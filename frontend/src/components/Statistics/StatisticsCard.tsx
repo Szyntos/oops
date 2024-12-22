@@ -231,24 +231,67 @@ export const StatisticsCard = ({
       </div>
 
       <ResponsiveContainer height={300} width={SLIDER_WIDTH + 150}>
-        <ComposedChart data={combinedData}>
+        <ComposedChart data={combinedData} height={200}>
+          {/* X-Axis with updated text color and adjustments for label and ticks */}
           <XAxis
             dataKey="midpoint"
             type="number"
             domain={[min, max]}
-            label={{ value: "Points", position: "insideBottom", offset: -5 }}
+            stroke={tokens.color.text.secondary} // Axis line and tick color
+            tick={{
+              fill: tokens.color.text.secondary, // Tick label color
+              dy: 10, // Adjust vertical positioning of tick labels if necessary
+            }}
           />
-          <YAxis />
-          <Tooltip />
+          {/* Y-Axis with updated text color */}
+          <YAxis
+            stroke={tokens.color.text.secondary} // Axis line and tick color
+            tick={{ fill: tokens.color.text.secondary }} // Tick label color
+          />
+
+          <Tooltip
+            content={({ active, payload }) => {
+              if (active && payload && payload.length) {
+                const bin = payload[0].payload; // Access the bin data directly from payload
+                return (
+                  <div
+                    style={{
+                      background: "white",
+                      padding: "8px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                    }}
+                  >
+                    <p style={{ margin: 0, fontSize: 14 }}>
+                      Liczba studentów: {bin.count}
+                    </p>
+                    <p style={{ margin: 0, fontSize: 14 }}>
+                      Zakres: {bin.range}
+                    </p>
+                  </div>
+                );
+              }
+              return null;
+            }}
+          />
           <Bar dataKey="count">
             {combinedData.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={entry.highlighted ? "#FF5733" : "#82ca9d"} // Highlight color for the specific bar
+                fill={
+                  entry.highlighted
+                    ? tokens.color.accent.dark
+                    : tokens.color.accent.light
+                } // Highlight color for the specific bar
               />
             ))}
           </Bar>
-          <Line type="monotone" dataKey="pdf" stroke="#8884d8" dot={false} />
+          <Line
+            type="monotone"
+            dataKey="pdf"
+            stroke={tokens.color.text.secondary}
+            dot={false}
+          />
           {levels.map((level, index) => (
             <ReferenceLine
               key={level.name}
@@ -257,11 +300,15 @@ export const StatisticsCard = ({
                 position: "insideTop",
                 value: level.name,
                 angle: 0,
-                dy: index % 2 === 0 ? 20 : 0, // Stagger labels vertically
-                fill: "#000",
-                style: { fontSize: "12px", fontWeight: "bold" }, // Optional: Style adjustments
+                dy: index % 2 === 0 ? 20 : 0,
+                fill: tokens.color.text.primary, // Reference line label color
+                style: {
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  fontFamily: '"Roboto", Helvetica, Arial, sans-serif',
+                },
               }}
-              stroke="#000"
+              stroke={tokens.color.text.secondary} // Reference line color
               strokeDasharray="3 3"
             />
           ))}

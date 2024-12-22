@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { getNavigationItems } from "../../../router/paths";
+import { getNavigationItems, pathsGenerator } from "../../../router/paths";
 import { Styles } from "../../../utils/Styles";
 import { useEditionSelection } from "../../../hooks/common/useEditionSelection";
 import { useUser } from "../../../hooks/common/useUser";
@@ -63,6 +63,22 @@ export const Navbar = () => {
 
   const navigationItems = getNavigationItems(getRole());
 
+  const handleLogoClick = () => {
+    switch (user.role) {
+      case UsersRolesType.Student:
+        navigate(pathsGenerator.student.StudentProfile);
+        break;
+      case UsersRolesType.Coordinator:
+      case UsersRolesType.Teacher:
+        navigate(pathsGenerator.teacher.Groups);
+        break;
+      default:
+        navigate(pathsGenerator.common.Welcome);
+        break;
+    }
+    return;
+  };
+
   return (
     <div style={navbarStyles.navbar}>
       <div style={navbarStyles.itemsContainer}>
@@ -80,7 +96,12 @@ export const Navbar = () => {
       </div>
 
       <div style={navbarStyles.logo}>
-        <img src={Logo} alt="logo" style={{ height: LOGO_HEIGHT }} />
+        <img
+          src={Logo}
+          alt="logo"
+          style={{ height: LOGO_HEIGHT, cursor: "pointer" }}
+          onClick={handleLogoClick}
+        />
       </div>
 
       <div style={navbarStyles.itemsContainer}>

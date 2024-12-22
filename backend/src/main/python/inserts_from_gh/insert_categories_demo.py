@@ -71,7 +71,6 @@ def insert_categories(hasura_url, headers, category_data, editions):
                 for i in range(1, number_of_subcategories + 1)
             ]
         else:
-            all_event_names = special_event_names + event_names
             if max_points_per_subcategory:
                 subcategories_data = [
                     {
@@ -82,19 +81,19 @@ def insert_categories(hasura_url, headers, category_data, editions):
                         "editionId": None,
                         "label": ""
                     }
-                    for idx, name in enumerate(all_event_names)
+                    for idx, name in enumerate(special_event_names)
                 ]
             else:
                 subcategories_data = [
                     {
                         "subcategoryName": name,
-                        "maxPoints": random.randint(1, 20) * 10,
+                        "maxPoints": 0,
                         "ordinalNumber": idx,
                         "categoryId": None,
                         "editionId": None,
                         "label": ""
                     }
-                    for idx, name in enumerate(all_event_names)
+                    for idx, name in enumerate(event_names)
                 ]
 
         # Now, include subcategories in the mutation

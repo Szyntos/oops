@@ -11,6 +11,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/initdb:/docker-entrypoint-initdb.d
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
@@ -54,6 +56,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       VITE_BYPASS_TOKEN: ${VITE_BYPASS_TOKEN}
+      TZ: "Europe/Warsaw"
     env_file:
       - .env
     volumes:

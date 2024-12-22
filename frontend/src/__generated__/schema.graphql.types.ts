@@ -6326,6 +6326,7 @@ export type HallOfFame = {
   nick?: Maybe<Scalars["String"]["output"]>;
   secondName?: Maybe<Scalars["String"]["output"]>;
   sumOfPoints?: Maybe<Scalars["numeric"]["output"]>;
+  teacherId?: Maybe<Scalars["bigint"]["output"]>;
   userId?: Maybe<Scalars["bigint"]["output"]>;
   userImageId?: Maybe<Scalars["bigint"]["output"]>;
 };
@@ -6367,6 +6368,7 @@ export type HallOfFameAvgFields = {
   levelId?: Maybe<Scalars["Float"]["output"]>;
   levelImageId?: Maybe<Scalars["Float"]["output"]>;
   sumOfPoints?: Maybe<Scalars["Float"]["output"]>;
+  teacherId?: Maybe<Scalars["Float"]["output"]>;
   userId?: Maybe<Scalars["Float"]["output"]>;
   userImageId?: Maybe<Scalars["Float"]["output"]>;
 };
@@ -6387,6 +6389,7 @@ export type HallOfFameBoolExp = {
   nick?: InputMaybe<StringComparisonExp>;
   secondName?: InputMaybe<StringComparisonExp>;
   sumOfPoints?: InputMaybe<NumericComparisonExp>;
+  teacherId?: InputMaybe<BigintComparisonExp>;
   userId?: InputMaybe<BigintComparisonExp>;
   userImageId?: InputMaybe<BigintComparisonExp>;
 };
@@ -6405,6 +6408,7 @@ export type HallOfFameMaxFields = {
   nick?: Maybe<Scalars["String"]["output"]>;
   secondName?: Maybe<Scalars["String"]["output"]>;
   sumOfPoints?: Maybe<Scalars["numeric"]["output"]>;
+  teacherId?: Maybe<Scalars["bigint"]["output"]>;
   userId?: Maybe<Scalars["bigint"]["output"]>;
   userImageId?: Maybe<Scalars["bigint"]["output"]>;
 };
@@ -6423,6 +6427,7 @@ export type HallOfFameMinFields = {
   nick?: Maybe<Scalars["String"]["output"]>;
   secondName?: Maybe<Scalars["String"]["output"]>;
   sumOfPoints?: Maybe<Scalars["numeric"]["output"]>;
+  teacherId?: Maybe<Scalars["bigint"]["output"]>;
   userId?: Maybe<Scalars["bigint"]["output"]>;
   userImageId?: Maybe<Scalars["bigint"]["output"]>;
 };
@@ -6440,6 +6445,7 @@ export type HallOfFameOrderBy = {
   nick?: InputMaybe<OrderBy>;
   secondName?: InputMaybe<OrderBy>;
   sumOfPoints?: InputMaybe<OrderBy>;
+  teacherId?: InputMaybe<OrderBy>;
   userId?: InputMaybe<OrderBy>;
   userImageId?: InputMaybe<OrderBy>;
 };
@@ -6469,6 +6475,8 @@ export enum HallOfFameSelectColumn {
   /** column name */
   SumOfPoints = "sumOfPoints",
   /** column name */
+  TeacherId = "teacherId",
+  /** column name */
   UserId = "userId",
   /** column name */
   UserImageId = "userImageId",
@@ -6482,6 +6490,7 @@ export type HallOfFameStddevFields = {
   levelId?: Maybe<Scalars["Float"]["output"]>;
   levelImageId?: Maybe<Scalars["Float"]["output"]>;
   sumOfPoints?: Maybe<Scalars["Float"]["output"]>;
+  teacherId?: Maybe<Scalars["Float"]["output"]>;
   userId?: Maybe<Scalars["Float"]["output"]>;
   userImageId?: Maybe<Scalars["Float"]["output"]>;
 };
@@ -6494,6 +6503,7 @@ export type HallOfFameStddevPopFields = {
   levelId?: Maybe<Scalars["Float"]["output"]>;
   levelImageId?: Maybe<Scalars["Float"]["output"]>;
   sumOfPoints?: Maybe<Scalars["Float"]["output"]>;
+  teacherId?: Maybe<Scalars["Float"]["output"]>;
   userId?: Maybe<Scalars["Float"]["output"]>;
   userImageId?: Maybe<Scalars["Float"]["output"]>;
 };
@@ -6506,6 +6516,7 @@ export type HallOfFameStddevSampFields = {
   levelId?: Maybe<Scalars["Float"]["output"]>;
   levelImageId?: Maybe<Scalars["Float"]["output"]>;
   sumOfPoints?: Maybe<Scalars["Float"]["output"]>;
+  teacherId?: Maybe<Scalars["Float"]["output"]>;
   userId?: Maybe<Scalars["Float"]["output"]>;
   userImageId?: Maybe<Scalars["Float"]["output"]>;
 };
@@ -6531,6 +6542,7 @@ export type HallOfFameStreamCursorValueInput = {
   nick?: InputMaybe<Scalars["String"]["input"]>;
   secondName?: InputMaybe<Scalars["String"]["input"]>;
   sumOfPoints?: InputMaybe<Scalars["numeric"]["input"]>;
+  teacherId?: InputMaybe<Scalars["bigint"]["input"]>;
   userId?: InputMaybe<Scalars["bigint"]["input"]>;
   userImageId?: InputMaybe<Scalars["bigint"]["input"]>;
 };
@@ -6543,6 +6555,7 @@ export type HallOfFameSumFields = {
   levelId?: Maybe<Scalars["bigint"]["output"]>;
   levelImageId?: Maybe<Scalars["bigint"]["output"]>;
   sumOfPoints?: Maybe<Scalars["numeric"]["output"]>;
+  teacherId?: Maybe<Scalars["bigint"]["output"]>;
   userId?: Maybe<Scalars["bigint"]["output"]>;
   userImageId?: Maybe<Scalars["bigint"]["output"]>;
 };
@@ -6555,6 +6568,7 @@ export type HallOfFameVarPopFields = {
   levelId?: Maybe<Scalars["Float"]["output"]>;
   levelImageId?: Maybe<Scalars["Float"]["output"]>;
   sumOfPoints?: Maybe<Scalars["Float"]["output"]>;
+  teacherId?: Maybe<Scalars["Float"]["output"]>;
   userId?: Maybe<Scalars["Float"]["output"]>;
   userImageId?: Maybe<Scalars["Float"]["output"]>;
 };
@@ -6567,6 +6581,7 @@ export type HallOfFameVarSampFields = {
   levelId?: Maybe<Scalars["Float"]["output"]>;
   levelImageId?: Maybe<Scalars["Float"]["output"]>;
   sumOfPoints?: Maybe<Scalars["Float"]["output"]>;
+  teacherId?: Maybe<Scalars["Float"]["output"]>;
   userId?: Maybe<Scalars["Float"]["output"]>;
   userImageId?: Maybe<Scalars["Float"]["output"]>;
 };
@@ -6579,6 +6594,7 @@ export type HallOfFameVarianceFields = {
   levelId?: Maybe<Scalars["Float"]["output"]>;
   levelImageId?: Maybe<Scalars["Float"]["output"]>;
   sumOfPoints?: Maybe<Scalars["Float"]["output"]>;
+  teacherId?: Maybe<Scalars["Float"]["output"]>;
   userId?: Maybe<Scalars["Float"]["output"]>;
   userImageId?: Maybe<Scalars["Float"]["output"]>;
 };

@@ -29,8 +29,20 @@ export const useHallOfFameData = () => {
         groupId: student.groupsId ?? "",
         avatarImgId: student.userImageId ?? undefined,
         levelImgId: student.levelImageId ?? undefined,
+        groupName: student.generatedName ?? "",
       };
     }) ?? [];
+
+  const groupedStudents: Record<string, HallOfFameStudentData[]> = {};
+
+  for (const student of students) {
+    if (student.groupId) {
+      if (!groupedStudents[student.groupId]) {
+        groupedStudents[student.groupId] = [];
+      }
+      groupedStudents[student.groupId].push(student);
+    }
+  }
 
   const highlightedStudent = students.find((student) => {
     return student.id === user.userId;
@@ -41,6 +53,7 @@ export const useHallOfFameData = () => {
     students,
     highlightedStudent:
       user.role === UsersRolesType.Student ? highlightedStudent : undefined,
+    groupedStudents,
     loading,
     error,
   };

@@ -292,8 +292,8 @@ export const StatisticsCard = ({
                 key={`cell-${index}`}
                 fill={
                   entry.highlighted
-                    ? tokens.color.accent.dark
-                    : tokens.color.accent.light
+                    ? tokens.color.accent.light
+                    : "rgba(45, 198, 83, 0.4)"
                 } // Highlight color for the specific bar
               />
             ))}

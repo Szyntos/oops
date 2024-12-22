@@ -6,6 +6,7 @@ import { CustomText } from "../CustomText";
 import { FormError } from "../form/FormError";
 import { EMPTY_FIELD_STRING } from "../../utils/constants";
 import { formStyles } from "../../utils/utils";
+import { Chest } from "../../hooks/StudentProfile/useCoordinatorActions";
 
 type SelectImageProps = {
   selectedIds: string[];
@@ -32,7 +33,7 @@ type WithoutTooltipProps = {
 type ChestProps = {
   type: "chest";
   // ids of images
-  options: string[];
+  options: Chest[];
   imageSize?: AvatarSize;
 };
 
@@ -99,16 +100,25 @@ export const SelectImage = ({
           </div>
         ));
       case "chest":
-        return options.map((imageId) => (
+        return options.map((chest) => (
           <div
             style={styles.imageWrapper}
-            onClick={() => handleSelect(imageId)}
+            onClick={() => handleSelect(chest.chestId)}
           >
-            <Avatar
-              id={imageId}
-              size={imageSize}
-              disabled={!selectedIds.some((id) => id === imageId)}
-            />
+            <TooltipWrapper
+              placement="bottom"
+              tooltipContent={
+                <div>
+                  <div style={{ fontWeight: "bold" }}>{chest.type}</div>
+                </div>
+              }
+            >
+              <Avatar
+                id={chest.imageFileId ?? undefined}
+                size={imageSize}
+                disabled={!selectedIds.some((id) => id === chest.chestId)}
+              />
+            </TooltipWrapper>
           </div>
         ));
     }

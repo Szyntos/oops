@@ -139,7 +139,7 @@ export const AddChestToUserForm = ({
 
           <SelectImage
             type="chest"
-            options={chests.map((c) => c.imageFileId as string)}
+            options={chests}
             selectedIds={[formik.values.chestId]}
             onSelectClick={(updatedIds: string[]) =>
               formik.setValues({

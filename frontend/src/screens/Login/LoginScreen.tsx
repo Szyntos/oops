@@ -97,10 +97,6 @@ export const LoginScreen = () => {
           <CustomText style={formStyles.title} size={tokens.font.header}>
             Zaloguj się{" "}
           </CustomText>
-
-          <CustomText color={tokens.color.text.tertiary}>
-            {randomText}
-          </CustomText>
         </div>
 
         <LoginForm
@@ -110,10 +106,24 @@ export const LoginScreen = () => {
         />
 
         {resetCodeSent && (
-          <CustomText color={tokens.color.text.tertiary}>
+          <CustomText color={tokens.color.text.secondary}>
             Sprawdź swoją skrzynkę, wysłaliśmy do ciebie linka!
           </CustomText>
         )}
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+            marginTop: 20,
+          }}
+        >
+          <CustomText color={tokens.color.text.secondary}>
+            {randomText}
+          </CustomText>
+        </div>
       </div>
     </div>
   );

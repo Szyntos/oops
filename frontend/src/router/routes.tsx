@@ -38,7 +38,7 @@ export const routes = createBrowserRouter([
         element: (
           <ProtectedRoute
             element={<LoginScreen />}
-            allowedRoles={commonPaths.Login.allowedRoles}
+            allowedRoles={commonPaths.Default.allowedRoles}
           />
         ),
         index: true,

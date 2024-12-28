@@ -18,10 +18,6 @@ const commonPaths = {
       UsersRolesType.Coordinator,
     ],
   },
-  Login: {
-    path: "/login",
-    allowedRoles: [UsersRolesType.UnauthenticatedUser],
-  },
   ResetPassword: {
     path: "/reset-password",
     allowedRoles: [UsersRolesType.UnauthenticatedUser],

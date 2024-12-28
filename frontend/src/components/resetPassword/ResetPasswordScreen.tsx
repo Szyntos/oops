@@ -28,7 +28,7 @@ export const ResetPasswordScreen = () => {
       }
       await confirmPasswordReset(auth, oobCode, values.password);
       alert("Hasło zostało zmienione");
-      navigate(pathsGenerator.common.Login);
+      navigate(pathsGenerator.common.Default);
     });
   };
 

@@ -134,7 +134,7 @@
         "chests_data": [
             {
                 "name": "Złota skrzynia (część laboratoryjna)",
-                "filename": "ZlotaSkrzynia.png",
+                "filename": "ZlotaSkrzyniaV2.jpg",
                 "content_type": [
                     "multiplicative",
                     "additive"
@@ -147,7 +147,7 @@
             },
             {
                 "name": "Srebrna skrzynia (część laboratoryjna)",
-                "filename": "SrebrnaSkrzynia.png",
+                "filename": "SrebrnaSkrzyniaV2.jpg",
                 "content_type": [
                     "additive_next",
                     "additive_prev"
@@ -160,7 +160,7 @@
             },
             {
                 "name": "Brązowa skrzynia (część laboratoryjna)",
-                "filename": "BrazowaSkrzynia.png",
+                "filename": "BrazowaSkrzyniaV2.jpg",
                 "content_type": [
                     "additive_prev"
                 ],
@@ -172,7 +172,7 @@
             },
             {
                 "name": "Złota skrzynia (część projektowa)",
-                "filename": "ZlotaSkrzynia.png",
+                "filename": "ZlotaSkrzyniaV2.jpg",
                 "content_type": [
                     "multiplicative",
                     "additive"
@@ -185,7 +185,7 @@
             },
             {
                 "name": "Srebrna skrzynia (część projektowa)",
-                "filename": "SrebrnaSkrzynia.png",
+                "filename": "SrebrnaSkrzyniaV2.jpg",
                 "content_type": [
                     "additive_next",
                     "additive_prev"
@@ -198,7 +198,7 @@
             },
             {
                 "name": "Brązowa skrzynia (część projektowa)",
-                "filename": "BrazowaSkrzynia.png",
+                "filename": "BrazowaSkrzyniaV2.jpg",
                 "content_type": [
                     "additive_prev"
                 ],
@@ -211,7 +211,7 @@
         "awards_data": [
             {
                 "name": "Marchewka",
-                "filename": "MarchewkaLaboratoryjna.png",
+                "filename": "Marchewka.jpg",
                 "award_type": "multiplicative",
                 "award_value": 0.1,
                 "category_id": 1,
@@ -222,7 +222,7 @@
             },
             {
                 "name": "Weterynarz",
-                "filename": "Weterynarz.png",
+                "filename": "Weterynarz.jpg",
                 "award_type": "additive_prev",
                 "award_value": 2,
                 "category_id": 2,
@@ -233,7 +233,7 @@
             },
             {
                 "name": "Pietruszka",
-                "filename": "Lekarstwo.png",
+                "filename": "Pietruszka.jpg",
                 "award_type": "multiplicative",
                 "award_value": 0.1,
                 "category_id": 3,
@@ -244,7 +244,7 @@
             },
             {
                 "name": "Plaster",
-                "filename": "RabatNaSianko.png",
+                "filename": "Plaster.jpg",
                 "award_type": "additive_prev",
                 "award_value": 2,
                 "category_id": 1,

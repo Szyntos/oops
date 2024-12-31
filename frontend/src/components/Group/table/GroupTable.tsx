@@ -133,7 +133,7 @@ export const GroupTable = ({
     }
     if (showAggregatedValues) {
       // add aggregate values
-      headers.push({ cell: { data: "dobyte punkty", colored: true } });
+      headers.push({ cell: { data: "Zdobyte punkty", colored: true } });
       headers.push({ cell: { data: "Zagregowane łupy", colored: true } });
       headers.push({ cell: { data: "Razem", colored: true } });
       // levels...

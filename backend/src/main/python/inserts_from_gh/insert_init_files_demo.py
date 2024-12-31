@@ -6,16 +6,42 @@ import requests
 
 def insert_init_files(base_url):
     """Detailed image of an fantasy setting chest. Inside a chest there is a sword. The sword is made of steel handle and blade made out of a carrot. On the chest there is a sign with a writing "Marchewka Laboratoryjna". Painting. Detailed. Foliage around the chest. The whole scene is in a fantasy forest. Inside the chest there are gold coins. There is an owlbear from dnd visible in the background. This owlbear is feathery, but resembles a bear with owl characteristics, like feathers. Owlbear is based on BaldursGate 3 owlbear. Owlbear should have a body of a bear and head of an owl. On the chest there is a sign with a writing "Marchewka Laboratoryjna" """
-    """Detailed image of an fantasy setting chest. Inside a chest there is a glowing potion. The potionfloats above the opened chest.  On the chest there is a sign with a writing "Lekarstwo v2". Painting. Detailed. Foliage around the chest. The whole scene is in a fantasy forest. Inside the chest there is hay. There is an owlbear from dnd visible in the background. This owlbear is feathery, but resembles a bear with owl characteristics."""
+    """
+    Detailed image of fantasy white carrot.
+    
+    Painting
+    
+    white carrot has steel handle, like a sword
+    
+    white carrot has steel handle, like a sword
+    
+    
+    white carrot has steel handle, like a sword
+    
+    
+    white carrot has steel handle, like a sword
+    
+    
+     Painting. Detailed.
+    
+    it should be an icon
+    
+    the white carrot is stuck in the ground
+    
+    white carrot is saturated and the background is dull
+    
+    
+    the white carrot is in the middle of the image
+    """
     """https://fal.ai/models/fal-ai/flux/dev/playground"""
     owlbear_filenames = ["owlbear1.png", "owlbear2.png", "owlbear3.png", "owlbear4.png",
                              "owlbear5.png", "owlbear6.png", "owlbear7.png"]
 
     group_filenames = [f"gr{i}.png" for i in range(1, 21)]
-    avatar_filenames = [f"avatar{i}.png" for i in range(1, 5)]
+    avatar_filenames = [f"avatar{i}.png" for i in range(1, 5)] + [f"av{i}.jpg" for i in range(1, 16)]
 
     award_filenames = ["Lekarstwo.png", "LekarstwoV2.png", "Weterynarz.png", "WeterynarzV2.png", "RabatNaSianko.png",
-                       "MarchewkaProjektowa.png", "MarchewkaLaboratoryjna.png"]
+                       "MarchewkaProjektowa.png", "MarchewkaLaboratoryjna.png", "Marchewka.jpg", "Pietruszka.jpg", "Weterynarz.jpg", "WeterynarzV3.jpg", "Plaster.jpg"]
 
     chest_filenames = ["ZlotaSkrzynia.png", "SrebrnaSkrzynia.png", "BrazowaSkrzynia.png"]
 

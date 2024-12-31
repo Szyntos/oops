@@ -43,7 +43,7 @@ def insert_init_files(base_url):
     award_filenames = ["Lekarstwo.png", "LekarstwoV2.png", "Weterynarz.png", "WeterynarzV2.png", "RabatNaSianko.png",
                        "MarchewkaProjektowa.png", "MarchewkaLaboratoryjna.png", "Marchewka.jpg", "Pietruszka.jpg", "Weterynarz.jpg", "WeterynarzV3.jpg", "Plaster.jpg"]
 
-    chest_filenames = ["ZlotaSkrzynia.png", "SrebrnaSkrzynia.png", "BrazowaSkrzynia.png"]
+    chest_filenames = ["ZlotaSkrzynia.png", "SrebrnaSkrzynia.png", "BrazowaSkrzynia.png", "ZlotaSkrzyniaV2.jpg", "SrebrnaSkrzyniaV2.jpg", "BrazowaSkrzyniaV2.jpg"]
 
     sample_pictures = [("sampleAvatar.png", "image/user/sample"), ("sampleGroup.png", "image/group/sample"),
                        ("sampleLevel.png", "image/level/sample"), ("sampleChest.png", "image/chest/sample"),

@@ -6,7 +6,7 @@ def insert_data_old(conn, cursor, fake, random):
                          "owlbear5.png", "owlbear6.png", "owlbear7.png"]
 
     group_filenames = [f"gr{i}.png" for i in range(1, 21)]
-    avatar_filenames = [f"avatar{i}.png" for i in range(1, 5)]
+    avatar_filenames = [f"avatar{i}.png" for i in range(1, 5)] + [f"av{i}.jpg" for i in range(1, 16)]
 
     sample_pictures = [("sampleAvatar.png", "image/user/sample"), ("sampleGroup.png", "image/group/sample"),
                        ("sampleLevel.png", "image/level/sample"), ("sampleChest.png", "image/chest/sample"),

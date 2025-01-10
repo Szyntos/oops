@@ -1,60 +1,95 @@
-import { useState } from "react";
+import { FormikErrors, useFormik } from "formik";
+import { z, ZodError } from "zod";
+import { TextField } from "@mui/material";
+import { FormError } from "../form/FormError";
+import { CustomButton } from "../CustomButton";
+import { formErrors, formStyles } from "../../utils/utils";
 import { Styles } from "../../utils/Styles";
-import { useLogin } from "../../hooks/auth/useLogin";
 
-export const LoginForm = () => {
-  const { loginWithCredentials } = useLogin();
+const ValidationSchema = z.object({
+  email: z.string().email("nieprawidłowy adres email"),
+  password: z.string().min(1, formErrors.required),
+});
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
+export type LoginFormValues = z.infer<typeof ValidationSchema>;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+type LoginFormProps = {
+  handleLoginClick: (values: LoginFormValues) => void;
+  handleResetPasswordClick: (values: LoginFormValues) => void;
+  formError?: string;
+};
 
-    try {
-      await loginWithCredentials({ email, password });
-      setLoginError("");
-    } catch (error) {
-      console.error("ERROR: ", error);
-      setLoginError((error as Error).message);
-    }
-  };
+export const LoginForm = ({
+  handleLoginClick,
+  handleResetPasswordClick,
+  formError,
+}: LoginFormProps) => {
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validate: (values: LoginFormValues) => {
+      const errors: FormikErrors<LoginFormValues> = {};
+      try {
+        ValidationSchema.parse(values);
+      } catch (error) {
+        if (error instanceof ZodError) {
+          Object.assign(errors, error.formErrors.fieldErrors);
+        }
+      }
+      return errors;
+    },
+    onSubmit: handleLoginClick,
+  });
 
   return (
-    <div style={styles.loginForm}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+    <form onSubmit={formik.handleSubmit}>
+      <div style={formStyles.fieldsContainer}>
+        <TextField
+          fullWidth
+          label="Email"
+          type="email"
+          name="email"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={Boolean(formik.touched.email && formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
+        />
+
+        <TextField
+          fullWidth
+          label="Hasło"
+          type="password"
+          name="password"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={Boolean(formik.touched.password && formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
+        />
+
+        <FormError error={formError} isFormError={true} />
+
+        <div style={styles.buttonsContainer}>
+          <CustomButton onClick={() => handleResetPasswordClick(formik.values)}>
+            Resetuj hasło
+          </CustomButton>
+          <CustomButton onClick={() => handleLoginClick(formik.values)}>
+            Zaloguj się
+          </CustomButton>
         </div>
-        <div>
-          <label>Hasło:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {loginError && <p className="error">{loginError}</p>}
-        <button type="submit">Zaloguj się</button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 };
 
 const styles: Styles = {
-  loginForm: {
-    marginTop: "20px",
-    padding: "10px",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
+  buttonsContainer: {
+    display: "flex",
+    justifyContent: "right",
+    margin: 10,
+    gap: 12,
   },
 };

@@ -10,8 +10,12 @@ import { useUser } from "../common/useUser";
 import { useApolloClient } from "@apollo/client";
 import { UserFromList } from "../../components/Welcome/UsersListWithFilter/UsersListWithFilter";
 import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { useResetPasswordByEmailMutation } from "../../graphql/resetPasswordByEmail.graphql.types";
 import { isEditionActive } from "../../utils/utils";
 import { getEnvVariable } from "../../utils/constants";
+import { useSetStudentNickMutation } from "../../graphql/setStudentNick.graphql.types";
+import { useSetStudentAvatarMutation } from "../../graphql/setStudentAvatar.graphql.types";
+import { SetupUserFormValues } from "../../screens/SetupUserProfile/SetupUserForm";
 
 export const cookiesStrings = {
   token: "token",
@@ -27,6 +31,7 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const { setUser } = useUser();
   const apolloClient = useApolloClient();
+  const [resetPassword] = useResetPasswordByEmailMutation();
 
   const [fetchCurrentUser] = useCurrentUserLazyQuery();
 
@@ -53,6 +58,8 @@ export const useLogin = () => {
           nick: data?.getCurrentUser.user.nick,
           role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
           userId: data?.getCurrentUser.user.userId,
+          avatarSetByUser: data?.getCurrentUser.user.avatarSetByUser,
+          nickSetByUser: data?.getCurrentUser.user.nickSetByUser,
           selectedEdition: getInitSelectedEdition(editions),
           editions,
         }
@@ -68,7 +75,7 @@ export const useLogin = () => {
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
 
     setUser(user);
-    navigateToStartScreen(user);
+    navigateToAfterLoginScreen(user);
   };
 
   const getBypassToken = (userId: string) => {
@@ -80,9 +87,14 @@ export const useLogin = () => {
 
     // set cookie token
     // login with bypass - assumption that password is correct userId
-    const token = loginWithBypass
-      ? getBypassToken(credentials.password)
-      : await getFirebaseToken(credentials);
+    const isBypassEmail =
+      credentials.email ===
+      `${getEnvVariable("VITE_BYPASS_TOKEN")}@${getEnvVariable("VITE_EMAIL_DOMAIN")}`;
+
+    const token =
+      isBypassEmail && loginWithBypass
+        ? getBypassToken(credentials.password)
+        : await getFirebaseToken(credentials);
 
     Cookies.set(cookiesStrings.token, token);
 
@@ -105,6 +117,8 @@ export const useLogin = () => {
           nick: data?.getCurrentUser.user.nick,
           role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
           userId: data?.getCurrentUser.user.userId,
+          avatarSetByUser: data?.getCurrentUser.user.avatarSetByUser,
+          nickSetByUser: data?.getCurrentUser.user.nickSetByUser,
           selectedEdition: getInitSelectedEdition(editions),
           editions,
         }
@@ -119,7 +133,7 @@ export const useLogin = () => {
     // set cookie user
     Cookies.set(cookiesStrings.user, JSON.stringify(user));
     setUser(user);
-    navigateToStartScreen(user);
+    navigateToAfterLoginScreen(user);
   };
 
   const getFirebaseToken = async (credentials: LoginCredentials) => {
@@ -135,7 +149,7 @@ export const useLogin = () => {
     return token;
   };
 
-  const navigateToStartScreen = (user: User) => {
+  const navigateToAfterLoginScreen = (user: User) => {
     // TODO frontend and backend enums do not match
     switch (user.role) {
       case UsersRolesType.Coordinator:
@@ -143,7 +157,11 @@ export const useLogin = () => {
         navigate(pathsGenerator.teacher.Groups);
         break;
       case UsersRolesType.Student:
-        navigate(pathsGenerator.student.StudentProfile);
+        if (user.avatarSetByUser && user.nickSetByUser) {
+          navigate(pathsGenerator.student.StudentProfile);
+        } else {
+          navigate(pathsGenerator.student.ChoosingAvatarAndNick);
+        }
         break;
       default:
         throw new Error("To się nigdy nie powinno wydarzyć ;_;.");
@@ -160,10 +178,68 @@ export const useLogin = () => {
     navigate(pathsGenerator.common.Default);
   };
 
+  const [setStudentNick] = useSetStudentNickMutation();
+  const [setStudentAvatar] = useSetStudentAvatarMutation();
+
+  const setNickAndAvatar = async (
+    values: SetupUserFormValues,
+    userId: string,
+  ) => {
+    await setStudentNick({
+      variables: { nick: values.nick, userId: parseInt(userId) },
+    });
+    await setStudentAvatar({
+      variables: {
+        fileId: parseInt(values.avatarId),
+        userId: parseInt(userId),
+      },
+    });
+
+    const { data, error } = await fetchCurrentUser();
+
+    const editions: Edition[] =
+      data?.getCurrentUser.editions.map((edition) => {
+        return {
+          name: edition?.editionName as string,
+          editionId: edition?.editionId as string,
+          editionYear: edition?.editionYear as number,
+          endDate: edition?.endDate as string,
+          label: edition?.label as string,
+          startDate: edition?.startDate as string,
+        };
+      }) ?? [];
+
+    const user: User | undefined = data?.getCurrentUser
+      ? {
+          nick: data?.getCurrentUser.user.nick,
+          role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
+          userId: data?.getCurrentUser.user.userId,
+          avatarSetByUser: data?.getCurrentUser.user.avatarSetByUser,
+          nickSetByUser: data?.getCurrentUser.user.nickSetByUser,
+          selectedEdition: getInitSelectedEdition(editions),
+          editions,
+        }
+      : undefined;
+
+    if (error || !user) {
+      await logout();
+      throw new Error(
+        error?.message ?? "Wystąpił bład podczas konfiguracji profilu.",
+      );
+    }
+
+    // set cookie user
+    Cookies.set(cookiesStrings.user, JSON.stringify(user));
+    setUser(user);
+    navigate(pathsGenerator.student.StudentProfile);
+  };
+
   return {
     loginWithUserSelect,
     loginWithCredentials,
     logout,
+    resetPassword,
+    setNickAndAvatar,
   };
 };
 

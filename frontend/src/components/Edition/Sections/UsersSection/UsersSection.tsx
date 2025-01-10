@@ -72,6 +72,7 @@ export const UsersSection = () => {
         `${user.user.firstName} ${user.user.secondName}`,
         user.user.nick,
         user.user.indexNumber.toString(),
+        user.user.email,
       ]);
     return matchActiveState && matchInput;
   };

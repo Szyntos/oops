@@ -32,6 +32,8 @@ export const SetupStudentCreateDocument = gql`
       nick: $nick
       role: "student"
       secondName: $secondName
+      createFirebaseUser: true
+      sendEmail: false
     ) {
       userId
       role

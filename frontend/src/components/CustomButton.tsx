@@ -9,6 +9,7 @@ type CustomButtonProps = {
   children: string;
   disabled?: boolean;
   color?: string;
+  type?: "submit" | "button";
 };
 
 export const CustomButton = ({

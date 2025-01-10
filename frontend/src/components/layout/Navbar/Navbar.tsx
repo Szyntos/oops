@@ -83,15 +83,17 @@ export const Navbar = () => {
     <div style={navbarStyles.navbar}>
       <div style={navbarStyles.itemsContainer}>
         <div style={navbarStyles.leftItemsContainer}>
-          {navigationItems
-            .filter((item) => hasRole(user, item.allowedRoles))
-            .map((item) => (
-              <NavbarItem
-                onClick={() => navigate(item.path)}
-                title={item.title}
-                isActive={item.path === location.pathname}
-              />
-            ))}
+          {user.avatarSetByUser &&
+            user.avatarSetByUser &&
+            navigationItems
+              .filter((item) => hasRole(user, item.allowedRoles))
+              .map((item) => (
+                <NavbarItem
+                  onClick={() => navigate(item.path)}
+                  title={item.title}
+                  isActive={item.path === location.pathname}
+                />
+              ))}
         </div>
       </div>
 

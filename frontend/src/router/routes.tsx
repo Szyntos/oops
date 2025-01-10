@@ -6,7 +6,7 @@ import { StudentProfile } from "../screens/StudentProfile/StudentProfile";
 import { TeacherStudentProfile } from "../screens/StudentProfile/TeacherStudentProfile";
 import { GroupsScreen } from "../screens/Groups/GroupsScreen";
 import { GroupScreen } from "../screens/Group/GroupScreen";
-import { Welcome } from "../screens/Welcome/Welcome";
+import { LoginScreen } from "../screens/Login/LoginScreen";
 import { ProtectedRoute } from "./protectedRoute";
 import { StudentsScreen } from "../screens/Students/StudentsScreen";
 import { EditionsScreen } from "../screens/Editions/EditionsScreen";
@@ -19,7 +19,9 @@ import { GroupsSection } from "../components/Edition/Sections/GroupSection/Group
 import { UsersSection } from "../components/Edition/Sections/UsersSection/UsersSection";
 import { GradingChecksSection } from "../components/Edition/Sections/GradingChecksSection/GradingChecksSection";
 import { ChestsSection } from "../components/Edition/Sections/ChestsSection/ChestsSection";
+import { AvatarAndNickScreen } from "../screens/SetupUserProfile/AvatarAndNickScreen";
 import { HallOfFameTeacher } from "../screens/HallOfFame/HallOfFameTeacher";
+import { ResetPasswordScreen } from "../components/resetPassword/ResetPasswordScreen";
 import { StudentStatistics } from "../components/Statistics/StudentStatistics";
 import { TeacherStatistics } from "../components/Statistics/TeacherStatistice";
 import { CoordinatorStatistics } from "../components/Statistics/CoordinatorStatistics";
@@ -36,23 +38,38 @@ export const routes = createBrowserRouter([
     children: [
       {
         path: commonPaths.Default.path,
-        element: <Welcome />,
+        element: (
+          <ProtectedRoute
+            element={<LoginScreen />}
+            allowedRoles={commonPaths.Default.allowedRoles}
+          />
+        ),
         index: true,
       },
       {
-        path: commonPaths.Welcome.path,
+        path: commonPaths.ResetPassword.path,
         element: (
           <ProtectedRoute
-            element={<Welcome />}
-            allowedRoles={commonPaths.Welcome.allowedRoles}
+            element={<ResetPasswordScreen />}
+            allowedRoles={commonPaths.ResetPassword.allowedRoles}
           />
         ),
+        index: true,
       },
       {
         path: studentPaths.StudentProfile.path,
         element: (
           <ProtectedRoute
             element={<StudentProfile />}
+            allowedRoles={studentPaths.StudentProfile.allowedRoles}
+          />
+        ),
+      },
+      {
+        path: studentPaths.ChoosingAvatarAndNick.path,
+        element: (
+          <ProtectedRoute
+            element={<AvatarAndNickScreen />}
             allowedRoles={studentPaths.StudentProfile.allowedRoles}
           />
         ),

@@ -14,8 +14,8 @@ type CustomDialogProps = {
   size?: "md" | "lg";
 };
 
-const MD_DIALOG_WIDTH = 500;
-const LG_DIALOG_WIDTH = 800;
+export const MD_DIALOG_WIDTH = 500;
+export const LG_DIALOG_WIDTH = 800;
 
 export const CustomDialog = ({
   isOpen,

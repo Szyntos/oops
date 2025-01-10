@@ -152,10 +152,10 @@ The application relies on the following environment variables for configuration.
 
 This project was developed by:
 
-- **[Anna Cichocka](https://github.com/AnCichocka)**  
 - **[Dominik Adamczyk](https://github.com/dadamczykk)**  
-- **[Julia Smerdel](https://github.com/Jullija)**  
+- **[Anna Cichocka](https://github.com/AnCichocka)**  
 - **[Szymon Nowak-Trzos](https://github.com/Szyntos)**  
+- **[Julia Smerdel](https://github.com/Jullija)**   
 
 with supervision by:
 

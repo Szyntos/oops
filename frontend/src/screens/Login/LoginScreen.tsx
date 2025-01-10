@@ -10,6 +10,11 @@ import { tokens } from "../../tokens";
 import { useLogin } from "../../hooks/auth/useLogin";
 import { useError } from "../../hooks/common/useGlobalError";
 import { MD_DIALOG_WIDTH } from "../../components/dialogs/CustomDialog";
+import { UsersRolesType } from "../../__generated__/schema.graphql.types";
+import { pathsGenerator } from "../../router/paths";
+import { useNavigate } from "react-router-dom";
+import { User } from "../../contexts/userContext";
+import { useUser } from "../../hooks/common/useUser";
 
 const randomMessages = [
   "The cake is a lie.",
@@ -45,7 +50,33 @@ const randomMessages = [
 ];
 
 export const LoginScreen = () => {
+  const navigate = useNavigate();
+  const { user } = useUser();
   const [randomText, setRandomText] = useState("");
+
+  const { loginWithCredentials, resetPassword } = useLogin();
+  const { localErrorWrapper } = useError();
+  const [formError, setFormError] = useState<string | undefined>(undefined);
+  const [resetCodeSent, setResetCodeSent] = useState(false);
+
+  const navigateToBeforeLoginScreen = (user: User) => {
+    switch (user.role) {
+      case UsersRolesType.Coordinator:
+      case UsersRolesType.Teacher:
+        navigate(pathsGenerator.teacher.Groups);
+        break;
+      case UsersRolesType.Student:
+        console.log(user);
+        if (user.avatarSetByUser && user.nickSetByUser) {
+          navigate(pathsGenerator.student.StudentProfile);
+        } else {
+          navigate(pathsGenerator.student.ChoosingAvatarAndNick);
+        }
+        break;
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
     const generateRandomText = () => {
@@ -55,10 +86,9 @@ export const LoginScreen = () => {
     generateRandomText();
   }, [randomMessages]);
 
-  const { loginWithCredentials, resetPassword } = useLogin();
-  const { localErrorWrapper } = useError();
-  const [formError, setFormError] = useState<string | undefined>(undefined);
-  const [resetCodeSent, setResetCodeSent] = useState(false);
+  useEffect(() => {
+    navigateToBeforeLoginScreen(user);
+  }, []);
 
   const handleLoginClick = (values: LoginFormValues) => {
     localErrorWrapper(setFormError, async () => {

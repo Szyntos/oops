@@ -1,12 +1,9 @@
-import { useSetStudentNickMutation } from "../../graphql/setStudentNick.graphql.types.ts";
 import { useUser } from "../../hooks/common/useUser.ts";
-import { useSetStudentAvatarMutation } from "../../graphql/setStudentAvatar.graphql.types.ts";
 import { useFilesQuery } from "../../graphql/files.graphql.types.ts";
 import { useConfirmPopup } from "../../hooks/common/useConfirmPopup.ts";
-import { useNavigate } from "react-router-dom";
-import { pathsGenerator } from "../../router/paths.tsx";
 import {
   coordinatorStyles,
+  formErrors,
   formStyles,
   getCardStyles,
 } from "../../utils/utils.ts";
@@ -19,21 +16,20 @@ import { useError } from "../../hooks/common/useGlobalError.tsx";
 import { useState } from "react";
 import { CustomText } from "../../components/CustomText.tsx";
 import { tokens } from "../../tokens.ts";
+import { useLogin } from "../../hooks/auth/useLogin.tsx";
 
 export type AvatarAndNickValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  nick: z.string().min(1, "Nick is required"),
-  avatarId: z.string().min(1, "Avatar is required"),
+  nick: z.string().min(1, formErrors.required),
+  avatarId: z.string().min(1, formErrors.required),
 });
 
 export const AvatarAndNickScreen = () => {
   const { user } = useUser();
-  const [setStudentNick] = useSetStudentNickMutation();
-  const [setStudentAvatar] = useSetStudentAvatarMutation();
   const { openConfirmPopup } = useConfirmPopup();
-  const navigate = useNavigate();
   const { localErrorWrapper } = useError();
+  const { setNickAndAvatar } = useLogin();
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
 
@@ -51,16 +47,7 @@ export const AvatarAndNickScreen = () => {
   const handleConfirmClick = (values: SetupUserFormValues) => {
     openConfirmPopup(() => {
       localErrorWrapper(setFormError, async () => {
-        await setStudentNick({
-          variables: { nick: values.nick, userId: parseInt(user.userId) },
-        });
-        await setStudentAvatar({
-          variables: {
-            fileId: parseInt(values.avatarId),
-            userId: parseInt(user.userId),
-          },
-        });
-        navigate(pathsGenerator.student.StudentProfile);
+        await setNickAndAvatar(values, user.userId);
       });
     });
   };

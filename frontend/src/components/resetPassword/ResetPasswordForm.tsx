@@ -6,7 +6,7 @@ import { formStyles } from "../../utils/utils";
 import { FormButton } from "../form/FormButton";
 
 const ValidationSchema = z.object({
-  password: z.string().min(6, "Hasło musi zawierać co najmniej 6 znaków"),
+  password: z.string().min(6, "hasło musi zawierać co najmniej 6 znaków"),
 });
 
 export type ResetFormValues = z.infer<typeof ValidationSchema>;

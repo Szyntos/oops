@@ -13,6 +13,9 @@ import { UsersRolesType } from "../../__generated__/schema.graphql.types";
 import { useResetPasswordByEmailMutation } from "../../graphql/resetPasswordByEmail.graphql.types";
 import { isEditionActive } from "../../utils/utils";
 import { getEnvVariable } from "../../utils/constants";
+import { useSetStudentNickMutation } from "../../graphql/setStudentNick.graphql.types";
+import { useSetStudentAvatarMutation } from "../../graphql/setStudentAvatar.graphql.types";
+import { SetupUserFormValues } from "../../screens/SetupUserProfile/SetupUserForm";
 
 export const cookiesStrings = {
   token: "token",
@@ -175,11 +178,68 @@ export const useLogin = () => {
     navigate(pathsGenerator.common.Default);
   };
 
+  const [setStudentNick] = useSetStudentNickMutation();
+  const [setStudentAvatar] = useSetStudentAvatarMutation();
+
+  const setNickAndAvatar = async (
+    values: SetupUserFormValues,
+    userId: string,
+  ) => {
+    await setStudentNick({
+      variables: { nick: values.nick, userId: parseInt(userId) },
+    });
+    await setStudentAvatar({
+      variables: {
+        fileId: parseInt(values.avatarId),
+        userId: parseInt(userId),
+      },
+    });
+
+    const { data, error } = await fetchCurrentUser();
+
+    const editions: Edition[] =
+      data?.getCurrentUser.editions.map((edition) => {
+        return {
+          name: edition?.editionName as string,
+          editionId: edition?.editionId as string,
+          editionYear: edition?.editionYear as number,
+          endDate: edition?.endDate as string,
+          label: edition?.label as string,
+          startDate: edition?.startDate as string,
+        };
+      }) ?? [];
+
+    const user: User | undefined = data?.getCurrentUser
+      ? {
+          nick: data?.getCurrentUser.user.nick,
+          role: data?.getCurrentUser.user.role.toUpperCase() as UsersRolesType,
+          userId: data?.getCurrentUser.user.userId,
+          avatarSetByUser: data?.getCurrentUser.user.avatarSetByUser,
+          nickSetByUser: data?.getCurrentUser.user.nickSetByUser,
+          selectedEdition: getInitSelectedEdition(editions),
+          editions,
+        }
+      : undefined;
+
+    if (error || !user) {
+      await logout();
+      throw new Error(
+        error?.message ?? "Wystąpił bład podczas konfiguracji profilu.",
+      );
+    }
+
+    // set cookie user
+    Cookies.set(cookiesStrings.user, JSON.stringify(user));
+    setUser(user);
+    navigate(pathsGenerator.student.StudentProfile);
+  };
+
   return {
     loginWithUserSelect,
     loginWithCredentials,
     logout,
     resetPassword,
+    setNickAndAvatar,
   };
 };
 

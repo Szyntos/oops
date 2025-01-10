@@ -3,12 +3,12 @@ import { z, ZodError } from "zod";
 import { TextField } from "@mui/material";
 import { FormError } from "../form/FormError";
 import { CustomButton } from "../CustomButton";
-import { formStyles } from "../../utils/utils";
+import { formErrors, formStyles } from "../../utils/utils";
 import { Styles } from "../../utils/Styles";
 
 const ValidationSchema = z.object({
-  email: z.string().email("Nieprawidłowy adres email"),
-  password: z.string().min(6, "Hasło musi zawierać co najmniej 6 znaków"),
+  email: z.string().email("nieprawidłowy adres email"),
+  password: z.string().min(1, formErrors.required),
 });
 
 export type LoginFormValues = z.infer<typeof ValidationSchema>;

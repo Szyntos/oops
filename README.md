@@ -152,7 +152,11 @@ The application relies on the following environment variables for configuration.
 
 This project was developed by:
 
-- **Dominik Adamczyk**  
-- **Julia Smerdel**  
-- **Anna Cichocka**
-- **Szymon Nowak-Trzos**
+- **[Dominik Adamczyk](https://github.com/dadamczykk)**  
+- **[Julia Smerdel](https://github.com/Jullija)**  
+- **[Anna Cichocka](https://github.com/AnCichocka)**
+- **[Szymon Nowak-Trzos](https://github.com/Szyntos)**
+
+with supervision by:
+
+- **[Michał Idzik](https://github.com/Soamid)**

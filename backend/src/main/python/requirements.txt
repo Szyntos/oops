@@ -4,3 +4,4 @@ tqdm
 requests
 scipy
 numpy
+python-dotenv

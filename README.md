@@ -1,5 +1,9 @@
 # OOPS - Object Oriented Programming System
 
+
+<img src="https://github.com/user-attachments/assets/029ac9a3-59de-42c9-b995-e82a5a678544" alt="logo" width="200"/>
+
+
 ## Overview
 
 OOPS (Object-Oriented Programming System) is a gamified web application designed to enhance the learning experience for the "Programowanie Obiektowe" course at AGH University. The application leverages gamification techniques to motivate students, streamline course management for instructors, and provide intuitive tools for coordinators to oversee the course.
@@ -13,15 +17,21 @@ This project is based on the foundation laid by [Soamid/obiektowe-lab](https://g
 - **Open Chests:** Earn chests and claim rewards to enhance your course performance.
 - **Personalized Profile:** Customize your avatar and nickname.
 
+![student_screen](https://github.com/user-attachments/assets/4f0d8f31-0583-4294-a63f-4c9a3ecb3c87)
+
 ### Instructor Features
 - **Manage Groups:** Assign points, manage student groups, and track their progress.
 - **Award Points and Rewards:** Allocate points for assignments and distribute chests.
 - **Monitor Group Statistics:** Access group-level statistics to improve teaching strategies.
 
+<img width="1263" alt="groups_screen" src="https://github.com/user-attachments/assets/cbc117f0-8ad9-4cce-8def-59d06aa71b56" />
+
 ### Coordinator Features
 - **Course Configuration:** Define grading categories, levels, and conditions for course completion.
 - **Manage Participants:** Oversee students, instructors, and group assignments.
 - **Advanced Analytics:** Analyze course-wide data and adjust configurations as needed.
+
+<img width="949" alt="chests" src="https://github.com/user-attachments/assets/e9b31b1f-4172-4951-b163-9a3cd5e93bc7" />
 
 ### Technology Stack
 - **Frontend:** ReactJS with TypeScript

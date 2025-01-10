@@ -29,7 +29,7 @@ class GlobalExceptionHandler {
     fun handlePermissionDenied(exception: PermissionDeniedException): Map<String, Any> {
         // Structure the response as needed for GraphQL
         return mapOf(
-            "message" to (exception.message ?: "Permission denied"),
+            "message" to (exception.message ?: "Brak dostępu"),
             "customStackTrace" to exception.stackTraceInfo
         )
     }

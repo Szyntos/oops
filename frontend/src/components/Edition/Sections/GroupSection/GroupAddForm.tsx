@@ -11,7 +11,11 @@ import { Weekday } from "../../../../hooks/common/useGroupsData";
 import { Student, Teacher } from "../../../../hooks/Edition/useGroupsSection";
 import { StudentSelection } from "./StudentSelection/StudentSelection";
 import { useRef, useState } from "react";
-import { formStyles, TIME_HH_MM_REGEXP } from "../../../../utils/utils";
+import {
+  formErrors,
+  formStyles,
+  TIME_HH_MM_REGEXP,
+} from "../../../../utils/utils";
 import { FormError } from "../../../form/FormError";
 import { FormButton } from "../../../form/FormButton";
 import { CustomButton } from "../../../CustomButton";
@@ -22,19 +26,15 @@ export type GroupFormValues = z.infer<typeof ValidationSchema>;
 const ValidationSchema = z.object({
   startTime: z
     .string()
-    .min(1, { message: "wymagane " })
-    .regex(TIME_HH_MM_REGEXP, {
-      message: "Godzina rozpoczęcia musi być w formacie hh:mm",
-    }),
+    .min(1, formErrors.required)
+    .regex(TIME_HH_MM_REGEXP, formErrors.regexp("HH:MM")),
   endTime: z
     .string()
-    .min(1, { message: "wymagane " })
-    .regex(TIME_HH_MM_REGEXP, {
-      message: "Godzina zakończenia musi być w formacie hh:mm",
-    }),
-  weekdayId: z.string().min(1, { message: "wymagane" }),
-  teacherId: z.string().min(1, { message: "wymagane" }),
-  usosId: z.number().min(1, { message: "USOS ID nie może być liczbą ujemną." }),
+    .min(1, formErrors.required)
+    .regex(TIME_HH_MM_REGEXP, formErrors.regexp("HH:MM")),
+  weekdayId: z.string().min(1, formErrors.required),
+  teacherId: z.string().min(1, formErrors.required),
+  usosId: z.number().min(1, formErrors.minNumber(1)),
 });
 
 type AddGroupFormProps = {
@@ -101,7 +101,7 @@ export const AddGroupForm = ({
           (startHour === endHour && startMinute < endMinute);
 
         if (!isEndTimeValid) {
-          errors.endTime = `Czas zakończenia musi być po czasie startu.`;
+          errors.endTime = `czas zakończenia musi być po czasie startu.`;
         }
 
         return errors;
@@ -204,9 +204,10 @@ export const AddGroupForm = ({
                 formik.touched.weekdayId && formik.errors.weekdayId,
               )}
             >
-              Dzień Tygodnia
+              Dzień tygodnia
             </InputLabel>
             <Select
+              label="Dzień tygodnia"
               name="weekdayId"
               value={formik.values.weekdayId}
               onChange={formik.handleChange}
@@ -235,6 +236,7 @@ export const AddGroupForm = ({
               Prowadzący
             </InputLabel>
             <Select
+              label="Prowadzący"
               name="teacherId"
               value={formik.values.teacherId}
               onChange={formik.handleChange}
@@ -296,24 +298,24 @@ export const AddGroupForm = ({
 
           <FormError error={createError} isFormError={true} />
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingLeft: 12,
-            }}
-          >
-            {variant === "import" && (
-              <div>
-                <CustomButton onClick={handleUploadClick}>
-                  Importuj studentów
-                </CustomButton>
-              </div>
-            )}
-
+          {variant === "select" ? (
             <FormButton />
-          </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingLeft: 12,
+              }}
+            >
+              <CustomButton onClick={handleUploadClick}>
+                Importuj studentów
+              </CustomButton>
+
+              <FormButton />
+            </div>
+          )}
         </div>
       </form>
     </div>

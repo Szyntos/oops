@@ -1,17 +1,20 @@
 import { z, ZodError } from "zod";
 import { useFormik } from "formik";
 import { TextField } from "@mui/material";
-import { formStyles } from "../../../../utils/utils";
+import { formErrors, formStyles } from "../../../../utils/utils";
 import { FormError } from "../../../form/FormError";
 import { FormButton } from "../../../form/FormButton";
+import { getEnvVariable } from "../../../../utils/constants";
 
 export type StudentFormValues = z.infer<typeof ValidationSchema>;
 
 const ValidationSchema = z.object({
-  firstName: z.string().min(1, "required"),
-  secondName: z.string().min(1, "required"),
-  indexNumber: z.number().min(100000).max(999999),
-  nick: z.string().min(1, "required"),
+  firstName: z.string().min(1, formErrors.required),
+  secondName: z.string().min(1, formErrors.required),
+  indexNumber: z
+    .number()
+    .min(100000, formErrors.minNumber(100000))
+    .max(999999, formErrors.maxNumber(999999)),
 });
 
 type AddStudentFormProps = {
@@ -27,7 +30,6 @@ export const AddStudentForm = ({
     firstName: "",
     secondName: "",
     indexNumber: 100000,
-    nick: "",
   },
 }: AddStudentFormProps) => {
   const formik = useFormik({
@@ -40,8 +42,6 @@ export const AddStudentForm = ({
           return error.formErrors.fieldErrors;
         }
       }
-
-      // TODO create subuser validation
     },
     onSubmit: (values: StudentFormValues) => {
       handleConfirm(values);
@@ -80,18 +80,6 @@ export const AddStudentForm = ({
 
           <TextField
             fullWidth
-            name="nick"
-            label="Nick"
-            variant="outlined"
-            value={formik.values.nick}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={Boolean(formik.touched.nick && formik.errors.nick)}
-            helperText={formik.touched.nick && formik.errors.nick}
-          />
-
-          <TextField
-            fullWidth
             name="indexNumber"
             label="Numer indeksu"
             variant="outlined"
@@ -111,7 +99,7 @@ export const AddStudentForm = ({
             name="email"
             label="Email"
             variant="outlined"
-            value={`${formik.values.indexNumber}@student.agh.edu.pl`}
+            value={`${formik.values.indexNumber}@${getEnvVariable("VITE_EMAIL_DOMAIN")}`}
           />
 
           <FormError error={formError} isFormError={true} />

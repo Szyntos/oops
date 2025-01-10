@@ -24,6 +24,7 @@ export type HallOfFameTeacherQuery = {
     userImageId?: string | null;
     firstName?: string | null;
     secondName?: string | null;
+    teacherId?: string | null;
   }>;
 };
 
@@ -46,6 +47,7 @@ export const HallOfFameTeacherDocument = gql`
       userImageId
       firstName
       secondName
+      teacherId
     }
   }
 `;

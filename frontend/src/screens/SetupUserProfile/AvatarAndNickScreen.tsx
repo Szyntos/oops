@@ -18,7 +18,7 @@ import { SetupUserForm, SetupUserFormValues } from "./SetupUserForm.tsx";
 import { useError } from "../../hooks/common/useGlobalError.tsx";
 import { useState } from "react";
 import { CustomText } from "../../components/CustomText.tsx";
-import { tokens } from "../../tokens.tsx";
+import { tokens } from "../../tokens.ts";
 
 export type AvatarAndNickValues = z.infer<typeof ValidationSchema>;
 

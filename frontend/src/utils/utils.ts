@@ -4,7 +4,6 @@ import {
   UsersRolesType,
 } from "../__generated__/schema.graphql.types";
 import { Permissions } from "../components/Edition/Sections/SetupButtons";
-import { Edition } from "../contexts/userContext";
 import { tokens } from "../tokens";
 import { Styles } from "./Styles";
 
@@ -33,9 +32,9 @@ export const hasRole = (user: User, allowedRoles: UsersRolesType[]) => {
   return allowedRoles.includes(user.role as UsersRolesType);
 };
 
-export const isEditionActive = (edition: Edition) => {
+export const isEditionActive = (startDate: string, endDate: string) => {
   const now = new Date();
-  return new Date(edition.startDate) < now && now < new Date(edition.endDate);
+  return new Date(startDate) < now && now < new Date(endDate);
 };
 
 export const mockPermissions = {
@@ -76,8 +75,9 @@ export const COLOR_TRANSITION_ANIMATION = "color 0.3s ease";
 export const getLinearGradient = (
   firstColor: string,
   secondColor: string,
+  thirdColor?: string,
 ): string => {
-  return `linear-gradient(to right, ${firstColor}, ${secondColor})`;
+  return `linear-gradient(to right, ${firstColor}, ${secondColor}${thirdColor ? "," + thirdColor : ""})`;
 };
 
 export const getTimeWithoutSeconds = (time: string) => {
@@ -133,7 +133,11 @@ export const getGroupTimeString = (
   startTime: string,
   endTime: string,
 ) => {
-  return `${weekday}, ${getTimeWithoutSeconds(startTime)}-${getTimeWithoutSeconds(endTime)}`;
+  return `${weekday}, ${getTimestamp(startTime, endTime)}`;
+};
+
+export const getTimestamp = (startTime: string, endTime: string) => {
+  return `${getTimeWithoutSeconds(startTime)}-${getTimeWithoutSeconds(endTime)}`;
 };
 
 export const ERROR_MESSAGE = "Wystąpił błąd...";
@@ -165,7 +169,7 @@ export const formStyles: Styles = {
     gap: 12,
   },
   label: {
-    color: tokens.color.text.tertiary,
+    color: tokens.color.text.mui,
     paddingLeft: 12,
     fontSize: 13,
     paddingBottom: 12,
@@ -192,4 +196,12 @@ export const mapAwardTypeToPolish = (type: AwardTypeType) => {
       break;
   }
   return text.toUpperCase();
+};
+
+export const formErrors = {
+  required: "wymagane",
+  minNumber: (x: number) => `>${x}`,
+  maxNumber: (x: number) => `<${x}`,
+  regexp: (r: string) => `oczekiwany format ${r}`,
+  email: "błędny format",
 };

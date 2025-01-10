@@ -22,6 +22,9 @@ import { ChestsSection } from "../components/Edition/Sections/ChestsSection/Ches
 import { AvatarAndNickScreen } from "../screens/SetupUserProfile/AvatarAndNickScreen";
 import { HallOfFameTeacher } from "../screens/HallOfFame/HallOfFameTeacher";
 import { ResetPasswordScreen } from "../components/resetPassword/ResetPasswordScreen";
+import { StudentStatistics } from "../components/Statistics/StudentStatistics";
+import { TeacherStatistics } from "../components/Statistics/TeacherStatistice";
+import { CoordinatorStatistics } from "../components/Statistics/CoordinatorStatistics";
 
 const commonPaths = pathsWithParameters.common;
 const studentPaths = pathsWithParameters.student;
@@ -68,6 +71,33 @@ export const routes = createBrowserRouter([
           <ProtectedRoute
             element={<AvatarAndNickScreen />}
             allowedRoles={studentPaths.StudentProfile.allowedRoles}
+          />
+        ),
+      },
+      {
+        path: studentPaths.Statistics.path,
+        element: (
+          <ProtectedRoute
+            element={<StudentStatistics />}
+            allowedRoles={studentPaths.Statistics.allowedRoles}
+          />
+        ),
+      },
+      {
+        path: teacherPaths.Statistics.path,
+        element: (
+          <ProtectedRoute
+            element={<TeacherStatistics />}
+            allowedRoles={teacherPaths.Statistics.allowedRoles}
+          />
+        ),
+      },
+      {
+        path: coordinatorPaths.Statistics.path,
+        element: (
+          <ProtectedRoute
+            element={<CoordinatorStatistics />}
+            allowedRoles={coordinatorPaths.Statistics.allowedRoles}
           />
         ),
       },

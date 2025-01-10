@@ -107,12 +107,12 @@ export const AddSetForm = ({
   ): WithAddedLevelsValidateErrors => {
     // check if name not duplicated
     const nameError = levels.find((l) => l.name === values.name)
-      ? "Zduplikowana nazwa"
+      ? "zduplikowana nazwa"
       : undefined;
 
     // check if max points not duplicated
     const maxPointsError = levels.find((l) => l.maxPoints === values.maxPoints)
-      ? "Zduplikowane maksymalne punkty"
+      ? "zduplikowane maksymalne punkty"
       : undefined;
 
     const newLevel: AddedLevel = {

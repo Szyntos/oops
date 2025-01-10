@@ -78,7 +78,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only students (and a coordinator) can open chests"
+                reason = "Tylko studenci (oraz koordynatorzy) mogą otwierać skrzynki"
             )
         }
 
@@ -86,21 +86,21 @@ class BonusPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'chestHistoryId'"
+            reason = "Nieprawidłowe lub brakujące 'chestHistoryId'"
         )
 
         val awardIds = arguments.getLongList("awardIds") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardIds'"
+            reason = "Nieprawidłowe lub brakujące 'awardIds'"
         )
 
         val checkDates = arguments.getBooleanField("checkDates") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'checkDates'"
+            reason = "Nieprawidłowe lub brakujące 'checkDates'"
         )
 
         val chestHistory = chestHistoryRepository.findById(chestHistoryId).orElse(null)
@@ -108,7 +108,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid chest history ID"
+                reason = "Nie znaleziono chestHistory o id $chestHistoryId"
             )
 
         if (currentUser.role != UsersRoles.COORDINATOR && chestHistory.user.userId != currentUser.userId) {
@@ -116,7 +116,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "You can only open your own chests"
+                reason = "Możesz otwierać tylko swoje skrzynki"
             )
         }
 
@@ -125,7 +125,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Chest has already been opened"
+                reason = "Skrzynka została już otwarta"
             )
         }
 
@@ -134,7 +134,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Bonus already exists for the given chest history"
+                reason = "Bonus już istnieje dla danej skrzynki"
             )
         }
 
@@ -145,7 +145,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nieprawidłowy identyfikator Łupu"
             )
         }
 
@@ -154,7 +154,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid number of awards - expected ${chestHistory.chest.awardBundleCount} or less"
+                reason = "Nieprawidłowa liczba nagród - oczekiwano ${chestHistory.chest.awardBundleCount} lub mniej"
             )
         }
 
@@ -166,7 +166,7 @@ class BonusPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Cannot apply more than ${award.maxUsages} bonuses for ${award.awardName} (${award.awardId})"
+                    reason = "Nie można przyznać więcej niż ${award.maxUsages} bonusów za ${award.awardName} (${award.awardId})"
                 )
             }
             if (chestAwardRepository.findByChest(chestHistory.chest).none { it.award == award }) {
@@ -174,7 +174,7 @@ class BonusPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Award ${award.awardName} (${award.awardId}) is not available in the chest."
+                    reason = "Łup ${award.awardName} (${award.awardId}) nie jest dostępny w skrzynce."
                 )
             }
             val awardEditions = awardEditionRepository.findByAward(award).map { it.edition }.toSet()
@@ -184,14 +184,14 @@ class BonusPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Award ${award.awardName} (${award.awardId}) is not available in any of the user's editions."
+                    reason = "Łup ${award.awardName} (${award.awardId}) nie jest dostępny w żadnej z edycji użytkownika."
                 )
             }
             val edition = chestHistory.subcategory.edition ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory's edition is not set."
+                reason = "Podkategoria ${chestHistory.subcategory} nie ma wybranej edycji"
             )
             if (checkDates){
                 if (edition.startDate.isAfter(LocalDate.now())){
@@ -199,7 +199,7 @@ class BonusPermissions {
                         action = action,
                         arguments = arguments,
                         allow = false,
-                        reason = "Edition has not started yet"
+                        reason = "Edycja jeszcze się nie rozpoczęła"
                     )
                 }
                 if (edition.endDate.isBefore(LocalDate.now())){
@@ -207,7 +207,7 @@ class BonusPermissions {
                         action = action,
                         arguments = arguments,
                         allow = false,
-                        reason = "Edition has already ended"
+                        reason = "Edycja już się zakończyła"
                     )
                 }
             }
@@ -255,7 +255,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory's edition is not set."
+                reason = "Podkategoria ${chestHistory.subcategory} nie ma wybranej edycji"
             )
         }
         if (chestHistory.subcategory.edition?.editionId !in getAwardEditions(award).map { it.editionId }) {
@@ -263,7 +263,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award is not available in the subcategory's edition."
+                reason = "Łup nie jest dostępny w edycji podkategorii"
             )
         }
 
@@ -287,7 +287,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Subcategory's edition is not set."
+                reason = "Podkategoria ${chestHistory.subcategory} nie ma wybranej edycji"
             )
         }
         if (chestHistory.subcategory.edition?.editionId !in getAwardEditions(award).map { it.editionId }) {
@@ -295,7 +295,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award is not available in the subcategory's edition."
+                reason = "Łup nie jest dostępny w edycji podkategorii"
             )
         }
 
@@ -335,7 +335,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "No next subcategory found in the specified category."
+                reason = "Nie znaleziono następnej podkategorii w określonej kategorii"
             )
         }
 
@@ -344,7 +344,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Points already exist in the next subcategory."
+                reason = "Punkty już istnieją w następnej podkategorii"
             )
         }
 
@@ -371,7 +371,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "No previous points found in the specified category."
+                reason = "Brak poprzednich punktów w danej kategorii"
             )
         }
 
@@ -404,7 +404,7 @@ class BonusPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "No subcategory found in the specified category."
+                reason = "Nie znaleziono podkategorii w określonej kategorii"
             )
         }
 

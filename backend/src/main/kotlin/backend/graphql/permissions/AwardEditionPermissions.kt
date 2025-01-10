@@ -42,7 +42,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add awards to editions"
+                reason = "Tylko koordynatorzy mogą dodać łupy do edycji"
             )
         }
 
@@ -50,7 +50,7 @@ class AwardEditionPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -58,14 +58,14 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -73,7 +73,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         if (edition.endDate.isBefore(LocalDate.now())) {
@@ -81,7 +81,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -90,7 +90,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award with this name already exists in this edition"
+                reason = "Łup o tej nazwie już istnieje w tej edycji"
             )
         }
 
@@ -99,7 +99,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award's category does not exist in this edition"
+                reason = "Kategoria łupu nie istnieje w tej edycji"
             )
         }
 
@@ -119,7 +119,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove awards from editions"
+                reason = "Tylko koordynatorzy mogą usuwać nagrody z edycji"
             )
         }
 
@@ -127,7 +127,7 @@ class AwardEditionPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'awardId'"
+            reason = "Nieprawidłowe lub brakujące 'awardId'."
         )
 
         val award = awardRepository.findById(awardId).orElse(null)
@@ -135,14 +135,14 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid award ID"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -150,7 +150,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
 
         if (!awardEditionRepository.existsByAwardAndEdition(award, edition)) {
@@ -158,7 +158,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This award does not exist in this edition"
+                reason = "Ten łup nie istnieje w podanej edycji"
             )
         }
 
@@ -167,7 +167,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -176,7 +176,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award has already been assigned to students in this edition"
+                reason = "Łup został już przypisany studentom w tej edycji"
             )
         }
 
@@ -203,7 +203,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can add awards to editions"
+                reason = "Tylko koordynatorzy mogą dodać łupy do edycji"
             )
         }
 
@@ -212,21 +212,21 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award not found"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition not found"
+                reason = "Nie znaleziono Edycji o id $editionId"
             )
         if (awardEditionRepository.existsByAward_AwardNameAndEdition(award.awardName, edition)) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award with this name already exists in this edition"
+                reason = "Łup o tej nazwie już istnieje w tej edycji"
             )
         }
 
@@ -235,7 +235,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award's category does not exist in this edition"
+                reason = "Kategoria łupu nie istnieje w tej edycji"
             )
         }
 
@@ -261,7 +261,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only coordinators can remove awards from editions"
+                reason = "Tylko koordynatorzy mogą usuwać nagrody z edycji"
             )
         }
 
@@ -270,21 +270,21 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award not found"
+                reason = "Nie znaleziono Łupu o id $awardId"
             )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition not found"
+                reason = "Nie znaleziono Edycji o id $editionId"
             )
         if (!awardEditionRepository.existsByAwardAndEdition(award, edition)) {
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "This award does not exist in this edition"
+                reason = "Ten łup nie istnieje w podanej edycji"
             )
         }
 
@@ -293,7 +293,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Edition has already ended"
+                reason = "Edycja już się zakończyła"
             )
         }
 
@@ -302,7 +302,7 @@ class AwardEditionPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Award has already been assigned to students in this edition"
+                reason = "Łup został już przypisany studentom w tej edycji"
             )
         }
 

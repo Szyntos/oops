@@ -96,7 +96,7 @@ class FirebaseUserService (
         val helper = MimeMessageHelper(message, true)
 
         helper.setTo(email)
-        helper.setSubject("Reset Your Password")
+        helper.setSubject("Zresetuj swoje hasło")
         helper.setText(
             """
         <p>Cześć,</p>

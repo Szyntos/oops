@@ -22,6 +22,8 @@ export type HallOfFameStudentData = {
   groupId: string;
   avatarImgId?: string;
   levelImgId?: string;
+  teacherId?: string;
+  groupName: string;
 };
 
 export const HallOfFameStudentCard = ({
@@ -35,7 +37,11 @@ export const HallOfFameStudentCard = ({
       style={{
         ...styles.item,
         background: isHighlighted
-          ? getLinearGradient(tokens.color.accent.light, tokens.color.card.dark)
+          ? getLinearGradient(
+              tokens.color.card.dark,
+              tokens.color.accent.light,
+              tokens.color.card.light,
+            )
           : undefined,
       }}
     >

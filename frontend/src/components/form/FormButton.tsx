@@ -29,7 +29,7 @@ const styles: Styles = {
     justifyContent: "right",
   },
   button: {
-    backgroundColor: tokens.color.accent.dark,
+    backgroundColor: tokens.color.accent.light,
     padding: 12,
     paddingTop: 12,
     paddingBottom: 12,

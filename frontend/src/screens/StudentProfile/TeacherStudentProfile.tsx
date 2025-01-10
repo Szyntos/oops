@@ -101,7 +101,8 @@ export function TeacherStudentProfile() {
     user.role === UsersRolesType.Coordinator;
 
   const isSelectedEditionActive = Boolean(
-    selectedEdition && isEditionActive(selectedEdition),
+    selectedEdition &&
+      isEditionActive(selectedEdition.startDate, selectedEdition.endDate),
   );
 
   const disableEditMode = !(isSelectedEditionActive && hasEditableRights);

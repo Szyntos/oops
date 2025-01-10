@@ -2,12 +2,12 @@ import { z, ZodError } from "zod";
 import { FormikErrors, useFormik } from "formik";
 import { MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { Edition } from "../../contexts/userContext";
-import { formStyles } from "../../utils/utils";
+import { formErrors, formStyles } from "../../utils/utils";
 import { FormButton } from "../form/FormButton";
 import { FormError } from "../form/FormError";
 
 const ValidationSchema = z.object({
-  editionId: z.string().min(1),
+  editionId: z.string().min(1, formErrors.required),
 });
 
 export type ChangeEditionFormValues = z.infer<typeof ValidationSchema>;
@@ -48,7 +48,7 @@ export const ChangeEditionForm = ({
   return (
     <div style={formStyles.formContainer}>
       <form onSubmit={formik.handleSubmit}>
-        <div style={formStyles.filedsContainer}>
+        <div style={formStyles.fieldsContainer}>
           <FormControl fullWidth>
             <InputLabel
               error={Boolean(
@@ -58,6 +58,7 @@ export const ChangeEditionForm = ({
               Edycja
             </InputLabel>
             <Select
+              label="Edycja"
               name="editionId"
               value={formik.values.editionId}
               onChange={formik.handleChange}
@@ -68,8 +69,7 @@ export const ChangeEditionForm = ({
             >
               {editions.map((e) => (
                 <MenuItem key={e.editionId} value={e.editionId}>
-                  {/* TODO change to name  */}
-                  {e.editionId}
+                  {e.name}
                 </MenuItem>
               ))}
             </Select>

@@ -37,7 +37,7 @@ export const LevelSetCard = ({
               <Avatar id={l.imageFile?.fileId} size={"xs"} />
               <div style={coordinatorStyles.textContainer}>
                 <CustomText>{l.levelName}</CustomText>
-                <CustomText color={tokens.color.text.tertiary}>
+                <CustomText color={tokens.color.text.secondary}>
                   {l.minimumPoints}pkt - {l.maximumPoints}pkt
                 </CustomText>
               </div>
@@ -55,7 +55,7 @@ export const LevelSetCard = ({
         handleEdit={onEditClick}
         handleDelete={onDeleteClick}
         handleCopy={onCopyClick}
-        handleShow={() => openShowDialog(levelSet)}
+        handleShow={() => openShowDialog(levelSet, "level")}
       />
     </div>
   );

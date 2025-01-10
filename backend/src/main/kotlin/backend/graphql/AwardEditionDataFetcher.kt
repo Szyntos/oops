@@ -61,7 +61,7 @@ class AwardEditionDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return addAwardToEditionHelper(awardId, editionId)
     }
@@ -70,11 +70,11 @@ class AwardEditionDataFetcher {
     fun addAwardToEditionHelper(awardId: Long, editionId: Long): AwardEdition {
         val permission = awardEditionPermissions.checkAddAwardToEditionHelperPermission(awardId, editionId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
-        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
+        val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Łupu o id $awardId") }
+        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Edycji o id $editionId") }
 
         val awardEdition = AwardEdition(
             award = award,
@@ -96,7 +96,7 @@ class AwardEditionDataFetcher {
 
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
         return removeAwardFromEditionHelper(awardId, editionId)
     }
@@ -105,11 +105,11 @@ class AwardEditionDataFetcher {
     fun removeAwardFromEditionHelper(awardId: Long, editionId: Long): Boolean {
         val permission = awardEditionPermissions.checkRemoveAwardFromEditionHelperPermission(awardId, editionId)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
-        val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Award not found") }
-        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Edition not found") }
+        val award = awardRepository.findById(awardId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Łupu o id $awardId") }
+        val edition = editionRepository.findById(editionId).orElseThrow { throw IllegalArgumentException("Nie znaleziono Edycji o id $editionId") }
 
         awardEditionRepository.deleteByAwardAndEdition(award, edition)
         return true

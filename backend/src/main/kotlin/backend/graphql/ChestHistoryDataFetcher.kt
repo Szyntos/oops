@@ -85,20 +85,20 @@ class ChestHistoryDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val user = usersRepository.findById(userId)
-            .orElseThrow { IllegalArgumentException("Invalid user ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
 
         val chest = chestsRepository.findById(chestId)
-            .orElseThrow { IllegalArgumentException("Invalid chest ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono skrzynki o id $chestId") }
 
         val teacher = usersRepository.findById(teacherId)
-            .orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono nauczyciela o id $teacherId") }
 
         val subcategory = subcategoriesRepository.findById(subcategoryId)
-            .orElseThrow { IllegalArgumentException("Invalid subcategory ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono podkategorii o id $subcategoryId") }
 
 
         val chestHistory = ChestHistory(
@@ -140,33 +140,33 @@ class ChestHistoryDataFetcher {
         )
         val permission = permissionService.checkFullPermission(permissionInput)
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val chestHistory = chestHistoryRepository.findById(chestHistoryId)
-            .orElseThrow { IllegalArgumentException("Invalid chest history ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono chestHistory o id $chestHistoryId") }
 
         userId?.let { id ->
             val user = usersRepository.findById(id)
-                .orElseThrow { IllegalArgumentException("Invalid user ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono użytkownika o id $userId") }
             chestHistory.user = user
         }
 
         chestId?.let { newChestId ->
             val chest = chestsRepository.findById(newChestId)
-                .orElseThrow { IllegalArgumentException("Invalid chest ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono skrzynki o id $chestId") }
             chestHistory.chest = chest
         }
 
         teacherId?.let {
             val teacher = usersRepository.findById(it)
-                .orElseThrow { IllegalArgumentException("Invalid teacher ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono nauczyciela o id $teacherId") }
             chestHistory.teacher = teacher
         }
 
         subcategoryId?.let { newSubcategoryId ->
             val subcategory = subcategoriesRepository.findById(newSubcategoryId)
-                .orElseThrow { IllegalArgumentException("Invalid subcategory ID") }
+                .orElseThrow { IllegalArgumentException("Nie znaleziono podkategorii o id $subcategoryId") }
             chestHistory.subcategory = subcategory
         }
 
@@ -194,11 +194,11 @@ class ChestHistoryDataFetcher {
         val permission = permissionService.checkFullPermission(permissionInput)
 
         if (!permission.allow) {
-            throw PermissionDeniedException(permission.reason ?: "Permission denied", permission.stackTrace)
+            throw PermissionDeniedException(permission.reason ?: "Brak dostępu", permission.stackTrace)
         }
 
         val chestHistory = chestHistoryRepository.findById(chestHistoryId)
-            .orElseThrow { IllegalArgumentException("Invalid chest history ID") }
+            .orElseThrow { IllegalArgumentException("Nie znaleziono chestHistory o id $chestHistoryId") }
 
         chestHistoryRepository.delete(chestHistory)
         return true

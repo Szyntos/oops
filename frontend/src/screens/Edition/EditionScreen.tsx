@@ -24,7 +24,10 @@ export const EditionScreen = () => {
           title="JSON"
           onCloseClick={closeShowDialog}
         >
-          <ShowEntryContent selectedEntry={selectedEntry} />
+          <ShowEntryContent
+            selectedEntry={selectedEntry?.entry}
+            type={selectedEntry?.type}
+          />
         </CustomDialog>
       </div>
     </div>

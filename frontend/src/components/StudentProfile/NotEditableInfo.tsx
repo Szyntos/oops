@@ -15,7 +15,7 @@ export const NotEditableInfo = ({
 }: NotEditableInfoProps) => {
   return (
     <div style={styles.card}>
-      <CustomText color={tokens.color.state.error} bold={true}>
+      <CustomText bold={true}>
         Nie możesz zarządzać punktami{" "}
         {type === "student" ? "tego studenta" : "tej grupy"}, bo:
       </CustomText>
@@ -41,7 +41,7 @@ const styles: Styles = {
     flexDirection: "column",
     gap: 8,
     borderRadius: 4,
-    border: `2px solid ${tokens.color.state.error}`,
+    backgroundColor: tokens.color.state.errorLight,
   },
   reasonsContainer: {
     display: "flex",

@@ -1,9 +1,8 @@
+import { useState } from "react";
 import { tokens } from "../tokens";
 import { Styles } from "../utils/Styles";
 import { BACKGROUND_COLOR_ANIMATION } from "../utils/utils";
 import { CustomText } from "./CustomText";
-
-const BORDER_WIDTH = 2;
 
 type FilterButtonProps = {
   option: string;
@@ -16,14 +15,20 @@ export const FilterButton = ({
   isActive,
   onClick,
 }: FilterButtonProps) => {
+  const [hovered, setHovered] = useState(false);
   return (
-    <div onClick={onClick}>
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <CustomText
-        color={isActive ? tokens.color.text.primary : tokens.color.accent.dark}
         style={{
           ...styles.button,
-          backgroundColor: isActive ? tokens.color.accent.dark : undefined,
+          backgroundColor:
+            isActive || hovered ? tokens.color.accent.dark : undefined,
+          cursor: hovered ? "pointer" : "auto",
         }}
+        onClick={onClick}
       >
         {option}
       </CustomText>
@@ -33,12 +38,11 @@ export const FilterButton = ({
 
 const styles: Styles = {
   button: {
-    padding: 12 - BORDER_WIDTH,
-    paddingTop: 12 - BORDER_WIDTH,
-    paddingBottom: 12 - BORDER_WIDTH,
+    padding: 12,
+    paddingTop: 12,
+    paddingBottom: 12,
     borderRadius: 8,
     cursor: "pointer",
     transition: BACKGROUND_COLOR_ANIMATION,
-    border: `${BORDER_WIDTH}px solid ${tokens.color.accent.dark}`,
   },
 };

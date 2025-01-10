@@ -1,36 +1,42 @@
 export const tokens = {
   color: {
     background: {
-      primary: "#404040",
+      primary: "#514c42",
     },
     card: {
-      light: "#262626",
-      dark: "#1D1D1D",
+      dark: "#2d271e",
+      light: "#3e372b",
     },
     text: {
-      primary: "#77BA67",
-      secondary: "#FFFFFF",
-      // MUI
-      tertiary: "#c4c4c4",
+      primary: "#ffffff",
+      secondary: "#b1b1b1",
+      mui: "#b1b1b1",
     },
     accent: {
-      light: "#6cd85d",
-      dark: "#217e4d",
+      dark: "#1A7431",
+      light: "#2DC653",
     },
     unique: {
-      gold: "#FFD700",
-      silver: "#C0C0C0",
-      brown: "#CD7F32",
+      first: "#CED4DA",
+      second: "#ADB5BD",
+      third: "#6C757D",
+      gold: "#AF9500",
+      silver: "#B4B4B4",
+      brown: "#AD8A56",
     },
     state: {
       disabled: "grey",
       // MUI
       error: "#f44336",
       success: "green",
+      errorLight: "#ff6e4f",
     },
     shadow: {
       white: "rgba(255, 255, 255, 0.6)",
       accent: "rgba(108, 216, 93, 0.5)",
+    },
+    progressBar: {
+      empty: "#363026",
     },
   },
   padding: {

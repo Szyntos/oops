@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { getNavigationItems } from "../../../router/paths";
+import { getNavigationItems, pathsGenerator } from "../../../router/paths";
 import { Styles } from "../../../utils/Styles";
 import { useEditionSelection } from "../../../hooks/common/useEditionSelection";
 import { useUser } from "../../../hooks/common/useUser";
@@ -17,12 +17,14 @@ import { tokens } from "../../../tokens";
 import { NavbarItem } from "./NavarItem";
 import { IconMapper } from "../../IconMapper";
 import { ChestsNavbarItem } from "./ChestsNavbarItem";
-import { CustomText } from "../../CustomText";
 import { CustomDialog } from "../../dialogs/CustomDialog";
+import Logo from "../../../assets/logo.svg";
 
 const NAV_BAR_HEIGHT = 64;
 const BORDER_HEIGHT = 2;
 export const NAV_BAR_HEIGHT_WITH_BORDER = NAV_BAR_HEIGHT + BORDER_HEIGHT;
+
+const LOGO_HEIGHT = 64 - 24;
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -48,9 +50,34 @@ export const Navbar = () => {
     handleChangeEditionConfirm,
   } = useSettings();
 
-  const navigationItems = getNavigationItems(
-    user.role === UsersRolesType.Student,
-  );
+  const getRole = () => {
+    switch (user.role) {
+      case UsersRolesType.Coordinator:
+        return "coordinator";
+      case UsersRolesType.Student:
+        return "student";
+      default:
+        return "teacher";
+    }
+  };
+
+  const navigationItems = getNavigationItems(getRole());
+
+  const handleLogoClick = () => {
+    switch (user.role) {
+      case UsersRolesType.Student:
+        navigate(pathsGenerator.student.StudentProfile);
+        break;
+      case UsersRolesType.Coordinator:
+      case UsersRolesType.Teacher:
+        navigate(pathsGenerator.teacher.Groups);
+        break;
+      default:
+        navigate(pathsGenerator.common.Welcome);
+        break;
+    }
+    return;
+  };
 
   return (
     <div style={navbarStyles.navbar}>
@@ -70,41 +97,40 @@ export const Navbar = () => {
         </div>
       </div>
 
-      <CustomText style={navbarStyles.logo} size={tokens.font.header}>
-        LOGO
-      </CustomText>
+      <div style={navbarStyles.logo}>
+        <img
+          src={Logo}
+          alt="logo"
+          style={{ height: LOGO_HEIGHT, cursor: "pointer" }}
+          onClick={handleLogoClick}
+        />
+      </div>
 
       <div style={navbarStyles.itemsContainer}>
         <div style={navbarStyles.rightItemsContainer}>
           {/* logged in user items */}
-          {user.role !== UsersRolesType.UnauthenticatedUser &&
-            (user.avatarSetByUser ? (
-              <>
-                <NavbarItem
-                  title={
-                    selectedEdition
-                      ? `${selectedEdition.name}${isEditionActive(selectedEdition) ? "" : " [not active]"}`
-                      : "no edition selected"
-                  }
+          {user.role !== UsersRolesType.UnauthenticatedUser && (
+            <>
+              <NavbarItem
+                title={
+                  selectedEdition
+                    ? `${selectedEdition.name}${isEditionActive(selectedEdition.startDate, selectedEdition.endDate) ? "" : " [not active]"}`
+                    : "no edition selected"
+                }
+              />
+              {/* student items */}
+              {user.role === UsersRolesType.Student && (
+                <ChestsNavbarItem
+                  quantity={chestsToOpen.length}
+                  onClick={openChestDialog}
                 />
-                {/* student items */}
-                {user.role === UsersRolesType.Student && (
-                  <ChestsNavbarItem
-                    quantity={chestsToOpen.length}
-                    onClick={openChestDialog}
-                  />
-                )}
-                {editions.length > 1 && (
-                  <IconMapper onClick={openSettings} icon="settings" />
-                )}
-                <IconMapper
-                  onClick={async () => await logout()}
-                  icon="logout"
-                />
-              </>
-            ) : (
+              )}
+              {editions.length > 1 && (
+                <IconMapper onClick={openSettings} icon="settings" />
+              )}
               <IconMapper onClick={async () => await logout()} icon="logout" />
-            ))}
+            </>
+          )}
         </div>
       </div>
 
@@ -166,5 +192,10 @@ export const navbarStyles: Styles = {
     gap: tokens.padding.m,
     display: "flex",
     justifyContent: "end",
+  },
+  logo: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
 };

@@ -15,14 +15,19 @@ type PodiumItemProps = {
 
 const placeMap = {
   color: {
-    1: tokens.color.unique.gold,
-    2: tokens.color.unique.silver,
-    3: tokens.color.unique.brown,
+    1: tokens.color.unique.first,
+    2: tokens.color.unique.second,
+    3: tokens.color.unique.third,
   },
   height: {
     1: 3,
     2: 2,
     3: 1.2,
+  },
+  shadow: {
+    1: tokens.color.unique.gold,
+    2: tokens.color.unique.silver,
+    3: tokens.color.unique.brown,
   },
 };
 
@@ -30,7 +35,7 @@ const PLACE_HEIGHT_RATIO = 120;
 
 export const PodiumItem = ({ student, place }: PodiumItemProps) => {
   const getPodiumShadow = () => {
-    return { boxShadow: `0px 0px 20px ${placeMap.color[place]}` };
+    return { boxShadow: `0px 0px 20px ${placeMap.shadow[place]}` };
   };
 
   const getPodiumStyle = (): CSSProperties => {
@@ -39,8 +44,7 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
       borderTopLeftRadius: place !== 3 ? PODIUM_TOP_RADIUS : 0,
       borderBottomLeftRadius: place === 2 ? PODIUM_BOTTOM_RADIUS : 0,
       borderBottomRightRadius: place === 3 ? PODIUM_BOTTOM_RADIUS : 0,
-      backgroundColor:
-        place === 1 ? tokens.color.accent.dark : tokens.color.accent.light,
+      backgroundColor: placeMap.color[place],
       height: placeMap.height[place] * PLACE_HEIGHT_RATIO,
     };
   };
@@ -53,7 +57,9 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
           size={"l"}
           imageStyle={getPodiumShadow()}
         />
-        <CustomText size={tokens.font.title}>{student.nick}</CustomText>
+        <CustomText size={tokens.font.title} bold={true}>
+          {student.nick}
+        </CustomText>
       </div>
       <div
         style={{
@@ -63,7 +69,7 @@ export const PodiumItem = ({ student, place }: PodiumItemProps) => {
       >
         <CustomText
           style={styles.place}
-          color={tokens.color.accent.dark}
+          color={tokens.color.card.light}
           size={tokens.font.title}
         >
           {place}
@@ -93,7 +99,7 @@ const styles: Styles = {
     paddingTop: 12,
   },
   place: {
-    backgroundColor: "white",
+    backgroundColor: tokens.color.text.primary,
     width: 32,
     height: 32,
     display: "flex",

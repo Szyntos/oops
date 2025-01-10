@@ -11,11 +11,14 @@ export const Settings = ({
   handleChangeEditionConfirm,
 }: SettingsProps) => {
   const { selectedEdition } = useEditionSelection();
+  const sortedEditions = editions
+    .slice()
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <ChangeEditionForm
       handleConfirm={handleChangeEditionConfirm}
-      editions={editions}
+      editions={sortedEditions}
       initialValues={
         selectedEdition ? { editionId: selectedEdition.editionId } : undefined
       }

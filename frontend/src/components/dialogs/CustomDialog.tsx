@@ -41,7 +41,7 @@ export const CustomDialog = ({
           icon="close"
           onClick={onCloseClick}
           size={28}
-          color={tokens.color.text.tertiary}
+          color={tokens.color.text.mui}
         />
       </div>
 

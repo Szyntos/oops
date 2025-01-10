@@ -14,16 +14,16 @@ import GroupIcon from "@mui/icons-material/Group";
 import SchoolIcon from "@mui/icons-material/School";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import MailIcon from "@mui/icons-material/Mail";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import FunctionsIcon from "@mui/icons-material/Functions";
-import CloseIcon from "@mui/icons-material/Close";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import { MdAutoGraph } from "react-icons/md";
 import { PiTreasureChestLight } from "react-icons/pi";
 import { GiBackForth } from "react-icons/gi";
-import { BiSolidMedal } from "react-icons/bi";
+import BookRoundedIcon from "@mui/icons-material/BookRounded";
 import { Styles } from "../utils/Styles";
 import { tokens } from "../tokens";
 
@@ -85,14 +85,14 @@ const iconMap = {
   monster: PetsIcon,
   level: StarIcon,
   points: SportsScoreIcon,
-  yes: CheckCircleIcon,
-  no: CancelIcon,
+  yes: CheckCircleRoundedIcon,
+  no: CancelRoundedIcon,
   sum: FunctionsIcon,
-  grade: BiSolidMedal,
+  grade: BookRoundedIcon,
   level2: MdAutoGraph,
   chest2: PiTreasureChestLight,
   startEnd: GiBackForth,
-  close: CloseIcon,
+  close: CloseRoundedIcon,
   up: ArrowUpwardRoundedIcon,
   down: ArrowDownwardRoundedIcon,
 };
@@ -122,7 +122,7 @@ export const IconMapper = ({
         ...(isDisabled && styles.disabled),
         width: size,
         height: size,
-        color: color ?? tokens.color.text.secondary,
+        color: color ?? tokens.color.text.primary,
       }}
     />
   );

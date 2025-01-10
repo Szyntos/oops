@@ -57,7 +57,7 @@ class UsersPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val user = usersRepository.findById(userId).orElse(null)
@@ -65,7 +65,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (!(currentUser.role == UsersRoles.TEACHER || currentUser.role == UsersRoles.COORDINATOR)){
@@ -74,7 +74,7 @@ class UsersPartialPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Students can only edit themselves"
+                    reason = "Studenci mogę jedynie edytować samych siebie"
                 )
             }
         }
@@ -84,7 +84,7 @@ class UsersPartialPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit students or themselves"
+                    reason = "Prowadzący mogą edytować tylko studentów lub siebie"
                 )
             }
 
@@ -94,7 +94,7 @@ class UsersPartialPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit students that are in an active edition"
+                    reason = "Prowadzący mogą edytować tylko studentów z aktywnej edycji"
                 )
             }
 
@@ -104,7 +104,7 @@ class UsersPartialPermissions {
                     action = action,
                     arguments = arguments,
                     allow = false,
-                    reason = "Teacher can only edit students that are in their groups"
+                    reason = "Prowadzący mogą edytować tylko studentów z ich grup"
                 )
             }
         }
@@ -125,14 +125,14 @@ class UsersPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
         if (currentUser.role != UsersRoles.COORDINATOR){
             return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can remove a user"
+                reason = "Tylko koordynatorzy mogą usuwać użytkowników"
             )
         }
         if (currentUser.userId == userId){
@@ -140,7 +140,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove yourself"
+                reason = "Nie można usunąć siebie"
             )
         }
 
@@ -149,7 +149,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (user.role == UsersRoles.COORDINATOR){
@@ -157,7 +157,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove coordinator"
+                reason = "Nie można usunąć koordynatora"
             )
         }
 
@@ -166,7 +166,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove user that is in a group"
+                reason = "Nie można usunąć użytkownika, który jest w grupie"
             )
         }
 
@@ -176,7 +176,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Cannot remove user that has points"
+                reason = "Nie można usunąć użytkownika, który jest ma przypisane punkty"
             )
         }
 
@@ -197,7 +197,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can mark student as inactive"
+                reason = "Tylko koordynatorzy mogą ustawić dezaktywować studenta"
             )
         }
 
@@ -205,7 +205,7 @@ class UsersPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val user = usersRepository.findById(userId).orElse(null)
@@ -213,7 +213,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (user.role != UsersRoles.STUDENT){
@@ -221,7 +221,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a student"
+                reason = "Użytkownik nie jest studentem"
             )
         }
 
@@ -230,7 +230,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is already inactive"
+                reason = "Użytkownik już jest dezaktywowany"
             )
         }
 
@@ -250,7 +250,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can mark student as active"
+                reason = "Tylko koordynatorzy mogą ustawić aktywować studenta"
             )
         }
 
@@ -258,7 +258,7 @@ class UsersPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val user = usersRepository.findById(userId).orElse(null)
@@ -266,7 +266,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         if (user.role != UsersRoles.STUDENT){
@@ -274,7 +274,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is not a student"
+                reason = "Użytkownik nie jest studentem"
             )
         }
 
@@ -283,7 +283,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User is already active"
+                reason = "Użytkownik już jest aktywny"
             )
         }
 
@@ -303,7 +303,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can override computed grade for a user"
+                reason = "Tylko koordynatorzy mogą nadpisać ocenę studenta"
             )
         }
 
@@ -311,14 +311,14 @@ class UsersPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
 
@@ -327,7 +327,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
 
         val edition = editionRepository.findById(editionId).orElse(null)
@@ -335,14 +335,14 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         val userLevel = user.userLevels.find { it.edition == edition }
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User has no user level in this edition"
+                reason = "Użytkownik nie posiada poziomów w tej edycji"
             )
 
         return Permission(
@@ -361,7 +361,7 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Only a coordinator can turn off override for computed grade for a user"
+                reason = "Tylko koordynatorzy mogą przywrócić ocenę studenta"
             )
         }
 
@@ -369,14 +369,14 @@ class UsersPartialPermissions {
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'userId'"
+            reason = "Nieprawidłowe lub brakujące 'userId'"
         )
 
         val editionId = arguments.getLongField("editionId") ?: return Permission(
             action = action,
             arguments = arguments,
             allow = false,
-            reason = "Invalid or missing 'editionId'"
+            reason = "Nieprawidłowe lub brakujące 'editionId'"
         )
 
 
@@ -385,21 +385,21 @@ class UsersPartialPermissions {
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid user ID"
+                reason = "Nie znaleziono użytkownika o id $userId"
             )
         val edition = editionRepository.findById(editionId).orElse(null)
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "Invalid edition ID"
+                reason = "Nie znaleziono edycji o id $editionId"
             )
         val userLevel = user.userLevels.find { it.edition == edition }
             ?: return Permission(
                 action = action,
                 arguments = arguments,
                 allow = false,
-                reason = "User has no user level in this edition"
+                reason = "Użytkownik nie posiada poziomów w tej edycji"
             )
 
         return Permission(

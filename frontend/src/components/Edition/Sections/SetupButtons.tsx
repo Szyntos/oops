@@ -22,6 +22,7 @@ type SetupButtonsProps = {
   isStudentActive?: boolean;
   isChestActive?: boolean;
   isBigVariant?: boolean;
+  onDisplayClick?: () => void;
 };
 
 export const SetupButtons = ({
@@ -38,6 +39,7 @@ export const SetupButtons = ({
   isStudentActive,
   isChestActive,
   isBigVariant,
+  onDisplayClick,
 }: SetupButtonsProps) => {
   const copy: SetupButtonProps | undefined = handleCopy
     ? {
@@ -116,7 +118,7 @@ export const SetupButtons = ({
         handleClick: handleShow,
         isClickable: true,
         reason: undefined,
-        title: "Pokaż",
+        title: "JSON",
       }
     : undefined;
 
@@ -129,6 +131,14 @@ export const SetupButtons = ({
       }
     : undefined;
 
+  const disp: SetupButtonProps | undefined = onDisplayClick
+    ? {
+        handleClick: onDisplayClick,
+        isClickable: true,
+        reason: undefined,
+        title: "Pokaż",
+      }
+    : undefined;
   return (
     <div
       style={
@@ -147,6 +157,7 @@ export const SetupButtons = ({
         <SetupButton {...chestActiveness} isBigVariant={isBigVariant} />
       )}
       {show && <SetupButton {...show} isBigVariant={isBigVariant} />}
+      {disp && <SetupButton {...disp} isBigVariant={isBigVariant} />}
     </div>
   );
 };
@@ -171,12 +182,12 @@ const SetupButton = ({
   {
     if (isBigVariant) {
       return isClickable ? (
-        <CustomButton onClick={handleClick} disabled={!isClickable}>
+        <CustomButton onClick={handleClick} disabled={false}>
           {title}
         </CustomButton>
       ) : (
         <TooltipWrapper tooltipContent={<div>{reason ?? emptyReason}</div>}>
-          <CustomButton onClick={handleClick} disabled={!isClickable}>
+          <CustomButton onClick={handleClick} disabled={true}>
             {title}
           </CustomButton>
         </TooltipWrapper>
@@ -216,13 +227,13 @@ const styles: Styles = {
   button: {
     border: "none",
     fontSize: tokens.font.small,
-    color: tokens.color.text.secondary,
+    color: tokens.color.text.primary,
     borderRadius: 4,
     cursor: "pointer",
     padding: 4,
     paddingLeft: 8,
     paddingRight: 8,
-    backgroundColor: tokens.color.accent.light,
+    backgroundColor: tokens.color.accent.dark,
   },
   disabled: {
     cursor: "auto",

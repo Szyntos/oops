@@ -96,6 +96,7 @@ export const UsersSection = () => {
         </div>
         <StudentsListSearcher
           onInputChange={(input: string) => setInput(input)}
+          placeholder="Wyszukaj uyżytkownika"
         />
         <RadioFilterGroups
           options={activeRadioOptions}

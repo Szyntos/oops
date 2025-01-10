@@ -148,3 +148,11 @@ The application relies on the following environment variables for configuration.
 - **BYPASS_AUTH**: Whether to bypass authentication for development (`true` or `false`).
 - **VITE_BYPASS_TOKEN**: Token prefix used when authentication is bypassed.
 
+## Authors
+
+This project was developed by:
+
+- **Dominik Adamczyk**  
+- **Julia Smerdel**  
+- **Anna Cichocka**
+- **Szymon Nowak-Trzos**

@@ -143,7 +143,7 @@ The application relies on the following environment variables for configuration.
 - **INIT_DATA**: Whether to insert minimal data (`true` or `false`).
 - **DO_INSERT_FILES**: Whether to insert initial files into the system (`true` or `false`).
 - **ADMIN_MAIL**: The admin email address for logging in to the system.
--
+
 #### Authentication Bypass
 - **BYPASS_AUTH**: Whether to bypass authentication for development (`true` or `false`).
 - **VITE_BYPASS_TOKEN**: Token prefix used when authentication is bypassed.

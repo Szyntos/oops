@@ -33,6 +33,10 @@ This project is based on the foundation laid by [Soamid/obiektowe-lab](https://g
 
 <img width="949" alt="chests" src="https://github.com/user-attachments/assets/e9b31b1f-4172-4951-b163-9a3cd5e93bc7" />
 
+### DEMO
+
+https://github.com/user-attachments/assets/4520b1e9-3b2c-4593-9372-b257e89d8b33
+
 ### Technology Stack
 - **Frontend:** ReactJS with TypeScript
 - **Backend:** Kotlin with Spring Boot
